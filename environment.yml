@@ -1,0 +1,18 @@
+name: photonmap
+channels:
+  - conda-forge
+  - fredboudon
+  - defaults
+dependencies:
+  - python=3.9
+  - pybind11=2.10.4
+  - pip
+  - embree3=3.13.5
+  - make=4.3
+  - cxx-compiler=1.5.2
+  - cmake=3.26
+  - tbb=2021.9.0
+  - tbb-devel=2021.9.0
+  - boost=1.78.0
+  - openmp=8.0.1
+  - openalea.lpy=3.13.0
