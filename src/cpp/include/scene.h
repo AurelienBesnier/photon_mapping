@@ -19,7 +19,7 @@ boost::shared_ptr<BxDF> createDefaultBxDF() {
 }
 
 // create BxDF from tinyobj material
-boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material) {
+boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material, float reflectance = 0.0, float transmittance = 0.0) {
     const Vec3f kd =
             Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
     const Vec3f ks =
@@ -43,6 +43,8 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material) {
         case 7:
             // Transparent
             return boost::make_shared<Glass>(kd, material.ior);
+        case 9:
+            return boost::make_shared<SimpleLeaf>(kd, reflectance, transmittance);
         default:
             // lambert
             return boost::make_shared<Lambert>(kd);
@@ -146,11 +148,25 @@ public:
             else
                 m.illum = mat.illum;
             this->materials.emplace_back(m);
+            //populate BxDF
+            const auto material = this->materials[faceID];
+            if (material) {
+                tinyobj::material_t m = material.value();
+                if(mat.reflectance != 0.0f && mat.transmittance!= 0.0f)
+                    this->bxdfs.push_back(createBxDF(m, mat.reflectance, mat.transmittance));
+                else
+                    this->bxdfs.push_back(createBxDF(m));
+            }
+                // default material
+            else {
+                this->bxdfs.push_back(createDefaultBxDF());
+            }
         }
     }
 
     void addFaceInfos(std::vector<float> &vertices, std::vector<long> &indices, std::vector<float>&normals,
-                      Vec3f &colors, Vec3f& ambient, Vec3f &specular, float &shininess, float &transparency, int &illum, float &ior) {
+                      Vec3f &colors, Vec3f& ambient, Vec3f &specular, float &shininess, float &transparency, int &illum,
+                      float &ior, float reflectance = 0.0f, float transmittance = 0.0f) {
         for (long &i : indices) {
             i += nVertices();
         }
@@ -182,6 +198,20 @@ public:
             else
                 m.illum = illum;
             this->materials.emplace_back(m);
+
+            //populate BxDF
+            const auto material = this->materials[faceID];
+            if (material) {
+                tinyobj::material_t m = material.value();
+                if(reflectance != 0.0f && transmittance!= 0.0f)
+                    this->bxdfs.push_back(createBxDF(m, reflectance, transmittance));
+                else
+                    this->bxdfs.push_back(createBxDF(m));
+            }
+                // default material
+            else {
+                this->bxdfs.push_back(createDefaultBxDF());
+            }
         }
     }
 
@@ -190,20 +220,6 @@ public:
         for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
             // add triangle
             this->triangles.emplace_back(this->vertices.data(), this->indices.data(), this->normals.data(), faceID);
-        }
-
-        //populate BxDF
-        for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
-            // add bxdf
-            const auto material = this->materials[faceID];
-            if (material) {
-                tinyobj::material_t m = material.value();
-                this->bxdfs.push_back(createBxDF(m));
-            }
-                // default material
-            else {
-                this->bxdfs.push_back(createDefaultBxDF());
-            }
         }
 
         // populate lights, primitives
@@ -223,7 +239,7 @@ public:
                                     light);
         }
 
-        #ifndef __OUTPUT__
+        #ifdef __OUTPUT__
         std::cout << "[Scene] vertices: " << nVertices() << std::endl;
         std::cout << "[Scene] faces: " << nFaces() << std::endl;
         std::cout << "[Scene] lights: " << lights.size() << std::endl;
@@ -256,7 +272,18 @@ public:
             m.specular[2] = 0.00;
             m.dissolve = 1.0;
             m.illum = 1;
+
+            //populate BxDF
+            const auto material = this->materials[faceID];
             this->materials.emplace_back(m);
+            if (material) {
+                tinyobj::material_t m = material.value();
+                    this->bxdfs.push_back(createBxDF(m));
+            }
+                // default material
+            else {
+                this->bxdfs.push_back(createDefaultBxDF());
+            }
         }
     }
 
@@ -407,7 +434,7 @@ public:
     std::vector<Triangle> getTriangles() const { return triangles; }
 
     void build() {
-        #ifndef __OUTPUT__
+        #ifdef __OUTPUT__
         std::cout << "[Scene] building scene..." << std::endl;
         #endif
 
@@ -483,6 +510,12 @@ public:
 
     boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
         unsigned int lightIdx = lights.size() * sampler.getNext1D();
+        if (lightIdx == lights.size()) lightIdx--;
+        pdf = 1.0f / (lights.size());
+        return lights[lightIdx];
+    }
+    boost::shared_ptr<Light> sampleLight(float &pdf, int idx) const {
+        unsigned int lightIdx = idx;
         if (lightIdx == lights.size()) lightIdx--;
         pdf = 1.0f / (lights.size());
         return lights[lightIdx];

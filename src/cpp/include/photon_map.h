@@ -194,7 +194,6 @@ public:
 class PhotonMap {
 private:
     std::vector<Photon> photons;
-    std::vector<Photon> intersections;
     KdTree<Photon> kdtree;
 
 public:
@@ -204,15 +203,11 @@ public:
     void setPhotons(std::vector<Photon> &p) {
         this->photons = p;
     }
-    const Photon &getPhotonIntersection(int i) const { return intersections[i]; }
-    void setIntersection(std::vector<Photon> &i){
-        this->intersections = i;
-    }
 
     const size_t nPhotons() const { return photons.size(); }
 
     void build() {
-#ifndef __OUTPUT__
+#ifdef __OUTPUT__
         std::cout<<"[PhotonMap] photons: "<<photons.size()<<std::endl;
 #endif
         kdtree.setPoints(photons.data(), photons.size());

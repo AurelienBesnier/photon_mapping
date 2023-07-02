@@ -16,6 +16,8 @@ struct Material
     float shininess = 0.5f;
     float transparency = 0.0f;
     float ior = 1.0f;
+    float transmittance = 0.0f;
+    float reflectance = 0.0f;
 };
 
 enum class BxDFType {
@@ -58,6 +60,18 @@ public:
             return false;
         }
         const Vec3f t_p = -std::sqrt(std::max(1.0f - length2th, 0.0f)) * n;
+        t = t_h + t_p;
+        return true;
+    }
+
+    static bool refract(const Vec3f &v, const Vec3f &n, Vec3f &t, float transmittance) {
+        Vec3f t_h = (v - dot(v, n) * n);
+        float len = length(t_h);
+        // total reflection
+        if (len > transmittance) {
+            return false;
+        }
+        const Vec3f t_p = -std::sqrt(std::max(1.0f - len, 0.0f)) * n;
         t = t_h + t_p;
         return true;
     }
@@ -261,6 +275,72 @@ public:
         }
         return ret;
     }
+};
+
+class SimpleLeaf : public BxDF {
+private:
+    Vec3f rho;
+    float reflectance;
+    float transmittance;
+
+public:
+    SimpleLeaf(const Vec3f &rho, float reflectance, float transmittance)
+            : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance),  transmittance(transmittance) {}
+
+    // NOTE: delta function
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+        if (cosThetaO < 0 || cosThetaI < 0) return {0};
+
+        return rho / PI;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+        Vec3f n;
+        if (wo[1] > 0) { // Are we inside or outside the medium ?
+            n = Vec3f(0, 1, 0);
+        } else {
+            n = Vec3f(0, -1, 0);
+        }
+
+        // fresnel reflectance
+
+
+        // reflection
+        if (sampler.getNext1D() < reflectance) {
+            wi = reflect(wo, n);
+            pdf = 1.0f;
+            return rho / absCosTheta(wi);
+        }
+            // refraction
+        else {
+            Vec3f tr;
+            if (refract(wo, n, tr, transmittance)) {
+                wi = tr;
+                pdf = 1.0f;
+                float scaling = 1.0f;
+
+                return scaling * rho / absCosTheta(wi);
+            }
+                // total reflection
+            else {
+                wi = reflect(wo, n);
+                pdf = 1.0f;
+                return rho / absCosTheta(wi);
+            }
+        }
+    }
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        //Unused
+        return {};
+    };
 };
 
 class Leaf : public BxDF {

@@ -20,7 +20,7 @@ class Camera {
     right = normalize(cross(forward, Vec3f(0, 1, 0)));
     up = normalize(cross(right, forward));
 
-#ifndef __OUTPUT__
+#ifdef __OUTPUT__
     std::cout<<"[Camera] position: "<< position[0]<<" "<< position[1]<<" "<<
                  position[2]<<std::endl;
     std::cout<<"[Camera] forward: "<< forward[0]<<" "<< forward[1]<< " "<<
@@ -31,7 +31,7 @@ class Camera {
     // compute focal length from FOV
     focal_length = 1.0f / std::tan(0.5f * FOV);
 
-#ifndef __OUTPUT__
+#ifdef __OUTPUT__
     std::cout<<"[Camera] focal_length: "<<focal_length<<std::endl;
 #endif
   }

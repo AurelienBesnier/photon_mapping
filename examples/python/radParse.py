@@ -1,6 +1,8 @@
 from openalea.plantgl.all import *
 from openalea.plantgl.scenegraph import *
 
+import re
+
 
 def denormalize(f: float) -> int:
     return int(255 * f)
@@ -48,8 +50,8 @@ def read_rad(file: str):
                         roughness = float(li[4])
                         trans = float(li[5])
                         tspec = float(li[6])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness, "trans": trans,
-                               "tspec": tspec}
+                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
+                               "trans": trans, "tspec": tspec}
                         materials[name] = mat
                         i += 5
                     elif type == "light":
@@ -72,16 +74,28 @@ def read_rad(file: str):
                         tmp = i + 1
                         nbCoords = int(size / 3)
                         if nbCoords > 2:
-                            for j in range(tmp, tmp + nbCoords):
-                                l = lines[j].split(" ")
-                                vert.append((float(l[0]) / 100.0, float(l[1]) / 100.0, float(l[2]) / 100.0))
-                                i = j
-                                shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
+                            if "type" == "cylinder":
+                                l = re.split(r"\s+|;+",  lines[0])
+                                l2 = re.split(r"\s+|;+",  lines[1])
+                                l3 = re.split(r"\s+|;+",  lines[2])
+                                x, y, z = float(l[0]) / 100.0, float(l[1]) / 100.0, float(l[2]) / 100.0
+                                x2, y2, z2 = (float(l2[0]) / 100.0, float(l2[1]) / 100.0, float(l2[2]) / 100.0)
+                                vert.append((x, y, z))
+                                vert.append((x2, y2, z2))
+                                for i in range(nbCoords):
+                                    vert.append((x, y, z))
+
+                            else:
+                                for j in range(tmp, tmp + nbCoords):
+                                    l = re.split(r"\s+|;+", lines[j])
+                                    print(name)
+                                    vert.append((float(l[0]) / 100.0, float(l[1]) / 100.0, float(l[2]) / 100.0))
+                                    i = j
+                                    shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
         for sh, val in shapes.items():
             mat_key = val["material"]
             mat = materials[mat_key]
             vert = val["vertices"]
-            print(mat)
             s = Shape()
             nbCoords = int(val["size"] / 3)
             if nbCoords % 3 == 0:
@@ -99,7 +113,8 @@ def read_rad(file: str):
                 if mat["type"] == "light":
                     s.appearance = Material(Color3(mat["color"]))
                 elif mat["type"] == "trans":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]), specular=Color3(mat["spec"]),
+                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                                            specular=Color3(mat["spec"]),
                                             shininess=1 - mat["roughness"], transparency=mat["trans"])
                 else:
                     if Color3(mat["spec"]) == Color3(0, 0, 0):
@@ -127,7 +142,8 @@ def read_rad(file: str):
                 if mat["type"] == "light":
                     s.appearance = Material(Color3(mat["color"]))
                 elif mat["type"] == "trans":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]), specular=Color3(mat["spec"]),
+                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                                            specular=Color3(mat["spec"]),
                                             shininess=1 - mat["roughness"], transparency=mat["trans"])
                 else:
                     if Color3(mat["spec"]) == Color3(0, 0, 0):
@@ -142,8 +158,11 @@ def read_rad(file: str):
         sc.save("env.geom")
         sc.save("env.obj")
         print(materials)
+        print(shapes)
 
 
 if __name__ == "__main__":
-    filename = "testChamber.rad"
-    read_rad(filename)
+    # read_rad("testChamber.rad")
+    # read_rad("simple.rad") encoding problem
+    read_rad("Chambre_0.rad")
+    # read_rad("Tout.rad")

@@ -1,4 +1,4 @@
-#define __OUTPUT__
+//#define __OUTPUT__
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
@@ -28,7 +28,7 @@ void visualizePhotonMap(const Scene &scene, Image &image, const int &width, cons
 
     // visualize photon map
     const PhotonMap photon_map = integrator.getPhotonMapGlobal();
-#pragma omp parallel for collapse(2)
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             const float u = (2.0f * j - width) / height;
@@ -63,12 +63,59 @@ void visualizePhotonMap(const Scene &scene, Image &image, const int &width, cons
     image.writePPM(filename.data());
 }
 
+
+void visualizePhotonMaps(const Scene &scene, Image &image, const int &width, const int &height, const Camera &camera, const int & n_photons, const int &max_depth, const std::string &filename)
+{
+    // photon tracing and build photon map
+    PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
+    UniformSampler sampler;
+    integrator.build(scene, sampler);
+
+    // visualize photon map
+    const std::vector<PhotonMap> photon_maps = integrator.getLightsPhotonMap();
+    int cpt = 0;
+    for(const PhotonMap& photon_map: photon_maps) {
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                const float u = (2.0f * j - width) / height;
+                const float v = (2.0f * i - height) / height;
+                Ray ray;
+                float pdf;
+                if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
+                    IntersectInfo info;
+                    if (scene.intersect(ray, info)) {
+                        // query photon map
+                        float r2;
+                        const std::vector<int> photon_indices =
+                                photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1,
+                                                                r2);
+                        const int photon_idx = photon_indices[0];
+
+                        // if distance to the photon is small enough, write photon's
+                        // throughput to the image
+                        if (r2 < 0.001f) {
+                            const Photon &photon = photon_map.getIthPhoton(photon_idx);
+                            image.setPixel(i, j, photon.throughput);
+                        }
+                    } else {
+                        image.setPixel(i, j, Vec3fZero);
+                    }
+                } else {
+                    image.setPixel(i, j, Vec3fZero);
+                }
+            }
+        }
+        cpt++;
+        image.writePPM(filename+"_"+std::to_string(cpt)+".ppm");
+        image.clear();
+    }
+
+}
+
 void Render(UniformSampler& sampler, Image& image, const int &height, int width, int n_samples, Camera& camera, PhotonMapping& integrator, Scene& scene, std::string_view& filename)
 {
-#ifndef __OUTPUT__
-    std::cout<<"Rendering image..."<<std::endl;
-#endif
-#pragma omp parallel for
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             // init sampler
@@ -102,7 +149,6 @@ void Render(UniformSampler& sampler, Image& image, const int &height, int width,
         }
     }
     image.divide(n_samples);
-    //image.gammaCorrection(2.2);
     image.writePPM(filename.data());
 }
 
@@ -142,7 +188,6 @@ PYBIND11_MODULE(libphotonmap_core, m) {
     py::class_<PhotonMap>(m, "PhotonMap")
             .def(py::init<>())
             .def("getIthPhoton", &PhotonMap::getIthPhoton, "Returns the ith photon of the photon map", py::arg("i"))
-            .def("getIthIntersection", &PhotonMap::getPhotonIntersection, "Returns the ith intersection of photons", py::arg("i"))
             .def("setPhotons", &PhotonMap::setPhotons, "Sets the photons of the photon map", py::arg("photons"))
             .def("nPhotons", &PhotonMap::nPhotons, "Returns the size of the photonmap")
             .def("build", &PhotonMap::build, "Builds the photon map")
@@ -301,12 +346,13 @@ PYBIND11_MODULE(libphotonmap_core, m) {
                  py::arg("vertices"), py::arg("indices"), py::arg("normals"), py::arg("material"))
             .def("addFaceInfos", &Scene::addFaceInfos, py::arg("vertices"), py::arg("indices"),
                  py::arg("normals"), py::arg("colors"), py::arg("ambient"), py::arg("specular"), py::arg("shininess"), py::arg("transparency"), py::arg("illum"),
-                 py::arg("ior"))
+                 py::arg("ior"), py::arg("reflectance"),py::arg("transmittance"))
             .def("addLight", &Scene::addLight, py::arg("vertices"), py::arg("indices"), py::arg("normals"), py::arg("intensity"), py::arg("color"))
             .def("build", &Scene::build)
             .def("getTriangles", &Scene::getTriangles, "Returns an array with the triangles of the scene")
             .def("intersect", &Scene::intersect, py::arg("ray"), py::arg("info"))
-            .def("sampleLight", &Scene::sampleLight, py::arg("sampler"), py::arg("pdf"))
+            .def("sampleLight", py::overload_cast<Sampler&, float&>(&Scene::sampleLight, py::const_), py::arg("sampler"), py::arg("pdf"))
+            .def("sampleLight", py::overload_cast<float&, int>(&Scene::sampleLight, py::const_), py::arg("pdf"), py::arg("idx"))
             .def("nVertices", &Scene::nVertices , "Function that returns the number of vertices in the scene" )
             .def("nFaces", &Scene::nFaces, "Function that returns the number of faces in the scene");
 
@@ -320,5 +366,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
           py::arg("width"), py::arg("n_samples"), py::arg("camera"), py::arg("integrator"),
           py::arg("scene"), py::arg("filename"));
     m.def("visualizePhotonMap", &visualizePhotonMap, "Function to visualize the photonmap as a .ppm image", py::arg("Scene"), py::arg("image"), py::arg("width"),
+          py::arg("height"), py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"), py::arg("filename"));
+    m.def("visualizePhotonMaps", &visualizePhotonMaps, "Function to visualize the photonmap of each light source as a .ppm image", py::arg("Scene"), py::arg("image"), py::arg("width"),
           py::arg("height"), py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"), py::arg("filename"));
 }

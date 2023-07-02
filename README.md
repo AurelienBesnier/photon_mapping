@@ -2,9 +2,6 @@
 
 minimal but extensible header only implementation of photon mapping in C++.
 
-
-Original git: [https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
-
 # How to compile:
 create and activate the conda environment:
 ```bash
@@ -40,6 +37,91 @@ make -j
 * OpenMP
 * [Embree](https://github.com/embree/embree) (>=3)
 
+## Build
+
+|CMake option|Description|
+|:--|:--|
+|BUILD_TESTS|build tests|
+
+```
+git submodule update --init
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+```
+
+## Run
+
+place obj model under `build` and run
+
+```
+./examples/main
+```
+
+## Structure
+
+|Name|Description|
+|:--|:--|
+|`include/camera.h`|ray generation from camera|
+|`include/core.h`|basic data types|
+|`include/image.h`|image|
+|`include/integrator.h`|implementation of photon mapping, path tracing(for reference)|
+|`include/light.h`|light|
+|`include/material.h`|implementation of BRDF, BTDFs|
+|`include/photon_map.h`|implementation of photon map with kdtree|
+|`include/primitive.h`|primitive|
+|`include/sampler.h`|random number generation, sampling utilities|
+|`include/scene.h`|ray-scene intersection, model loading|
+|`include/triangle.h`|point sampling on a triangle|
+
+## Gallery
+
+### Cornell box without final gathering
+
+|Parameter|Value|
+|:--|:--| 
+|number of photons|1000000|
+|number of nearest neighbors|100|
+|number of samples|100|
+|final gathering|false|
+
+![](img/without_final_gathering_100.png)
+
+### Cornell box with final gathering
+
+|Parameter|Value|
+|:--|:--| 
+|number of photons|1000000|
+|number of nearest neighbors|100|
+|number of samples|100|
+|final gathering|true|
+
+![](img/final_gathering_100.png)
+
+### Cornell box with mirror spheres
+
+|Parameter|Value|
+|:--|:--| 
+|number of photons|1000000|
+|number of nearest neighbors|100|
+|number of photons for caustics photon map|1000000|
+|number of samples|100|
+
+![](img/pm_mirror_with_final_gathering_recursive_id.png)
+
+### Cornell box with water
+
+|Parameter|Value|
+|:--|:--| 
+|number of photons|100000|
+|number of nearest neighbors|100|
+|number of photons for caustics photon map|10000000|
+|number of samples|256|
+
+![](img/cornellbox-water_pm.png)
+
+This model is available under `models/`
 
 ## Externals
 

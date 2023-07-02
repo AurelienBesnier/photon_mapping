@@ -1,0 +1,457 @@
+
+# definition des materiaux
+
+void metal cloison_Alu 
+0 
+0 
+5
+0.62 0.62 0.62 0.3 1
+
+void plastic cloison_Plastique 
+0 
+0 
+5
+0.76 0.76 0.76 0.1 1
+
+void plastic mat_table
+0 
+0 
+5
+0.03 0.03 0.03 0 1
+
+void plastic carrelage 
+0 
+0 
+5
+0.29 0.29 0.29 0 1
+
+void metal mirroir
+0
+0
+5
+0.9 0.9 0.9 0.9 1
+
+void metal mat_Centre
+0
+0
+5
+0.29 0.29 0.29 0.3 1
+  
+void light lumiere400W
+0
+0
+3
+0.2 0.2 0.2
+
+void light lumiere1000W
+0
+0
+3
+0.5 0.5 0.5
+
+void plastic EcranTotal
+0
+0
+5
+0 0 0 0 0
+
+
+#definition de l'eclairage de la zone 1
+
+EcranTotal polygon CAvantZ1
+0
+0
+27
+72.5 18.7 209
+72.5 18.4195 208.229
+72.5 17.7092 207.818
+72.5 16.9011 207.96
+72.5 16.3729 208.588
+72.5 16.3716 209.408
+72.5 16.8978 210.038
+72.5 17.7054 210.182
+72.5 18.4171 209.774
+
+lumiere400W cylinder lampeZ1
+0
+0
+7
+72.5 17.5 209.0
+72.5 17.5 209.0
+.1
+
+EcranTotal polygon CArriereZ1
+0
+0
+27
+72.5 18.7 209
+72.5 18.4195 209.771
+72.5 17.7092 210.182
+72.5 16.9011 210.04
+72.5 16.3729 209.412
+72.5 16.3716 208.592
+72.5 16.8978 207.962
+72.5 17.7054 207.818
+72.5 18.4171 208.226
+
+#Definition des reflecteurs de la zone 1
+
+mirroir polygon reflecteur_gauche1
+0
+0
+12
+64 17.5 213.9
+81 17.5 213.9
+81 15 216.5
+64 15 216.5
+
+mirroir polygon reflecteur_droite1
+0
+0
+12
+64 20 216.5
+81 20 216.5
+81 17.5 213.9
+64 17.5 213.9
+
+
+#definition de l'eclairage de la zone 2
+
+EcranTotal polygon CAvantZ2
+0
+0
+27
+72.5 167.7 209
+72.5 167.42 208.229
+72.5 166.709 207.818
+72.5 165.901 207.96
+72.5 165.373 208.588
+72.5 165.372 209.408
+72.5 165.898 210.038
+72.5 166.705 210.182
+72.5 167.417 209.774
+
+lumiere400W cylinder lampeZ2
+0
+0
+7
+72.5 166.5 209.0
+72.5 166.5 209.0
+.1
+
+EcranTotal polygon CArriereZ2
+0
+0
+27
+72.5 167.7 209
+72.5 167.42 209.771
+72.5 166.709 210.182
+72.5 165.901 210.04
+72.5 165.373 209.412
+72.5 165.372 208.592
+72.5 165.898 207.962
+72.5 166.705 207.818
+72.5 167.417 208.226
+
+#Definition des reflecteurs de la zone 2
+
+mirroir polygon reflecteur_gauche2
+0
+0
+12
+64 166.5 213.9
+81 166.5 213.9
+81 164 216.5
+64 164 216.5
+
+mirroir polygon reflecteur_droite2
+0
+0
+12
+64 169 216.5
+81 169 216.5
+81 166.5 213.9
+64 166.5 213.9
+
+
+#definition de l'eclairage de la zone 3
+
+EcranTotal polygon CAvantZ3
+0
+0
+27
+167.5 18.7 209
+167.5 18.4195 208.229
+167.5 17.7092 207.818
+167.5 16.9011 207.96
+167.5 16.3729 208.588
+167.5 16.3716 209.408
+167.5 16.8978 210.038
+167.5 17.7054 210.182
+167.5 18.4171 209.774
+
+lumiere400W cylinder lampeZ3
+0
+0
+7
+167.5 17.5 209.0
+167.5 17.5 209.0
+.1
+
+EcranTotal polygon CArriereZ3
+0
+0
+27
+167.5 18.7 209
+167.5 18.4195 209.771
+167.5 17.7092 210.182
+167.5 16.9011 210.04
+167.5 16.3729 209.412
+167.5 16.3716 208.592
+167.5 16.8978 207.962
+167.5 17.7054 207.818
+167.5 18.4171 208.226
+
+#Definition des reflecteurs de la zone 3
+
+mirroir polygon reflecteur_gauche3
+0
+0
+12
+159 17.5 213.9
+176 17.5 213.9
+176 15 216.5
+159 15 216.5
+
+mirroir polygon reflecteur_droite3
+0
+0
+12
+159 20 216.5
+176 20 216.5
+176 17.5 213.9
+159 17.5 213.9
+
+
+#definition de l'eclairage de la zone 4
+
+EcranTotal polygon CAvantZ4
+0
+0
+27
+167.5 167.7 209
+167.5 167.42 208.229
+167.5 166.709 207.818
+167.5 165.901 207.96
+167.5 165.373 208.588
+167.5 165.372 209.408
+167.5 165.898 210.038
+167.5 166.705 210.182
+167.5 167.417 209.774
+
+lumiere400W cylinder lampeZ4
+0
+0
+7
+167.5 166.5 209.0
+167.5 166.5 209.0
+.1
+
+EcranTotal polygon CArriereZ4
+0
+0
+27
+167.5 167.7 209
+167.5 167.42 209.771
+167.5 166.709 210.182
+167.5 165.901 210.04
+167.5 165.373 209.412
+167.5 165.372 208.592
+167.5 165.898 207.962
+167.5 166.705 207.818
+167.5 167.417 208.226
+
+#Definition des reflecteurs de la zone 4
+
+mirroir polygon reflecteur_gauche4
+0
+0
+12
+159 166.5 213.9
+176 166.5 213.9
+176 164 216.5
+159 164 216.5
+
+mirroir polygon reflecteur_droite4
+0
+0
+12
+159 169 216.5
+176 169 216.5
+176 166.5 213.9
+159 166.5 213.9
+
+
+#Plafond
+
+mirroir polygon plafond1 
+0 
+0 
+12  
+5.5 4.5 216.5
+5.5 179.5 216.5
+81 179.5 216.5
+81 4.5 216.5
+
+mirroir polygon plafond2 
+0 
+0 
+12  
+81 135.5 216.5
+81 179.5 216.5
+159 179.5 216.5
+159 135.5 216.5
+
+mirroir polygon plafond3 
+0 
+0 
+12  
+159 179.5 216.5
+234.5 179.5 216.5
+234.5 4.5 216.5
+159 4.5 216.5
+
+mirroir polygon plafond4 
+0 
+0 
+12  
+81 4.5 216.5
+81 48.5 216.5
+159 48.5 216.5
+159 4.5 216.5
+
+mat_Centre polygon plafond_Centre 
+0 
+0 
+12  
+81 48.5 216.5
+81 135.5 216.5
+159 135.5 216.5
+159 48.5 216.5
+
+#Le caisson#
+
+mirroir polygon caisson_gauche
+0 
+0
+12  
+5.5 4.5 202  
+5.5 4.5 216.5 
+234.5 4.5 216.5
+234.5 4.5 202
+
+mirroir polygon caisson_droit
+0 
+0 
+12  
+5.5 179.5 202
+234.5 179.5 202
+234.5 179.5 216.5
+5.5 179.5 216.5
+ 
+mirroir polygon caisson_arriere
+0 
+0 
+12  
+5.5 4.5 202  
+5.5 179.5 202
+5.5 179.5 216.5
+5.5 4.5 216.5
+  
+mirroir polygon caisson_avant
+0 
+0 
+12  
+234.5 4.5 202
+234.5 4.5 216.5
+234.5 179.5 216.5
+234.5 179.5 202
+
+#Liaison_Murs_Caisson#
+
+mirroir polygon couronne_gauche
+0
+0
+12
+5.5 0 202
+5.5 4.5 202
+234.5 4.5 202
+234.5 0 202
+
+mirroir polygon couronne_droite
+0
+0
+12
+5.5 179.5 202
+5.5 184 202
+234.5 184 202
+234.5 179.5 202
+
+mirroir polygon couronne_avant
+0
+0
+12
+0 0 202
+0 184 202
+5.5 184 202
+5.5 0 202   
+
+mirroir polygon couronne_arriere
+0
+0
+12
+240 0 202
+234.5 0 202
+234.5 184 202
+240 184 202   
+
+
+
+#Les_murs#
+
+cloison_Alu polygon mur_gauche
+0 
+0
+12  
+0 0 0  
+0 0 202 
+240 0 202
+240 0 0 
+
+cloison_Alu polygon mur_droit
+0 
+0 
+12  
+0 184 0  
+240 184 0 
+240 184 202
+0 184 202 
+
+cloison_Plastique polygon mur_arriere
+0 
+0 
+12  
+0 0 0  
+0 184 0
+0 184 202
+0 0 202 
+
+cloison_Plastique polygon mur_avant
+0 
+0 
+12  
+240 0 0  
+240 0 202 
+240 184 202 
+240 184 0 
+
