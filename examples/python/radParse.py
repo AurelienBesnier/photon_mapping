@@ -9,7 +9,6 @@ def denormalize(f: float) -> int:
 
 
 def read_rad(file: str):
-    Viewer.start()
     with open(file, 'r') as f:
         lines = f.readlines()
         materials = {}
@@ -26,6 +25,7 @@ def read_rad(file: str):
                 li = lines[i].split(" ")
                 type = li[1]
                 name = li[2].strip("\n")
+                print("material name: "+str(name))
                 if materials.get(name) is None:
                     if type == "plastic":
                         li = lines[i + 4].split(" ")
@@ -95,6 +95,7 @@ def read_rad(file: str):
         for sh, val in shapes.items():
             mat_key = val["material"]
             mat = materials[mat_key]
+            print("material: "+str(mat))
             vert = val["vertices"]
             s = Shape()
             nbCoords = int(val["size"] / 3)
@@ -162,7 +163,7 @@ def read_rad(file: str):
 
 
 if __name__ == "__main__":
-    # read_rad("testChamber.rad")
+    read_rad("testChamber.rad")
     # read_rad("simple.rad") encoding problem
-    read_rad("Chambre_0.rad")
+    # read_rad("Chambre_0.rad")
     # read_rad("Tout.rad")
