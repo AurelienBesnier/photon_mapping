@@ -2,14 +2,14 @@
 #include "image.h"
 
 int main() {
-  const int width = 512;
-  const int height = 512;
+  const unsigned width = 512;
+  const unsigned height = 512;
 
   Camera camera(Vec3fZero, Vec3f(0, 0, -1));
 
   Image image(width, height);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (unsigned i = 0; i < height; ++i) {
+    for (unsigned j = 0; j < width; ++j) {
       const float u = (2.0f * j - width) / height;
       const float v = (2.0f * i - height) / height;
 

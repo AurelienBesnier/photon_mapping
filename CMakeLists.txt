@@ -3,8 +3,8 @@ project(photon_mapping LANGUAGES CXX)
 
 include_directories("${CMAKE_SOURCE_DIR}/src/cpp/include/")
 
-option(BUILD_TESTS "build tests" OFF)
-option(BUILD_CXX_EXAMPLE "build c++ example" OFF)
+option(BUILD_TESTS "build tests" ON)
+option(BUILD_CXX_EXAMPLE "build c++ example" ON)
 set(CMAKE_IGNORE_PATH "/usr/local")
 # --- Build setup
 
@@ -40,7 +40,7 @@ if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
 endif()
 
-# Embree3
+# Embree4
 find_package(embree 3.0 REQUIRED)
 if (${embree_FOUND})
   message(STATUS "Found Embree")
@@ -51,7 +51,9 @@ endif()
 # externals
 add_subdirectory("externals")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp")
+add_subdirectory("src/cpp/include")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp -O3")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
@@ -71,6 +73,7 @@ target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX)
 target_link_libraries(pm INTERFACE tinyobjloader)
 target_link_libraries(pm INTERFACE embree)
 target_link_libraries(pm INTERFACE ${Boost_LIBRARIES})
+target_link_libraries(pm INTERFACE photon_map primitive triangle image)
 
 # examples
 if(BUILD_CXX_EXAMPLE)
@@ -82,8 +85,7 @@ add_subdirectory("src/python/")
 
 # tests
 if(BUILD_TESTS)
-    add_subdirectory(src/cpp/test)
-    add_subdirectory(tests)
+    add_subdirectory("src/cpp/test")
 endif()
 
 # building lib

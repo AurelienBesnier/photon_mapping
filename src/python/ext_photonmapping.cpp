@@ -1,4 +1,4 @@
-//#define __OUTPUT__
+#define __OUTPUT__
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
@@ -177,7 +177,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def(py::init<Vec3<float>&, Vec3<float>&, Vec3<float>&, unsigned int>())
             .def_readwrite("throughput", &Photon::throughput)
             .def_readwrite("position", &Photon::position)
-            .def_readwrite("triId", &Photon::triId)
+            .def_readonly("triId", &Photon::triId)
             .def_readwrite("wi", &Photon::wi);
 
     py::class_<KdTree<Photon>>(m, "KdTree")
@@ -216,8 +216,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def(py::init<int, int, float, int, int, int>())
             .def("build", &PhotonMapping::build, py::arg("scene"), py::arg("sampler"))
             .def("integrate", &PhotonMapping::integrate, py::arg("ray_in"), py::arg("scene"), py::arg("sampler"))
-            .def("getPhotonMap", &PhotonMapping::getPhotonMapGlobal, "Returns the photon map")
-            .def("getPhotonMapC", &PhotonMapping::getPhotonMapCaustics, "Returns the caustics photon map");
+            .def("getPhotonMap", &PhotonMapping::getPhotonMapGlobal, "Returns the photon map", py::return_value_policy::reference)
+            .def("getPhotonMapC", &PhotonMapping::getPhotonMapCaustics, "Returns the caustics photon map",py::return_value_policy::reference);
 
     //Lights
     py::enum_<LightType>(m, "LightType")
@@ -257,8 +257,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def(py::init<>())
             .def(py::init<uint64_t>())
             .def("clone", &UniformSampler::clone, "Function to clone the sampler")
-            .def("getNext1D", &UniformSampler::getNext1D, py::return_value_policy::copy)
-            .def("getNext2D", &UniformSampler::getNext2D, py::return_value_policy::copy);
+            .def("getNext1D", &UniformSampler::getNext1D, py::return_value_policy::reference)
+            .def("getNext2D", &UniformSampler::getNext2D, py::return_value_policy::reference);
 
     m.def("sampleCosineHemisphere", &sampleCosineHemisphere, py::arg("uv"), py::arg("pdf"));
 
@@ -359,8 +359,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
     //IntersectInfo
     py::class_<IntersectInfo>(m, "IntersectInfo")
             .def(py::init<>())
-            .def_readwrite("t", &IntersectInfo::t)
-            .def_readwrite("surfaceInfo", &IntersectInfo::surfaceInfo);
+            .def_readonly("t", &IntersectInfo::t)
+            .def_readonly("surfaceInfo", &IntersectInfo::surfaceInfo);
 
     m.def("Render",&Render, "Function to render the scene to an image from the camera perspective", py::arg("sampler"), py::arg("image"), py::arg("height"),
           py::arg("width"), py::arg("n_samples"), py::arg("camera"), py::arg("integrator"),

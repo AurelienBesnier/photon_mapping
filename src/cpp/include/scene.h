@@ -19,7 +19,7 @@ boost::shared_ptr<BxDF> createDefaultBxDF() {
 }
 
 // create BxDF from tinyobj material
-boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material, float reflectance = 0.0, float transmittance = 0.0) {
+boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material, float reflectance = 0.0f, float transmittance = 0.0f) {
     const Vec3f kd =
             Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
     const Vec3f ks =
@@ -509,13 +509,14 @@ public:
     }
 
     boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
-        unsigned int lightIdx = lights.size() * sampler.getNext1D();
+        unsigned lightIdx = lights.size() * sampler.getNext1D();
         if (lightIdx == lights.size()) lightIdx--;
         pdf = 1.0f / (lights.size());
         return lights[lightIdx];
     }
+
     boost::shared_ptr<Light> sampleLight(float &pdf, int idx) const {
-        unsigned int lightIdx = idx;
+        unsigned lightIdx = idx;
         if (lightIdx == lights.size()) lightIdx--;
         pdf = 1.0f / (lights.size());
         return lights[lightIdx];

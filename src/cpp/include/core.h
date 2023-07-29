@@ -1,6 +1,7 @@
 #ifndef _CORE_H
 #define _CORE_H
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <limits>
 
@@ -21,8 +22,7 @@ constexpr float RAY_EPS = 1e-5f;
 inline float rad2deg(float rad) { return 180.0f * rad / PI; }
 inline float deg2rad(float deg) { return deg / 180.0f * PI; }
 
-template <typename T>
-struct Vec2 {
+template <typename T> struct Vec2 {
   T v[2];
 
   Vec2() { v[0] = v[1] = 0; }
@@ -33,23 +33,23 @@ struct Vec2 {
   }
 
   T operator[](int i) const { return v[i]; }
-  T& operator[](int i) { return v[i]; }
+  T &operator[](int i) { return v[i]; }
 
   Vec2 operator-() const { return Vec2(-v[0], -v[1]); }
 
-  Vec2& operator+=(const Vec2& v) {
+  Vec2 &operator+=(const Vec2 &v) {
     for (int i = 0; i < 2; ++i) {
       this->v[i] += v[i];
     }
     return *this;
   }
-  Vec2& operator*=(const Vec2& v) {
+  Vec2 &operator*=(const Vec2 &v) {
     for (int i = 0; i < 2; ++i) {
       this->v[i] *= v[i];
     }
     return *this;
   }
-  Vec2& operator/=(const Vec2& v) {
+  Vec2 &operator/=(const Vec2 &v) {
     for (int i = 0; i < 2; ++i) {
       this->v[i] /= v[i];
     }
@@ -58,61 +58,52 @@ struct Vec2 {
 };
 
 template <typename T>
-inline Vec2<T> operator+(const Vec2<T>& v1, const Vec2<T>& v2) {
+inline Vec2<T> operator+(const Vec2<T> &v1, const Vec2<T> &v2) {
   return Vec2<T>(v1[0] + v2[0], v1[1] + v2[1]);
 }
-template <typename T>
-inline Vec2<T> operator+(const Vec2<T>& v1, float k) {
+template <typename T> inline Vec2<T> operator+(const Vec2<T> &v1, float k) {
   return Vec2<T>(v1[0] + k, v1[1] + k);
 }
-template <typename T>
-inline Vec2<T> operator+(float k, const Vec2<T>& v2) {
+template <typename T> inline Vec2<T> operator+(float k, const Vec2<T> &v2) {
   return v2 + k;
 }
 
 template <typename T>
-inline Vec2<T> operator-(const Vec2<T>& v1, const Vec2<T>& v2) {
+inline Vec2<T> operator-(const Vec2<T> &v1, const Vec2<T> &v2) {
   return Vec2<T>(v1[0] - v2[0], v1[1] - v2[1]);
 }
-template <typename T>
-inline Vec2<T> operator-(const Vec2<T>& v1, float k) {
+template <typename T> inline Vec2<T> operator-(const Vec2<T> &v1, float k) {
   return Vec2<T>(v1[0] - k, v1[1] - k);
 }
-template <typename T>
-inline Vec2<T> operator-(float k, const Vec2<T>& v2) {
+template <typename T> inline Vec2<T> operator-(float k, const Vec2<T> &v2) {
   return Vec2<T>(k - v2[0], k - v2[1]);
 }
 
 template <typename T>
-inline Vec2<T> operator*(const Vec2<T>& v1, const Vec2<T>& v2) {
+inline Vec2<T> operator*(const Vec2<T> &v1, const Vec2<T> &v2) {
   return Vec2<T>(v1[0] * v2[0], v1[1] * v2[1]);
 }
-template <typename T>
-inline Vec2<T> operator*(const Vec2<T>& v1, float k) {
+template <typename T> inline Vec2<T> operator*(const Vec2<T> &v1, float k) {
   return Vec2<T>(v1[0] * k, v1[1] * k);
 }
-template <typename T>
-inline Vec2<T> operator*(float k, const Vec2<T>& v2) {
+template <typename T> inline Vec2<T> operator*(float k, const Vec2<T> &v2) {
   return v2 * k;
 }
 
 template <typename T>
-inline Vec2<T> operator/(const Vec2<T>& v1, const Vec2<T>& v2) {
+inline Vec2<T> operator/(const Vec2<T> &v1, const Vec2<T> &v2) {
   return Vec2<T>(v1[0] / v2[0], v1[1] / v2[1]);
 }
-template <typename T>
-inline Vec2<T> operator/(const Vec2<T>& v1, float k) {
+template <typename T> inline Vec2<T> operator/(const Vec2<T> &v1, float k) {
   return Vec2<T>(v1[0] / k, v1[1] / k);
 }
-template <typename T>
-inline Vec2<T> operator/(float k, const Vec2<T>& v2) {
+template <typename T> inline Vec2<T> operator/(float k, const Vec2<T> &v2) {
   return Vec2<T>(k / v2[0], k / v2[1]);
 }
 
 using Vec2f = Vec2<float>;
 
-template <typename T>
-struct Vec3 {
+template <typename T> struct Vec3 {
   T v[3];
 
   // implement Point
@@ -127,125 +118,114 @@ struct Vec3 {
   }
 
   T operator[](int i) const { return v[i]; }
-  T& operator[](int i) { return v[i]; }
+  T &operator[](int i) { return v[i]; }
 
   Vec3 operator-() { return Vec3(-v[0], -v[1], -v[2]); }
 
-  Vec3& operator+=(const Vec3& v) {
+  Vec3 &operator+=(const Vec3 &v) {
     for (int i = 0; i < 3; ++i) {
       this->v[i] += v[i];
     }
     return *this;
   }
-  Vec3& operator*=(const Vec3& v) {
+  Vec3 &operator*=(const Vec3 &v) {
     for (int i = 0; i < 3; ++i) {
       this->v[i] *= v[i];
     }
     return *this;
   }
-  Vec3& operator/=(const Vec3& v) {
+  Vec3 &operator/=(const Vec3 &v) {
     for (int i = 0; i < 3; ++i) {
       this->v[i] /= v[i];
     }
     return *this;
   }
 
-  bool operator==(const Vec3& v) const
-  {
+  bool operator==(const Vec3 &v) const {
     return (this->v[0] == v[0] && this->v[1] == v[1] && this->v[2] == v[2]);
   }
 };
 
 template <typename T>
-inline Vec3<T> operator+(const Vec3<T>& v1, const Vec3<T>& v2) {
+inline Vec3<T> operator+(const Vec3<T> &v1, const Vec3<T> &v2) {
   return Vec3<T>(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]);
 }
-template <typename T>
-inline Vec3<T> operator+(const Vec3<T>& v1, float k) {
+template <typename T> inline Vec3<T> operator+(const Vec3<T> &v1, float k) {
   return Vec3<T>(v1[0] + k, v1[1] + k, v1[2] + k);
 }
-template <typename T>
-inline Vec3<T> operator+(float k, const Vec3<T>& v2) {
+template <typename T> inline Vec3<T> operator+(float k, const Vec3<T> &v2) {
   return v2 + k;
 }
 
 template <typename T>
-inline Vec3<T> operator-(const Vec3<T>& v1, const Vec3<T>& v2) {
+inline Vec3<T> operator-(const Vec3<T> &v1, const Vec3<T> &v2) {
   return Vec3<T>(v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]);
 }
-template <typename T>
-inline Vec3<T> operator-(const Vec3<T>& v1, float k) {
+template <typename T> inline Vec3<T> operator-(const Vec3<T> &v1, float k) {
   return Vec3<T>(v1[0] - k, v1[1] - k, v1[2] - k);
 }
-template <typename T>
-inline Vec3<T> operator-(float k, const Vec3<T>& v2) {
+template <typename T> inline Vec3<T> operator-(float k, const Vec3<T> &v2) {
   return Vec3<T>(k - v2[0], k - v2[1], k - v2[2]);
 }
 
 template <typename T>
-inline Vec3<T> operator*(const Vec3<T>& v1, const Vec3<T>& v2) {
+inline Vec3<T> operator*(const Vec3<T> &v1, const Vec3<T> &v2) {
   return Vec3<T>(v1[0] * v2[0], v1[1] * v2[1], v1[2] * v2[2]);
 }
-template <typename T>
-inline Vec3<T> operator*(const Vec3<T>& v1, float k) {
+template <typename T> inline Vec3<T> operator*(const Vec3<T> &v1, float k) {
   return Vec3<T>(v1[0] * k, v1[1] * k, v1[2] * k);
 }
-template <typename T>
-inline Vec3<T> operator*(float k, const Vec3<T>& v2) {
+template <typename T> inline Vec3<T> operator*(float k, const Vec3<T> &v2) {
   return v2 * k;
 }
 
 template <typename T>
-inline Vec3<T> operator/(const Vec3<T>& v1, const Vec3<T>& v2) {
+inline Vec3<T> operator/(const Vec3<T> &v1, const Vec3<T> &v2) {
   return Vec3<T>(v1[0] / v2[0], v1[1] / v2[1], v1[2] / v2[2]);
 }
-template <typename T>
-inline Vec3<T> operator/(const Vec3<T>& v1, float k) {
+template <typename T> inline Vec3<T> operator/(const Vec3<T> &v1, float k) {
   return Vec3<T>(v1[0] / k, v1[1] / k, v1[2] / k);
 }
-template <typename T>
-inline Vec3<T> operator/(float k, const Vec3<T>& v2) {
+template <typename T> inline Vec3<T> operator/(float k, const Vec3<T> &v2) {
   return Vec3<T>(k / v2[0], k / v2[1], k / v2[2]);
 }
 
-template <typename T>
-inline T dot(const Vec3<T>& v1, const Vec3<T>& v2) {
+template <typename T> inline T dot(const Vec3<T> &v1, const Vec3<T> &v2) {
   return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
-template <typename T>
-inline Vec3<T> cross(Vec3<T> v1, Vec3<T> v2) {
+template <typename T> inline Vec3<T> cross(Vec3<T> v1, Vec3<T> v2) {
   return Vec3<T>(v1[1] * v2[2] - v1[2] * v2[1], v1[2] * v2[0] - v1[0] * v2[2],
                  v1[0] * v2[1] - v1[1] * v2[0]);
 }
 
-
 using Vec3f = Vec3<float>;
 using Vec3ui = Vec3<uint32_t>;
-const static Vec3<float> Vec3fZero = Vec3f(0);
+using Vec3d = Vec3<double>;
+const static Vec3f Vec3fZero = Vec3f(0);
+const static Vec3d Vec3dZero = Vec3d(0);
 
 inline float length(Vec3f v) { return std::sqrt(dot(v, v)); }
-inline float length2(const Vec3f& v) { return dot(v, v); }
+inline float length2(const Vec3f &v) { return dot(v, v); }
 inline Vec3f normalize(Vec3f v) { return v / length(v); }
 
-inline void orthonormalBasis(Vec3f& n, Vec3f& t, Vec3f& b) {
-    if (std::abs(n[1]) < 0.9f) {
-        t = normalize(cross(n, Vec3f(0, 1, 0)));
-    } else {
-        t = normalize(cross(n, Vec3f(0, 0, -1)));
-    }
-    b = normalize(cross(t, n));
+inline void orthonormalBasis(Vec3f &n, Vec3f &t, Vec3f &b) {
+  if (std::abs(n[1]) < 0.9f) {
+    t = normalize(cross(n, Vec3f(0, 1, 0)));
+  } else {
+    t = normalize(cross(n, Vec3f(0, 0, -1)));
+  }
+  b = normalize(cross(t, n));
 }
 
 // transform direction from world to local
-inline Vec3f worldToLocal(const Vec3f& v, const Vec3f& lx, const Vec3f& ly,
-                          const Vec3f& lz) {
+inline Vec3f worldToLocal(const Vec3f &v, const Vec3f &lx, const Vec3f &ly,
+                          const Vec3f &lz) {
   return {dot(v, lx), dot(v, ly), dot(v, lz)};
 }
 
 // transform direction from local to world
-inline Vec3f localToWorld(Vec3f v, Vec3f lx, Vec3f ly,
-                          Vec3f lz) {
+inline Vec3f localToWorld(Vec3f v, Vec3f lx, Vec3f ly, Vec3f lz) {
   Vec3f ret;
   for (int i = 0; i < 3; ++i) {
     ret[i] = v[0] * lx[i] + v[1] * ly[i] + v[2] * lz[i];
@@ -256,7 +236,7 @@ inline Vec3f localToWorld(Vec3f v, Vec3f lx, Vec3f ly,
 // compute cartesian coordinates from spherical coordinates
 inline Vec3f sphericalToCartesian(float theta, float phi) {
   return {std::cos(phi) * std::sin(theta), std::cos(theta),
-               std::sin(phi) * std::sin(theta)};
+          std::sin(phi) * std::sin(theta)};
 }
 
 struct Ray {
@@ -266,8 +246,7 @@ struct Ray {
   mutable float tmax = std::numeric_limits<float>::max();
 
   Ray() = default;
-  Ray(Vec3f origin, Vec3f direction)
-      : origin(origin), direction(direction) {}
+  Ray(Vec3f origin, Vec3f direction) : origin(origin), direction(direction) {}
 
   Vec3f operator()(float t) const { return origin + t * direction; }
 };
@@ -276,8 +255,8 @@ struct SurfaceInfo {
   Vec3f position;
   Vec3f geometricNormal;
   Vec3f shadingNormal;
-  Vec3f dpdu;  // tangent vector
-  Vec3f dpdv;  // bitangent vector
+  Vec3f dpdu; // tangent vector
+  Vec3f dpdv; // bitangent vector
   Vec2f texcoords;
   Vec2f barycentric;
 };
@@ -286,9 +265,9 @@ struct SurfaceInfo {
 class Primitive;
 
 struct IntersectInfo {
-  float t{};  // distance to the hit point
+  float t{}; // distance to the hit point
   SurfaceInfo surfaceInfo;
-  const Primitive* hitPrimitive{};
+  const Primitive *hitPrimitive{};
 };
 
 #endif

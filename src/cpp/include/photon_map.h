@@ -64,56 +64,11 @@ private:
     const PointT *points;     // pointer to array of points
     int nPoints;              // number of points
 
-    void buildNode(int *indices, int n_points, int depth) {
-        if (n_points <= 0) return;
-
-        // choose separation axis
-        const int axis = depth % 3;
-
-        // sort indices by coordination in the separation axis.
-        std::sort(indices, indices + n_points, [&](const int idx1, const int idx2) {
-            return points[idx1][axis] < points[idx2][axis];
-        });
-
-        // index of middle element of indices
-        const int mid = (n_points - 1) / 2;
-
-        // add node to node array, remember index of current node(parent node)
-        const int parentIdx = nodes.size();
-        Node node;
-        node.axis = axis;
-        node.idx = indices[mid];
-        nodes.push_back(node);
-
-        // add left children to node array
-        const int leftChildIdx = nodes.size();
-        buildNode(indices, mid, depth + 1);
-
-        // set index of left child on parent node
-        // if size of nodes doesn't change, it means there is no left children
-        if (leftChildIdx == nodes.size()) {
-            nodes[parentIdx].leftChildIdx = -1;
-        } else {
-            nodes[parentIdx].leftChildIdx = leftChildIdx;
-        }
-
-        // add right children to node array
-        const int rightChildIdx = nodes.size();
-        buildNode(indices + mid + 1, n_points - mid - 1, depth + 1);
-
-        // set index of right child on parent node
-        // if size of nodes doesn't change, it means there is no right children
-        if (rightChildIdx == nodes.size()) {
-            nodes[parentIdx].rightChildIdx = -1;
-        } else {
-            nodes[parentIdx].rightChildIdx = rightChildIdx;
-        }
-    }
+    void buildNode(int *indices, int n_points, int depth);
 
     using KNNQueue = std::priority_queue<std::pair<float, int>>;
 
     template<typename PointU>
-    //requires Point<PointU>
     void searchKNearestNode(int nodeIdx, PointU &queryPoint, int k,
                             KNNQueue &queue) const {
         if (nodeIdx == -1 || nodeIdx >= nodes.size()) return;
@@ -161,17 +116,9 @@ public:
         this->nPoints = nPoints;
     }
 
-    void buildTree() {
-        // setup indices of points
-        std::vector<int> indices(nPoints);
-        std::iota(indices.begin(), indices.end(), 0);
-
-        // build tree recursively
-        buildNode(indices.data(), nPoints, 0);
-    }
+    void buildTree();
 
     template<typename PointU>
-    //requires Point<PointU>
     std::vector<int> searchKNearest(
             PointU &queryPoint, int k, float &maxDist2)
     const {
@@ -198,25 +145,16 @@ private:
 
 public:
     PhotonMap() = default;
+    virtual ~PhotonMap() = default;
 
-    const Photon &getIthPhoton(int i) const { return photons[i]; }
-    void setPhotons(std::vector<Photon> &p) {
-        this->photons = p;
-    }
+    const Photon &getIthPhoton(int i) const;
+    void setPhotons(std::vector<Photon> &p);
 
-    const size_t nPhotons() const { return photons.size(); }
+    const size_t nPhotons() const;
 
-    void build() {
-#ifdef __OUTPUT__
-        std::cout<<"[PhotonMap] photons: "<<photons.size()<<std::endl;
-#endif
-        kdtree.setPoints(photons.data(), photons.size());
-        kdtree.buildTree();
-    }
+    void build();
 
-    std::vector<int> queryKNearestPhotons(Vec3f &p, int k, float &max_dist2) const {
-        return kdtree.searchKNearest(p, k, max_dist2);
-    }
+    std::vector<int> queryKNearestPhotons(Vec3f &p, int k, float &max_dist2) const;
 };
 
 #endif

@@ -4,9 +4,9 @@
 #include <limits>
 #include <memory>
 
+#include "core.h"
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
-#include "core.h"
 
 // *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
 // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
@@ -15,7 +15,7 @@ typedef struct {
   uint64_t inc;
 } pcg32_random_t;
 
-inline uint32_t pcg32_random_r(pcg32_random_t* rng) {
+inline uint32_t pcg32_random_r(pcg32_random_t *rng) {
   uint64_t oldstate = rng->state;
   // Advance internal state
   rng->state = oldstate * 6364136223846793005ULL + (rng->inc | 1);
@@ -25,14 +25,15 @@ inline uint32_t pcg32_random_r(pcg32_random_t* rng) {
   return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }
 
-constexpr static float divider = 1.0f / std::numeric_limits<uint32_t>::max();
+constexpr static float divider =
+    1.0f / (float)std::numeric_limits<uint32_t>::max();
 
 // random number generator
 class RNG {
- private:
+private:
   pcg32_random_t state;
 
- public:
+public:
   RNG() {
     state.state = 1;
     state.inc = 1;
@@ -45,17 +46,15 @@ class RNG {
   uint64_t getSeed() const { return state.state; }
   void setSeed(uint64_t seed) { state.state = seed; }
 
-  float getNext() {
-    return pcg32_random_r(&state) * divider;
-  }
+  float getNext() { return pcg32_random_r(&state) * divider; }
 };
 
 // sampler interface
 class Sampler {
- protected:
+protected:
   RNG rng;
 
- public:
+public:
   Sampler() = default;
   virtual ~Sampler() = default;
 
@@ -71,7 +70,7 @@ class Sampler {
 
 // uniform distribution sampler
 class UniformSampler : public Sampler {
- public:
+public:
   UniformSampler() : Sampler() {}
   explicit UniformSampler(uint64_t seed) : Sampler(seed) {}
 
@@ -85,8 +84,9 @@ class UniformSampler : public Sampler {
 
 // sample direction in the hemisphere
 // its pdf is proportional to cosine
-inline Vec3f sampleCosineHemisphere(Vec2f uv, float& pdf) {
-  float theta = 0.5f * std::acos(boost::algorithm::clamp(1.0f - 2.0f * uv[0], -1.0f, 1.0f));
+inline Vec3f sampleCosineHemisphere(Vec2f uv, float &pdf) {
+  float theta = 0.5f * std::acos(boost::algorithm::clamp(1.0f - 2.0f * uv[0],
+                                                         -1.0f, 1.0f));
   float phi = PI_MUL_2 * uv[1];
   float cosTheta = std::cos(theta);
   pdf = PI_INV * cosTheta;

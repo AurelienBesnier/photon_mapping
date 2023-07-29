@@ -3,18 +3,18 @@
 #include "scene.h"
 
 int main() {
-  const int width = 512;
-  const int height = 512;
+  const unsigned width = 512;
+  const unsigned height = 512;
 
   Scene scene;
-  scene.loadModel("CornellBox-Original.obj");
+  scene.loadModel("cornell_box.obj");
   scene.build();
 
   Camera camera(Vec3f(0, 1, 7), Vec3f(0, 0, -1), 0.25f * PI);
 
   Image image(width, height);
-  for (int i = 0; i < height; ++i) {
-    for (int j = 0; j < width; ++j) {
+  for (unsigned i = 0; i < height; ++i) {
+    for (unsigned j = 0; j < width; ++j) {
       const float u = (2.0f * j - width) / height;
       const float v = (2.0f * i - height) / height;
 

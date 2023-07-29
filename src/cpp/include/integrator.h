@@ -49,65 +49,6 @@ public:
     }
 };
 
-// implementation of path tracing
-// NOTE: for reference purpose
-/*class PathTracing : public Integrator {
- private:
-  const int maxDepth;
-
- public:
-  PathTracing(int maxDepth = 100) : maxDepth(maxDepth) {}
-
-  void build(Scene& scene, Sampler& sampler) override {}
-
-  Vec3f integrate(const Ray& ray_in, Scene& scene,
-                  Sampler& sampler) const override {
-    Vec3f radiance(0);
-    Ray ray = ray_in;
-    Vec3f throughput(1, 1, 1);
-
-    for (int k = 0; k < maxDepth; ++k) {
-      IntersectInfo info;
-      if (scene.intersect(ray, info)) {
-        // russian roulette
-        if (k > 0) {
-          const float russian_roulette_prob = std::min(
-              std::max(throughput[0], std::max(throughput[1], throughput[2])),
-              1.0f);
-          if (sampler.getNext1D() >= russian_roulette_prob) {
-            break;
-          }
-          throughput /= russian_roulette_prob;
-        }
-
-        // Le
-        if (info.hitPrimitive->hasAreaLight()) {
-          radiance += throughput *
-                      info.hitPrimitive->Le(info.surfaceInfo, -ray.direction);
-        }
-
-        // sample direction by BxDF
-        Vec3f dir;
-        float pdf_dir;
-        Vec3f f = info.hitPrimitive->sampleBxDF(
-            -ray.direction, info.surfaceInfo, TransportDirection::FROM_CAMERA,
-            sampler, dir, pdf_dir);
-
-        // update throughput and ray
-        throughput *= f *
-                      cosTerm(-ray.direction, dir, info.surfaceInfo,
-                              TransportDirection::FROM_CAMERA) /
-                      pdf_dir;
-        ray = Ray(info.surfaceInfo.position, dir);
-      } else {
-        break;
-      }
-    }
-
-    return radiance;
-  }
-};*/
-
 // implementation of photon mapping
 class PhotonMapping : public Integrator {
 private:
@@ -141,14 +82,14 @@ private:
         // get nearby photons
         float max_dist2;
         const std::vector<int> photon_indices =
-                globalPhotonMap.queryKNearestPhotons(info.surfaceInfo.position,
-                                                     nEstimationGlobal, max_dist2);
+            globalPhotonMap.queryKNearestPhotons(info.surfaceInfo.position,
+                                                 nEstimationGlobal, max_dist2);
 
         Vec3f Lo;
         for (const int photon_idx: photon_indices) {
             const Photon &photon = globalPhotonMap.getIthPhoton(photon_idx);
             const Vec3f f = info.hitPrimitive->evaluateBxDF(
-                    wo, photon.wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
+                wo, photon.wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
             Lo += f * photon.throughput;
         }
         if (!photon_indices.empty()) {
@@ -163,14 +104,14 @@ private:
         // get nearby photons
         float max_dist2;
         const std::vector<int> photon_indices =
-                causticsPhotonMap.queryKNearestPhotons(info.surfaceInfo.position,
-                                                       nEstimationGlobal, max_dist2);
+            causticsPhotonMap.queryKNearestPhotons(info.surfaceInfo.position,
+                                                   nEstimationGlobal, max_dist2);
 
         Vec3f Lo;
         for (const int photon_idx: photon_indices) {
             const Photon &photon = causticsPhotonMap.getIthPhoton(photon_idx);
             const Vec3f f = info.hitPrimitive->evaluateBxDF(
-                    wo, photon.wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
+                wo, photon.wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
             Lo += f * photon.throughput;
         }
         if (!photon_indices.empty()) {
@@ -189,7 +130,7 @@ private:
         // sample light
         float pdf_choose_light;
         const boost::shared_ptr<Light> light =
-                scene.sampleLight(sampler, pdf_choose_light);
+            scene.sampleLight(sampler, pdf_choose_light);
 
         // sample point on light
         float pdf_pos_light;
@@ -199,7 +140,7 @@ private:
         Vec3f wi = normalize(light_surf.position - info.surfaceInfo.position);
         const float r = length(light_surf.position - info.surfaceInfo.position);
         const float pdf_dir =
-                pdf_pos_light * r * r / std::abs(dot(-wi, light_surf.shadingNormal));
+            pdf_pos_light * r * r / std::abs(dot(-wi, light_surf.shadingNormal));
 
         // create shadow ray
         Ray ray_shadow(info.surfaceInfo.position, wi);
@@ -210,7 +151,7 @@ private:
         if (!scene.intersect(ray_shadow, info_shadow)) {
             const Vec3f Le = light->Le(light_surf, -wi);
             const Vec3f f = info.hitPrimitive->evaluateBxDF(
-                    wo, wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
+                wo, wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
             const float cos = std::abs(dot(wi, info.surfaceInfo.shadingNormal));
             Ld = f * cos * Le / (pdf_choose_light * pdf_dir);
         }
@@ -231,8 +172,8 @@ private:
         Vec3f dir;
         float pdf_dir;
         const Vec3f f = info.hitPrimitive->sampleBxDF(
-                wo, info.surfaceInfo, TransportDirection::FROM_CAMERA, sampler, dir,
-                pdf_dir);
+            wo, info.surfaceInfo, TransportDirection::FROM_CAMERA, sampler, dir,
+            pdf_dir);
         const float cos = std::abs(dot(info.surfaceInfo.shadingNormal, dir));
 
         // trace final gathering ray
@@ -247,12 +188,12 @@ private:
                       computeRadianceWithPhotonMap(-ray_fg.direction, info_fg) /
                       pdf_dir;
             }
-                // when hitting specular, recursively call this function
-                // NOTE: to include the path like LSDSDE
+            // when hitting specular, recursively call this function
+            // NOTE: to include the path like LSDSDE
             else if (bxdf_type == BxDFType::SPECULAR) {
                 Li += f * cos *
                       computeIndirectIlluminationRecursive(
-                              scene, -ray_fg.direction, info_fg, sampler, depth + 1) /
+                          scene, -ray_fg.direction, info_fg, sampler, depth + 1) /
                       pdf_dir;
             }
         }
@@ -273,7 +214,7 @@ private:
         // sample light
         float light_choose_pdf;
         boost::shared_ptr<Light> light =
-                scene.sampleLight(light_choose_pdf, idx);
+            scene.sampleLight(light_choose_pdf, idx);
 
         // sample point on light
         float light_pos_pdf;
@@ -300,7 +241,7 @@ private:
         // sample light
         float light_choose_pdf;
         boost::shared_ptr<Light> light =
-                scene.sampleLight(sampler, light_choose_pdf);
+            scene.sampleLight(sampler, light_choose_pdf);
 
         // sample point on light
         float light_pos_pdf;
@@ -309,7 +250,7 @@ private:
         // sample direction on light
         float light_dir_pdf;
         Vec3f dir =
-                light->sampleDirection(light_surf, sampler, light_dir_pdf);
+            light->sampleDirection(light_surf, sampler, light_dir_pdf);
 
         // spawn ray
         Ray ray(light_surf.position, dir);
@@ -343,47 +284,47 @@ private:
                 } else {
                     // compute direct illumination by explicit light sampling
                     const Vec3f Ld =
-                            computeDirectIllumination(scene, -ray.direction, info, sampler);
+                        computeDirectIllumination(scene, -ray.direction, info, sampler);
 
                     // compute caustics illumination with caustics photon map
                     const Vec3f Lc = computeCausticsWithPhotonMap(-ray.direction, info);
 
                     // compute indirect illumination with final gathering
                     const Vec3f Li =
-                            computeIndirectIllumination(scene, -ray.direction, info, sampler);
+                        computeIndirectIllumination(scene, -ray.direction, info, sampler);
 
                     return (Ld + Lc + Li);
                 }
             }
-                // if hitting specular surface, generate next ray and continue
-                // raytracing
+            // if hitting specular surface, generate next ray and continue
+            // raytracing
             else if (bxdf_type == BxDFType::SPECULAR) {
                 if (depth >= 3) {
                     // sample direction by BxDF
                     Vec3f dir;
                     float pdf_dir;
                     const Vec3f f = info.hitPrimitive->sampleBxDF(
-                            -ray.direction, info.surfaceInfo, TransportDirection::FROM_CAMERA,
-                            sampler, dir, pdf_dir);
+                        -ray.direction, info.surfaceInfo, TransportDirection::FROM_CAMERA,
+                        sampler, dir, pdf_dir);
 
                     // recursively raytrace
                     Ray next_ray(info.surfaceInfo.position, dir);
                     const Vec3f throughput =
-                            f *
-                            cosTerm(-ray.direction, dir, info.surfaceInfo,
-                                    TransportDirection::FROM_CAMERA) /
-                            pdf_dir;
+                        f *
+                        cosTerm(-ray.direction, dir, info.surfaceInfo,
+                                TransportDirection::FROM_CAMERA) /
+                        pdf_dir;
 
                     return throughput *
                            integrateRecursive(next_ray, scene, sampler, depth + 1);
                 }
-                    // sample all direction at shallow depth
-                    // NOTE: to prevent noise at fresnel reflection
+                // sample all direction at shallow depth
+                // NOTE: to prevent noise at fresnel reflection
                 else {
                     // sample all direction
                     const std::vector<DirectionPair> dir_pairs =
-                            info.hitPrimitive->sampleAllBxDF(-ray.direction, info.surfaceInfo,
-                                                             TransportDirection::FROM_CAMERA);
+                        info.hitPrimitive->sampleAllBxDF(-ray.direction, info.surfaceInfo,
+                                                         TransportDirection::FROM_CAMERA);
 
                     // recursively raytrace
                     Vec3f Lo;
@@ -393,7 +334,7 @@ private:
 
                         Ray next_ray(info.surfaceInfo.position, dir);
                         const Vec3f throughput =
-                                f * std::abs(dot(dir, info.surfaceInfo.shadingNormal));
+                            f * std::abs(dot(dir, info.surfaceInfo.shadingNormal));
 
                         Lo += throughput *
                               integrateRecursive(next_ray, scene, sampler, depth + 1);
@@ -414,12 +355,12 @@ public:
     PhotonMapping(int nPhotonsGlobal, int nEstimationGlobal,
                   float nPhotonsCausticsMultiplier, int nEstimationCaustics,
                   int strictCalcDepth, int maxDepth)
-            : nPhotonsGlobal(nPhotonsGlobal),
-              nEstimationGlobal(nEstimationGlobal),
-              nPhotonsCaustics(nPhotonsGlobal * nPhotonsCausticsMultiplier),
-              nEstimationCaustics(nEstimationCaustics),
-              finalGatheringDepth(strictCalcDepth),
-              maxDepth(maxDepth) {}
+        : nPhotonsGlobal(nPhotonsGlobal),
+        nEstimationGlobal(nEstimationGlobal),
+        nPhotonsCaustics(nPhotonsGlobal * nPhotonsCausticsMultiplier),
+        nEstimationCaustics(nEstimationCaustics),
+        finalGatheringDepth(strictCalcDepth),
+        maxDepth(maxDepth) {}
 
     PhotonMap getPhotonMapGlobal() const { return globalPhotonMap; }
 
@@ -444,8 +385,8 @@ public:
         lightsPhotonMap.resize(scene.lights.size());
         lightsCausticsPhotonMap.resize(scene.lights.size());
 
-        // build global photon map
-        // photon tracing
+// build global photon map
+// photon tracing
 #ifdef __OUTPUT__
         std::cout<<"[PhotonMapping] tracing photons to build global photon map"<<std::endl;
 #endif
@@ -497,8 +438,8 @@ public:
                         // russian roulette
                         if (k > 0) {
                             const float russian_roulette_prob = std::min(
-                                    std::max(throughput[0], std::max(throughput[1], throughput[2])),
-                                    1.0f);
+                                std::max(throughput[0], std::max(throughput[1], throughput[2])),
+                                1.0f);
                             if (sampler_per_thread.getNext1D() >= russian_roulette_prob) {
                                 break;
                             }
@@ -509,8 +450,8 @@ public:
                         Vec3f dir;
                         float pdf_dir;
                         const Vec3f f = info.hitPrimitive->sampleBxDF(
-                                -ray.direction, info.surfaceInfo, TransportDirection::FROM_LIGHT,
-                                sampler_per_thread, dir, pdf_dir);
+                            -ray.direction, info.surfaceInfo, TransportDirection::FROM_LIGHT,
+                            sampler_per_thread, dir, pdf_dir);
 
                         // update throughput and ray
                         throughput *= f *
@@ -529,7 +470,7 @@ public:
             lightsPhotonMap[l].build();
         }
 
-        // build photon map
+// build photon map
 #ifdef __OUTPUT__
         std::cout<<"[PhotonMapping] building global photon map"<<std::endl;
 #endif
@@ -598,9 +539,9 @@ public:
                             // russian roulette
                             if (k > 0) {
                                 const float russian_roulette_prob =
-                                        std::min(std::max(throughput[0],
-                                                          std::max(throughput[1], throughput[2])),
-                                                 1.0f);
+                                    std::min(std::max(throughput[0],
+                                                      std::max(throughput[1], throughput[2])),
+                                             1.0f);
                                 if (sampler_per_thread.getNext1D() >= russian_roulette_prob) {
                                     break;
                                 }
@@ -611,9 +552,9 @@ public:
                             Vec3f dir;
                             float pdf_dir;
                             const Vec3f f =
-                                    info.hitPrimitive->sampleBxDF(-ray.direction, info.surfaceInfo,
-                                                                  TransportDirection::FROM_LIGHT,
-                                                                  sampler_per_thread, dir, pdf_dir);
+                                info.hitPrimitive->sampleBxDF(-ray.direction, info.surfaceInfo,
+                                                              TransportDirection::FROM_LIGHT,
+                                                              sampler_per_thread, dir, pdf_dir);
 
                             // update throughput and ray
                             throughput *= f *

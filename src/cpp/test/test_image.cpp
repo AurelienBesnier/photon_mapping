@@ -1,13 +1,13 @@
 #include "image.h"
 
 int main() {
-  const int width = 512;
-  const int height = 512;
+  const unsigned width = 512;
+  const unsigned height = 512;
 
   Image image(width, height);
-  for (int i = 0; i < height; ++i) {
+  for (unsigned i = 0; i < height; ++i) {
     const float u = static_cast<float>(i) / height;
-    for (int j = 0; j < width; ++j) {
+    for (unsigned j = 0; j < width; ++j) {
       const float v = static_cast<float>(j) / height;
       image.setPixel(i, j, Vec3f(u, v, 1.0f));
     }
