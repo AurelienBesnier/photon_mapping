@@ -44,12 +44,12 @@ void Render(UniformSampler &sampler, Image &image, const int &height,
 int main() {
   const unsigned width = 512;
   const unsigned height = 512;
-  const unsigned n_samples = 5;
-  const unsigned n_photons = 10000;
+  const unsigned n_samples = 20;
+  const unsigned n_photons = 100000;
   const unsigned n_estimation_global = 90;
   const float n_photons_caustics_multiplier = 50;
   const unsigned n_estimation_caustics = 50;
-  const unsigned final_gathering_depth = 4;
+  const unsigned final_gathering_depth = 0;
   const unsigned max_depth = 100;
   Image image(width, height);
   Camera camera(Vec3f(0, 5, -7), Vec3f(0.4, -0.4, 1), 0.5 * PI);

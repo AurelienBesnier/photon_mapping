@@ -87,9 +87,9 @@ def createLpyScene(filename: str, t: int, tr2shmap: dict):
     addModel(lscene, Tesselator(), tr2shmap, scene)
 
     # Adding a light
-    light_verts = VectorFloat([5.87, 50, -3.79,
-                               5.14, 50, 4.08,
-                               5.86, 50, -4.08])
+    light_verts = VectorFloat([5, 50, 4,
+                               -5, 50, 4,
+                               5, 50, -4])
     light_normals = VectorFloat([0.0, -1.0, 0.0,
                                  0.0, -1.0, 0.0,
                                  0.0, -1.0, 0.0])
@@ -126,9 +126,9 @@ def compute_energy(tr2shmap, integrator):
 
 
 if __name__ == '__main__':
-    width = 512
-    height = 512
-    n_samples = 10
+    width = 1024
+    height = 1024
+    n_samples = 128
     n_photons = 100000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 50
@@ -137,11 +137,11 @@ if __name__ == '__main__':
     max_depth = 100
 
     image = libphotonmap_core.Image(width, height)
-    camera = libphotonmap_core.Camera(Vec3(0, 15, -20), Vec3(0, 0, 0.1), 0.1 * PI)
+    camera = libphotonmap_core.Camera(Vec3(0, 20, -25), Vec3(0, 0, 1), 0.5 * PI)
 
     print("Creating Scene..")
     tr2shmap = {}
-    scene = createLpyScene("rose-simple4.lpy", 50, tr2shmap)
+    scene = createLpyScene("rose-simple4.lpy", 75, tr2shmap)
     scene.build()
     scene.setupTriangles()
 

@@ -53,14 +53,11 @@ add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fopenmp -O3 -march=native -flto -ftree-vectorize -floop-parallelize-all")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
 target_include_directories(pm INTERFACE "src/cpp/include")
-
-target_compile_features(pm INTERFACE cxx_std_20)
-set_target_properties(pm PROPERTIES CXX_EXTENSIONS OFF)
 
 set_target_properties(pm
         PROPERTIES

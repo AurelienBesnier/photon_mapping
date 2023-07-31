@@ -442,6 +442,9 @@ public:
         device = rtcNewDevice(nullptr);
         scene = rtcNewScene(device);
 
+        rtcSetSceneBuildQuality(scene,RTC_BUILD_QUALITY_LOW);
+        rtcSetSceneFlags(scene,RTC_SCENE_FLAG_ROBUST);
+
         RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
 
         // set vertices
