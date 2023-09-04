@@ -14,7 +14,7 @@ def flatten(lt: list) -> list:
         a list
 
     Returns
-    -------
+    ---------
     l: list
         the flattened list
 
@@ -56,7 +56,7 @@ def addModel(lscene, tr, tr2shmap, scene):
                 i += len(ind)
                 ctr += 1
         ind.extend(idx)
-        index = VectorInt(ind)
+        index = VectorUint(ind)
         r = float(sh.appearance.diffuseColor().red) / 255.0
         g = float(sh.appearance.diffuseColor().green) / 255.0
         b = float(sh.appearance.diffuseColor().blue) / 255.0
@@ -68,7 +68,7 @@ def addModel(lscene, tr, tr2shmap, scene):
         specular_g = float(sh.appearance.specular.green) / 255.0
         specular_b = float(sh.appearance.specular.blue) / 255.0
         transparency = sh.appearance.transparency
-        illum = 9  # to use the leaf bxdf
+        illum = 6  # to use the leaf bxdf
         scene.addFaceInfos(vertex, index, normals, Vec3(r, g, b), Vec3(specular_r, specular_g, specular_b),
                            Vec3(ambient_r, ambient_g, ambient_b), shininess, transparency, illum, 1.0,
                            0.5, 0.5)
@@ -93,7 +93,7 @@ def createLpyScene(filename: str, t: int, tr2shmap: dict):
     light_normals = VectorFloat([0.0, -1.0, 0.0,
                                  0.0, -1.0, 0.0,
                                  0.0, -1.0, 0.0])
-    indices = VectorInt([1, 2, 3])
+    indices = VectorUint([1, 2, 3])
     scene.addLight(light_verts, indices, light_normals, 40, Vec3(1, 1, 1))
 
     return scene
@@ -126,10 +126,10 @@ def compute_energy(tr2shmap, integrator):
 
 
 if __name__ == '__main__':
-    width = 1024
-    height = 1024
-    n_samples = 128
-    n_photons = 100000
+    width = 256
+    height = 256
+    n_samples = 10
+    n_photons = 10000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50

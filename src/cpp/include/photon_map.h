@@ -1,7 +1,6 @@
 #ifndef _PHOTON_MAP_H
 #define _PHOTON_MAP_H
 
-#include <concepts>
 #include <type_traits>
 #include <numeric>
 #include <queue>
@@ -40,7 +39,7 @@ template<typename PointT, typename PointU>
 //requires Point<PointT> && Point<PointU>
 inline float distance2(const PointT &p1, const PointU &p2) {
     float dist2 = 0;
-    for (int i = 0; i < PointT::dim; ++i) {
+    for (unsigned short i = 0; i < PointT::dim; ++i) {
         dist2 += (p1[i] - p2[i]) * (p1[i] - p2[i]);
     }
     return dist2;
@@ -128,7 +127,7 @@ public:
         std::vector<int> ret(queue.size());
         maxDist2 = 0;
         for (int &i: ret) {
-            const auto &p = queue.top();
+            const std::pair<float, int> &p = queue.top();
             i = p.second;
             maxDist2 = std::max(maxDist2, p.first);
             queue.pop();

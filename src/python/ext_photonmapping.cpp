@@ -1,4 +1,4 @@
-#define __OUTPUT__
+// #define __OUTPUT__
 
 #include "../cpp/include/camera.h"
 #include "../cpp/include/image.h"
@@ -15,8 +15,6 @@ namespace py = pybind11;
 PYBIND11_MAKE_OPAQUE(std::vector<float>)
 PYBIND11_MAKE_OPAQUE(std::vector<uint32_t>)
 PYBIND11_MAKE_OPAQUE(std::vector<int>)
-PYBIND11_MAKE_OPAQUE(std::vector<Triangle>)
-PYBIND11_MAKE_OPAQUE(std::vector<Primitive>)
 PYBIND11_MAKE_OPAQUE(std::vector<Vec3f>)
 
 void visualizePhotonMap(const Scene &scene, Image &image, const unsigned &width,
@@ -198,7 +196,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   py::class_<PhotonMap>(m, "PhotonMap")
       .def(py::init<>())
       .def("getIthPhoton", &PhotonMap::getIthPhoton,
-           "Returns the ith photon of the photon map", py::arg("i"), py::return_value_policy::reference)
+           "Returns the ith photon of the photon map", py::arg("i"),
+           py::return_value_policy::reference)
       .def("setPhotons", &PhotonMap::setPhotons,
            "Sets the photons of the photon map", py::arg("photons"))
       .def("nPhotons", &PhotonMap::nPhotons,
