@@ -1,3 +1,6 @@
+import sys
+import random
+
 from photonmap.libphotonmap_core import *
 
 from datetime import datetime
@@ -5,8 +8,8 @@ from datetime import datetime
 if __name__ == '__main__':
     width = 512
     height = 512
-    n_samples = 50
-    n_photons = 100000
+    n_samples = 25
+    n_photons = 10000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -32,7 +35,7 @@ if __name__ == '__main__':
                                n_photons_caustics_multiplier, n_estimation_caustics,
                                final_gathering_depth, max_depth)
 
-    sampler = UniformSampler()
+    sampler = UniformSampler(random.randint(0, sys.maxsize))
 
     integrator.build(scene, sampler)
     print("Done!")

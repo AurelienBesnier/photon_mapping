@@ -5,6 +5,9 @@
 #include <iostream>
 #include <limits>
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
+
 constexpr float PI = 3.14159265359;
 
 constexpr float PI_MUL_2 = 2.0f * PI;
@@ -147,6 +150,13 @@ template <typename T> struct Vec3 {
 };
 
 template <typename T>
+std::ostream& operator<<(std::ostream& os, const Vec3<T>& v)
+{
+    os << v[0] << ',' << v[1] << ',' << v[2];
+    return os;
+}
+
+template <typename T>
 inline Vec3<T> operator+(const Vec3<T> &v1, const Vec3<T> &v2) {
   return Vec3<T>(v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2]);
 }
@@ -239,6 +249,13 @@ inline Vec3f sphericalToCartesian(float theta, float phi) {
           std::sin(phi) * std::sin(theta)};
 }
 
+inline float randomInterval(float min, float max){
+    boost::random::mt19937 gen;
+    boost::random::uniform_real_distribution<> dist(min, max);
+
+    return dist(gen);
+}
+
 struct Ray {
   Vec3f origin;
   Vec3f direction;
@@ -259,6 +276,7 @@ struct SurfaceInfo {
   Vec3f dpdv; // bitangent vector
   Vec2f texcoords;
   Vec2f barycentric;
+  bool point; // whether the  light source has a physical form or not
 };
 
 // forward declaration

@@ -25,7 +25,10 @@ private:
 
 public:
     PointLight(Vec3f& le, Vec3f position)
-            : le(le), position(position) {}
+            : le(le), position(position) {
+
+        std::cout<<"Point light at: "<<position<<std::endl;
+    }
 
     Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
         return le;
@@ -34,17 +37,58 @@ public:
     SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override{
         SurfaceInfo surfInfo;
         surfInfo.position = position;
+        surfInfo.point = true;
 
         return surfInfo;
     }
 
     Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                                   float& pdf) override {
-        Vec3f dir = sampleCosineHemisphere(sampler.getNext2D(), pdf);
+        float y = randomInterval(-1.0f,1.0f);
+        float angle = randomInterval(0.0, PI_MUL_2);
+        float r = sqrtf(1.0f-y*y);
+        float x = r*sinf(angle);
+        float z = r*cos(angle);
 
-        // transform direction from local to world
-        return localToWorld(dir, surfInfo.dpdu, surfInfo.shadingNormal,
-                            surfInfo.dpdv);
+        return {x,y,z};
+    }
+};
+
+
+class SpotLight : public Light {
+private:
+    Vec3f le;  // emission
+    Vec3f position;
+    Vec3f direction;
+    float angle;
+
+public:
+    SpotLight(Vec3f& le, Vec3f position, Vec3f direction, float angle)
+            : le(le), position(position), direction(direction), angle(angle) {
+
+        std::cout<<"Spot light at: "<<position<<std::endl;
+    }
+
+    Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
+        return le;
+    }
+
+    SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override{
+        SurfaceInfo surfInfo;
+        surfInfo.position = position;
+        surfInfo.point = true;
+
+        return surfInfo;
+    }
+
+    Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
+                          float& pdf) override {
+
+        float theta = randomInterval(deg2rad(angle), deg2rad(angle - PI_MUL_2));
+        std::cout<<"theta"<<theta<<std::endl;
+        direction += theta;
+
+        return direction;
     }
 };
 

@@ -68,10 +68,10 @@ def addModel(lscene, tr, tr2shmap, scene):
         specular_g = float(sh.appearance.specular.green) / 255.0
         specular_b = float(sh.appearance.specular.blue) / 255.0
         transparency = sh.appearance.transparency
-        illum = 6  # to use the leaf bxdf
+        illum = 9  # to use the leaf bxdf
         scene.addFaceInfos(vertex, index, normals, Vec3(r, g, b), Vec3(specular_r, specular_g, specular_b),
                            Vec3(ambient_r, ambient_g, ambient_b), shininess, transparency, illum, 1.0,
-                           0.5, 0.5)
+                           0.5, 0.5, 0.8)
         for _ in mesh.indexList:
             tr2shmap[ctr] = sh.id
             ctr += 1
@@ -126,14 +126,14 @@ def compute_energy(tr2shmap, integrator):
 
 
 if __name__ == '__main__':
-    width = 256
-    height = 256
-    n_samples = 10
+    width = 512
+    height = 512
+    n_samples = 5
     n_photons = 10000
     n_estimation_global = 95
-    n_photons_caustics_multiplier = 50
-    n_estimation_caustics = 50
-    final_gathering_depth = 4
+    n_photons_caustics_multiplier = 10
+    n_estimation_caustics = 10
+    final_gathering_depth = 3
     max_depth = 100
 
     image = libphotonmap_core.Image(width, height)
@@ -141,11 +141,10 @@ if __name__ == '__main__':
 
     print("Creating Scene..")
     tr2shmap = {}
-    scene = createLpyScene("rose-simple4.lpy", 75, tr2shmap)
+    scene = createLpyScene("./rose-simple4.lpy", 75, tr2shmap)
     scene.build()
     scene.setupTriangles()
 
-    print(len(scene.getTriangles()))
     print("Done!")
 
     print("Building photonMap...")

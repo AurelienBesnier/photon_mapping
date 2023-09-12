@@ -3,7 +3,6 @@
 #include "image.h"
 #include "integrator.h"
 #include "scene.h"
-#include <spdlog/spdlog.h>
 
 void Render(UniformSampler &sampler, Image &image, const int &height,
             const int &width, const int &n_samples, const Camera &camera,
@@ -28,10 +27,10 @@ void Render(UniformSampler &sampler, Image &image, const int &height,
 
           if (std::isnan(radiance[0]) || std::isnan(radiance[1]) ||
               std::isnan(radiance[2])) {
-            spdlog::warn("radiance is NaN");
+            //std::cout<<"radiance is NaN"<<std::endl;
             continue;
           } else if (radiance[0] < 0 || radiance[1] < 0 || radiance[2] < 0) {
-            spdlog::warn("radiance is minus");
+              //std::cout<<"radiance is minus"<<std::endl;
             continue;
           }
 
@@ -67,16 +66,16 @@ int main() {
                            final_gathering_depth, max_depth);
   UniformSampler sampler;
 
-  spdlog::info("[main] building photon map...");
+  std::cout<<"[main] building photon map..."<<std::endl;
   auto start = std::chrono::steady_clock::now();
   integrator.build(scene, sampler);
   auto end = std::chrono::steady_clock::now();
 
   std::chrono::duration<double> elapsed_seconds = end - start;
 
-  spdlog::info("Photonmap building time: {} seconds", elapsed_seconds.count());
+    std::cout<<"Photonmap building time: "<< elapsed_seconds.count()<<"seconds"<<std::endl;
 
-  spdlog::info("[main] tracing rays from camera...");
+    std::cout<<"[main] tracing rays from camera..."<<std::endl;
 
   start = std::chrono::steady_clock::now();
   Render(sampler, image, height, width, n_samples, camera, integrator, scene);
@@ -84,11 +83,11 @@ int main() {
 
   elapsed_seconds = end - start;
 
-  spdlog::info("Render time: {} seconds", elapsed_seconds.count());
+    std::cout<<"Render time: "<< elapsed_seconds.count()<<"seconds"<<std::endl;
   // take average
   image.divide(n_samples);
 
   image.gammaCorrection(2.2f);
   image.writePPM("output.ppm");
-  spdlog::info("[main] wrote to file output.ppm");
+    std::cout<<"[main] wrote to file output.ppm"<<std::endl;
 }

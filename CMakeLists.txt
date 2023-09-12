@@ -48,33 +48,30 @@ else()
   message(FATAL_ERROR "Could not find Embree")
 endif()
 
-# spdlog
-if(NOT TARGET spdlog)
-    find_package(spdlog REQUIRED)
-endif()
-
 # externals
 add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX -fopenmp -O3 -march=native -ftree-vectorize -floop-parallelize-all")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
 target_include_directories(pm INTERFACE "src/cpp/include")
 
+target_compile_features(pm INTERFACE cxx_std_20)
+
+
 set_target_properties(pm
         PROPERTIES
         CXX_STANDARD 20
         CXX_STANDARD_REQUIRED YES
-        CXX_EXTENSIONS OFF
+        CXX_EXTENSIONS NO
         )
 
 target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX)
 target_link_libraries(pm INTERFACE tinyobjloader)
 target_link_libraries(pm INTERFACE embree)
-target_link_libraries(pm INTERFACE spdlog::spdlog)
 target_link_libraries(pm INTERFACE ${Boost_LIBRARIES})
 target_link_libraries(pm INTERFACE photon_map primitive triangle image)
 

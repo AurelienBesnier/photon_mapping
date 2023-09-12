@@ -21,7 +21,7 @@ boost::shared_ptr<BxDF> createDefaultBxDF() {
 // create BxDF from tinyobj material
 boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
                                    float reflectance = 0.0f,
-                                   float transmittance = 0.0f) {
+                                   float transmittance = 0.0f, float roughness = 0.0f) {
   const Vec3f kd =
       Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
   const Vec3f ks =
@@ -42,12 +42,12 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     material.ior =
         1.425f; // Source:
                 // https://opg.optica.org/ao/abstract.cfm?uri=ao-13-1-109
-    return boost::make_shared<Leaf>(kd, material.ior);
+    return boost::make_shared<Leaf>(kd, material.ior, roughness);
   case 7:
     // Transparent
     return boost::make_shared<Glass>(kd, material.ior);
   case 9:
-    return boost::make_shared<SimpleLeaf>(kd, reflectance, transmittance);
+    return boost::make_shared<SimpleLeaf>(kd, reflectance, transmittance, roughness);
   default:
     // lambert
     return boost::make_shared<Lambert>(kd);
@@ -65,6 +65,28 @@ boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
   } else {
     return nullptr;
   }
+}
+
+// create PointLight
+boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
+    if (emission[0] > 0 || emission[1] > 0 ||
+            emission[2] > 0) {
+        Vec3f le =
+                Vec3f(emission[0], emission[1], emission[2]);
+        return boost::make_shared<PointLight>(le, position);
+    } else {
+        return nullptr;
+    }
+}
+
+boost::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position, Vec3f direction, float angle) {
+    if (emission[0] > 0 || emission[1] > 0 ||
+        emission[2] > 0) {
+        Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
+        return boost::make_shared<SpotLight>(le, position, direction, angle);
+    } else {
+        return nullptr;
+    }
 }
 
 class Scene {
@@ -161,11 +183,8 @@ public:
       const auto material = this->materials[faceID];
       if (material) {
         tinyobj::material_t m = material.value();
-        if (mat.reflectance != 0.0f && mat.transmittance != 0.0f)
-          this->bxdfs.push_back(
-              createBxDF(m, mat.reflectance, mat.transmittance));
-        else
-          this->bxdfs.push_back(createBxDF(m));
+      this->bxdfs.push_back(
+          createBxDF(m, mat.reflectance, mat.transmittance, mat.roughness));
       }
       // default material
       else {
@@ -178,8 +197,8 @@ public:
                     std::vector<uint32_t> &indices, std::vector<float> &normals,
                     Vec3f &colors, Vec3f &ambient, Vec3f &specular,
                     float &shininess, float &transparency, int &illum,
-                    float &ior, float reflectance = 0.0f,
-                    float transmittance = 0.0f) {
+                    float ior = 0.0f, float reflectance = 0.0f,
+                    float transmittance = 0.0f, float roughness = 0.0f) {
     for (uint32_t &i : indices) {
       i += nVertices();
     }
@@ -220,10 +239,7 @@ public:
       const auto material = this->materials[faceID];
       if (material) {
         tinyobj::material_t m = material.value();
-        if (reflectance != 0.0f && transmittance != 0.0f)
-          this->bxdfs.push_back(createBxDF(m, reflectance, transmittance));
-        else
-          this->bxdfs.push_back(createBxDF(m));
+      this->bxdfs.push_back(createBxDF(m, reflectance, transmittance, roughness));
       }
       // default material
       else {
@@ -270,21 +286,21 @@ public:
     for (uint32_t &i : newIndices) {
       i += nVertices();
     }
-
     this->vertices.insert(std::end(this->vertices), std::begin(newVertices),
                           std::end(newVertices));
     this->indices.insert(std::end(this->indices), std::begin(newIndices),
                          std::end(newIndices));
     this->normals.insert(std::end(this->normals), std::begin(newNormals),
                          std::end(newNormals));
+
     // populate  triangles
     for (size_t faceID = nFaces() - (newIndices.size() / 3); faceID < nFaces();
          ++faceID) {
       tinyobj::material_t m;
 
-      m.diffuse[0] = 0;
-      m.diffuse[1] = 0;
-      m.diffuse[2] = 0;
+      m.diffuse[0] = color[0];
+      m.diffuse[1] = color[1];
+      m.diffuse[2] = color[2];
       m.ambient[0] = 0;
       m.ambient[1] = 0;
       m.ambient[2] = 0;
@@ -297,9 +313,10 @@ public:
       m.dissolve = 1.0;
       m.illum = 1;
 
+      this->materials.emplace_back(m);
+
       // populate BxDF
       const auto material = this->materials[faceID];
-      this->materials.emplace_back(m);
       if (material) {
         tinyobj::material_t m = material.value();
         this->bxdfs.push_back(createBxDF(m));
@@ -310,6 +327,39 @@ public:
       }
     }
   }
+
+  void addCaptor(std::vector<float> newVertices,
+                 std::vector<uint32_t> newIndices, std::vector<float> newNormals){
+      for (uint32_t &i : newIndices) {
+          i += nVertices();
+      }
+      this->vertices.insert(std::end(this->vertices), std::begin(newVertices),
+                            std::end(newVertices));
+      this->indices.insert(std::end(this->indices), std::begin(newIndices),
+                           std::end(newIndices));
+      this->normals.insert(std::end(this->normals), std::begin(newNormals),
+                           std::end(newNormals));
+
+      this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1,0.8,1)));
+  }
+
+  void addPointLight(Vec3f position, float intensity, Vec3f color)
+  {
+      boost::shared_ptr<Light> light;
+      light = createPointLight(color * intensity, position );
+      if (light != nullptr) {
+          lights.push_back(light);
+      }
+  }
+
+    void addSpotLight(Vec3f position, float intensity, Vec3f color, Vec3f direction, float angle)
+    {
+        boost::shared_ptr<Light> light;
+        light = createSpotLight(color * intensity, position, direction, angle);
+        if (light != nullptr) {
+            lights.push_back(light);
+        }
+    }
 
   // load obj file
   // TODO: remove vertex duplication
@@ -422,8 +472,11 @@ public:
       // TODO: remove duplicate
       const auto material = this->materials[faceID];
       if (material) {
-        tinyobj::material_t m = material.value();
-        this->bxdfs.push_back(createBxDF(m));
+          tinyobj::material_t m = material.value();
+          if (m.dissolve != 0.0f)
+              this->bxdfs.push_back(createBxDF(m, m.dissolve, 1 - m.dissolve, 0.5f));
+          else
+              this->bxdfs.push_back(createBxDF(m));
       }
       // default material
       else {
@@ -465,7 +518,7 @@ public:
     device = rtcNewDevice(nullptr);
     scene = rtcNewScene(device);
 
-    rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_MEDIUM);
+    rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_LOW);
     rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST);
 
     RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
@@ -542,12 +595,11 @@ public:
     return lights[lightIdx];
   }
 
-  boost::shared_ptr<Light> sampleLight(float &pdf, int idx) const {
-    uint32_t lightIdx = idx;
-    if (lightIdx == lights.size())
-      lightIdx--;
+  boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const {
+    if (idx == lights.size())
+        idx--;
     pdf = 1.0f / (lights.size());
-    return lights[lightIdx];
+    return lights[idx];
   }
 };
 

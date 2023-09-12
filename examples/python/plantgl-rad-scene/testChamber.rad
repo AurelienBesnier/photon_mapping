@@ -140,7 +140,7 @@ void light lumF
 3
 1.0 1.0 1.0
 
-void light lumM
+void x lumM
 0
 0
 3
@@ -894,7 +894,6 @@ ecran polygon lamp10AV8
 223.5 160.0 2107.0
 240.0 158.437166401 2115.86326978
 240.0 153.105600012 2112.78508849
-
 
 ecran polygon lamp11AV
 0
@@ -3648,6 +3647,16 @@ Aquanappe polygon tableAMaree
 2040.0 1370.0 900
 0.0 1370.0 900
 
+jaune polygon anchor
+0
+0
+12
+1210.0 915.0 901
+1220.0 915.0 901
+1220.0 925.0 901
+1210.0 925.0 901
+
+
 Aquanappe polygon soustableAMaree
 0
 0
@@ -3927,12 +3936,12 @@ CentrePlafond polygon depoli
 1630.0 475.0 2179.8
 770.0 475.0 2179.8
 
-Makrolon polygon fauxPlafondInf
-0
-0
-12
-0.0 0.0 1970
-2400.0 0.0 1970
-2400.0 1840.0 1970
-0.0 1840.0 1970
+# Makrolon polygon fauxPlafondInf
+# 0
+# 0
+# 12
+# 0.0 0.0 1970
+# 2400.0 0.0 1970
+# 2400.0 1840.0 1970
+# 0.0 1840.0 1970
 

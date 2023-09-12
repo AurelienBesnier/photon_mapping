@@ -13,15 +13,16 @@ struct Material
     Vec3f specular = Vec3fZero;
 
     int illum = 1;
-    float shininess = 0.5f;
+    float shininess = 0.2f;
     float transparency = 0.0f;
+    float roughness = 0.2f;
     float ior = 1.0f;
     float transmittance = 0.0f;
     float reflectance = 0.0f;
 };
 
 enum class BxDFType {
-    DIFFUSE, SPECULAR
+    DIFFUSE, SPECULAR, CAPTOR
 };
 
 enum class TransportDirection {
@@ -30,7 +31,7 @@ enum class TransportDirection {
 
 using DirectionPair = std::pair<Vec3f, Vec3f>;
 
-constexpr static auto pow5 = [](float x) { return x * x * x * x * x; };
+static auto pow5 = [](float x) { return x * x * x * x * x; };
 
 // represent BRDF or BTDF
 // direction vectors are in tangent space(x: tangent, y: normal, z: bitangent)
@@ -277,90 +278,19 @@ public:
     }
 };
 
-class SimpleLeaf : public BxDF {
-private:
-    Vec3f rho;
-    float reflectance;
-    float transmittance;
-
-public:
-    SimpleLeaf(const Vec3f &rho, float reflectance, float transmittance)
-            : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance),  transmittance(transmittance) {}
-
-    // NOTE: delta function
-    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
-                   TransportDirection &transport_dir) const override {
-        // when wo, wi is under the surface, return 0
-        const float cosThetaO = cosTheta(wo);
-        const float cosThetaI = cosTheta(wi);
-        if (cosThetaO < 0 || cosThetaI < 0) return {0};
-
-        return rho / PI;
-    }
-
-    Vec3f sampleDirection(Vec3f &wo,
-                          TransportDirection &transport_dir,
-                          Sampler &sampler, Vec3f &wi,
-                          float &pdf) const override {
-        Vec3f n;
-        if (wo[1] > 0) { // Are we inside or outside the medium ?
-            n = Vec3f(0, 1, 0);
-        } else {
-            n = Vec3f(0, -1, 0);
-        }
-
-        // fresnel reflectance
-
-
-        // reflection
-        if (sampler.getNext1D() < reflectance) {
-            wi = reflect(wo, n);
-            pdf = 1.0f;
-            return rho / absCosTheta(wi);
-        }
-            // refraction
-        else {
-            Vec3f tr;
-            if (refract(wo, n, tr, transmittance)) {
-                wi = tr;
-                pdf = 1.0f;
-                float scaling = 1.0f;
-
-                return scaling * rho / absCosTheta(wi);
-            }
-                // total reflection
-            else {
-                wi = reflect(wo, n);
-                pdf = 1.0f;
-                return rho / absCosTheta(wi);
-            }
-        }
-    }
-    std::vector<DirectionPair> sampleAllDirection(
-            Vec3f &wo, TransportDirection &transport_dir) const override {
-        //Unused
-        return {};
-    };
-};
-
-class Leaf : public BxDF {
+class Captor : public BxDF {
 private:
     Vec3f rho;
     float ior;
 
 public:
-    Leaf(const Vec3f &rho, float ior)
-            : BxDF(BxDFType::DIFFUSE), rho(rho), ior(ior) {}
+    Captor(const Vec3f &rho)
+            : BxDF(BxDFType::CAPTOR), rho(rho), ior(1) {}
 
     // NOTE: delta function
     Vec3f evaluate(Vec3f &wo, Vec3f &wi,
                    TransportDirection &transport_dir) const override {
-        // when wo, wi is under the surface, return 0
-        const float cosThetaO = cosTheta(wo);
-        const float cosThetaI = cosTheta(wi);
-        if (cosThetaO < 0 || cosThetaI < 0) return {0};
-
-        return rho / PI;
+        return {0};
     }
 
     Vec3f sampleDirection(Vec3f &wo,
@@ -370,7 +300,7 @@ public:
         // set appropriate ior, normal
         float iorO, iorI;
         Vec3f n;
-        if (wo[1] > 0) { // Are we inside or outside the medium ?
+        if (wo[1] > 0) {
             iorO = 1.0f;
             iorI = ior;
             n = Vec3f(0, 1, 0);
@@ -408,6 +338,289 @@ public:
                 wi = reflect(wo, n);
                 pdf = 1.0f;
                 return rho / absCosTheta(wi);
+            }
+        }
+    }
+
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        std::vector<DirectionPair> ret;
+
+        // set appropriate ior, normal
+        float iorO, iorI;
+        Vec3f n;
+        if (wo[1] > 0) {
+            iorO = 1.0f;
+            iorI = ior;
+            n = Vec3f(0, 1, 0);
+        } else {
+            iorO = ior;
+            iorI = 1.0f;
+            n = Vec3f(0, -1, 0);
+        }
+
+        // fresnel reflectance
+        const float fr = fresnelR(dot(wo, n), iorO, iorI);
+
+        // reflection
+        const Vec3f wr = reflect(wo, n);
+        ret.emplace_back(wr, fr * rho / absCosTheta(wr));
+
+        // refraction
+        Vec3f tr;
+        if (refract(wo, n, iorO, iorI, tr)) {
+            float scaling = 1.0f;
+            if (transport_dir == TransportDirection::FROM_CAMERA) {
+                scaling = (iorO * iorO) / (iorI * iorI);
+            }
+
+            ret.emplace_back(tr, (1.0f - fr) * scaling * rho / absCosTheta(tr));
+        } else {
+            ret[0].second = rho / absCosTheta(wr);
+        }
+        return ret;
+    }
+};
+
+class Transparent : public BxDF {
+private:
+    Vec3f rho;
+    float ior;
+
+public:
+    Transparent(const Vec3f &rho, float ior)
+            : BxDF(BxDFType::DIFFUSE), rho(rho), ior(ior) {}
+
+    // NOTE: delta function
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+        if (cosThetaO < 0 || cosThetaI < 0) return {0};
+
+        return rho / PI;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+        // set appropriate ior, normal
+        float iorO, iorI;
+        Vec3f n;
+        if (wo[1] > 0) {
+            iorO = 1.0f;
+            iorI = ior;
+            n = Vec3f(0, 1, 0);
+        } else {
+            iorO = ior;
+            iorI = 1.0f;
+            n = Vec3f(0, -1, 0);
+        }
+
+        // fresnel reflectance
+        const float fr = fresnelR(dot(wo, n), iorO, iorI);
+
+        // reflection
+        if (sampler.getNext1D() < fr) {
+            wi = reflect(wo, n);
+            pdf = 1.0f;
+            return rho / absCosTheta(wi);
+        }
+            // refraction
+        else {
+            Vec3f tr;
+            if (refract(wo, n, iorO, iorI, tr)) {
+                wi = tr;
+                pdf = 1.0f;
+
+                float scaling = 1.0f;
+                if (transport_dir == TransportDirection::FROM_CAMERA) {
+                    scaling = (iorO * iorO) / (iorI * iorI);
+                }
+
+                return scaling * rho / absCosTheta(wi);
+            }
+                // total reflection
+            else {
+                wi = reflect(wo, n);
+                pdf = 1.0f;
+                return rho / absCosTheta(wi);
+            }
+        }
+    }
+
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        std::vector<DirectionPair> ret;
+
+        // set appropriate ior, normal
+        float iorO, iorI;
+        Vec3f n;
+        if (wo[1] > 0) {
+            iorO = 1.0f;
+            iorI = ior;
+            n = Vec3f(0, 1, 0);
+        } else {
+            iorO = ior;
+            iorI = 1.0f;
+            n = Vec3f(0, -1, 0);
+        }
+
+        // fresnel reflectance
+        const float fr = fresnelR(dot(wo, n), iorO, iorI);
+
+        // reflection
+        const Vec3f wr = reflect(wo, n);
+        ret.emplace_back(wr, fr * rho / absCosTheta(wr));
+
+        // refraction
+        Vec3f tr;
+        if (refract(wo, n, iorO, iorI, tr)) {
+            float scaling = 1.0f;
+            if (transport_dir == TransportDirection::FROM_CAMERA) {
+                scaling = (iorO * iorO) / (iorI * iorI);
+            }
+
+            ret.emplace_back(tr, (1.0f - fr) * scaling * rho / absCosTheta(tr));
+        } else {
+            ret[0].second = rho / absCosTheta(wr);
+        }
+        return ret;
+    }
+};
+
+class SimpleLeaf : public BxDF {
+private:
+    Vec3f rho;
+    float reflectance;
+    float transmittance;
+    float roughness;
+
+public:
+    SimpleLeaf(const Vec3f &rho, float reflectance, float transmittance, float roughness)
+            : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance),  transmittance(transmittance),
+            roughness(roughness) {}
+
+    // NOTE: delta function
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+        if (cosThetaO < 0 || cosThetaI < 0) return {0};
+
+        return rho / PI;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+        Vec3f n;
+        if (wo[1] > 0) { // Are we inside or outside the medium ?
+            n = Vec3f(0, 1, 0);
+        } else {
+            n = Vec3f(0, -1, 0);
+        }
+
+        // reflection
+        if (sampler.getNext1D() < reflectance) {
+            wi = reflect(wo, n);
+            pdf = 1.0f;
+            return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+        }
+            // refraction
+        else {
+            Vec3f tr;
+            if (refract(wo, n, tr, transmittance)) {
+                wi = tr;
+                pdf = 1.0f;
+                float scaling = 1.0f;
+
+                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+            }
+                // total reflection
+            else {
+                wi = reflect(wo, n);
+                pdf = 1.0f;
+                return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+            }
+        }
+    }
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        //Unused
+        return {};
+    };
+};
+
+class Leaf : public BxDF {
+private:
+    Vec3f rho;
+    float ior;
+    float roughness;
+
+public:
+    Leaf(const Vec3f &rho, float ior, float roughness)
+            : BxDF(BxDFType::DIFFUSE), rho(rho), ior(ior), roughness(roughness) {}
+
+    // NOTE: delta function
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+        if (cosThetaO < 0 || cosThetaI < 0) return {0};
+
+        return rho / PI;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+        // set appropriate ior, normal
+        float iorO, iorI;
+        Vec3f n;
+        if (wo[1] > 0) { // Are we inside or outside the medium ?
+            iorO = 1.0f;
+            iorI = ior;
+            n = Vec3f(0, 1, 0);
+        } else {
+            iorO = ior;
+            iorI = 1.0f;
+            n = Vec3f(0, -1, 0);
+        }
+
+        // fresnel reflectance
+        const float fr = fresnelR(dot(wo, n), iorO, iorI);
+
+        // reflection
+        if (sampler.getNext1D() < fr) {
+            wi = reflect(wo, n);
+            pdf = 1.0f;
+            return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+        }
+            // refraction
+        else {
+            Vec3f tr;
+            if (refract(wo, n, iorO, iorI, tr)) {
+                wi = tr;
+                pdf = 1.0f;
+
+                float scaling = 1.0f;
+                if (transport_dir == TransportDirection::FROM_CAMERA) {
+                    scaling = (iorO * iorO) / (iorI * iorI);
+                }
+
+                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+            }
+                // total reflection
+            else {
+                wi = reflect(wo, n);
+                pdf = 1.0f;
+                return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
             }
         }
     }
