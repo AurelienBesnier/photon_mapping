@@ -1,0 +1,2028 @@
+newmtl Sol
+	Ka 0.3686274509803922 0.3686274509803922 0.3686274509803922
+	Kd 0.7372549019607844 0.7372549019607844 0.7372549019607844
+	Ks 0.09803921568627451 0.09803921568627451 0.09803921568627451
+	Tr 0.0 
+	illum 2
+newmtl MurMetal
+	Ka 0.6431372549019608 0.6431372549019608 0.6431372549019608
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MurMetal
+	Ka 0.6431372549019608 0.6431372549019608 0.6431372549019608
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MurBlanc
+	Ka 0.7686274509803922 0.7686274509803922 0.7686274509803922
+	Kd 1.0 1.0 1.0
+	Ks 0.2 0.2 0.2
+	Tr 0.0 
+	illum 2
+newmtl MurBlanc
+	Ka 0.7686274509803922 0.7686274509803922 0.7686274509803922
+	Kd 1.0 1.0 1.0
+	Ks 0.2 0.2 0.2
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl ecran
+	Ka 0.0 0.0 0.0
+	Kd 0.0 0.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl jaune
+	Ka 1.0 1.0 0.0
+	Kd 1.0 1.0 0.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl Aquanappe
+	Ka 0.0392156862745098 0.0392156862745098 0.0392156862745098
+	Kd 0.0784313725490196 0.0784313725490196 0.0784313725490196
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl CorniereAlu
+	Ka 0.6627450980392157 0.6627450980392157 0.6627450980392157
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MurMetal
+	Ka 0.6431372549019608 0.6431372549019608 0.6431372549019608
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MurMetal
+	Ka 0.6431372549019608 0.6431372549019608 0.6431372549019608
+	Kd 1.0 1.0 1.0
+	Ks 0.2980392156862745 0.2980392156862745 0.2980392156862745
+	Tr 0.0 
+	illum 2
+newmtl MurBlanc
+	Ka 0.7686274509803922 0.7686274509803922 0.7686274509803922
+	Kd 1.0 1.0 1.0
+	Ks 0.2 0.2 0.2
+	Tr 0.0 
+	illum 2
+newmtl MurBlanc
+	Ka 0.7686274509803922 0.7686274509803922 0.7686274509803922
+	Kd 1.0 1.0 1.0
+	Ks 0.2 0.2 0.2
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl MiroirCaissonLampes
+	Ka 0.5607843137254902 0.5607843137254902 0.5607843137254902
+	Kd 1.0 1.0 1.0
+	Ks 0.0 0.0 0.0
+	Tr 0.0 
+	illum 2
+newmtl CentrePlafond
+	Ka 0.5411764705882353 0.5411764705882353 0.5411764705882353
+	Kd 1.0 1.0 1.0
+	Ks 0.4980392156862745 0.4980392156862745 0.4980392156862745
+	Tr 0.0 
+	illum 2

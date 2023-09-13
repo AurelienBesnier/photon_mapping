@@ -8,6 +8,9 @@
 #	fauxPlafond	oui
 #	dureeSimu	4.11249295691E-12
 
+
+scale_factor 1000
+
 void plastic Aquanappe
 0
 0

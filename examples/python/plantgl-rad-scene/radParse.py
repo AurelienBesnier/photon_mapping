@@ -32,7 +32,7 @@ def denormalize(f: float) -> int:
     return int(255 * f)
 
 
-def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3):
+def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor):
     ctr = 0
     for sh in lscene:
         sh.apply(tr)
@@ -51,9 +51,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3):
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / 10 + anchor[0])
-            vertices.append(mvector[2] / 10 + anchor[1])
-            vertices.append(mvector[1] / 10 + anchor[2])
+            vertices.append(mvector[0] / (scale_factor/10) + anchor[0])
+            vertices.append(mvector[2] / (scale_factor/10) + anchor[1])
+            vertices.append(mvector[1] / (scale_factor/10) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -91,13 +91,13 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3):
             ctr += 1
 
 
-def addLpyFileToScene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3):
+def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3, scale_factor):
     lsystem = Lsystem(filename)
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
 
     # Adding the model of plant
-    addModel(lscene, Tesselator(), tr2shmap, sc, anchor)
+    addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
 
     return sc
 
@@ -136,12 +136,16 @@ def read_rad(file: str):
         sc = Scene()
         anchor = Vec3(0, 0, 0)
         i = 0
+        scale_factor = 1
         for _ in range(len(lines)):
             i += 1
             if i >= len(lines):
                 break
             elif lines[i].startswith("#"):
                 continue
+            elif lines[i].startswith("scale_factor"):
+                li = lines[i].split(" ")
+                scale_factor = float(li[1])
             elif lines[i].startswith("void"):  # material
                 li = lines[i].split(" ")
                 type = li[1]
@@ -199,8 +203,8 @@ def read_rad(file: str):
                                 l = re.split(r"\s+|;+", lines[0])
                                 l2 = re.split(r"\s+|;+", lines[1])
                                 l3 = re.split(r"\s+|;+", lines[2])
-                                x, y, z = float(l[0]) / 100.0, float(l[2]) / 100.0, float(l[1]) / 100.0
-                                x2, y2, z2 = (float(l2[0]) / 10.0, float(l2[2]) / 100.0, float(l2[1]) / 100.0)
+                                x, y, z = float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor
+                                x2, y2, z2 = (float(l2[0]) / scale_factor, float(l2[2]) / scale_factor, float(l2[1]) / scale_factor)
                                 vert.append((x, y, z))
                                 vert.append((x2, y2, z2))
                                 for i in range(nbCoords):
@@ -211,7 +215,7 @@ def read_rad(file: str):
                                 for j in range(tmp, tmp + nbCoords):
                                     l = re.split(r"\s+|;+", lines[j])
                                     #print(name)
-                                    vert.append((float(l[0]) / 100.0, float(l[2]) / 100.0, float(l[1]) / 100.0))
+                                    vert.append((float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor))
                                     i = j
                                     shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                         if name == "anchor":
@@ -284,8 +288,9 @@ def read_rad(file: str):
                                                 specular=Color3(mat["spec"]), shininess=1 - mat["roughness"])
                 s.appearance.name = mat["name"]
                 sc.add(s)
-        sc.save("env.obj")
-        return sc, anchor
+        save_name = file.split('.')[0] + ".obj"
+        sc.save(save_name)
+        return sc, anchor, scale_factor
 
 
 def watts_to_emission(w):
@@ -308,7 +313,7 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
-        scene.addPointLight(pos, watts_to_emission(1000), Vec3(1, 1, 1))
+        scene.addPointLight(pos, watts_to_emission(100), Vec3(1, 1, 1))
 
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -322,19 +327,19 @@ def addCaptor():
         print("")
 
 
-def photonmap_plantglScene(sc, anchor):
+def photonmap_plantglScene(sc, anchor, scale_factor):
     scene = libphotonmap_core.Scene()
     for sh in sc:
         add_shape(scene, sh)
     tr2shmap = {}
     # scene.addSpotLight(Vec3(12, 12, 7), watts_to_emission(18), Vec3(1, 1, 1),
     #                   Vec3(0.4, -0.4, 1), 20)
-    addLpyFileToScene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor)
+    # add_lpy_file_to_scene(scene, "rose-simple4.lpy", 1, tr2shmap, anchor, scale_factor)
 
     width = 512
     height = 512
-    n_samples = 5
-    n_photons = 1000
+    n_samples = 2
+    n_photons = 10000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 2
     n_estimation_caustics = 15
@@ -342,7 +347,8 @@ def photonmap_plantglScene(sc, anchor):
     max_depth = 100
 
     image = libphotonmap_core.Image(width, height)
-    camera = libphotonmap_core.Camera(Vec3(12, 12, 2), Vec3(0.4, -0.4, 1), 0.75 * PI)
+    # coordinates must be in meters
+    camera = libphotonmap_core.Camera(Vec3(1.2, 1.2, 0.3), Vec3(0.4, -0.4, 1), 0.75 * PI)
 
     scene.build()
     scene.setupTriangles()
@@ -374,5 +380,5 @@ def photonmap_plantglScene(sc, anchor):
 
 
 if __name__ == "__main__":
-    sc, anchor = read_rad("./chambre2.rad")
-    #photonmap_plantglScene(sc, anchor)
+    sc, anchor, scale_factor = read_rad("chambre2.rad")
+    # photonmap_plantglScene(sc, anchor, scale_factor)

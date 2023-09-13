@@ -1,10 +1,30 @@
 # chambre 2
 
+scale_factor 100
+
 void plastic ecran
 0
 0
 5
+0 0 0 0 0
+
+void plastic MurBlanc
+0
+0
+5
 0.772 0.772 0.772 0.200 0
+
+void plastic Aquanappe
+0
+0
+5
+0.043 0.043 0.043 0.300 0
+
+void metal Sol
+0
+0
+5
+0.370 0.370 0.370 0.100 0
 
 void plastic target
 0
@@ -12,301 +32,298 @@ void plastic target
 5
 0.4 0.5 0.9 0.300 0
 
-ecran polygon sol_1
+Sol polygon sol_1
 0
 0
 12
-0 0 0
-0 388 0
-427 388 0
-427 0 0
+0 -0 0
+0 -388 0
+427 -388 0
+427 -0 0
 
-ecran polygon sol_2
+Sol polygon sol_2
 0
 0
 12
-427 0 0
-427 280 0
-633 280 0
-633 0 0
+427 -0 0
+427 -280 0
+633 -280 0
+633 -0 0
 
-ecran polygon sol_3
+Sol polygon sol_3
 0
 0
 12
-633 48 0
-633 280 0
-659 280 0
-659 48 0
+633 -48 0
+633 -280 0
+659 -280 0
+659 -48 0
 
-ecran polygon plafond_1
+MurBlanc polygon plafond_1
 0
 0
 12
-0 0 270
-0 388 270
-427 388 270
-427 0 270
+427 -0 270
+427 -388 270
+0 -388 270
+0 -0 270
 
-ecran polygon plafond_2
+MurBlanc polygon plafond_2
 0
 0
 12
-427 0 270
-427 280 270
-633 280 270
-633 0 270
+633 -0 270
+633 -280 270
+427 -280 270
+427 -0 270
 
-ecran polygon plafond_3
+MurBlanc polygon plafond_3
 0
 0
 12
-633 48 270
-633 280 270
-659 280 270
-659 48 270
+659 -48 270
+659 -280 270
+633 -280 270
+633 -48 270
 
-ecran polygon mur_1
+MurBlanc polygon mur_1
 0
 0
 12
-0 0 0
-0 0 270
-0 388 270
-0 388 0
+0 -0 0
+0 -0 270
+0 -388 270
+0 -388 0
 
-ecran polygon mur_2
+MurBlanc polygon mur_2
 0
 0
 12
-0 388 0
-0 388 270
-427 388 270
-427 388 0
+0 -388 0
+0 -388 270
+427 -388 270
+427 -388 0
 
-ecran polygon mur_3
+MurBlanc polygon mur_3
 0
 0
 12
-427 388 0
-427 388 270
-427 280 270
-427 280 0
+427 -388 0
+427 -388 270
+427 -280 270
+427 -280 0
 
-ecran polygon mur_4
+MurBlanc polygon mur_4
 0
 0
 12
-427 280 0
-427 280 270
-659 280 270
-659 280 0
+427 -280 0
+427 -280 270
+659 -280 270
+659 -280 0
 
-ecran polygon mur_5
+MurBlanc polygon mur_5
 0
 0
 12
-659 280 0
-659 280 270
-659 48 270
-659 48 0
+659 -280 0
+659 -280 270
+659 -48 270
+659 -48 0
 
-ecran polygon mur_6
+MurBlanc polygon mur_6
 0
 0
 12
-659 48 0
-659 48 270
-633 48 270
-633 48 0
+659 -48 0
+659 -48 270
+633 -48 270
+633 -48 0
 
-ecran polygon mur_7
+MurBlanc polygon mur_7
 0
 0
 12
-633 48 0
-633 48 270
-633 0 270
-633 0 0
+633 -48 0
+633 -48 270
+633 -0 270
+633 -0 0
 
-ecran polygon mur_8
+MurBlanc polygon mur_8
 0
 0
 12
-633 0 0
-633 0 270
-0 0 270
-0 0 0
+633 -0 0
+633 -0 270
+0 -0 270
+0 -0 0
 
-ecran polygon tablette_basse_gauche
+Aquanappe polygon tablette_basse_gauche
 0
 0
 12
-0 15 27
-0 55 27
-630 55 27
-630 15 27
+0 -15 27
+0 -55 27
+630 -55 27
+630 -15 27
 
-ecran polygon tablette_basse_gauche_rebord_haut
+MurBlanc polygon tablette_basse_gauche_rebord_haut
 0
 0
 12
-0 15 27
-630 15 27
-630 15 33
-0 15 33
+0 -15 27
+630 -15 27
+630 -15 33
+0 -15 33
 
-ecran polygon tablette_basse_gauche_rebord_bas
+MurBlanc polygon tablette_basse_gauche_rebord_bas
 0
 0
 12
-0 55 27
-0 55 17
-630 55 17
-630 55 27
+0 -55 27
+0 -55 17
+630 -55 17
+630 -55 27
 
-ecran polygon tablette_haute_gauche
+Aquanappe polygon tablette_haute_gauche
 0
 0
 12
-0 15 87
-0 55 87
-630 55 87
-630 15 87
+0 -15 87
+0 -55 87
+630 -55 87
+630 -15 87
 
-ecran polygon tablette_haute_gauche_rebord_haut
+MurBlanc polygon tablette_haute_gauche_rebord_haut
 0
 0
 12
-0 15 87
-630 15 87
-630 15 93
-0 15 93
+0 -15 87
+630 -15 87
+630 -15 93
+0 -15 93
 
-ecran polygon tablette_haute_gauche_rebord_bas
+MurBlanc polygon tablette_haute_gauche_rebord_bas
 0
 0
 12
-0 55 87
-0 55 77
-630 55 77
-630 55 87
+0 -55 87
+0 -55 77
+630 -55 77
+630 -55 87
 
 
-ecran polygon plateau_gauche_lampe_du_haut
+MurBlanc polygon plateau_gauche_lampe_du_haut
 0
 0
 12
-0 15 252
-0 55 252
-630 55 252
-630 15 252
+0 -15 252
+0 -55 252
+630 -55 252
+630 -15 252
 
-ecran polygon plateau_gauche_lampe_du_haut_rebord
+MurBlanc polygon plateau_gauche_lampe_du_haut_rebord
 0
 0
 12
-0 55 252
-0 55 246
-630 55 246
-630 55 252
+0 -55 252
+0 -55 246
+630 -55 246
+630 -55 252
 
-ecran polygon tablette_gauche_lampe_du_haut_rebord
+MurBlanc polygon tablette_gauche_lampe_du_haut_rebord
 0
 0
 12
-0 55 252
-0 55 246
-630 55 246
-630 55 252
+0 -55 252
+0 -55 246
+630 -55 246
+630 -55 252
 
-ecran polygon tablette_basse_droite
+Aquanappe polygon tablette_basse_droite
 0
 0
 12
-0 333 27
-0 373 27
-427 373 27
-427 333 27
+0 -333 27
+0 -373 27
+427 -373 27
+427 -333 27
 
-ecran polygon tablette_basse_droite_rebord_haut
+MurBlanc polygon tablette_basse_droite_rebord_haut
 0
 0
 12
-0 333 27
-0 373 33
-427 373 33
-427 333 27
+0 -373 27
+0 -373 33
+427 -373 33
+427 -373 27
 
-ecran polygon tablette_basse_droite_rebord_bas
+MurBlanc polygon tablette_basse_droite_rebord_bas
 0
 0
 12
-0 333 27
-427 333 27
-427 333 17
-0 333 17
+0 -333 27
+427 -333 27
+427 -333 17
+0 -333 17
 
-ecran polygon tablette_haute_droite
+Aquanappe polygon tablette_haute_droite
 0
 0
 12
-0 373 87
-427 373 87
-427 333 87
-0 333 87
+0 -373 87
+427 -373 87
+427 -333 87
+0 -333 87
 
-ecran polygon tablette_haute_droite_rebord_haut
+MurBlanc polygon tablette_haute_droite_rebord_haut
 0
 0
 12
-0 373 87
-0 373 93
-427 373 93
-427 373 87
+0 -373 87
+0 -373 93
+427 -373 93
+427 -373 87
 
-ecran polygon tablette_haute_droite_rebord_bas
+MurBlanc polygon tablette_haute_droite_rebord_bas
 0
 0
 12
-0 333 87
-427 333 87
-427 333 77
-0 333 77
+0 -333 87
+427 -333 87
+427 -333 77
+0 -333 77
 
-ecran polygon plateau_droite_lampe_du_haut
+MurBlanc polygon plateau_droite_lampe_du_haut
 0
 0
 12
-0 333 252
-0 373 252
-427 373 252
-427 333 252
+0 -333 252
+0 -373 252
+427 -373 252
+427 -333 252
 
-ecran polygon plateau_droite_lampe_du_haut_rebord
+MurBlanc polygon plateau_droite_lampe_du_haut_rebord
 0
 0
 12
-0 333 252
-427 333 252
-427 333 246
-0 333 246
+0 -333 252
+427 -333 252
+427 -333 246
+0 -333 246
 
-# point light ampoule4
+# lamp400w point_light ampoule4
 # 12 25 5
 
-# spot light spot2
+# lamp400w spot_light spot2
 # 12 5 2
 # 170
 # 1 0 1
 
-# tube light neon2
+# lamp400w tube_light neon2
 # 15 2 3 # centre
 # 500 # longueur
 # 15 # diametre
 # 120 # angle
 # 1 0 1 # direction
-
-
-
 
