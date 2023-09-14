@@ -6,7 +6,7 @@
 #include "triangle.h"
 
 enum LightType{
-    Area, PointL
+    Area, PointL, SpotL, TubeL
 };
 // light interface
 class Light {
@@ -26,8 +26,6 @@ private:
 public:
     PointLight(Vec3f& le, Vec3f position)
             : le(le), position(position) {
-
-        std::cout<<"Point light at: "<<position<<std::endl;
     }
 
     Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
@@ -65,8 +63,6 @@ private:
 public:
     SpotLight(Vec3f& le, Vec3f position, Vec3f direction, float angle)
             : le(le), position(position), direction(direction), angle(angle) {
-
-        std::cout<<"Spot light at: "<<position<<std::endl;
     }
 
     Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
@@ -90,6 +86,39 @@ public:
 
         return direction;
     }
+};
+
+
+class TubeLight : public Light {
+ private:
+  Vec3f le;  // emission
+  Triangle* triangle;
+
+ public:
+  TubeLight(const Vec3f& le, Triangle* triangle)
+      : le(le), triangle(triangle) {
+  }
+
+  // return emission
+  Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override {
+    return le;
+  }
+
+  // sample point on the light
+  SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override {
+    return triangle->samplePoint(sampler, pdf);
+  }
+
+  // sample direction from the light
+  Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
+                        float& pdf) override {
+      Vec3f dir = sampleCosineHemisphere(sampler.getNext2D(), pdf);
+      Vec3f wo = localToWorld(dir, surfInfo.dpdu, surfInfo.shadingNormal,
+                              surfInfo.dpdv);
+
+    // transform direction from local to world
+    return wo;
+  }
 };
 
 class AreaLight : public Light {

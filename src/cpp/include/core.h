@@ -123,7 +123,7 @@ template <typename T> struct Vec3 {
   T operator[](int i) const { return v[i]; }
   T &operator[](int i) { return v[i]; }
 
-  Vec3 operator-() { return Vec3(-v[0], -v[1], -v[2]); }
+  Vec3 operator-() const { return Vec3(-v[0], -v[1], -v[2]); }
 
   Vec3 &operator+=(const Vec3 &v) {
     for (int i = 0; i < 3; ++i) {

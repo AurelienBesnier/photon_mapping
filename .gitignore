@@ -185,7 +185,7 @@ cython_debug/
 *.slo
 *.lo
 *.o
-*.obj
+.obj
 
 # Precompiled Headers
 *.gch

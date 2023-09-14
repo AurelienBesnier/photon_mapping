@@ -6,7 +6,7 @@ import random
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
 from photonmap.libphotonmap_core import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler, \
-    visualizePhotonMap, Render, Camera, PI
+    visualizePhotonMap, Render, Camera, PI, normalize
 
 from photonmap import libphotonmap_core
 
@@ -199,25 +199,27 @@ def read_rad(file: str):
                         tmp = i + 1
                         nbCoords = int(size / 3)
                         if nbCoords > 2:
-                            if "type" == "cylinder":
-                                l = re.split(r"\s+|;+", lines[0])
-                                l2 = re.split(r"\s+|;+", lines[1])
-                                l3 = re.split(r"\s+|;+", lines[2])
-                                x, y, z = float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor
-                                x2, y2, z2 = (float(l2[0]) / scale_factor, float(l2[2]) / scale_factor, float(l2[1]) / scale_factor)
-                                vert.append((x, y, z))
-                                vert.append((x2, y2, z2))
-                                for i in range(nbCoords):
-                                    vert.append((x, y, z))
-
+                            # if "type" == "cylinder":
+                            #     l = re.split(r"\s+|;+", lines[0])
+                            #     l2 = re.split(r"\s+|;+", lines[1])
+                            #     l3 = re.split(r"\s+|;+", lines[2])
+                            #     x, y, z = float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor
+                            #     x2, y2, z2 = (float(l2[0]) / scale_factor, float(l2[2]) / scale_factor, float(l2[1]) / scale_factor)
+                            #     vert.append((x, y, z))
+                            #     vert.append((x2, y2, z2))
+                            #     for i in range(nbCoords):
+                            #         vert.append((x, y, z))
+                            #
+                            #     shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
+                            # else:
+                            for j in range(tmp, tmp + nbCoords):
+                                l = re.split(r"\s+|;+", lines[j])
+                                #print(name)
+                                vert.append((float(l[0]) / scale_factor,
+                                             float(l[2]) / scale_factor,
+                                             float(l[1]) / scale_factor))
+                                i = j
                                 shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
-                            else:
-                                for j in range(tmp, tmp + nbCoords):
-                                    l = re.split(r"\s+|;+", lines[j])
-                                    #print(name)
-                                    vert.append((float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor))
-                                    i = j
-                                    shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                         if name == "anchor":
                             print("anchor found")
                             anchor = vert[0]
@@ -313,14 +315,13 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
-        scene.addPointLight(pos, watts_to_emission(100), Vec3(1, 1, 1))
+        scene.addPointLight(pos, watts_to_emission(1000), Vec3(1, 1, 1))
 
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
-
 
 def addCaptor():
     with open("captor.obj", 'r') as f:
@@ -332,15 +333,16 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     for sh in sc:
         add_shape(scene, sh)
     tr2shmap = {}
-    # scene.addSpotLight(Vec3(12, 12, 7), watts_to_emission(18), Vec3(1, 1, 1),
-    #                   Vec3(0.4, -0.4, 1), 20)
-    # add_lpy_file_to_scene(scene, "rose-simple4.lpy", 1, tr2shmap, anchor, scale_factor)
+    # scene.addSpotLight(Vec3(1, 1, 0.7), watts_to_emission(18), Vec3(1, 1, 1),
+     #                   Vec3(0.4, -0.4, 1), 20)
+
+    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
 
     width = 512
     height = 512
     n_samples = 2
-    n_photons = 10000
-    n_estimation_global = 100
+    n_photons = 100000
+    n_estimation_global = 95
     n_photons_caustics_multiplier = 2
     n_estimation_caustics = 15
     final_gathering_depth = 0
@@ -348,7 +350,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     image = libphotonmap_core.Image(width, height)
     # coordinates must be in meters
-    camera = libphotonmap_core.Camera(Vec3(1.2, 1.2, 0.3), Vec3(0.4, -0.4, 1), 0.75 * PI)
+    cam_pos = Vec3(1.2, 1.2, 0.4)
+    camera = libphotonmap_core.Camera(cam_pos, Vec3(0.04, -0.04, 0.1), 0.5 * PI)
 
     scene.build()
     scene.setupTriangles()
@@ -380,5 +383,6 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
 
 if __name__ == "__main__":
-    sc, anchor, scale_factor = read_rad("chambre2.rad")
-    # photonmap_plantglScene(sc, anchor, scale_factor)
+    sc, anchor, scale_factor = read_rad("testChamber.rad")
+
+    photonmap_plantglScene(sc, anchor, scale_factor)

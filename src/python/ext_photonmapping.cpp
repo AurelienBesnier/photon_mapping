@@ -117,7 +117,8 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
             unsigned &width, unsigned &n_samples, Camera &camera,
             PhotonMapping &integrator, Scene &scene,
             std::string_view &filename) {
-    std::string str;
+    if(integrator.getPhotonMapGlobal().nPhotons() <= 0)
+        return;
 //#pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (unsigned int i = 0; i < height; ++i) {
 
@@ -326,9 +327,11 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def(py::self + py::self)
             .def(py::self + float())
             .def(py::self += py::self)
+            .def(py::self - py::self)
             .def(py::self *= float())
             .def(float() * py::self)
             .def(py::self * float())
+            .def(-py::self)
             .def("__setitem__",
                  [](Vec3<float> &self, int index, float val) { self[index] = val; })
             .def("__getitem__",
@@ -429,4 +432,6 @@ PYBIND11_MODULE(libphotonmap_core, m) {
           py::arg("Scene"), py::arg("image"), py::arg("width"), py::arg("height"),
           py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
           py::arg("filename"));
+
+    m.def("normalize", &normalize, "Returns the normal of a vector");
 }
