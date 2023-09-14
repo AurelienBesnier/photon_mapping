@@ -3,6 +3,7 @@
 #include "image.h"
 #include "integrator.h"
 #include "scene.h"
+#include <chrono>
 
 void Render(UniformSampler &sampler, Image &image, const int &height,
             const int &width, const int &n_samples, const Camera &camera,
