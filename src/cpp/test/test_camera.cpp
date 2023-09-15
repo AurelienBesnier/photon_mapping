@@ -4,8 +4,13 @@
 int main() {
   const unsigned width = 512;
   const unsigned height = 512;
-
-  Camera camera(Vec3fZero, Vec3f(0, 0, -1));
+    float aspect_ratio = 16.0 / 9.0;
+    Vec3f lookfrom(0,0,0);
+    Vec3f lookat(0,0,0);
+    Vec3f vup(0,1,0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.1;
+    Camera camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
   Image image(width, height);
   for (unsigned i = 0; i < height; ++i) {

@@ -15,8 +15,8 @@ PYBIND11_MAKE_OPAQUE(std::vector<uint32_t>)
 PYBIND11_MAKE_OPAQUE(std::vector<int>)
 PYBIND11_MAKE_OPAQUE(std::vector<Vec3f>)
 
-void visualizePhotonMap(const Scene &scene, Image &image, const unsigned &width,
-                        const unsigned &height, const Camera &camera,
+void visualizePhotonMap(const Scene &scene, Image &image, const unsigned &height,
+                        const unsigned &width, const Camera &camera,
                         const unsigned &n_photons, const unsigned &max_depth,
                         const std::string_view &filename) {
 
@@ -231,7 +231,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
 
     // Camera
     py::class_<Camera>(m, "Camera")
-            .def(py::init<Vec3<float>, Vec3<float>, float>())
+            .def(py::init<Vec3<float>, Vec3<float>, Vec3<float>, float, float, float, float>())
             .def("sampleRay", &Camera::sampleRay, py::arg("uv"), py::arg("ray"),
                  py::arg("pdf"));
 

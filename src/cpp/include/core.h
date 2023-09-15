@@ -144,6 +144,10 @@ template <typename T> struct Vec3 {
     return *this;
   }
 
+    float length_squared() const {
+        return v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+    }
+
   bool operator==(const Vec3 &v) const {
     return (this->v[0] == v[0] && this->v[1] == v[1] && this->v[2] == v[2]);
   }
@@ -255,6 +259,15 @@ inline float randomInterval(float min, float max){
 
     return dist(gen);
 }
+
+inline Vec3f random_in_unit_disk() {
+    while (true) {
+        auto p = Vec3f(randomInterval(-1,1), randomInterval(-1,1), 0);
+        if (length2(p) >= 1) continue;
+        return p;
+    }
+}
+
 
 struct Ray {
   Vec3f origin;

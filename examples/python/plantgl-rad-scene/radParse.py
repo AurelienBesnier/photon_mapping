@@ -51,9 +51,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / (scale_factor/10) + anchor[0])
-            vertices.append(mvector[2] / (scale_factor/10) + anchor[1])
-            vertices.append(mvector[1] / (scale_factor/10) + anchor[2])
+            vertices.append(mvector[0] / (scale_factor / 10) + anchor[0])
+            vertices.append(mvector[2] / (scale_factor / 10) + anchor[1])
+            vertices.append(mvector[1] / (scale_factor / 10) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -91,7 +91,8 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
             ctr += 1
 
 
-def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3, scale_factor):
+def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3,
+                          scale_factor):
     lsystem = Lsystem(filename)
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
@@ -168,17 +169,17 @@ def read_rad(file: str):
                         mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness}
                         materials[name] = mat
                         i += 5
-                    elif type == "trans":
-                        li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
-                        roughness = float(li[4])
-                        trans = float(li[5])
-                        tspec = float(li[6])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
-                               "trans": trans, "tspec": tspec}
-                        materials[name] = mat
-                        i += 5
+                    # elif type == "trans":
+                    #     li = lines[i + 4].split(" ")
+                    #     color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
+                    #     spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                    #     roughness = float(li[4])
+                    #     trans = float(li[5])
+                    #     tspec = float(li[6])
+                    #     mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
+                    #            "trans": trans, "tspec": tspec}
+                    #     materials[name] = mat
+                    #     i += 5
                     elif type == "light":
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
@@ -214,7 +215,7 @@ def read_rad(file: str):
                             # else:
                             for j in range(tmp, tmp + nbCoords):
                                 l = re.split(r"\s+|;+", lines[j])
-                                #print(name)
+                                # print(name)
                                 vert.append((float(l[0]) / scale_factor,
                                              float(l[2]) / scale_factor,
                                              float(l[1]) / scale_factor))
@@ -315,13 +316,14 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
-        scene.addPointLight(pos, watts_to_emission(1000), Vec3(1, 1, 1))
+        scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
+
 
 def addCaptor():
     with open("captor.obj", 'r') as f:
@@ -334,24 +336,33 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         add_shape(scene, sh)
     tr2shmap = {}
     # scene.addSpotLight(Vec3(1, 1, 0.7), watts_to_emission(18), Vec3(1, 1, 1),
-     #                   Vec3(0.4, -0.4, 1), 20)
+    #                   Vec3(0.4, -0.4, 1), 20)
 
-    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
+    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
 
-    width = 512
-    height = 512
     n_samples = 2
-    n_photons = 100000
+    n_photons = 10000
     n_estimation_global = 95
-    n_photons_caustics_multiplier = 2
-    n_estimation_caustics = 15
+    n_photons_caustics_multiplier = 10
+    n_estimation_caustics = 10
     final_gathering_depth = 0
     max_depth = 100
 
-    image = libphotonmap_core.Image(width, height)
+    aspect_ratio = 16.0 / 9.0
+
+    image_width = 1024
+    image_height = int(image_width / aspect_ratio)
+
+    image = libphotonmap_core.Image(image_width, image_height)
+    lookfrom = Vec3(1.0, 1.1, 0.4)
+    lookat = Vec3(1.25, 0.901, 0.915)
+    vup = Vec3(0, -1, 0)
+    vfov = 90.0
+    dist_to_focus = 20.0
+    aperture = 0.1
+
     # coordinates must be in meters
-    cam_pos = Vec3(1.2, 1.2, 0.4)
-    camera = libphotonmap_core.Camera(cam_pos, Vec3(0.04, -0.04, 0.1), 0.5 * PI)
+    camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
 
     scene.build()
     scene.setupTriangles()
@@ -367,12 +378,12 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     print("Done!")
 
     print("Printing photonmap image...")
-    visualizePhotonMap(scene, image, width, height, camera, n_photons, max_depth, "photonmap.ppm")
+    visualizePhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm")
     print("Done!")
 
     print("Rendering image...")
-    image = libphotonmap_core.Image(width, height)
-    Render(sampler, image, height, width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
+    image = libphotonmap_core.Image(image_width, image_height)
+    Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
 
     compute_energy(tr2shmap, integrator)
 

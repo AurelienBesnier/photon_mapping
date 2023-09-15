@@ -39,13 +39,12 @@ boost::shared_ptr <BxDF> createBxDF(tinyobj::material_t &material,
             return boost::make_shared<Mirror>(Vec3f(1.0f));
         case 6:
             // leaf
-            material.ior =
-                    1.425f; // Source:
+            material.ior = 1.425f; // Source:
             // https://opg.optica.org/ao/abstract.cfm?uri=ao-13-1-109
             return boost::make_shared<Leaf>(kd, material.ior, roughness);
         case 7:
             // Transparent
-            return boost::make_shared<Glass>(kd, material.ior);
+            return boost::make_shared<Transparent>(kd, material.ior);
         case 9:
             return boost::make_shared<SimpleLeaf>(kd, reflectance, transmittance, roughness);
         default:

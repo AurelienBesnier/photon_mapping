@@ -13,7 +13,15 @@ int main() {
   const int max_depth = 100;
 
   Image image(width, height);
-  Camera camera(Vec3f(0, 1, 7), Vec3f(0, 0, -1), 0.25 * PI);
+
+    float aspect_ratio = 16.0 / 9.0;
+    Vec3f lookfrom(0,1,7);
+    Vec3f lookat(0,0,0);
+    Vec3f vup(0,1,0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.1;
+    Camera camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+  //Camera camera(Vec3f(0, 1, 7), Vec3f(0, 0, -1), 0.25 * PI);
 
   Scene scene;
   scene.loadModel("cornell_box.obj");
