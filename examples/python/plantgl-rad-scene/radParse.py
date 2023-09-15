@@ -183,7 +183,7 @@ def read_rad(file: str):
                     elif type == "light":
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        mat = {"type": type, "color": color}
+                        mat = {"name": name, "type": type, "color": color}
                         materials[name] = mat
                         i += 5
             else:
@@ -194,12 +194,21 @@ def read_rad(file: str):
                         material = li[0]
                         type = li[1]
                         name = li[2].strip("\n")
-                        i += 3
-                        vert = []
-                        size = int(lines[i])
-                        tmp = i + 1
-                        nbCoords = int(size / 3)
-                        if nbCoords > 2:
+
+                        if type == "point_light":
+                            i += 1
+                            vert = []
+                            l = re.split(r"\s+|;+", lines[i])
+                            vert.append((float(l[0]) / scale_factor,
+                                         float(l[2]) / scale_factor,
+                                         float(l[1]) / scale_factor))
+                            shapes[name] = {"vertices": vert, "type": type, "size": 1, "material": material}
+                        else:
+                            i += 3
+                            vert = []
+                            size = int(lines[i])
+                            tmp = i + 1
+                            nbCoords = int(size / 3)
                             # if "type" == "cylinder":
                             #     l = re.split(r"\s+|;+", lines[0])
                             #     l2 = re.split(r"\s+|;+", lines[1])
@@ -215,16 +224,15 @@ def read_rad(file: str):
                             # else:
                             for j in range(tmp, tmp + nbCoords):
                                 l = re.split(r"\s+|;+", lines[j])
-                                # print(name)
                                 vert.append((float(l[0]) / scale_factor,
                                              float(l[2]) / scale_factor,
                                              float(l[1]) / scale_factor))
                                 i = j
                                 shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
-                        if name == "anchor":
-                            print("anchor found")
-                            anchor = vert[0]
-                            print(anchor)
+                            if name == "anchor":
+                                print("anchor found")
+                                anchor = vert[0]
+                                print(anchor)
         for sh, val in shapes.items():
             mat_key = val["material"]
             mat = materials[mat_key]
@@ -245,7 +253,8 @@ def read_rad(file: str):
                 s.geometry = ts
                 s.name = sh
                 if mat["type"] == "light":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                    s.name += str(vert[0])
+                    s.appearance = Material(name=name, ambient=Color3(mat["color"]),
                                             emission=Color3(mat["color"]))
 
                 elif mat["type"] == "trans":
@@ -275,7 +284,7 @@ def read_rad(file: str):
                 ts.computeNormalList()
                 s.geometry = ts
                 s.name = sh
-                if mat["type"] == "light" or s.name.startswith("ref"):
+                if mat["type"] == "light":
                     s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
                                             emission=Color3(mat["color"]))
                 elif mat["type"] == "trans":
@@ -313,10 +322,17 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
     illum = 1
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
+    if len(indices) == 0:
+        coords = re.findall(r"\b[-+]?(?:\d*\.\d+|\d+\.?)\b", sh.name)  # regex to get the coords
+
+        pos = Vec3(float(coords[0]), float(coords[1]), -float(coords[2]))
+        print(coords[0] + " " + coords[1] + " " + coords[2])
+        # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
+
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
-        scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
+        #scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -338,6 +354,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     # scene.addSpotLight(Vec3(1, 1, 0.7), watts_to_emission(18), Vec3(1, 1, 1),
     #                   Vec3(0.4, -0.4, 1), 20)
 
+    scene.addPointLight(Vec3(2.895450, 1, -1.969085), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
 
     n_samples = 2
@@ -354,8 +371,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(1.0, 1.1, 0.4)
-    lookat = Vec3(1.25, 0.901, 0.915)
+    lookfrom = Vec3(1.895450, 2, -1.969085)
+    lookat = Vec3(0,0,-2)
     vup = Vec3(0, -1, 0)
     vfov = 90.0
     dist_to_focus = 20.0
@@ -394,6 +411,6 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
 
 if __name__ == "__main__":
-    sc, anchor, scale_factor = read_rad("testChamber.rad")
+    sc, anchor, scale_factor = read_rad("chambre2.rad")
 
     photonmap_plantglScene(sc, anchor, scale_factor)

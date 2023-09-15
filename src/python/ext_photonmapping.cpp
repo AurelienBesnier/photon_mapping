@@ -67,10 +67,13 @@ void visualizePhotonMaps(const Scene &scene, Image &image,
                          const Camera &camera, const unsigned &n_photons,
                          const unsigned &max_depth,
                          const std::string &filename) {
+
     // photon tracing and build photon map
     PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
     UniformSampler sampler;
     integrator.build(scene, sampler);
+    if(integrator.getPhotonMapGlobal().nPhotons() <= 0)
+        return;
 
     // visualize photon map
     const std::vector<PhotonMap> photon_maps = integrator.getLightsPhotonMap();

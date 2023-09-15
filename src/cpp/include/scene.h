@@ -586,6 +586,8 @@ public:
         }
     }
 
+    size_t nLights() const { return lights.size();}
+
     boost::shared_ptr <Light> sampleLight(Sampler &sampler, float &pdf) const {
         uint32_t lightIdx = lights.size() * sampler.getNext1D();
         if (lightIdx == lights.size())

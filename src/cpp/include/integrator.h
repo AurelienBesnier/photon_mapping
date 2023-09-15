@@ -418,6 +418,9 @@ public:
 
     // photon tracing and build photon map
     void build(const Scene &scene, Sampler &sampler) override {
+
+        if(scene.nLights() <= 0)
+            return;
         std::vector<Photon> photons;
 
         // init sampler for each thread
