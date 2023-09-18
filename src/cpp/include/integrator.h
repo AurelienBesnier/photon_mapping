@@ -148,7 +148,7 @@ private:
         // trace ray to the light
         IntersectInfo info_shadow;
         if (!scene.intersect(ray_shadow, info_shadow)) {
-            const Vec3f Le = light->Le(light_surf, -wi);
+            const Vec3f Le = light->Le();
             const Vec3f f = info.hitPrimitive->evaluateBxDF(
                     wo, wi, info.surfaceInfo, TransportDirection::FROM_CAMERA);
             const float cos = std::abs(dot(wi, info.surfaceInfo.shadingNormal));
@@ -225,7 +225,7 @@ private:
 
         // spawn ray
         Ray ray(light_surf.position, dir);
-        Vec3f le = light->Le(light_surf, dir);
+        Vec3f le = light->Le();
 
         if (light_surf.point)
             throughput = std::abs(dot(dir, le));
@@ -255,7 +255,7 @@ private:
 
         // spawn ray
         Ray ray(light_surf.position, dir);
-        Vec3f le = light->Le(light_surf, dir);
+        Vec3f le = light->Le();
 
         throughput = le / (light_choose_pdf * light_pos_pdf * light_dir_pdf) *
                      std::abs(dot(dir, light_surf.shadingNormal));
@@ -588,7 +588,7 @@ public:
                                 break;
                             }
 
-                            prev_specular = (bxdf_type == BxDFType::SPECULAR );
+                            prev_specular = (bxdf_type == BxDFType::SPECULAR);
 
                             // russian roulette
                             if (k > 0) {

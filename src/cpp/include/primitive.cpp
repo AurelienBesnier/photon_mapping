@@ -4,7 +4,7 @@ bool Primitive::hasAreaLight() const { return areaLight != nullptr; }
 
 // return emission
 Vec3f Primitive::Le(SurfaceInfo& surfInfo, const Vec3f& dir) const {
-return areaLight->Le(surfInfo, dir);
+return areaLight->Le();
 }
 
 BxDFType Primitive::getBxDFType() const { return bxdf->getType(); }

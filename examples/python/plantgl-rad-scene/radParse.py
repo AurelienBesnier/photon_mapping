@@ -333,11 +333,11 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
 
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
-        # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
+        scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
         # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
-        scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
-                           trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
+        #scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
+        #                   trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -353,22 +353,22 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     for sh in sc:
         add_shape(scene, sh)
     tr2shmap = {}
-    spot_pos = Vec3(0.9, 1.5, -2.82)
+    spot_pos = Vec3(1.2, 1.5, -3.82)
     spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
-    # spot_dir = Vec3(0, 0, 1)
+
     scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
-                       spot_dir, 80.0)
+                       spot_dir, 30.0)
 
     # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
 
-    n_samples = 1
-    n_photons = 10000
-    n_estimation_global = 95
+    n_samples = 5
+    n_photons = 100
+    n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
-    max_depth = 5
+    max_depth = 100
 
     aspect_ratio = 16.0 / 9.0
 
@@ -376,12 +376,12 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(0.9, 1.5, -2.82)
+    lookfrom = Vec3(1.2, 1.5, -3.82)
     lookat = Vec3(anchor[0], anchor[2], anchor[1])
     vup = Vec3(0, -1, 0)
     vfov = 50.0
-    dist_to_focus = 15.0
-    aperture = 0.1
+    dist_to_focus = 3.0
+    aperture = 0.01
 
     # coordinates must be in meters
     camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)

@@ -12,7 +12,7 @@ enum LightType{
 class Light {
  public:
     virtual ~Light() = default;
-  virtual Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) = 0;
+  virtual Vec3f Le() = 0;
   virtual SurfaceInfo samplePoint(Sampler& sampler, float& pdf) = 0;
   virtual Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                                 float& pdf) = 0;
@@ -28,7 +28,7 @@ public:
             : le(le), position(position) {
     }
 
-    Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
+    Vec3f Le() override{
         return le;
     }
 
@@ -65,7 +65,7 @@ public:
             : le(le), position(position), direction(direction), angle(angle) {
     }
 
-    Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override{
+    Vec3f Le() override{
         return le;
     }
 
@@ -79,22 +79,15 @@ public:
 
     Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                           float& pdf) override {
-        float jittery = cosf(angle) * randomInterval(-0.2,0.2);
-        float jitterx = sinf(angle) * randomInterval(-0.2,0.2);
-        Vec3f dir = direction;
-        std::cout<<"Jitterx: "<<jitterx<<std::endl;
-        std::cout<<"Jittery: "<<jittery<<std::endl;
-        dir[0] += jittery;
-        dir[1] += randomInterval(-0.2,0.2);
-        dir[2] += jitterx;
-        std::cout<<"direction: "<<dir<<std::endl;
-
-        /*float y = randomInterval(-1.0f,1.0f);
+        float rad = deg2rad(angle);
+        float y = randomInterval(-rad,rad);
+        float theta = randomInterval(0.0, rad*2);
         float r = sqrtf(1.0f-y*y);
-        float x = r*sinf(angle);
-        float z = r*cosf(angle);
+        float x = r*sinf(theta);
+        float z = r*cosf(theta);
 
-        return {x,y,z};*/
+        Vec3f dir(x,y,z);
+        dir+=direction;
         return dir;
     }
 };
@@ -111,7 +104,7 @@ class TubeLight : public Light {
   }
 
   // return emission
-  Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override {
+  Vec3f Le() override {
     return le;
   }
 
@@ -143,7 +136,7 @@ class AreaLight : public Light {
   }
 
   // return emission
-  Vec3f Le(const SurfaceInfo& info, const Vec3f& dir) override {
+  Vec3f Le() override {
     return le;
   }
 
