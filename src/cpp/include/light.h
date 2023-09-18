@@ -46,7 +46,7 @@ public:
         float angle = randomInterval(0.0, PI_MUL_2);
         float r = sqrtf(1.0f-y*y);
         float x = r*sinf(angle);
-        float z = r*cos(angle);
+        float z = r*cosf(angle);
 
         return {x,y,z};
     }
@@ -79,12 +79,23 @@ public:
 
     Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                           float& pdf) override {
+        float jittery = cosf(angle) * randomInterval(-0.2,0.2);
+        float jitterx = sinf(angle) * randomInterval(-0.2,0.2);
+        Vec3f dir = direction;
+        std::cout<<"Jitterx: "<<jitterx<<std::endl;
+        std::cout<<"Jittery: "<<jittery<<std::endl;
+        dir[0] += jittery;
+        dir[1] += randomInterval(-0.2,0.2);
+        dir[2] += jitterx;
+        std::cout<<"direction: "<<dir<<std::endl;
 
-        float theta = randomInterval(deg2rad(angle), deg2rad(angle - PI_MUL_2));
-        std::cout<<"theta"<<theta<<std::endl;
-        direction += theta;
+        /*float y = randomInterval(-1.0f,1.0f);
+        float r = sqrtf(1.0f-y*y);
+        float x = r*sinf(angle);
+        float z = r*cosf(angle);
 
-        return direction;
+        return {x,y,z};*/
+        return dir;
     }
 };
 

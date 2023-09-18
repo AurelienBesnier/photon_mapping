@@ -9,7 +9,7 @@ public:
     Camera(
             Vec3f lookfrom,
             Vec3f lookat,
-            Vec3f   vup,
+            Vec3f vup,
             float vfov, // vertical field-of-view in degrees
             float aspect_ratio,
             float aperture,
@@ -17,7 +17,7 @@ public:
     ) {
         float theta = deg2rad(vfov);
         float h = tan(theta/2);
-        float viewport_height = 2.0 * h;
+        float viewport_height = 2.0f * h;
         float viewport_width = aspect_ratio * viewport_height;
 
         w = normalize(lookfrom - lookat);

@@ -252,10 +252,10 @@ inline Vec3f sphericalToCartesian(float theta, float phi) {
   return {std::cos(phi) * std::sin(theta), std::cos(theta),
           std::sin(phi) * std::sin(theta)};
 }
+static boost::random::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
 
 inline float randomInterval(float min, float max){
-    boost::random::mt19937 gen;
-    boost::random::uniform_real_distribution<> dist(min, max);
+    boost::random::uniform_real_distribution<float> dist(min, max);
 
     return dist(gen);
 }

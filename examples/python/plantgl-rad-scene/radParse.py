@@ -51,9 +51,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / (scale_factor / 10) + anchor[0])
-            vertices.append(mvector[2] / (scale_factor / 10) + anchor[1])
-            vertices.append(mvector[1] / (scale_factor / 10) + anchor[2])
+            vertices.append(mvector[0] / (scale_factor / 2) + anchor[0])
+            vertices.append(mvector[2] / (scale_factor / 2) + anchor[1])
+            vertices.append(mvector[1] / (scale_factor / 2) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -231,7 +231,7 @@ def read_rad(file: str):
                                 shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                             if name == "anchor":
                                 print("anchor found")
-                                anchor = vert[0]
+                                anchor = vert[1]
                                 print(anchor)
         for sh, val in shapes.items():
             mat_key = val["material"]
@@ -319,20 +319,22 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
                     sh.appearance.specular.blue / 255.0)
     diffuse = ambient
     trans = sh.appearance.transparency
-    illum = 1
+    if specular != Color3(0, 0, 0):
+        illum = 1
+
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
     if len(indices) == 0:
-        coords = re.findall(r"\b[-+]?(?:\d*\.\d+|\d+\.?)\b", sh.name)  # regex to get the coords
-
-        pos = Vec3(float(coords[0]), float(coords[1]), -float(coords[2]))
-        print(coords[0] + " " + coords[1] + " " + coords[2])
+        coords = re.findall(r"[-+]?(?:\d*\.*\d+)", sh.name)  # regex to get the coords
+        # coords[0] is the id of the light
+        pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
+        # print(coords)
         # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         # scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
-        #scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
+        # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -351,19 +353,22 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     for sh in sc:
         add_shape(scene, sh)
     tr2shmap = {}
-    # scene.addSpotLight(Vec3(1, 1, 0.7), watts_to_emission(18), Vec3(1, 1, 1),
-    #                   Vec3(0.4, -0.4, 1), 20)
+    spot_pos = Vec3(0.9, 1.5, -2.82)
+    spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
+    # spot_dir = Vec3(0, 0, 1)
+    scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
+                       spot_dir, 80.0)
 
-    scene.addPointLight(Vec3(2.895450, 1, -1.969085), watts_to_emission(32), Vec3(1, 1, 1))
+    # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
 
-    n_samples = 2
+    n_samples = 1
     n_photons = 10000
     n_estimation_global = 95
-    n_photons_caustics_multiplier = 10
-    n_estimation_caustics = 10
+    n_photons_caustics_multiplier = 50
+    n_estimation_caustics = 50
     final_gathering_depth = 0
-    max_depth = 100
+    max_depth = 5
 
     aspect_ratio = 16.0 / 9.0
 
@@ -371,11 +376,11 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(1.895450, 2, -1.969085)
-    lookat = Vec3(0,0,-2)
+    lookfrom = Vec3(0.9, 1.5, -2.82)
+    lookat = Vec3(anchor[0], anchor[2], anchor[1])
     vup = Vec3(0, -1, 0)
-    vfov = 90.0
-    dist_to_focus = 20.0
+    vfov = 50.0
+    dist_to_focus = 15.0
     aperture = 0.1
 
     # coordinates must be in meters

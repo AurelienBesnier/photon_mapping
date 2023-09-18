@@ -228,7 +228,7 @@ private:
         Vec3f le = light->Le(light_surf, dir);
 
         if (light_surf.point)
-            throughput = std::abs(dot(dir, le*100));
+            throughput = std::abs(dot(dir, le));
         else
             throughput = le / (light_choose_pdf * light_pos_pdf * light_dir_pdf) *
                          std::abs(dot(dir, light_surf.shadingNormal));
