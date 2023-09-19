@@ -40,7 +40,7 @@ public:
 
         ray = Ray(
                 origin + offset,
-                lower_left_corner + uv[0]*horizontal + uv[1]*vertical - origin - offset
+                lower_left_corner + uv[1]*horizontal + uv[0]*vertical - origin - offset
         );
         return true;
     }

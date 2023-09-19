@@ -56,290 +56,290 @@ Sol polygon sol_1
 0
 0
 12
-0 -0 0
-0 -388 0
-427 -388 0
-427 -0 0
+0 0 0
+0 388 0
+427 388 0
+427 0 0
 
 Sol polygon sol_2
 0
 0
 12
-427 -0 0
-427 -280 0
-633 -280 0
-633 -0 0
+427 0 0
+427 280 0
+633 280 0
+633 0 0
 
 Sol polygon sol_3
 0
 0
 12
-633 -48 0
-633 -280 0
-659 -280 0
-659 -48 0
+633 48 0
+633 280 0
+659 280 0
+659 48 0
 
 MurBlanc polygon plafond_1
 0
 0
 12
-427 -0 270
-427 -388 270
-0 -388 270
-0 -0 270
+427 0 270
+427 388 270
+0 388 270
+0 0 270
 
 MurBlanc polygon plafond_2
 0
 0
 12
-633 -0 270
-633 -280 270
-427 -280 270
-427 -0 270
+633 0 270
+633 280 270
+427 280 270
+427 0 270
 
 MurBlanc polygon plafond_3
 0
 0
 12
-659 -48 270
-659 -280 270
-633 -280 270
-633 -48 270
+659 48 270
+659 280 270
+633 280 270
+633 48 270
 
 MurBlanc polygon mur_1
 0
 0
 12
-0 -0 0
-0 -0 270
-0 -388 270
-0 -388 0
+0 0 0
+0 0 270
+0 388 270
+0 388 0
 
 MurBlanc polygon mur_2
 0
 0
 12
-0 -388 0
-0 -388 270
-427 -388 270
-427 -388 0
+0 388 0
+0 388 270
+427 388 270
+427 388 0
 
 MurBlanc polygon mur_3
 0
 0
 12
-427 -388 0
-427 -388 270
-427 -280 270
-427 -280 0
+427 388 0
+427 388 270
+427 280 270
+427 280 0
 
 MurBlanc polygon mur_4
 0
 0
 12
-427 -280 0
-427 -280 270
-659 -280 270
-659 -280 0
+427 280 0
+427 280 270
+659 280 270
+659 280 0
 
 MurBlanc polygon mur_5
 0
 0
 12
-659 -280 0
-659 -280 270
-659 -48 270
-659 -48 0
+659 280 0
+659 280 270
+659 48 270
+659 48 0
 
 MurBlanc polygon mur_6
 0
 0
 12
-659 -48 0
-659 -48 270
-633 -48 270
-633 -48 0
+659 48 0
+659 48 270
+633 48 270
+633 48 0
 
 MurBlanc polygon mur_7
 0
 0
 12
-633 -48 0
-633 -48 270
-633 -0 270
-633 -0 0
+633 48 0
+633 48 270
+633 0 270
+633 0 0
 
 MurBlanc polygon mur_8
 0
 0
 12
-633 -0 0
-633 -0 270
-0 -0 270
-0 -0 0
+633 0 0
+633 0 270
+0 0 270
+0 0 0
 
 Aquanappe polygon tablette_basse_gauche
 0
 0
 12
-0 -15 27
-0 -55 27
-630 -55 27
-630 -15 27
+0 15 27
+0 55 27
+630 55 27
+630 15 27
 
 MurBlanc polygon tablette_basse_gauche_rebord_haut
 0
 0
 12
-0 -15 27
-630 -15 27
-630 -15 33
-0 -15 33
+0 15 27
+630 15 27
+630 15 33
+0 15 33
 
 MurBlanc polygon tablette_basse_gauche_rebord_bas
 0
 0
 12
-0 -55 27
-0 -55 17
-630 -55 17
-630 -55 27
+0 55 27
+0 55 17
+630 55 17
+630 55 27
 
 Aquanappe polygon tablette_haute_gauche
 0
 0
 12
-0 -15 87
-0 -55 87
-630 -55 87
-630 -15 87
+0 15 87
+0 55 87
+630 55 87
+630 15 87
 
 MurBlanc polygon tablette_haute_gauche_rebord_haut
 0
 0
 12
-0 -15 87
-630 -15 87
-630 -15 93
-0 -15 93
+0 15 87
+630 15 87
+630 15 93
+0 15 93
 
 MurBlanc polygon tablette_haute_gauche_rebord_bas
 0
 0
 12
-0 -55 87
-0 -55 77
-630 -55 77
-630 -55 87
+0 55 87
+0 55 77
+630 55 77
+630 55 87
 
 
 MiroirCaissonLampes polygon plateau_gauche_lampe_du_haut
 0
 0
 12
-630 -15 252
-630 -55 252
-0 -55 252
-0 -15 252
+630 15 252
+630 55 252
+0 55 252
+0 15 252
 
 MiroirCaissonLampes polygon plateau_gauche_lampe_du_haut_rebord
 0
 0
 12
-630 -55 252
-630 -55 246
-0 -55 246
-0 -55 252
+630 55 252
+630 55 246
+0 55 246
+0 55 252
 
 MurBlanc polygon tablette_gauche_lampe_du_haut_rebord
 0
 0
 12
-0 -55 252
-0 -55 246
-630 -55 246
-630 -55 252
+0 55 252
+0 55 246
+630 55 246
+630 55 252
 
 Aquanappe polygon tablette_basse_droite
 0
 0
 12
-0 -333 27
-0 -373 27
-427 -373 27
-427 -333 27
+0 333 27
+0 373 27
+427 373 27
+427 333 27
 
 MurBlanc polygon tablette_basse_droite_rebord_haut
 0
 0
 12
-0 -373 27
-0 -373 33
-427 -373 33
-427 -373 27
+0 373 27
+0 373 33
+427 373 33
+427 373 27
 
 MurBlanc polygon tablette_basse_droite_rebord_bas
 0
 0
 12
-0 -333 27
-427 -333 27
-427 -333 17
-0 -333 17
+0 333 27
+427 333 27
+427 333 17
+0 333 17
 
 Aquanappe polygon tablette_haute_droite
 0
 0
 12
-0 -373 87
-427 -373 87
-427 -333 87
-0 -333 87
+0 373 87
+427 373 87
+427 333 87
+0 333 87
 
 MurBlanc polygon tablette_haute_droite_rebord_haut
 0
 0
 12
-0 -373 87
-0 -373 93
-427 -373 93
-427 -373 87
+0 373 87
+0 373 93
+427 373 93
+427 373 87
 
 MurBlanc polygon tablette_haute_droite_rebord_bas
 0
 0
 12
-0 -333 87
-427 -333 87
-427 -333 77
-0 -333 77
+0 333 87
+427 333 87
+427 333 77
+0 333 77
 
 MiroirCaissonLampes polygon plateau_droite_lampe_du_haut
 0
 0
 12
-427 -333 252
-427 -373 252
-0 -373 252
-0 -333 252
+427 333 252
+427 373 252
+0 373 252
+0 333 252
 
 MiroirCaissonLampes polygon plateau_droite_lampe_du_haut_rebord
 0
 0
 12
-0 -333 246
-427 -333 246
-427 -333 252
-0 -333 252
+0 333 246
+427 333 246
+427 333 252
+0 333 252
 
 jaune polygon anchor
 0
 0
 12
-305 -15 88
-305 -55 88
-320 -55 88
-320 -15 88
+305 15 88
+305 55 88
+320 55 88
+320 15 88
 
 # lamp400w point_light ampoule4
 # 12 25 5
@@ -350,57 +350,449 @@ jaune polygon anchor
 # 1 0 1
 
 lamp32w point_light neon1
-21 -86 85 # centre
+86 21 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon2
-25 -86 85 # centre
+86 25  85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon3
-29 -86 85 # centre
+86 29 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon4
-33 -86 85 # centre
+86 33 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon5
-37 -86 85 # centre
+86 37 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon6
-41 -86 85 # centre
+86 41 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon7
-45 86 85 # centre
+86 45 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
 
 lamp32w point_light neon8
-49 86 85 # centre
+86 49 85 # centre
 #150 # longueur
 #2.6 # diametre
 #120 # angle
-#0 0 -1 # direction
+#0 0 1 # direction
+
+lamp32w point_light neon9
+239 21 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon10
+239 25 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon11
+239 29 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon12
+239 33 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon13
+239 37 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon14
+239 41 85 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon15
+239 45 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon16
+239 49 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon17
+390 21 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon18
+390 25 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon19
+390 29 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon20
+390 33 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon21
+390 37 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon22
+390 41 85 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon23
+390 45 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon24
+390 49 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon25
+548 21 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon26
+548 25 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon27
+548 29 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon28
+548 33 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon29
+548 37 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon30
+548 41 85 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon31
+548 45 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon32
+548 49 85 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon33
+86 21 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon34
+86 25 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon35
+86 29 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon36
+86 33 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon37
+86 37 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon38
+86 41 250 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon39
+86 45 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon40
+86 49 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon41
+239 21 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon42
+239 25 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon43
+239 29 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon44
+239 33 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon45
+239 37 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon46
+239 41 250 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon47
+239 45 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon48
+239 49 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon49
+390 21 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon50
+390 25 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon51
+390 29 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon52
+390 33 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon53
+390 37 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon54
+390 41 250 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon55
+390 45 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon56
+390 49 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon57
+548 21 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon58
+548 25 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon59
+548 29 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon60
+548 33 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon61
+548 37 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon62
+548 41 250 # centre
+#ß150 # longueur
+#ß2.6 # diametre
+#ß120 # angle
+#ß0 0 1 # direction
+
+lamp32w point_light neon63
+548 45 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction
+
+lamp32w point_light neon64
+548 49 250 # centre
+#150 # longueur
+#2.6 # diametre
+#120 # angle
+#0 0 1 # direction

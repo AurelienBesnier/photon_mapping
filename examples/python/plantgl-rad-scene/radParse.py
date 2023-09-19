@@ -52,13 +52,13 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
             vertices.append(mvector[0] / (scale_factor / 2) + anchor[0])
-            vertices.append(mvector[2] / (scale_factor / 2) + anchor[1])
-            vertices.append(mvector[1] / (scale_factor / 2) + anchor[2])
+            vertices.append(mvector[1] / (scale_factor / 2) + anchor[1])
+            vertices.append(mvector[2] / (scale_factor / 2) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
-            normals.append(nvector[2])
             normals.append(nvector[1])
+            normals.append(nvector[2])
 
         idx = flatten(mesh.indexList)
         for i in idx:
@@ -129,7 +129,7 @@ def compute_energy(tr2shmap, integrator):
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
 
 
-def read_rad(file: str):
+def read_rad(file: str, invert_normals: bool):
     with open(file, 'r') as f:
         lines = f.readlines()
         materials = {}
@@ -181,6 +181,7 @@ def read_rad(file: str):
                     #     materials[name] = mat
                     #     i += 5
                     elif type == "light":
+                        print("light material")
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
                         mat = {"name": name, "type": type, "color": color}
@@ -200,8 +201,8 @@ def read_rad(file: str):
                             vert = []
                             l = re.split(r"\s+|;+", lines[i])
                             vert.append((float(l[0]) / scale_factor,
-                                         float(l[2]) / scale_factor,
-                                         float(l[1]) / scale_factor))
+                                         float(l[1]) / scale_factor,
+                                         float(l[2]) / scale_factor))
                             shapes[name] = {"vertices": vert, "type": type, "size": 1, "material": material}
                         else:
                             i += 3
@@ -209,24 +210,33 @@ def read_rad(file: str):
                             size = int(lines[i])
                             tmp = i + 1
                             nbCoords = int(size / 3)
-                            # if "type" == "cylinder":
-                            #     l = re.split(r"\s+|;+", lines[0])
-                            #     l2 = re.split(r"\s+|;+", lines[1])
-                            #     l3 = re.split(r"\s+|;+", lines[2])
-                            #     x, y, z = float(l[0]) / scale_factor, float(l[2]) / scale_factor, float(l[1]) / scale_factor
-                            #     x2, y2, z2 = (float(l2[0]) / scale_factor, float(l2[2]) / scale_factor, float(l2[1]) / scale_factor)
+                            # if type == "cylinder":
+                            #     l = re.split(r"\s+|;+", lines[i + 1])
+                            #     l2 = re.split(r"\s+|;+", lines[i + 2])
+                            #     l3 = re.split(r"\s+|;+", lines[i + 3])
+                            #
+                            #     print(l)
+                            #     print(l2)
+                            #     print(l3)
+                            #     x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
+                            #         l[2]) / scale_factor
+                            #     x2, y2, z2 = (
+                            #         float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
+                            #         float(l2[2]) / scale_factor)
                             #     vert.append((x, y, z))
                             #     vert.append((x2, y2, z2))
                             #     for i in range(nbCoords):
                             #         vert.append((x, y, z))
                             #
                             #     shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
+                            #     i += 3
+                            #     print(lines[i])
                             # else:
                             for j in range(tmp, tmp + nbCoords):
                                 l = re.split(r"\s+|;+", lines[j])
                                 vert.append((float(l[0]) / scale_factor,
-                                             float(l[2]) / scale_factor,
-                                             float(l[1]) / scale_factor))
+                                             float(l[1]) / scale_factor,
+                                             float(l[2]) / scale_factor))
                                 i = j
                                 shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                             if name == "anchor":
@@ -244,10 +254,29 @@ def read_rad(file: str):
                 ts = TriangleSet(vert)
                 i = 0
                 indList = []
-                while i < nbCoords:
+                if nbCoords == 9:
                     ind = Index3(i, i + 2, i + 1)
                     indList.append(ind)
-                    i += 3
+                    ind = Index3(i, i + 3, i + 2)
+                    indList.append(ind)
+                    ind = Index3(i, i + 4, i + 3)
+                    indList.append(ind)
+                    ind = Index3(i, i + 5, i + 4)
+                    indList.append(ind)
+                    ind = Index3(i, i + 6, i + 5)
+                    indList.append(ind)
+                    ind = Index3(i, i + 7, i + 6)
+                    indList.append(ind)
+                    ind = Index3(i, i + 8, i + 7)
+                    indList.append(ind)
+                else:
+                    while i < nbCoords:
+                        if invert_normals:
+                            ind = Index3(i, i + 2, i + 1)
+                        else:
+                            ind = Index3(i, i + 1, i + 2)
+                        indList.append(ind)
+                        i += 3
                 ts.indexList = Index3Array(indList)
                 ts.computeNormalList()
                 s.geometry = ts
@@ -275,8 +304,12 @@ def read_rad(file: str):
                 i = 0
                 indList = []
                 while i < nbCoords:
-                    ind = Index3(i, i + 2, i + 1)
-                    ind2 = Index3(i, i + 3, i + 2)
+                    if invert_normals:
+                        ind = Index3(i, i + 2, i + 1)
+                        ind2 = Index3(i, i + 3, i + 2)
+                    else:
+                        ind = Index3(i, i + 1, i + 2)
+                        ind2 = Index3(i, i + 2, i + 3)
                     indList.append(ind)
                     indList.append(ind2)
                     i += 4
@@ -328,15 +361,16 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
         coords = re.findall(r"[-+]?(?:\d*\.*\d+)", sh.name)  # regex to get the coords
         # coords[0] is the id of the light
         pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
-        # print(coords)
-        # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
+        print(coords)
+        # print(emission)
+        scene.addPointLight(pos, watts_to_emission(1000), Vec3(1, 1, 1))
 
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
         scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
         # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
-        #scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
+        # scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
         #                   trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
@@ -353,17 +387,17 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     for sh in sc:
         add_shape(scene, sh)
     tr2shmap = {}
-    spot_pos = Vec3(1.2, 1.5, -3.82)
-    spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
+    # spot_pos = Vec3(1.2, 1.5, 3.82)
+    # spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
 
-    scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
-                       spot_dir, 30.0)
+    # scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
+    #                  spot_dir, 30.0)
 
     # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
 
     n_samples = 5
-    n_photons = 100
+    n_photons = 100000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -376,9 +410,9 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(1.2, 1.5, -3.82)
-    lookat = Vec3(anchor[0], anchor[2], anchor[1])
-    vup = Vec3(0, -1, 0)
+    lookfrom = Vec3(1.2, 1.5, 3.82)
+    lookat = Vec3(anchor[0], anchor[1], anchor[2])
+    vup = Vec3(0, 0, 1)
     vfov = 50.0
     dist_to_focus = 3.0
     aperture = 0.01
@@ -416,6 +450,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
 
 if __name__ == "__main__":
-    sc, anchor, scale_factor = read_rad("chambre2.rad")
+    # sc, anchor, scale_factor = read_rad("chambre2.rad", True)
+    sc, anchor, scale_factor = read_rad("testChamber.rad", False)
 
-    photonmap_plantglScene(sc, anchor, scale_factor)
+    # photonmap_plantglScene(sc, anchor, scale_factor)

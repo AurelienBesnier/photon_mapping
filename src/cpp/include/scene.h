@@ -88,6 +88,16 @@ boost::shared_ptr <SpotLight> createSpotLight(Vec3f emission, Vec3f position, Ve
     }
 }
 
+boost::shared_ptr <TubeLight> createTubeLight(Vec3f emission, Triangle *tri, Vec3f direction, float angle) {
+    if (emission[0] > 0 || emission[1] > 0 ||
+        emission[2] > 0) {
+        Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
+        return boost::make_shared<TubeLight>(le, tri, direction, angle);
+    } else {
+        return nullptr;
+    }
+}
+
 class Scene {
 private:
     // embree
@@ -355,6 +365,14 @@ public:
     void addSpotLight(Vec3f position, float intensity, Vec3f color, Vec3f direction, float angle) {
         boost::shared_ptr <Light> light;
         light = createSpotLight(color * intensity, position, direction, angle);
+        if (light != nullptr) {
+            lights.push_back(light);
+        }
+    }
+
+    void addTubeLight(Triangle * tri, float intensity, Vec3f color, Vec3f direction, float angle) {
+        boost::shared_ptr <Light> light;
+        light = createTubeLight(color * intensity, tri, direction, angle);
         if (light != nullptr) {
             lights.push_back(light);
         }

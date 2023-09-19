@@ -97,10 +97,12 @@ class TubeLight : public Light {
  private:
   Vec3f le;  // emission
   Triangle* triangle;
+  Vec3f direction;
+  float angle;
 
  public:
-  TubeLight(const Vec3f& le, Triangle* triangle)
-      : le(le), triangle(triangle) {
+  TubeLight(const Vec3f& le, Triangle* triangle, Vec3f direction, float angle)
+      : le(le), triangle(triangle), direction(direction), angle(angle) {
   }
 
   // return emission
@@ -116,12 +118,16 @@ class TubeLight : public Light {
   // sample direction from the light
   Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                         float& pdf) override {
-      Vec3f dir = sampleCosineHemisphere(sampler.getNext2D(), pdf);
-      Vec3f wo = localToWorld(dir, surfInfo.dpdu, surfInfo.shadingNormal,
-                              surfInfo.dpdv);
+      float rad = deg2rad(angle);
+      float y = randomInterval(-rad,rad);
+      float theta = randomInterval(0.0, rad*2);
+      float r = sqrtf(1.0f-y*y);
+      float x = r*sinf(theta);
+      float z = r*cosf(theta);
 
-    // transform direction from local to world
-    return wo;
+      Vec3f dir(x,y,z);
+      dir+=direction;
+      return dir;
   }
 };
 
