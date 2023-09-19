@@ -2,11 +2,12 @@ import re
 import sys
 from datetime import datetime
 import random
+from math import cos, sin
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
 from photonmap.libphotonmap_core import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler, \
-    visualizePhotonMap, Render, Camera, PI, normalize
+    visualizePhotonMap, visualizeCausticsPhotonMap, Render, Camera, PI, normalize
 
 from photonmap import libphotonmap_core
 
@@ -51,9 +52,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / (scale_factor / 2) + anchor[0])
-            vertices.append(mvector[1] / (scale_factor / 2) + anchor[1])
-            vertices.append(mvector[2] / (scale_factor / 2) + anchor[2])
+            vertices.append(mvector[0] / (scale_factor) + anchor[0])
+            vertices.append(mvector[1] / (scale_factor) + anchor[1])
+            vertices.append(mvector[2] / (scale_factor) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -81,7 +82,7 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
         specular_b = float(sh.appearance.specular.blue) / 255.0
         specular = Vec3(specular_r, specular_g, specular_b)
         transparency = sh.appearance.transparency
-        illum = 9  # to use the leaf bxdf
+        illum = 6  # to use the leaf bxdf
 
         sc.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess, transparency, illum, 1,
                         1 - transparency, transparency, 1.0 - shininess)
@@ -210,35 +211,34 @@ def read_rad(file: str, invert_normals: bool):
                             size = int(lines[i])
                             tmp = i + 1
                             nbCoords = int(size / 3)
-                            # if type == "cylinder":
-                            #     l = re.split(r"\s+|;+", lines[i + 1])
-                            #     l2 = re.split(r"\s+|;+", lines[i + 2])
-                            #     l3 = re.split(r"\s+|;+", lines[i + 3])
-                            #
-                            #     print(l)
-                            #     print(l2)
-                            #     print(l3)
-                            #     x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
-                            #         l[2]) / scale_factor
-                            #     x2, y2, z2 = (
-                            #         float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
-                            #         float(l2[2]) / scale_factor)
-                            #     vert.append((x, y, z))
-                            #     vert.append((x2, y2, z2))
-                            #     for i in range(nbCoords):
-                            #         vert.append((x, y, z))
-                            #
-                            #     shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
-                            #     i += 3
-                            #     print(lines[i])
-                            # else:
-                            for j in range(tmp, tmp + nbCoords):
-                                l = re.split(r"\s+|;+", lines[j])
-                                vert.append((float(l[0]) / scale_factor,
-                                             float(l[1]) / scale_factor,
-                                             float(l[2]) / scale_factor))
-                                i = j
-                                shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
+                            if type == "cylinder":
+                                l = re.split(r"\s+|;+", lines[i + 1])
+                                l2 = re.split(r"\s+|;+", lines[i + 2])
+                                l3 = re.split(r"\s+|;+", lines[i + 3])
+                                r=float(l3[0]) / scale_factor
+
+                                x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
+                                    l[2]) / scale_factor
+                                x2, y2, z2 = (
+                                    float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
+                                    float(l2[2]) / scale_factor)
+                                vert.append((x+r, y+r, z+r))
+                                vert.append((x-r, y-r, z-r))
+
+
+                                vert.append((x2+r, y2+r, z2+r))
+                                vert.append((x2-r, y2-r, z2-r))
+
+                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
+                                i += 4
+                            else:
+                                for j in range(tmp, tmp + nbCoords):
+                                    l = re.split(r"\s+|;+", lines[j])
+                                    vert.append((float(l[0]) / scale_factor,
+                                                float(l[1]) / scale_factor,
+                                                float(l[2]) / scale_factor))
+                                    i = j
+                                    shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                             if name == "anchor":
                                 print("anchor found")
                                 anchor = vert[1]
@@ -363,11 +363,11 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
         pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
         print(coords)
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(1000), Vec3(1, 1, 1))
+        scene.addPointLight(pos, watts_to_emission(400), Vec3(1, 1, 1))
 
     if emission != Color3(0, 0, 0):
         pos = Vec3(vertices[0], vertices[1], vertices[2])
-        scene.addLight(vertices, indices, normals, watts_to_emission(18), ambient)
+        scene.addLight(vertices, indices, normals, watts_to_emission(400), ambient)
         # scene.addPointLight(pos, watts_to_emission(32), Vec3(1, 1, 1))
 
         # scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
@@ -394,10 +394,10 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     #                  spot_dir, 30.0)
 
     # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
-    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 125, tr2shmap, anchor, scale_factor)
+    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
 
-    n_samples = 5
-    n_photons = 100000
+    n_samples = 2
+    n_photons = 10000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -410,7 +410,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(1.2, 1.5, 3.82)
+    lookfrom = Vec3(0.5, 0.5, 1.5)
     lookat = Vec3(anchor[0], anchor[1], anchor[2])
     vup = Vec3(0, 0, 1)
     vfov = 50.0
@@ -434,7 +434,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     print("Done!")
 
     print("Printing photonmap image...")
-    visualizePhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm")
+    visualizePhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
+    visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
     print("Done!")
 
     print("Rendering image...")
@@ -453,4 +454,4 @@ if __name__ == "__main__":
     # sc, anchor, scale_factor = read_rad("chambre2.rad", True)
     sc, anchor, scale_factor = read_rad("testChamber.rad", False)
 
-    # photonmap_plantglScene(sc, anchor, scale_factor)
+    photonmap_plantglScene(sc, anchor, scale_factor)
