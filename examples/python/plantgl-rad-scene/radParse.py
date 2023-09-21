@@ -436,7 +436,9 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     print("Printing photonmap image...")
     visualizePhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
-    visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
+    visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap"
+                                                                                                      "-cautics.ppm",
+                               sampler)
     print("Done!")
 
     print("Rendering image...")
