@@ -407,6 +407,8 @@ public:
 
     PhotonMap getPhotonMapGlobal() const { return globalPhotonMap; }
 
+    PhotonMap getPhotonMapCaptors() const { return captorPhotonMap; }
+
     bool hasCaustics() const { return finalGatheringDepth > 0;}
 
     PhotonMap getPhotonMapCaustics() const { return causticsPhotonMap; }

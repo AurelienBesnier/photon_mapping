@@ -71,7 +71,7 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image, const unsigned 
     integrator.build(scene, sampler);
 
     // visualize photon map
-    const PhotonMap photon_map = integrator.getPhotonMapCaptor();
+    const PhotonMap photon_map = integrator.getPhotonMapCaptors();
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
