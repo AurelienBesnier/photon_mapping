@@ -106,7 +106,6 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
 
 def compute_energy(tr2shmap, integrator):
     photonmap = integrator.getPhotonMap()
-    cPhotonMap = integrator.getPhotonMapC()
     shenergy = {}
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
@@ -117,14 +116,16 @@ def compute_energy(tr2shmap, integrator):
             else:
                 shenergy[triId] = 1
 
-    for i in range(cPhotonMap.nPhotons()):
-        intersection = cPhotonMap.getIthPhoton(i)
-        triId = tr2shmap.get(intersection.triId)
-        if triId is not None:  # check if the element hit is an element of the plant
-            if triId in shenergy:
-                shenergy[triId] += 1
-            else:
-                shenergy[triId] = 1
+    if integrator.hasCaustics():
+        cPhotonMap = integrator.getPhotonMapC()
+        for i in range(cPhotonMap.nPhotons()):
+            intersection = cPhotonMap.getIthPhoton(i)
+            triId = tr2shmap.get(intersection.triId)
+            if triId is not None:  # check if the element hit is an element of the plant
+                if triId in shenergy:
+                    shenergy[triId] += 1
+                else:
+                    shenergy[triId] = 1
 
     for k, v in shenergy.items():
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
