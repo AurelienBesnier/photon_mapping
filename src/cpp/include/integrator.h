@@ -71,6 +71,7 @@ private:
     const unsigned int maxDepth;
 
     PhotonMap globalPhotonMap;
+    PhotonMap captorPhotonMap;
     PhotonMap causticsPhotonMap;
     std::vector<PhotonMap> lightsPhotonMap;
     std::vector<PhotonMap> lightsCausticsPhotonMap;
@@ -408,6 +409,8 @@ public:
 
     PhotonMap getPhotonMapGlobal() const { return globalPhotonMap; }
 
+    PhotonMap getPhotonMapCaptor() const { return captorPhotonMap; }
+
     PhotonMap getPhotonMapCaustics() const { return globalPhotonMap; }
 
     std::vector<PhotonMap> getLightsPhotonMap() const { return lightsPhotonMap; }
@@ -422,6 +425,7 @@ public:
         if(scene.nLights() <= 0)
             return;
         std::vector<Photon> photons;
+        std::vector<Photon> photonsCaptor;
 
         // init sampler for each thread
         std::vector<std::unique_ptr<Sampler>> samplers(omp_get_max_threads());
@@ -482,6 +486,18 @@ public:
                                 //photonsLights.emplace_back(p);
                             }
                         }
+                        if(bxdf_type == BxDFType::CAPTOR)
+                        {
+#pragma omp critical
+                            {
+                                std::cerr<<"Photon hit captor"<<std::endl;
+                                    Photon p(throughput, info.surfaceInfo.position, -ray.direction,
+                            info.hitPrimitive->triangle[0].faceID);
+                            photonsCaptor.emplace_back(p);
+                                    //photonsLights.emplace_back(p);
+                            }
+
+                        }
 
                         // russian roulette
                         if (k > 0) {
@@ -524,7 +540,9 @@ public:
         std::cout << "[PhotonMapping] building global photon map" << std::endl;
 #endif
         globalPhotonMap.setPhotons(photons);
+        captorPhotonMap.setPhotons(photonsCaptor);
         globalPhotonMap.build();
+        captorPhotonMap.build();
         std::cout << "Number of photons: " << globalPhotonMap.nPhotons() << std::endl;
 
         // build caustics photon map
