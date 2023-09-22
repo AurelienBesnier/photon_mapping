@@ -1,4 +1,4 @@
-//#define __OUTPUT__
+#define __OUTPUT__
 
 #include "../cpp/include/camera.h"
 #include "../cpp/include/image.h"
@@ -15,93 +15,88 @@ PYBIND11_MAKE_OPAQUE(std::vector<uint32_t>)
 PYBIND11_MAKE_OPAQUE(std::vector<int>)
 PYBIND11_MAKE_OPAQUE(std::vector<Vec3f>)
 
-void visualizePhotonMap(const Scene &scene, Image &image, const unsigned &height,
+void visualizePhotonMap(const PhotonMapping &integrator, const Scene &scene, Image &image, const unsigned &height,
                         const unsigned &width, const Camera &camera,
                         const unsigned &n_photons, const unsigned &max_depth,
                         const std::string_view &filename, UniformSampler &sampler) {
-
-    // photon tracing and build photon map
-    PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
-    integrator.build(scene, sampler);
-
     // visualize photon map
     const PhotonMap photon_map = integrator.getPhotonMapGlobal();
-#pragma omp parallel for collapse(2) schedule(dynamic, 1)
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            const float u = (2.0f * j - width) / height;
-            const float v = (2.0f * i - height) / height;
-            Ray ray;
-            float pdf;
-            if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
-                IntersectInfo info;
-                if (scene.intersect(ray, info)) {
-                    // query photon map
-                    float r2;
-                    const std::vector<int> photon_indices =
-                            photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
-                    const int photon_idx = photon_indices[0];
 
-                    // if distance to the photon is small enough, write photon's
-                    // throughput to the image
-                    if (r2 < 0.001f) {
-                        const Photon &photon = photon_map.getIthPhoton(photon_idx);
-                        image.setPixel(i, j, photon.throughput);
+    if (photon_map.nPhotons() > 0)
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
+        for (unsigned int i = 0; i < height; ++i) {
+            for (unsigned int j = 0; j < width; ++j) {
+                const float u = (2.0f * j - width) / height;
+                const float v = (2.0f * i - height) / height;
+                Ray ray;
+                float pdf;
+                if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
+                    IntersectInfo info;
+                    if (scene.intersect(ray, info)) {
+                        // query photon map
+                        float r2;
+                        const std::vector<int> photon_indices =
+                                photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
+                        const int photon_idx = photon_indices[0];
+
+                        // if distance to the photon is small enough, write photon's
+                        // throughput to the image
+                        if (r2 < 0.001f) {
+                            const Photon &photon = photon_map.getIthPhoton(photon_idx);
+                            image.setPixel(i, j, photon.throughput);
+                        }
+                    } else {
+                        image.setPixel(i, j, Vec3fZero);
                     }
                 } else {
                     image.setPixel(i, j, Vec3fZero);
                 }
-            } else {
-                image.setPixel(i, j, Vec3fZero);
             }
         }
-    }
 
     image.gammaCorrection(2.2f);
     image.writePPM(filename.data());
 }
 
 void visualizeCaptorsPhotonMap(const Scene &scene, Image &image, const unsigned &height,
-                        const unsigned &width, const Camera &camera,
-                        const unsigned &n_photons, const unsigned &max_depth,
-                        const std::string_view &filename, UniformSampler &sampler) {
-
-    // photon tracing and build photon map
-    PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
-    integrator.build(scene, sampler);
+                               const unsigned &width, const Camera &camera,
+                               const unsigned &n_photons, const unsigned &max_depth,
+                               const std::string_view &filename, UniformSampler &sampler,
+                               const PhotonMapping &integrator) {
 
     // visualize photon map
     const PhotonMap photon_map = integrator.getPhotonMapCaptors();
+    if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            const float u = (2.0f * j - width) / height;
-            const float v = (2.0f * i - height) / height;
-            Ray ray;
-            float pdf;
-            if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
-                IntersectInfo info;
-                if (scene.intersect(ray, info)) {
-                    // query photon map
-                    float r2;
-                    const std::vector<int> photon_indices =
-                            photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
-                    const int photon_idx = photon_indices[0];
+        for (unsigned int i = 0; i < height; ++i) {
+            for (unsigned int j = 0; j < width; ++j) {
+                const float u = (2.0f * j - width) / height;
+                const float v = (2.0f * i - height) / height;
+                Ray ray;
+                float pdf;
+                if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
+                    IntersectInfo info;
+                    if (scene.intersect(ray, info)) {
+                        // query photon map
+                        float r2;
+                        const std::vector<int> photon_indices =
+                                photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
+                        const int photon_idx = photon_indices[0];
 
-                    // if distance to the photon is small enough, write photon's
-                    // throughput to the image
-                    if (r2 < 0.001f) {
-                        const Photon &photon = photon_map.getIthPhoton(photon_idx);
-                        image.setPixel(i, j, photon.throughput);
+                        // if distance to the photon is small enough, write photon's
+                        // throughput to the image
+                        if (r2 < 0.001f) {
+                            const Photon &photon = photon_map.getIthPhoton(photon_idx);
+                            image.setPixel(i, j, photon.throughput);
+                        }
+                    } else {
+                        image.setPixel(i, j, Vec3fZero);
                     }
                 } else {
                     image.setPixel(i, j, Vec3fZero);
                 }
-            } else {
-                image.setPixel(i, j, Vec3fZero);
             }
         }
-    }
 
     image.gammaCorrection(2.2f);
     image.writePPM(filename.data());
@@ -109,46 +104,45 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image, const unsigned 
 
 
 void visualizeCausticsPhotonMap(const Scene &scene, Image &image, const unsigned &height,
-                        const unsigned &width, const Camera &camera,
-                        const unsigned &n_photons, const unsigned &max_depth,
-                        const std::string_view &filename,UniformSampler& sampler) {
-
-    // photon tracing and build photon map
-    PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
-    integrator.build(scene, sampler);
+                                const unsigned &width, const Camera &camera,
+                                const unsigned &n_photons, const unsigned &max_depth,
+                                const std::string_view &filename, UniformSampler &sampler,
+                                const PhotonMapping &integrator) {
 
     // visualize photon map
     const PhotonMap photon_map = integrator.getPhotonMapCaustics();
-#pragma omp parallel for collapse(2) schedule(dynamic, 1)
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            const float u = (2.0f * j - width) / height;
-            const float v = (2.0f * i - height) / height;
-            Ray ray;
-            float pdf;
-            if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
-                IntersectInfo info;
-                if (scene.intersect(ray, info)) {
-                    // query photon map
-                    float r2;
-                    const std::vector<int> photon_indices =
-                            photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
-                    const int photon_idx = photon_indices[0];
 
-                    // if distance to the photon is small enough, write photon's
-                    // throughput to the image
-                    if (r2 < 0.001f) {
-                        const Photon &photon = photon_map.getIthPhoton(photon_idx);
-                        image.setPixel(i, j, photon.throughput);
+    if (photon_map.nPhotons() > 0)
+#pragma omp parallel for collapse(2) schedule(dynamic, 1)
+        for (unsigned int i = 0; i < height; ++i) {
+            for (unsigned int j = 0; j < width; ++j) {
+                const float u = (2.0f * j - width) / height;
+                const float v = (2.0f * i - height) / height;
+                Ray ray;
+                float pdf;
+                if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
+                    IntersectInfo info;
+                    if (scene.intersect(ray, info)) {
+                        // query photon map
+                        float r2;
+                        const std::vector<int> photon_indices =
+                                photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1, r2);
+                        const int photon_idx = photon_indices[0];
+
+                        // if distance to the photon is small enough, write photon's
+                        // throughput to the image
+                        if (r2 < 0.001f) {
+                            const Photon &photon = photon_map.getIthPhoton(photon_idx);
+                            image.setPixel(i, j, photon.throughput);
+                        }
+                    } else {
+                        image.setPixel(i, j, Vec3fZero);
                     }
                 } else {
                     image.setPixel(i, j, Vec3fZero);
                 }
-            } else {
-                image.setPixel(i, j, Vec3fZero);
             }
         }
-    }
 
     image.gammaCorrection(2.2f);
     image.writePPM(filename.data());
@@ -158,13 +152,13 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
             unsigned &width, unsigned &n_samples, Camera &camera,
             PhotonMapping &integrator, Scene &scene,
             std::string_view &filename) {
-    if(integrator.getPhotonMapGlobal().nPhotons() <= 0)
+    if (integrator.getPhotonMapGlobal().nPhotons() <= 0)
         return;
 //#pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (unsigned int i = 0; i < height; ++i) {
 
         std::cout << "\033[A\33[2K\r";
-        std::cout << "rendering scanline " <<i+1<<"/" <<height<<"..."<< std::endl;
+        std::cout << "rendering scanline " << i + 1 << "/" << height << "..." << std::endl;
 #pragma omp parallel for
         for (unsigned int j = 0; j < width; ++j) {
             // init sampler
@@ -182,11 +176,11 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
 #ifdef __OUTPUT__
                     if (std::isnan(radiance[0]) || std::isnan(radiance[1]) ||
                         std::isnan(radiance[2])) {
-                      std::cerr << "radiance is NaN" << std::endl;
-                      continue;
+                        std::cerr << "radiance is NaN" << std::endl;
+                        continue;
                     } else if (radiance[0] < 0 || radiance[1] < 0 || radiance[2] < 0) {
-                      std::cerr << "radiance is minus" << std::endl;
-                      continue;
+                        std::cerr << "radiance is minus" << std::endl;
+                        continue;
                     }
 #endif
                     image.addPixel(i, j, radiance);
@@ -287,6 +281,9 @@ PYBIND11_MODULE(libphotonmap_core, m) {
                  "Returns the photon map", py::return_value_policy::reference)
             .def("getPhotonMapC", &PhotonMapping::getPhotonMapCaustics,
                  "Returns the caustics photon map",
+                 py::return_value_policy::reference)
+            .def("getPhotonMapCaptors", &PhotonMapping::getPhotonMapCaptors,
+                 "Returns the captor photon map",
                  py::return_value_policy::reference)
             .def("hasCaustics", &PhotonMapping::hasCaustics,
                  "True if the final gathering depth is superior to 0");
@@ -464,8 +461,9 @@ PYBIND11_MODULE(libphotonmap_core, m) {
           py::arg("sampler"), py::arg("image"), py::arg("height"),
           py::arg("width"), py::arg("n_samples"), py::arg("camera"),
           py::arg("integrator"), py::arg("scene"), py::arg("filename"));
+
     m.def("visualizePhotonMap", &visualizePhotonMap,
-          "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
+          "Function to visualize the photonmap as a .ppm image", py::arg("integrator"), py::arg("Scene"),
           py::arg("image"), py::arg("width"), py::arg("height"),
           py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
           py::arg("filename"), py::arg("sampler"));
@@ -474,13 +472,13 @@ PYBIND11_MODULE(libphotonmap_core, m) {
           "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
           py::arg("image"), py::arg("width"), py::arg("height"),
           py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
-          py::arg("filename"), py::arg("sampler"));
+          py::arg("filename"), py::arg("sampler"), py::arg("integrator"));
 
-     m.def("visualizeCausticsPhotonMap", &visualizeCausticsPhotonMap,
-     "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
-     py::arg("image"), py::arg("width"), py::arg("height"),
-     py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
-     py::arg("filename"), py::arg("sampler"));
+    m.def("visualizeCausticsPhotonMap", &visualizeCausticsPhotonMap,
+          "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
+          py::arg("image"), py::arg("width"), py::arg("height"),
+          py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
+          py::arg("filename"), py::arg("sampler"), py::arg("integrator"));
 
 
     m.def("normalize", &normalize, "Returns the normal of a vector");

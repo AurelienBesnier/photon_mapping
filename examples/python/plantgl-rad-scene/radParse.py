@@ -7,7 +7,9 @@ from math import cos, sin
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
 from photonmap.libphotonmap_core import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler, \
-    visualizePhotonMap, visualizeCausticsPhotonMap, Render, Camera, PI, normalize
+    visualizePhotonMap, visualizeCausticsPhotonMap, visualizeCaptorsPhotonMap, Render, Camera, PI, normalize
+
+from collections import OrderedDict
 
 from photonmap import libphotonmap_core
 
@@ -104,6 +106,22 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
     return sc
 
 
+def captor_energy(captorDict, integrator):
+    photonmap = integrator.getPhotonMapCaptors()
+    energy = OrderedDict()
+    print("printing captor energy")
+    for i in range(photonmap.nPhotons()):
+        intersection = photonmap.getIthPhoton(i)
+        captorId = captorDict.get(intersection.triId)
+        if captorId is not None:  # check if the element hit is an element of the plant
+            if captorId in energy:
+                energy[captorId] += 1
+            else:
+                energy[captorId] = 1
+
+    for k, v in energy.items():
+        print("captor n°" + str(k) + " has " + str(v) + " photons on it")
+
 def compute_energy(tr2shmap, integrator):
     photonmap = integrator.getPhotonMap()
     shenergy = {}
@@ -183,7 +201,6 @@ def read_rad(file: str, invert_normals: bool):
                     #     materials[name] = mat
                     #     i += 5
                     elif type == "light":
-                        print("light material")
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
                         mat = {"name": name, "type": type, "color": color}
@@ -377,9 +394,12 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
 
 
-def addCaptors(scene: libphotonmap_core.Scene):
+def addCaptors(scene: libphotonmap_core.Scene, captorDict):
+    lastTriangleId = scene.nFaces()
+    print("Last triangles id: " + str(lastTriangleId))
     with open("captors.csv", 'r') as f:
         next(f)
+        captorId = 0
         for line in f:
             row = line.split(',')
             x = float(row[0])
@@ -439,6 +459,14 @@ def addCaptors(scene: libphotonmap_core.Scene):
             scene.addCaptor(vertices, triangles, normals)
 
 
+            for j in triangles:
+                captorDict[lastTriangleId+j]=captorId
+            captorId += 1
+            lastTriangleId = scene.nFaces()
+
+    #print(captorDict)
+
+
 def photonmap_plantglScene(sc, anchor, scale_factor):
     scene = libphotonmap_core.Scene()
     for sh in sc:
@@ -452,10 +480,11 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-    addCaptors(scene)
+    captorDict = {}
+    addCaptors(scene, captorDict)
 
     n_samples = 2
-    n_photons = 10000
+    n_photons = 1000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -492,23 +521,26 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     print("Done!")
 
     print("Printing photonmap image...")
-    visualizePhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
-    visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap"
-                                                                                                      "-cautics.ppm",
-                               sampler)
+    visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth, "photonmap.ppm", sampler)
+
+    print("Printing captor photonmap image...")
+    visualizeCaptorsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
+                              "photonmap-captors.ppm", sampler, integrator)
+    #visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
+    # "photonmap-cautics.ppm", sampler)
     print("Done!")
 
     print("Rendering image...")
     image = libphotonmap_core.Image(image_width, image_height)
     Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
 
-    compute_energy(tr2shmap, integrator)
+    #compute_energy(tr2shmap, integrator)
+    captor_energy(captorDict, integrator)
 
     print("Done!")
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("Current Time =", current_time)
-
 
 if __name__ == "__main__":
     # sc, anchor, scale_factor = read_rad("chambre2.rad", True)

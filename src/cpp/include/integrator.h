@@ -405,13 +405,13 @@ public:
               nEstimationCaustics(nEstimationCaustics),
               finalGatheringDepth(strictCalcDepth), maxDepth(maxDepth) {}
 
-    PhotonMap getPhotonMapGlobal() const { return globalPhotonMap; }
+    const PhotonMap getPhotonMapGlobal() const { return globalPhotonMap; }
 
-    PhotonMap getPhotonMapCaptors() const { return captorPhotonMap; }
+    const PhotonMap getPhotonMapCaptors() const { return captorPhotonMap; }
 
     bool hasCaustics() const { return finalGatheringDepth > 0;}
 
-    PhotonMap getPhotonMapCaustics() const { return causticsPhotonMap; }
+    const PhotonMap getPhotonMapCaustics() const { return causticsPhotonMap; }
 
 
     // photon tracing and build photon map
@@ -420,7 +420,7 @@ public:
         if(scene.nLights() <= 0)
             return;
         std::vector<Photon> photons;
-        std::vector<Photon> captorPhoton;
+        std::vector<Photon> captorPhotons;
 
         // init sampler for each thread
         std::vector<std::unique_ptr<Sampler>> samplers(omp_get_max_threads());
@@ -480,11 +480,9 @@ public:
                         }
                         else if(bxdf_type == BxDFType::CAPTOR)
                         {
-
-                            std::cout<<"test"<<std::endl;
                             Photon p(throughput, info.surfaceInfo.position, -ray.direction,
                                      info.hitPrimitive->triangle[0].faceID);
-                            captorPhoton.emplace_back(p);
+                            captorPhotons.emplace_back(p);
                             //photonsLights.emplace_back(p);
                         }
 
@@ -528,12 +526,7 @@ public:
 #endif
         globalPhotonMap.setPhotons(photons);
         globalPhotonMap.build();
-        if(!captorPhoton.empty())
-        {
-            std::cout<<"captors"<<std::endl;
-            causticsPhotonMap.setPhotons(captorPhoton);
-            causticsPhotonMap.build();
-        }
+
         std::cout << "Number of photons: " << globalPhotonMap.nPhotons() << std::endl;
 
         // build caustics photon map
@@ -640,6 +633,14 @@ public:
         }
         causticsPhotonMap.setPhotons(photons);
         causticsPhotonMap.build();
+
+        if(!captorPhotons.empty())
+        {
+            std::cout<<"building captor photonmap..."<<std::endl;
+            captorPhotonMap.setPhotons(captorPhotons);
+            captorPhotonMap.build();
+            std::cout<<"Done!"<<std::endl;
+        }
     }
 
     Vec3f integrate(Ray &ray_in, const Scene &scene,
