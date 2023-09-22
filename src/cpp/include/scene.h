@@ -350,8 +350,10 @@ public:
                              std::end(newIndices));
         this->normals.insert(std::end(this->normals), std::begin(newNormals),
                              std::end(newNormals));
-
-        this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0.8, 1)));
+        for (size_t faceID = nFaces() - (newIndices.size() / 3); faceID < nFaces();
+             ++faceID) {
+            this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
+        }
     }
 
     void addPointLight(Vec3f position, float intensity, Vec3f color) {

@@ -216,19 +216,18 @@ def read_rad(file: str, invert_normals: bool):
                                 l = re.split(r"\s+|;+", lines[i + 1])
                                 l2 = re.split(r"\s+|;+", lines[i + 2])
                                 l3 = re.split(r"\s+|;+", lines[i + 3])
-                                r=float(l3[0]) / scale_factor
+                                r = float(l3[0]) / scale_factor
 
                                 x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
                                     l[2]) / scale_factor
                                 x2, y2, z2 = (
                                     float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
                                     float(l2[2]) / scale_factor)
-                                vert.append((x+r, y+r, z+r))
-                                vert.append((x-r, y-r, z-r))
+                                vert.append((x + r, y + r, z + r))
+                                vert.append((x - r, y - r, z - r))
 
-
-                                vert.append((x2+r, y2+r, z2+r))
-                                vert.append((x2-r, y2-r, z2-r))
+                                vert.append((x2 + r, y2 + r, z2 + r))
+                                vert.append((x2 - r, y2 - r, z2 - r))
 
                                 shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
                                 i += 4
@@ -236,8 +235,8 @@ def read_rad(file: str, invert_normals: bool):
                                 for j in range(tmp, tmp + nbCoords):
                                     l = re.split(r"\s+|;+", lines[j])
                                     vert.append((float(l[0]) / scale_factor,
-                                                float(l[1]) / scale_factor,
-                                                float(l[2]) / scale_factor))
+                                                 float(l[1]) / scale_factor,
+                                                 float(l[2]) / scale_factor))
                                     i = j
                                     shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
                             if name == "anchor":
@@ -378,9 +377,66 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
 
 
-def addCaptor():
-    with open("captor.obj", 'r') as f:
-        print("")
+def addCaptors(scene: libphotonmap_core.Scene):
+    with open("captors.csv", 'r') as f:
+        next(f)
+        for line in f:
+            row = line.split(',')
+            x = float(row[0])
+            y = float(row[1])
+            z = float(row[2])
+            r = float(row[3]) * 100.0
+            xnorm = float(row[4])
+            ynorm = float(row[5])
+            znorm = float(row[6])
+            pos = [x / r, y / r, z / r]
+            normal = [xnorm, ynorm, znorm]
+            r = 0.01
+            vertices = VectorFloat()
+            normals = VectorFloat()
+            triangles = VectorUint()
+
+            val = 3.14285 / 180
+            deltaAngle = 45
+            vertices.append(pos[0])
+            vertices.append(pos[1])
+            vertices.append(pos[2])
+            normals.append(normal[0])
+            normals.append(normal[1])
+            normals.append(normal[2])
+            triangleCount = 0
+
+            x1 = r * cos(0)
+            y1 = r * sin(0)
+            z1 = 0
+            point1 = [x1 + pos[0], y1 + pos[1], z1 + pos[2]]
+            vertices.append(point1[0])
+            vertices.append(point1[1])
+            vertices.append(point1[2])
+            normals.append(normal[0])
+            normals.append(normal[1])
+            normals.append(normal[2])
+            i = 0
+            while i < 359:
+                x2 = r * cos((i + deltaAngle) * val)
+                y2 = r * sin((i + deltaAngle) * val)
+                z2 = 0
+                point2 = [x2 + pos[0], y2 + pos[1], z2 + pos[2]]
+                vertices.append(point2[0])
+                vertices.append(point2[1])
+                vertices.append(point2[2])
+                normals.append(normal[0])
+                normals.append(normal[1])
+                normals.append(normal[2])
+
+                triangles.append(triangleCount + 1)
+                triangles.append(triangleCount + 2)
+                triangles.append(0)
+
+                triangleCount += 1
+                i += deltaAngle
+
+            scene.addCaptor(vertices, triangles, normals)
 
 
 def photonmap_plantglScene(sc, anchor, scale_factor):
@@ -396,6 +452,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
     add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
+    addCaptors(scene)
 
     n_samples = 2
     n_photons = 10000
