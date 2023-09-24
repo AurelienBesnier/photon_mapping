@@ -3,11 +3,19 @@ name: Python Package using Conda
 on: [push]
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  create-env:
+    name: ${{ matrix.os }} 
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+          
     strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
       max-parallel: 5
-
+  
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
@@ -20,7 +28,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        conda env update --file environment.yml --name base
+        conda env update --file environment.yml --name base 
     - name: Lint with flake8
       run: |
         conda install flake8
