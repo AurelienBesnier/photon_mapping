@@ -484,7 +484,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     addCaptors(scene, captorDict)
 
     n_samples = 2
-    n_photons = 1000000
+    n_photons = 10000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
