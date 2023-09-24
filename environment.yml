@@ -16,4 +16,4 @@ dependencies:
   - tbb-devel=2021.9.0
   - boost=1.78.0
   - openmp=8.0.1
-  - openalea.lpy=3.13.0
+  # - openalea.lpy=3.13.0
