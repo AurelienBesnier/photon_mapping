@@ -108,7 +108,7 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
 
 def captor_energy(captorDict, integrator):
     photonmap = integrator.getPhotonMapCaptors()
-    energy = OrderedDict()
+    energy = {}
     print("printing captor energy")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
@@ -118,8 +118,10 @@ def captor_energy(captorDict, integrator):
                 energy[captorId] += 1
             else:
                 energy[captorId] = 1
+    
+    od = OrderedDict(sorted(energy.items()))
 
-    for k, v in energy.items():
+    for k, v in od.items():
         print("captor n°" + str(k) + " has " + str(v) + " photons on it")
 
 def compute_energy(tr2shmap, integrator):
@@ -484,7 +486,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     addCaptors(scene, captorDict)
 
     n_samples = 2
-    n_photons = 10000000
+    n_photons = 10000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
