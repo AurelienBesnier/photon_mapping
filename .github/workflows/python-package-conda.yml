@@ -34,7 +34,6 @@ jobs:
         sudo conda config --set always_yes yes
         sudo conda config --set remote_read_timeout_secs 600
         sudo conda config --set auto_update_conda False
-        sudo conda config auto_activate_base false
     - name: Install dependencies
       run: |
         conda env create --file environment.yml --name photonmap
