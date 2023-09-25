@@ -46,6 +46,7 @@ jobs:
         flake8 ./examples/python/ --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: build
       run: |
+        export CC=clang CXX=/usr/bin/clang++ 
         python3 -m pip install .
     - name: Test with pytest
       run: |
