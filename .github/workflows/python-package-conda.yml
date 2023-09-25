@@ -36,6 +36,7 @@ jobs:
         sudo conda config --set auto_update_conda False
     - name: Install dependencies
       run: |
+        conda init bash
         conda env update --file environment.yml --name photonmap
         conda activate photonmap
     - name: build
