@@ -38,10 +38,8 @@ jobs:
       run: |
         conda env update --file environment.yml --name photonmap
         conda activate photonmap
-        conda install clang
     - name: build
       run: |
-        export CC=/usr/share/miniconda/envs/photonmap/bin/clang CXX=/usr/share/miniconda/envs/photonmap/bin/clang++
         python3 -m pip install .
     - name: Test with pytest
       run: |
