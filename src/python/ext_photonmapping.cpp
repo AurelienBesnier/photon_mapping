@@ -1,4 +1,4 @@
-#define __OUTPUT__
+//#define __OUTPUT__
 
 #include "../cpp/include/camera.h"
 #include "../cpp/include/image.h"

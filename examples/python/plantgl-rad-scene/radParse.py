@@ -1,5 +1,6 @@
 import re
 import sys
+import bisect
 from datetime import datetime
 import random
 from math import cos, sin
@@ -12,6 +13,127 @@ from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampl
 from collections import OrderedDict
 
 from photonmap import libphotonmap_core
+
+
+
+def wavelength2Rgb(w: int) -> Vec3:
+    """
+    Convert a wavelength between 400 - 800 nm to RGB color
+    Parameters
+    ----------
+    w: int
+        The wavelength to convert
+
+    Returns
+    -------
+    RGB: Vec3
+        A Vec3 structure representing an RGB color.
+
+    """
+    if 380.0 <= w < 440:
+        red = -(w - 440.0) / (440.0 - 380.0)
+        green = 0.0
+        blue = 1.0
+    elif 440.0 <= w < 490.0:
+        red = 0.0
+        green = (w - 440.0) / (490.0 - 440.0)
+        blue = 1.0
+    elif 490.0 <= w < 510.0:
+        red = 0.0
+        green = 1.0
+        blue = -(w - 510.0) / (510.0 - 490.0)
+    elif 510.0 <= w < 580.0:
+        red = (w - 510.0) / (580.0 - 510.0)
+        green = 1.0
+        blue = 0.0
+    elif 580.0 <= w < 645.0:
+        red = 1.0
+        green = -(w - 645.0) / (645.0 - 580.0)
+        blue = 0.0
+    elif 645.0 <= w < 781.0:
+        red = 1.0
+        green = 0.0
+        blue = 0.0
+    else:
+        red = 0.0
+        green = 0.0
+        blue = 0.0
+    if 380.0 <= w < 420.0:
+        factor = 0.3 + 0.7 * (w - 380.0) / (420.0 - 380.0)
+    elif 420.0 <= w < 701.0:
+        factor = 1.0
+    elif 701.0 <= w < 781.0:
+        factor = 0.3 + 0.7 * (780.0 - w) / (780.0 - 700.0)
+    else:
+        factor = 0.0
+
+    gamma = 0.80
+    R = (255 * pow(red * factor, gamma) if red > 0 else 0)
+    G = (255 * pow(green * factor, gamma) if green > 0 else 0)
+    B = (255 * pow(blue * factor, gamma) if blue > 0 else 0)
+
+    return Vec3(R, G, B)
+
+
+def get_average_of_band(band: range, spectrum: dict) -> float:
+    """
+    Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.
+    Parameters
+    ----------
+    band: range
+        The range of wavelength to compute the average of photon to send.
+    spectrum: dict
+        a dictionary representing the spectrum of the light with a wavelength as the key and a count of photons as the
+        value.
+
+    Returns
+    -------
+    wavelength: float
+        The wavelength in question.
+    """
+    cpt: int = 0
+    counts: float = 0.0
+    b_dict: dict = {}
+    for i in band:  # first for to get the average
+        counts += spectrum[i]
+        b_dict[i] = spectrum[i]
+        cpt += 1
+    avg = counts / cpt
+    res_key, res_val = min(b_dict.items(), key=lambda x: abs(avg - x[1]))  # get the closest wavelength of that average
+    return res_key
+
+
+def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
+    """
+    Parse a spectrum file.
+    Parameters
+    ----------
+    filename: str
+        The file to parse.
+
+    Returns
+    -------
+    content: dict
+        A dictionary with wavelength as key and photon count as value.
+    step: int
+        the step in the dictionary between two entries.
+    start: int
+        the first wavelength in the file.
+    """
+    content = OrderedDict()
+    cpt_comment = 0
+    with open(filename, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if line[0] != '"':  # ignore comment
+                ls = re.split(r"\s+|;+", line, maxsplit=1)
+                content[int(ls[0])] = float(ls[1].replace(',', '.'))
+            else:
+                cpt_comment += 1
+        first_line = re.split(r"\s+|;+", lines[cpt_comment], maxsplit=1)
+        second_line = re.split(r"\s+|;+", lines[cpt_comment + 1], maxsplit=1)
+        step = int(second_line[0]) - int(first_line[0])
+    return content, step, int(first_line[0])
 
 
 def flatten(lt: list) -> list:
@@ -106,7 +228,7 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
     return sc
 
 
-def captor_energy(captor_dict, integrator):
+def captor_energy(captor_dict, integrator, w):
     photonmap = integrator.getPhotonMapCaptors()
     energy = {}
     print("writing captor energy...")
@@ -121,7 +243,7 @@ def captor_energy(captor_dict, integrator):
 
     od = OrderedDict(sorted(energy.items()))
 
-    with open("captor_result.csv", 'w') as f:
+    with open("captor_result-"+str(w)+"nm.csv", 'w') as f:
         f.write("id,n_photons, elevation\n")
         for k, v in od.items():
             if k <= 119:
@@ -130,8 +252,8 @@ def captor_energy(captor_dict, integrator):
                 elevation = 1400
             else:
                 elevation = 1800
-            #print("captor n°" + str(k) + " has " + str(v) + " photons on it")
-            f.write(str(k) + "," + str(v) + ","+str(elevation)+"\n")
+            # print("captor n°" + str(k) + " has " + str(v) + " photons on it")
+            f.write(str(k) + "," + str(v) + "," + str(elevation) + "\n")
 
     print("Done!")
 
@@ -373,7 +495,7 @@ def watts_to_emission(w):
     return w * 2.0 / 10.0
 
 
-def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
+def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
     normals = VectorFloat(flatten(sh.geometry.normalList))
     indices = VectorUint(flatten(sh.geometry.indexList))
     vertices = VectorFloat(flatten(sh.geometry.pointList))
@@ -394,11 +516,11 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape):
         pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
         print(coords)
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(400), Vec3(1, 1, 1))
+        scene.addPointLight(pos, watts_to_emission(400), wavelength2Rgb(w))
 
     if emission != Color3(0, 0, 0):
         print("Adding light")
-        scene.addLight(vertices, indices, normals, watts_to_emission(400), ambient)
+        scene.addLight(vertices, indices, normals, watts_to_emission(400), wavelength2Rgb(w))
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -477,22 +599,7 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
 
 
 def photonmap_plantglScene(sc, anchor, scale_factor):
-    scene = libphotonmap_core.Scene()
-    for sh in sc:
-        add_shape(scene, sh)
-    tr2shmap = {}
-    # spot_pos = Vec3(1.2, 1.5, 3.82)
-    # spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
-
-    # scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
-    #                  spot_dir, 30.0)
-
-    # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
-    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-    captor_dict = {}
-    addCaptors(scene, captor_dict)
-
-    n_samples = 5
+    n_samples = 2
     n_photons = 1000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
@@ -515,6 +622,90 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     # coordinates must be in meters
     camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
+
+
+    # Setting up spectrum bands
+    spectrum = "blue"
+    spec_file = "chambre1_spectrum"
+    spec_dict, step, start = read_spectrum_file(spec_file)
+    wavelengths = []
+    band: range
+    band1: range
+    band2: range
+    band3: range
+    bands = []
+    if spectrum.lower().startswith("blue"):
+        band = range(start, 500, step)
+        bands.append(band)
+        wavelengths.append(get_average_of_band(band, spec_dict))
+        bands.append(band)
+    elif spectrum.lower().startswith("green"):
+        start = bisect.bisect_right(list(spec_dict.keys()), 500)
+        start = list(spec_dict.keys())[start]
+        band = range(start, 600, step)
+        bands.append(band)
+        wavelengths.append(get_average_of_band(band, spec_dict))
+    elif spectrum.lower().startswith("red"):
+        start = bisect.bisect_right(list(spec_dict.keys()), 600)
+        start = list(spec_dict.keys())[start]
+        band = range(start, 700, step)
+        bands.append(band)
+        wavelengths.append(get_average_of_band(band, spec_dict))
+    elif spectrum.lower().startswith("far red"):
+        start = bisect.bisect_right(list(spec_dict.keys()), 700)
+        start = list(spec_dict.keys())[start]
+        band = range(start, 800, step)
+        bands.append(band)
+        wavelengths.append(get_average_of_band(band, spec_dict))
+    elif spectrum.lower().startswith("par"):
+        start2 = bisect.bisect_right(list(spec_dict.keys()), 500)
+        start3 = bisect.bisect_right(list(spec_dict.keys()), 600)
+        start2 = list(spec_dict.keys())[start2]
+        start3 = list(spec_dict.keys())[start3]
+        band1 = range(start, 500, step)
+        band2 = range(start2, 600, step)
+        band3 = range(start3, 700, step)
+        bands.append(band1)
+        bands.append(band2)
+        bands.append(band3)
+        wavelengths.append(get_average_of_band(band1, spec_dict))
+        wavelengths.append(get_average_of_band(band2, spec_dict))
+        wavelengths.append(get_average_of_band(band3, spec_dict))
+    else:
+        start2 = bisect.bisect_right(list(spec_dict.keys()), 500)
+        start3 = bisect.bisect_right(list(spec_dict.keys()), 600)
+        start4 = bisect.bisect_right(list(spec_dict.keys()), 700)
+        start2 = list(spec_dict.keys())[start2]
+        start3 = list(spec_dict.keys())[start3]
+        start4 = list(spec_dict.keys())[start4]
+        band1 = range(start, 500, step)
+        band2 = range(start2, 600, step)
+        band3 = range(start3, 700, step)
+        band4 = range(start4, 800, step)
+        bands.append(band1)
+        bands.append(band2)
+        bands.append(band3)
+        bands.append(band4)
+        wavelengths.append(get_average_of_band(band1, spec_dict))
+        wavelengths.append(get_average_of_band(band2, spec_dict))
+        wavelengths.append(get_average_of_band(band3, spec_dict))
+        wavelengths.append(get_average_of_band(band4, spec_dict))
+
+    scene = libphotonmap_core.Scene()
+    w = wavelengths[0]
+    for sh in sc:
+        add_shape(scene, sh, w)
+    tr2shmap = {}
+    # spot_pos = Vec3(1.2, 1.5, 3.82)
+    # spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
+
+    # scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
+    #                  spot_dir, 30.0)
+
+    # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
+    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
+    captor_dict = {}
+    addCaptors(scene, captor_dict)
 
     scene.build()
     scene.setupTriangles()
@@ -545,7 +736,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
 
     # compute_energy(tr2shmap, integrator)
-    captor_energy(captor_dict, integrator)
+    captor_energy(captor_dict, integrator, w)
 
     print("Done!")
     now = datetime.now()
