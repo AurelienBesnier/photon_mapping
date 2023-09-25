@@ -122,10 +122,16 @@ def captor_energy(captor_dict, integrator):
     od = OrderedDict(sorted(energy.items()))
 
     with open("captor_result.csv", 'w') as f:
-        f.write("id,n_photons\n")
+        f.write("id,n_photons, elevation\n")
         for k, v in od.items():
+            if k <= 119:
+                elevation = 1000
+            elif k <= 239:
+                elevation = 1400
+            else:
+                elevation = 1800
             #print("captor n°" + str(k) + " has " + str(v) + " photons on it")
-            f.write(str(k) + "," + str(v) + "\n")
+            f.write(str(k) + "," + str(v) + ","+str(elevation)+"\n")
 
     print("Done!")
 
