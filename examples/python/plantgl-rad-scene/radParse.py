@@ -4,6 +4,8 @@ import bisect
 from datetime import datetime
 import random
 from math import cos, sin
+import pandas as pd
+import matplotlib.pyplot as plt
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
@@ -13,7 +15,6 @@ from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampl
 from collections import OrderedDict
 
 from photonmap import libphotonmap_core
-
 
 
 def wavelength2Rgb(w: int) -> Vec3:
@@ -67,12 +68,7 @@ def wavelength2Rgb(w: int) -> Vec3:
     else:
         factor = 0.0
 
-    gamma = 0.80
-    R = (255 * pow(red * factor, gamma) if red > 0 else 0)
-    G = (255 * pow(green * factor, gamma) if green > 0 else 0)
-    B = (255 * pow(blue * factor, gamma) if blue > 0 else 0)
-
-    return Vec3(R, G, B)
+    return Vec3(red, green, blue)
 
 
 def get_average_of_band(band: range, spectrum: dict) -> float:
@@ -243,8 +239,10 @@ def captor_energy(captor_dict, integrator, w):
 
     od = OrderedDict(sorted(energy.items()))
 
-    with open("captor_result-"+str(w)+"nm.csv", 'w') as f:
-        f.write("id,n_photons, elevation\n")
+    filename = "captor_result-"+str(w)+"nm.csv"
+
+    with open(filename, 'w') as f:
+        f.write("id,n_photons,elevation\n")
         for k, v in od.items():
             if k <= 119:
                 elevation = 1000
@@ -252,10 +250,15 @@ def captor_energy(captor_dict, integrator, w):
                 elevation = 1400
             else:
                 elevation = 1800
-            # print("captor n°" + str(k) + " has " + str(v) + " photons on it")
+            print("captor n°" + str(k) + " has " + str(v) + " photons on it")
             f.write(str(k) + "," + str(v) + "," + str(elevation) + "\n")
 
     print("Done!")
+
+    # df = pd.read_csv(filename)
+    #
+    # plt.plot(df["n_photons"], df["elevation"])
+    # plt.savefig("plot.png")
 
 
 def compute_energy(tr2shmap, integrator):
@@ -510,17 +513,19 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
 
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
+    light_color = wavelength2Rgb(w)
+    # print(str(light_color[0])+" "+str(light_color[1])+" "+str(light_color[2]))
     if len(indices) == 0:
         coords = re.findall(r"[-+]?\d*\.*\d+", sh.name)  # regex to get the coords
         # coords[0] is the id of the light
         pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
         print(coords)
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(400), wavelength2Rgb(w))
+        scene.addPointLight(pos, watts_to_emission(400), light_color)
 
     if emission != Color3(0, 0, 0):
         print("Adding light")
-        scene.addLight(vertices, indices, normals, watts_to_emission(400), wavelength2Rgb(w))
+        scene.addLight(vertices, indices, normals, watts_to_emission(400), light_color)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
                            trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
@@ -595,8 +600,6 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
             captorId += 1
             lastTriangleId = scene.nFaces()
 
-    # print(captorDict)
-
 
 def photonmap_plantglScene(sc, anchor, scale_factor):
     n_samples = 2
@@ -605,7 +608,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
-    max_depth = 100
+    max_depth = 50
 
     aspect_ratio = 16.0 / 9.0
 
