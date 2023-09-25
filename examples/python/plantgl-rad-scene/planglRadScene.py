@@ -172,9 +172,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / scale_factor + anchor[0])
-            vertices.append(mvector[1] / scale_factor + anchor[1])
-            vertices.append(mvector[2] / scale_factor + anchor[2])
+            vertices.append(mvector[0] / (scale_factor/10) + anchor[0])
+            vertices.append(mvector[1] / (scale_factor/10) + anchor[1])
+            vertices.append(mvector[2] / (scale_factor/10) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -602,8 +602,8 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
 
 
 def photonmap_plantglScene(sc, anchor, scale_factor):
-    n_samples = 2
-    n_photons = 1000000
+    n_samples = 10
+    n_photons = 100000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -618,7 +618,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image = libphotonmap_core.Image(image_width, image_height)
     lookfrom = Vec3(0.5, 0.5, 1.5)
     lookat = Vec3(anchor[0], anchor[1], anchor[2])
-    vup = Vec3(0, 0, 1)
+    vup = Vec3(0, 0, -1)
     vfov = 50.0
     dist_to_focus = 3.0
     aperture = 0.01
