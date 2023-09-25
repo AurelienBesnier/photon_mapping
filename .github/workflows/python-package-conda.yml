@@ -48,5 +48,8 @@ jobs:
         python3 -m pip install .
     - name: Test with pytest
       run: |
+        source $CONDA/etc/profile.d/conda.sh
+        conda init bash
+        conda activate photonmap
         conda install pytest
         pytest
