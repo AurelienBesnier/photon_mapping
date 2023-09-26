@@ -49,7 +49,11 @@ public:
   float getNext() { return pcg32_random_r(&state) * divider; }
 };
 
-// sampler interface
+
+/**
+ * @brief Abstract class of a sampler interface.
+ * @class Sampler.
+ */
 class Sampler {
 protected:
   RNG rng;

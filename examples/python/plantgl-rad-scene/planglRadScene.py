@@ -1,20 +1,62 @@
+import bisect
+import os
+import random
 import re
 import sys
-import bisect
+from collections import OrderedDict
 from datetime import datetime
-import random
 from math import cos, sin
-import pandas as pd
-import matplotlib.pyplot as plt
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
+
 from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler, \
-    visualizePhotonMap, visualizeCausticsPhotonMap, visualizeCaptorsPhotonMap, Render, Camera, PI, normalize
-
-from collections import OrderedDict
-
+    visualizePhotonMap, visualizeCaptorsPhotonMap, Render, PI
 from photonmap import libphotonmap_core
+
+
+def setup_dataset_materials(wavelength: int):
+    """
+    Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
+    the simulation.
+    Parameters
+    ----------
+    wavelength: int
+        The wavelength to study.
+
+    Returns
+    -------
+
+    """
+    materialsT = {}
+    materialsR = {}
+    for element in ("Plant", "Env"):  # Reflectances
+        files = []
+        dir_pathReflect = os.path.dirname(__file__) + "/PO/" + element + "/ReflectancesMean/"
+        for path in os.listdir(dir_pathReflect):
+            if os.path.isfile(os.path.join(dir_pathReflect, path)):
+                if not path.startswith('.'):
+                    files.append(path)
+        for file in files:
+            matName = file.split('.')[0]
+            contentReflect, stepReflect, startReflect = read_spectrum_file(os.path.join(dir_pathReflect, file))
+            materialsR[matName] = float(contentReflect[wavelength]) if float(contentReflect[wavelength]) > 0 \
+                else 0.0
+
+    for element in ("Plant", "Env"):  # Transmittances
+        files = []
+        dir_pathTransmit = os.path.dirname(__file__) + "/PO/" + element + "/TransmittancesMean/"
+        for path in os.listdir(dir_pathTransmit):
+            if os.path.isfile(os.path.join(dir_pathTransmit, path)):
+                if not path.startswith('.'):
+                    files.append(path)
+        for file in files:
+            matName = file.split('.')[0]
+            contentTransmit, stepTransmit, startTransmit = read_spectrum_file(os.path.join(dir_pathTransmit, file))
+            materialsT[matName] = float(contentTransmit[wavelength]) if float(contentTransmit[wavelength]) > 0 \
+                else 0.0
+
+    return materialsR, materialsT
 
 
 def wavelength2Rgb(w: int) -> Vec3:
@@ -63,7 +105,7 @@ def wavelength2Rgb(w: int) -> Vec3:
     return Vec3(red, green, blue)
 
 
-def get_average_of_band(band: range, spectrum: dict) -> float:
+def get_average_of_band(band: range, spectrum: dict) -> int:
     """
     Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.
     Parameters
@@ -76,7 +118,7 @@ def get_average_of_band(band: range, spectrum: dict) -> float:
 
     Returns
     -------
-    wavelength: float
+    wavelength: int
         The wavelength in question.
     """
     cpt: int = 0
@@ -206,6 +248,16 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
 
 def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3,
                           scale_factor):
+    """
+    Adds the lpy mesh to the photonmapping scene.
+    :param sc:
+    :param filename:
+    :param t:
+    :param tr2shmap:
+    :param anchor:
+    :param scale_factor:
+    :return:
+    """
     lsystem = Lsystem(filename)
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
@@ -217,6 +269,13 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
 
 
 def captor_energy(captor_dict, integrator, w):
+    """
+    Compute the energy on each captor in the scene.
+    :param captor_dict:
+    :param integrator:
+    :param w:
+    :return:
+    """
     photonmap = integrator.getPhotonMapCaptors()
     energy = {}
     print("writing captor energy...")
@@ -230,8 +289,18 @@ def captor_energy(captor_dict, integrator, w):
                 energy[captorId] = 1
 
     od = OrderedDict(sorted(energy.items()))
+    band = ""
+    if w < 500 and w>400:
+        band = "400-500"
+    elif w < 600 and w>500:
+        band = "500-600"
+    elif w < 700 and w>600:
+        band = "600-700"
+    elif w < 800 and w>700:
+        band = "700-800"
 
-    filename = "captor_result-" + str(w) + "nm.csv"
+
+    filename = "captor_result-" + str(band) + "nm.csv"
 
     with open(filename, 'w') as f:
         f.write("id,n_photons,elevation\n")
@@ -249,6 +318,12 @@ def captor_energy(captor_dict, integrator, w):
 
 
 def compute_energy(tr2shmap, integrator):
+    """
+    Computes the number of photons on each organ of the plant.
+    :param tr2shmap:
+    :param integrator:
+    :return:
+    """
     photonmap = integrator.getPhotonMap()
     shenergy = {}
     for i in range(photonmap.nPhotons()):
@@ -275,30 +350,13 @@ def compute_energy(tr2shmap, integrator):
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
 
 
-def addCirclePGLScene(vert, pos, r):
-    deltaAngle = 45
-    vert.append((pos[0], pos[1], pos[2]))
-
-    x1 = r * cos(0)
-    y1 = r * sin(0)
-    z1 = 0
-    point1 = [x1 + pos[0], y1 + pos[1], z1 + pos[2]]
-    vert.append((point1[0], point1[1], point1[2]))
-    i = 0
-    while i < 360*3:
-        i += deltaAngle
-        rad = i / 180 * PI
-        x2 = r * cos(rad)
-        y2 = r * sin(rad)
-        z2 = 0
-        point2 = [x2 + pos[0], y2 + pos[1], z2 + pos[2]]
-        vert.append((point2[0], point2[1], point2[2]))
-        point1 = point2
-        vert.append((pos[0], pos[1], pos[2]))
-        vert.append((point1[0], point1[1], point1[2]))
-
-
 def read_rad(file: str, invert_normals: bool):
+    """
+    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) a make a plantGL Scene
+    :param file: the rad filename
+    :param invert_normals: whether to invert the normals or not.
+    :return: A plantGL Scene.
+    """
     with open(file, 'r') as f:
         lines = f.readlines()
         materials = {}
@@ -410,13 +468,30 @@ def read_rad(file: str, invert_normals: bool):
                                     float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
                                     float(l2[2]) / scale_factor)
 
-                                pos = [x, y, z]
-                                pos2 = [x2, y2, z2]
-                                addCirclePGLScene(vert, pos, r)
-                                vert.append(pos)
-                                addCirclePGLScene(vert, pos2, r2)
+                                ratio = r / r2
 
-                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
+                                pos = [x, y, z]
+                                newCone = Frustum()
+                                newCone.taper = 1.0 + ratio
+                                newCone.height = z2 * 10 - z * 10
+                                ts = Tesselator()
+                                newCone.apply(ts)
+                                mesh = ts.result
+                                maxi = 0
+                                for i in range(0, mesh.indexListSize()):
+                                    index = mesh.indexAt(i)
+                                    typeF = mesh.faceSize(i)
+                                    for j in range(0, typeF):
+                                        if index[j] > maxi:
+                                            maxi = index[j]
+                                for u in range(0, maxi + 1):
+                                    mvector = mesh.pointAt(u)
+                                    mesh.pointList[u] = ((mvector[0] / 10 +
+                                                          pos[0], mvector[1] / 10 +
+                                                          pos[1], mvector[2] / 10 + pos[2]))
+
+                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material
+                                    , "mesh": mesh}
                                 i += 3
                             else:
                                 for j in range(tmp, tmp + nbCoords):
@@ -437,7 +512,30 @@ def read_rad(file: str, invert_normals: bool):
             vert = val["vertices"]
             s = Shape()
             nbCoords = int(val["size"] / 3)
-            if nbCoords % 3 == 0:
+            if val.get("mesh") is not None:
+                print("mesh detected")
+                s.name = sh
+                s.geometry = val["mesh"]
+                if mat["type"] == "light":
+                    s.name += str(vert[0])
+                    s.appearance = Material(name=name, ambient=Color3(mat["color"]),
+                                            emission=Color3(mat["color"]))
+
+                elif mat["type"] == "trans":
+                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                                            specular=Color3(mat["spec"]),
+                                            shininess=1 - mat["roughness"], transparency=mat["trans"])
+                else:
+                    if Color3(mat["spec"]) == Color3(0, 0, 0):
+                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                                                shininess=1 - mat["roughness"])
+                    else:
+                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
+                                                specular=Color3(mat["spec"]), shininess=1 - mat["roughness"])
+                s.appearance.name = mat["name"]
+                sc.add(s)
+
+            elif nbCoords % 3 == 0:
                 ts = TriangleSet(vert)
                 i = 0
                 indList = []
@@ -526,10 +624,24 @@ def read_rad(file: str, invert_normals: bool):
 
 
 def watts_to_emission(w):
+    """
+    Converts watts to emissive power.
+    :param w: the watts to convert.
+    :return: the emission strength.
+    """
     return w * 2.0 / 10.0
 
 
-def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
+def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dict, materialsT: dict):
+    """
+    Adds a PlantGL Shape to the Photon Mapping scene.
+    :param scene: A libphotonmap_core Scene
+    :param sh: The plantGL Shape to add
+    :param w: The wavelength of the light to simulate.
+    :param materialsR: The materials reflectance dictionary
+    :param materialsT: The materials transmittance dictionary
+    :return:
+    """
     normals = VectorFloat(flatten(sh.geometry.normalList))
     indices = VectorUint(flatten(sh.geometry.indexList))
     vertices = VectorFloat(flatten(sh.geometry.pointList))
@@ -538,7 +650,9 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
     specular = Vec3(sh.appearance.specular.red / 255.0, sh.appearance.specular.green / 255.0,
                     sh.appearance.specular.blue / 255.0)
     diffuse = ambient
-    trans = sh.appearance.transparency
+    material_name = sh.appearance.name
+    trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
+    refl = 0.0 if materialsR.get(material_name) is None else materialsR[material_name]
     if specular != Color3(0, 0, 0):
         illum = 1
 
@@ -558,10 +672,16 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
         scene.addLight(vertices, indices, normals, watts_to_emission(400), light_color)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
-                           trans, illum, 1, 1 - trans, trans, 1.0 - shininess)
+                           trans, illum, 1, refl, trans, 1.0 - shininess)
 
 
 def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
+    """
+    Adds circular captors to the scene. the captors needs to be in a file called captors.csv.
+    :param scene:
+    :param captor_dict:
+    :return:
+    """
     lastTriangleId = scene.nFaces()
     print("Last triangles id: " + str(lastTriangleId))
     with open("captors.csv", 'r') as f:
@@ -632,13 +752,20 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
 
 
 def photonmap_plantglScene(sc, anchor, scale_factor):
-    n_samples = 10
-    n_photons = 100000
+    """
+    Photon maps the plantGL Scene provided
+    :param sc: The plantGL Scene
+    :param anchor: A 3D point to put the virtual plant on.
+    :param scale_factor: The scale factor to get a meter.
+    :return:
+    """
+    n_samples = 2
+    n_photons = 1000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
-    max_depth = 50
+    max_depth = 100
 
     aspect_ratio = 16.0 / 9.0
 
@@ -657,7 +784,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
 
     # Setting up spectrum bands
-    spectrum = "blue"
+    spectrum = "par"
     spec_file = "chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
@@ -723,61 +850,62 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         wavelengths.append(get_average_of_band(band3, spec_dict))
         wavelengths.append(get_average_of_band(band4, spec_dict))
 
-    scene = libphotonmap_core.Scene()
-    w = wavelengths[0]
-    for sh in sc:
-        add_shape(scene, sh, w)
-    tr2shmap = {}
-    # spot_pos = Vec3(1.2, 1.5, 3.82)
-    # spot_dir = normalize(Vec3(anchor[0], anchor[2], anchor[1]) - spot_pos)
+    for w in wavelengths:
+        scene = libphotonmap_core.Scene()
+        materialsR, materialsT = setup_dataset_materials(w)
+        for sh in sc:
+            add_shape(scene, sh, w, materialsR, materialsT)
+        tr2shmap = {}
+        add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
+        captor_dict = {}
+        addCaptors(scene, captor_dict)
 
-    # scene.addSpotLight(spot_pos, watts_to_emission(80), Vec3(1, 1, 1),
-    #                  spot_dir, 30.0)
+        scene.build()
+        scene.setupTriangles()
 
-    # scene.addPointLight(Vec3(1.895450, 1.969085, -2), watts_to_emission(32), Vec3(1, 1, 1))
-    add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-    captor_dict = {}
-    addCaptors(scene, captor_dict)
+        print("Building photonMap...")
+        integrator = PhotonMapping(n_photons, n_estimation_global,
+                                   n_photons_caustics_multiplier, n_estimation_caustics,
+                                   final_gathering_depth, max_depth)
 
-    scene.build()
-    scene.setupTriangles()
+        sampler = UniformSampler(random.randint(1, sys.maxsize))
 
-    print("Building photonMap...")
-    integrator = PhotonMapping(n_photons, n_estimation_global,
-                               n_photons_caustics_multiplier, n_estimation_caustics,
-                               final_gathering_depth, max_depth)
+        integrator.build(scene, sampler)
+        print("Done!")
+        image.clear()
+        print("Printing photonmap image...")
+        visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth,
+                           "photonmap-"+str(w)+"nm.ppm", sampler)
+        image.clear()
 
-    sampler = UniformSampler(random.randint(1, sys.maxsize))
+        print("Printing captor photonmap image...")
+        visualizeCaptorsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
+                                  "photonmap-captors-"+str(w)+"nm.ppm", sampler, integrator)
 
-    integrator.build(scene, sampler)
-    print("Done!")
+        image.clear()
+        # visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
+        #                           "photonmap-cautics.ppm", sampler)
 
-    print("Printing photonmap image...")
-    visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth,
-                       "photonmap.ppm", sampler)
+        image.clear()
+        print("Done!")
 
-    print("Printing captor photonmap image...")
-    visualizeCaptorsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
-                              "photonmap-captors.ppm", sampler, integrator)
-    # visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
-    #                           "photonmap-cautics.ppm", sampler)
-    print("Done!")
+        print("Rendering image...")
+        image = libphotonmap_core.Image(image_width, image_height)
+        Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene, "output-photonmapping-"+str(w)+"nm.ppm")
 
-    print("Rendering image...")
-    image = libphotonmap_core.Image(image_width, image_height)
-    Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
+        image.clear()
 
-    # compute_energy(tr2shmap, integrator)
-    captor_energy(captor_dict, integrator, w)
+        # compute_energy(tr2shmap, integrator)
+        captor_energy(captor_dict, integrator, w)
 
-    print("Done!")
-    now = datetime.now()
-    current_time = now.strftime("%H:%M:%S")
-    print("Current Time =", current_time)
+        print("Done!")
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        print("Current Time =", current_time)
 
 
 if __name__ == "__main__":
     # sc, anchor, scale_factor = read_rad("chambre2.rad", True)
     sc, anchor, scale_factor = read_rad("testChamber.rad", False)
 
-    # photonmap_plantglScene(sc, anchor, scale_factor)
+    photonmap_plantglScene(sc, anchor, scale_factor)

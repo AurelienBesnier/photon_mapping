@@ -28,7 +28,7 @@ void Image::setPixel(unsigned int i, unsigned int j, const Vec3f &rgb) {
     pixels[idx + 2] = rgb[2];
 }
 
-void Image::divide(const float k) {
+void Image::divide(const float &k) {
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
             const Vec3f c = getPixel(i, j) / k;
@@ -45,7 +45,7 @@ void Image::clear() {
     }
 }
 
-void Image::gammaCorrection(const float gamma) {
+void Image::gammaCorrection(const float &gamma) {
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
             Vec3f c = getPixel(i, j);

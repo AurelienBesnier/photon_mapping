@@ -21,20 +21,32 @@ struct Material
     float reflectance = 0.0f;
 };
 
+/**
+ * @enum The type of BxDF of a surface.
+ */
 enum class BxDFType {
-    DIFFUSE, SPECULAR, CAPTOR
+    DIFFUSE, ///< Diffuse surface
+    SPECULAR, ///< Specular surface
+    CAPTOR ///< Captor surface
 };
 
+/**
+ * @enum The Direction of provenance of the Ray (Photon or actual ray for ray tracing)
+ */
 enum class TransportDirection {
-    FROM_LIGHT, FROM_CAMERA
+    FROM_LIGHT, ///< The ray comes from a light source (Photon)
+    FROM_CAMERA ///< The ray comes from the camera.
 };
 
 using DirectionPair = std::pair<Vec3f, Vec3f>;
 
 static auto pow5 = [](float x) { return x * x * x * x * x; };
 
-// represent BRDF or BTDF
-// direction vectors are in tangent space(x: tangent, y: normal, z: bitangent)
+/**
+ * @brief Represents BRDF or BTDF.
+ * @class BxDF
+ * direction vectors are in tangent space(x: tangent, y: normal, z: bitangent)
+ */
 class BxDF {
 private:
     BxDFType type;

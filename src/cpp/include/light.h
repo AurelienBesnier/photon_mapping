@@ -1,23 +1,43 @@
-#ifndef _LIGHT_H
-#define _LIGHT_H
+#ifndef LIGHT_H
+#define LIGHT_H
 
 #include "core.h"
 #include "sampler.h"
 #include "triangle.h"
 
+/**
+ * @enum  Represent the type of a light object.
+ */
 enum LightType{
-    Area, PointL, SpotL, TubeL
+    Area, ///< Area light source
+    PointL, ///< Point light source
+    SpotL, ///< Spot light source
+    TubeL ///< Tube light source
 };
-// light interface
+
+/**
+ * @brief Abstract class representing a light source.
+ * @class Light
+ */
 class Light {
  public:
     virtual ~Light() = default;
+        /**
+     * @fn Vec3f Le() override
+   * Get the light emission of the light source.
+   * @return the le attribute.
+   */
   virtual Vec3f Le() = 0;
   virtual SurfaceInfo samplePoint(Sampler& sampler, float& pdf) = 0;
   virtual Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                                 float& pdf) = 0;
 };
 
+/**
+ * @brief Class representing a Point Light.
+ * @class PointLight
+ * This light source does not have a physical presence.
+ */
 class PointLight : public Light {
 private:
     Vec3f le;  // emission
@@ -28,6 +48,11 @@ public:
             : le(le), position(position) {
     }
 
+    /**
+     * @fn Vec3f Le() override
+   * Get the light emission of the light source.
+   * @return the le attribute.
+   */
     Vec3f Le() override{
         return le;
     }
@@ -52,7 +77,11 @@ public:
     }
 };
 
-
+/**
+ * @brief Class representing a Spot Light.
+ * @class SpotLight
+ * This light source does not have a physical presence.
+ */
 class SpotLight : public Light {
 private:
     Vec3f le;  // emission
@@ -65,6 +94,11 @@ public:
             : le(le), position(position), direction(direction), angle(angle) {
     }
 
+    /**
+     * @fn Vec3f Le() override
+   * Get the light emission of the light source.
+   * @return the le attribute.
+   */
     Vec3f Le() override{
         return le;
     }
@@ -77,6 +111,14 @@ public:
         return surfInfo;
     }
 
+
+    /**
+     * Get the direction vector a new photon.
+      * @param surfInfo
+      * @param sampler
+      * @param pdf
+      * @return
+      */
     Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                           float& pdf) override {
         float rad = deg2rad(angle);
@@ -92,7 +134,11 @@ public:
     }
 };
 
-
+/**
+ * @brief Class representing a Tube Light.
+ * @class TubeLight
+ * This light source has a physical presence in the scene.
+ */
 class TubeLight : public Light {
  private:
   Vec3f le;  // emission
@@ -105,17 +151,33 @@ class TubeLight : public Light {
       : le(le), triangle(triangle), direction(direction), angle(angle) {
   }
 
-  // return emission
+    /**
+     * @fn Vec3f Le() override
+   * Get the light emission of the light source.
+   * @return the le attribute.
+   */
   Vec3f Le() override {
     return le;
   }
 
-  // sample point on the light
+    /**
+   * @fn SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override
+   * Samples a point on the mesh of the light source.
+   * @param sampler
+   * @param pdf
+   * @return
+   */
   SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override {
     return triangle->samplePoint(sampler, pdf);
   }
 
-  // sample direction from the light
+     /**
+     * Get the direction vector a new photon.
+      * @param surfInfo
+      * @param sampler
+      * @param pdf
+      * @return
+      */
   Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                         float& pdf) override {
       float rad = deg2rad(angle);
@@ -131,6 +193,11 @@ class TubeLight : public Light {
   }
 };
 
+/**
+ * @brief Class representing an Area Light.
+ * @class AreaLight
+ * This light source has a physical presence in the scene.
+ */
 class AreaLight : public Light {
  private:
   Vec3f le;  // emission
@@ -141,17 +208,33 @@ class AreaLight : public Light {
       : le(le), triangle(triangle) {
   }
 
-  // return emission
+    /**
+     * @fn Vec3f Le() override
+   * Get the light emission of the light source.
+   * @return the le attribute.
+   */
   Vec3f Le() override {
     return le;
   }
 
-  // sample point on the light
+
+  /**
+   * @fn SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override
+   * Samples a point on the mesh of the light source.
+   * @param sampler
+   * @param pdf
+   * @return
+   */
   SurfaceInfo samplePoint(Sampler& sampler, float& pdf) override {
     return triangle->samplePoint(sampler, pdf);
   }
 
-  // sample direction from the light
+    /**
+     * Get the direction vector a new photon.
+     * @param sampler
+     * @param pdf
+     * @return
+     */
   Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler& sampler,
                         float& pdf) override {
       Vec3f dir = sampleCosineHemisphere(sampler.getNext2D(), pdf);

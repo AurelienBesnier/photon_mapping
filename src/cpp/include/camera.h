@@ -4,8 +4,25 @@
 
 #include "core.h"
 
+/**
+ * @brief Class representing the camera.
+ * @class Camera
+ * @author Aurelien Besnier
+ */
 class Camera {
 public:
+    /**
+     * @brief Constructor
+     *
+     * Constructor of the Camera class.
+     * @param lookfrom the position of the camera.
+     * @param lookat the 3d point the camera is looking at.
+     * @param vup the Up vector of the camera.
+     * @param vfov the vertical fov of the camera.
+     * @param aspect_ratio the aspect radio of the image to render.
+     * @param aperture the aperture of the camera.
+     * @param focus_dist the focus distance of the camera (depth of field).
+     */
   Camera(Vec3f lookfrom, Vec3f lookat, Vec3f vup,
          float vfov, // vertical field-of-view in degrees
          float aspect_ratio, float aperture, float focus_dist) {
@@ -26,6 +43,14 @@ public:
     lens_radius = aperture / 2;
   }
 
+  /**
+   * @fn bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf) const
+   * @brief Samples a point in the image to render from the camera view point.
+   * @param uv the Image pixel coordinates.
+   * @param ray The reference for a ray to trace.
+   * @param pdf
+   * @return true if sampling success.
+   */
   bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf) const {
     Vec3f rd = lens_radius * random_in_unit_disk();
     Vec3f offset = u * rd[0] + v * rd[1];
@@ -37,12 +62,12 @@ public:
   }
 
 private:
-  Vec3f origin;
-  Vec3f lower_left_corner;
+  Vec3f origin; ///< the position of the camera
+  Vec3f lower_left_corner;  ///< the lower left corner of the image from the camera point of view.
   Vec3f horizontal;
   Vec3f vertical;
   Vec3f u, v, w;
-  float lens_radius;
+  float lens_radius; ///< the lens radius of the camera's objective.
 };
 
 #endif

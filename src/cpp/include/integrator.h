@@ -515,7 +515,10 @@ public:
     std::cout << "[PhotonMapping] building global photon map" << std::endl;
 #endif
     globalPhotonMap.setPhotons(photons);
+
+#ifdef __OUTPUT__
     globalPhotonMap.build();
+#endif
 
     std::cout << "Number of photons: " << globalPhotonMap.nPhotons()
               << std::endl;
@@ -626,20 +629,22 @@ public:
             }
           }
         }
-        // lightsCausticsPhotonMap[l].setPhotons(photonsLights);
-        // lightsCausticsPhotonMap[l].build();
       }
 #ifdef __OUTPUT__
       std::cout << "[PhotonMapping] building caustics photon map" << std::endl;
 #endif
     }
     causticsPhotonMap.setPhotons(photons);
+#ifdef __OUTPUT__
     causticsPhotonMap.build();
+#endif
 
     if (!captorPhotons.empty()) {
       std::cout << "building captor photonmap..." << std::endl;
       captorPhotonMap.setPhotons(captorPhotons);
+#ifdef __OUTPUT__
       captorPhotonMap.build();
+#endif
       std::cout << "Done!" << std::endl;
     }
   }

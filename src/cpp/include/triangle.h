@@ -3,15 +3,19 @@
 #include "core.h"
 #include "sampler.h"
 
+/**
+ * @brief Class representing a triangle in the scene.
+ * @class Triangle
+ */
 class Triangle {
 public:
-  float *vertices;
-  unsigned *indices;
-  float *normals;
+  float *vertices; ///< The vertices of the triangle.
+  unsigned *indices; ///< The indices of the triangle.
+  float *normals; ///< The normals of the triangle.
 
-  uint32_t faceID;
-  Vec3f geometricNormal;
-  float surfaceArea;
+  uint32_t faceID; ///< The faceID of the triangle.
+  Vec3f geometricNormal; ///< The geometric normal of the triangle.
+  float surfaceArea;  ///< The surface area of the triangle.
 
   Triangle(float *vertices, unsigned int *indices, float *normals,
            uint32_t faceID);

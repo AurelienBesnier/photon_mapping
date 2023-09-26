@@ -1,4 +1,4 @@
-// #define __OUTPUT__
+#define __OUTPUT__
 
 #include "../cpp/include/camera.h"
 #include "../cpp/include/image.h"
@@ -260,7 +260,6 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   // Image
   py::class_<Image>(m, "Image")
       .def(py::init<unsigned int, unsigned int>())
-      .def_readwrite("pixels", &Image::pixels)
       .def("addPixel", &Image::addPixel,
            "adds the rgb value to the pixel of coord i j", py::arg("i"),
            py::arg("j"), py::arg("rgb"))
@@ -271,7 +270,9 @@ PYBIND11_MODULE(libphotonmap_core, m) {
            py::arg("k"))
       .def("gammaCorrection", &Image::gammaCorrection, py::arg("gamma"))
       .def("writePPM", &Image::writePPM,
-           "Write the image to the filename (.ppm file)", py::arg("filename"));
+           "Write the image to the filename (.ppm file)", py::arg("filename"))
+    .def("clear", &Image::clear,
+         "Sets the pixels of the image to zero");
 
   // Camera
   py::class_<Camera>(m, "Camera")

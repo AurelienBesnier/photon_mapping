@@ -8,11 +8,14 @@
 
 #include "core.h"
 
+/**
+ * @struct Photon
+ */
 struct Photon {
-    Vec3f throughput;  // BxDF * Geometric Term / pdf
-    Vec3f position;
-    Vec3f wi;  // incident direction
-    unsigned int triId = 0; // id of the triangle on which the photon ended up
+    Vec3f throughput;  ///< BxDF * Geometric Term / pdf
+    Vec3f position; ///< The position of the photon in the scene
+    Vec3f wi;  ///<  incident direction
+    unsigned int triId = 0; ///<  id of the triangle on which the photon ended up
 
     // implementation of Point concept
     static constexpr int dim = 3;
@@ -137,10 +140,14 @@ public:
     }
 };
 
+/**
+ * Class representing a photon map
+ * @class PhotonMap
+ */
 class PhotonMap {
 private:
-    std::vector<Photon> photons;
-    KdTree<Photon> kdtree;
+    std::vector<Photon> photons; ///< the photons in the photonmap.
+    KdTree<Photon> kdtree;  ///< kdtree structure with the position of the photons.
 
 public:
     PhotonMap() = default;

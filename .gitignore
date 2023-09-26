@@ -1,6 +1,7 @@
 .vscode/
 .cache/
 build/
+docs/
 .idea/
 .DS_Store
 CMakeLists.txt.user

@@ -104,7 +104,7 @@ private:
     RTCDevice device{};
     RTCScene scene{};
 
-    bool hasLight(uint32_t faceID) const { return lights[faceID] != nullptr; }
+    [[nodiscard]] bool hasLight(uint32_t faceID) const { return lights[faceID] != nullptr; }
 
     void clear() {
         vertices.clear();

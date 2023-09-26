@@ -1119,10 +1119,10 @@ substrat polygon anchor
 1220.0 925.0 980
 1210.0 925.0 980
 
-jaune cone flowerPot
+pot cone flowerPot
 0
 0
 8
-1215.0 920.0 901
+1215.0 920.0 900
 1215.0 920.0 980
-7.5 10.5
+7.8 10.5 # in cm
