@@ -59,14 +59,6 @@ def wavelength2Rgb(w: int) -> Vec3:
         red = 0.0
         green = 0.0
         blue = 0.0
-    if 380.0 <= w < 420.0:
-        factor = 0.3 + 0.7 * (w - 380.0) / (420.0 - 380.0)
-    elif 420.0 <= w < 701.0:
-        factor = 1.0
-    elif 701.0 <= w < 781.0:
-        factor = 0.3 + 0.7 * (780.0 - w) / (780.0 - 700.0)
-    else:
-        factor = 0.0
 
     return Vec3(red, green, blue)
 
@@ -172,9 +164,9 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(mvector[0] / (scale_factor/10) + anchor[0])
-            vertices.append(mvector[1] / (scale_factor/10) + anchor[1])
-            vertices.append(mvector[2] / (scale_factor/10) + anchor[2])
+            vertices.append(mvector[0] / (scale_factor / 10) + anchor[0])
+            vertices.append(mvector[1] / (scale_factor / 10) + anchor[1])
+            vertices.append(mvector[2] / (scale_factor / 10) + anchor[2])
         for k in range(0, maxi + 1):
             nvector = mesh.normalAt(k)
             normals.append(nvector[0])
@@ -239,7 +231,7 @@ def captor_energy(captor_dict, integrator, w):
 
     od = OrderedDict(sorted(energy.items()))
 
-    filename = "captor_result-"+str(w)+"nm.csv"
+    filename = "captor_result-" + str(w) + "nm.csv"
 
     with open(filename, 'w') as f:
         f.write("id,n_photons,elevation\n")
@@ -254,11 +246,6 @@ def captor_energy(captor_dict, integrator, w):
             f.write(str(k) + "," + str(v) + "," + str(elevation) + "\n")
 
     print("Done!")
-
-    # df = pd.read_csv(filename)
-    #
-    # plt.plot(df["n_photons"], df["elevation"])
-    # plt.savefig("plot.png")
 
 
 def compute_energy(tr2shmap, integrator):
@@ -286,6 +273,29 @@ def compute_energy(tr2shmap, integrator):
 
     for k, v in shenergy.items():
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
+
+
+def addCirclePGLScene(vert, pos, r):
+    deltaAngle = 45
+    vert.append((pos[0], pos[1], pos[2]))
+
+    x1 = r * cos(0)
+    y1 = r * sin(0)
+    z1 = 0
+    point1 = [x1 + pos[0], y1 + pos[1], z1 + pos[2]]
+    vert.append((point1[0], point1[1], point1[2]))
+    i = 0
+    while i < 360*3:
+        i += deltaAngle
+        rad = i / 180 * PI
+        x2 = r * cos(rad)
+        y2 = r * sin(rad)
+        z2 = 0
+        point2 = [x2 + pos[0], y2 + pos[1], z2 + pos[2]]
+        vert.append((point2[0], point2[1], point2[2]))
+        point1 = point2
+        vert.append((pos[0], pos[1], pos[2]))
+        vert.append((point1[0], point1[1], point1[2]))
 
 
 def read_rad(file: str, invert_normals: bool):
@@ -386,7 +396,28 @@ def read_rad(file: str, invert_normals: bool):
                                 vert.append((x2 - r, y2 - r, z2 - r))
 
                                 shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
-                                i += 4
+                                i += 3
+                            elif type == "cone":
+                                l = re.split(r"\s+|;+", lines[i + 1])
+                                l2 = re.split(r"\s+|;+", lines[i + 2])
+                                l3 = re.split(r"\s+|;+", lines[i + 3])
+                                r = float(l3[0]) / scale_factor
+                                r2 = float(l3[1]) / scale_factor
+
+                                x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
+                                    l[2]) / scale_factor
+                                x2, y2, z2 = (
+                                    float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
+                                    float(l2[2]) / scale_factor)
+
+                                pos = [x, y, z]
+                                pos2 = [x2, y2, z2]
+                                addCirclePGLScene(vert, pos, r)
+                                vert.append(pos)
+                                addCirclePGLScene(vert, pos2, r2)
+
+                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
+                                i += 3
                             else:
                                 for j in range(tmp, tmp + nbCoords):
                                     l = re.split(r"\s+|;+", lines[j])
@@ -524,7 +555,6 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w):
         scene.addPointLight(pos, watts_to_emission(400), light_color)
 
     if emission != Color3(0, 0, 0):
-        print("Adding light")
         scene.addLight(vertices, indices, normals, watts_to_emission(400), light_color)
     else:
         scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
@@ -625,7 +655,6 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
     # coordinates must be in meters
     camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
-
 
     # Setting up spectrum bands
     spectrum = "blue"
@@ -751,4 +780,4 @@ if __name__ == "__main__":
     # sc, anchor, scale_factor = read_rad("chambre2.rad", True)
     sc, anchor, scale_factor = read_rad("testChamber.rad", False)
 
-    photonmap_plantglScene(sc, anchor, scale_factor)
+    # photonmap_plantglScene(sc, anchor, scale_factor)

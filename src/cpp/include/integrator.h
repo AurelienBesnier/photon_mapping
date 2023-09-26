@@ -467,11 +467,9 @@ public:
 #pragma omp critical
             if (bxdf_type == BxDFType::DIFFUSE) {
               // TODO: remove lock to get more speed
-              {
                 Photon p(throughput, info.surfaceInfo.position, -ray.direction,
                          info.hitPrimitive->triangle[0].faceID);
                 photons.emplace_back(p);
-              }
             } else if (bxdf_type == BxDFType::CAPTOR) {
               Photon p(throughput, info.surfaceInfo.position, -ray.direction,
                        info.hitPrimitive->triangle[0].faceID);

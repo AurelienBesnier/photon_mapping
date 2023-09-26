@@ -821,15 +821,6 @@ Aquanappe polygon tableAMaree
 2040.0 1370.0 900
 0.0 1370.0 900
 
-jaune polygon anchor
-0
-0
-12
-1210.0 915.0 901
-1220.0 915.0 901
-1220.0 925.0 901
-1210.0 925.0 901
-
 
 Aquanappe polygon soustableAMaree
 0
@@ -1119,3 +1110,19 @@ Makrolon polygon fauxPlafondInf
 2400.0 1840.0 1970
 0.0 1840.0 1970
 
+substrat polygon anchor
+0
+0
+12
+1210.0 915.0 980
+1220.0 915.0 980
+1220.0 925.0 980
+1210.0 925.0 980
+
+jaune cone flowerPot
+0
+0
+8
+1215.0 920.0 901
+1215.0 920.0 980
+7.5 10.5
