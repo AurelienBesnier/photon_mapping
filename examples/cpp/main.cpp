@@ -1,8 +1,8 @@
 // #define __OUTPUT__
-#include "camera.h"
-#include "image.h"
-#include "integrator.h"
-#include "scene.h"
+#include "camera.hpp"
+#include "image.hpp"
+#include "integrator.hpp"
+#include "scene.hpp"
 #include <chrono>
 
 void Render(UniformSampler &sampler, Image &image, const int &height,

@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "core.h"
+#include "core.hpp"
 
 /**
  * @brief Class representing an Image.
@@ -23,6 +23,7 @@ private:
 
 
     unsigned getIndex(unsigned i, unsigned j) const;
+
 public:
 
     /**

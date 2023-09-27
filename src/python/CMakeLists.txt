@@ -1,7 +1,7 @@
 find_package(Boost REQUIRED)
-if(NOT Boost_FOUND)
+if (NOT Boost_FOUND)
     message(WARNING "failed to find Boost")
-endif()
+endif ()
 set(Boost_USE_MULTITHREAD ON)
 
 find_package(Python COMPONENTS Interpreter Development REQUIRED)

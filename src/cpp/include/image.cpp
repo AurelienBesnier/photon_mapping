@@ -1,9 +1,9 @@
-#include "image.h"
+#include "image.hpp"
 
 Image::Image(unsigned int width, unsigned int height)
-            : width(width), height(height) {
-        pixels.resize(3 * width * height);
-    }
+        : width(width), height(height) {
+    pixels.resize(3 * width * height);
+}
 
 unsigned int Image::getIndex(unsigned int i, unsigned int j) const {
     return 3 * j + 3 * width * i;

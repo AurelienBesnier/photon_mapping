@@ -3,11 +3,10 @@
 
 #include <memory>
 
-#include "core.h"
-#include "sampler.h"
+#include "core.hpp"
+#include "sampler.hpp"
 
-struct Material
-{
+struct Material {
     Vec3f diffuse = Vec3f(0.9f);
     Vec3f ambient = Vec3fZero;
     Vec3f specular = Vec3fZero;
@@ -45,11 +44,11 @@ static auto pow5 = [](float x) { return x * x * x * x * x; };
 /**
  * @brief Represents BRDF or BTDF.
  * @class BxDF
- * direction vectors are in tangent space(x: tangent, y: normal, z: bitangent)
+ * direction vectors are in tangent space(x: tangent, y: normal, z: bi-tangent)
  */
 class BxDF {
 private:
-    BxDFType type;
+    BxDFType type; ///< The type of BxDF.
 
 public:
     explicit BxDF(const BxDFType &type) : type(type) {}
@@ -117,6 +116,10 @@ public:
             Vec3f &wo, TransportDirection &transport_dir) const = 0;
 };
 
+/**
+ * Class representing a Lambert material.
+ * @class Lambert
+ */
 class Lambert : public BxDF {
 private:
     Vec3f rho;
@@ -151,6 +154,10 @@ public:
     }
 };
 
+/**
+ * Class representing a mirror material.
+ * @class Mirror
+ */
 class Mirror : public BxDF {
 private:
     Vec3f rho;
@@ -511,8 +518,8 @@ private:
 
 public:
     SimpleLeaf(const Vec3f &rho, float reflectance, float transmittance, float roughness)
-            : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance),  transmittance(transmittance),
-            roughness(roughness) {}
+            : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance), transmittance(transmittance),
+              roughness(roughness) {}
 
     // NOTE: delta function
     Vec3f evaluate(Vec3f &wo, Vec3f &wi,
@@ -540,7 +547,7 @@ public:
         if (sampler.getNext1D() < reflectance) {
             wi = reflect(wo, n);
             pdf = 1.0f;
-            return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+            return rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
         }
             // refraction
         else {
@@ -550,16 +557,17 @@ public:
                 pdf = 1.0f;
                 float scaling = 1.0f;
 
-                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
             }
                 // total reflection
             else {
                 wi = reflect(wo, n);
                 pdf = 1.0f;
-                return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+                return rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
             }
         }
     }
+
     std::vector<DirectionPair> sampleAllDirection(
             Vec3f &wo, TransportDirection &transport_dir) const override {
         //Unused
@@ -612,7 +620,7 @@ public:
         if (sampler.getNext1D() < fr) {
             wi = reflect(wo, n);
             pdf = 1.0f;
-            return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+            return rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
         }
             // refraction
         else {
@@ -626,13 +634,13 @@ public:
                     scaling = (iorO * iorO) / (iorI * iorI);
                 }
 
-                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+                return scaling * rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
             }
                 // total reflection
             else {
                 wi = reflect(wo, n);
                 pdf = 1.0f;
-                return rho / absCosTheta(wi) + randomInterval(-roughness,roughness);
+                return rho / absCosTheta(wi) + randomInterval(-roughness, roughness);
             }
         }
     }

@@ -1,4 +1,4 @@
-#include "photon_map.h"
+#include "photon_map.hpp"
 #include <algorithm>
 #include<boost/sort/sort.hpp>
 
@@ -20,7 +20,7 @@ void KdTree<T>::buildNode(int *indices, int n_points, int depth) {
     const int axis = depth % 3;
 
     // sort indices by coordination in the separation axis.
-    boost::sort::parallel_stable_sort(indices, indices+n_points, [&](const int idx1, const int idx2) {
+    boost::sort::parallel_stable_sort(indices, indices + n_points, [&](const int idx1, const int idx2) {
         return points[idx1][axis] < points[idx2][axis];
     });
 
@@ -62,7 +62,7 @@ void KdTree<T>::buildNode(int *indices, int n_points, int depth) {
 
 const Photon &PhotonMap::getIthPhoton(int i) const { return photons[i]; }
 
-void PhotonMap::setPhotons(std::vector<Photon> &p) {
+void PhotonMap::setPhotons(const std::vector<Photon> &p) {
     this->photons = p;
 }
 

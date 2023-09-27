@@ -6,10 +6,11 @@
 #include <queue>
 #include <vector>
 
-#include "core.h"
+#include "core.hpp"
 
 /**
  * @struct Photon
+ * @brief Structure representing a Photon.
  */
 struct Photon {
     Vec3f throughput;  ///< BxDF * Geometric Term / pdf
@@ -22,8 +23,18 @@ struct Photon {
 
     float operator[](int i) const { return position[i]; }
 
+    /**
+     * @brief Default Constructor
+     */
     Photon() = default;
 
+    /**
+     * @brief Parameterized constructor.
+     * @param throughput The throughput of the photon.
+     * @param position The 3D position of the photon.
+     * @param wi the incident direction of the photon.
+     * @param triId The id of the triangle on which the photon is on.
+     */
     Photon(const Vec3f &throughput, const Vec3f &position, const Vec3f &wi, const unsigned int triId)
             : throughput(throughput), position(position), wi(wi), triId(triId) {}
 };
@@ -36,10 +47,16 @@ concept Point = requires(T& x, int i) {
 };
 */
 
-// compute the squared distance between given points
-// NOTE: assume PointT and PointU has the same dimension
+/**
+ * @brief Compute the squared distance between given points.
+ * NOTE: assume PointT and PointU has the same dimension
+ * @tparam PointT
+ * @tparam PointU
+ * @param p1
+ * @param p2
+ * @return
+ */
 template<typename PointT, typename PointU>
-//requires Point<PointT> && Point<PointU>
 inline float distance2(const PointT &p1, const PointU &p2) {
     float dist2 = 0;
     for (unsigned short i = 0; i < PointT::dim; ++i) {
@@ -48,23 +65,30 @@ inline float distance2(const PointT &p1, const PointU &p2) {
     return dist2;
 }
 
-// implementation of kd-tree
+/**
+ * The kdtree implementation
+ * @class KdTree
+ * @tparam PointT The type of point in the KdTree
+ */
 template<typename PointT>
-//requires Point<PointT>
 class KdTree {
 private:
+    /**
+     * @struct Node
+     * @brief Structure representing a node of a KdTree
+     */
     struct Node {
-        int axis;           // separation axis(x=0, y=1, z=2)
-        int idx;            // index of median point
-        int leftChildIdx;   // index of left child
-        int rightChildIdx;  // index of right child
+        int axis;           ///< separation axis(x=0, y=1, z=2)
+        int idx;            ///< index of median point
+        int leftChildIdx;   ///< index of left child
+        int rightChildIdx;  ///< index of right child
 
         Node() : axis(-1), idx(-1), leftChildIdx(-1), rightChildIdx(-1) {}
     };
 
-    std::vector<Node> nodes;  // array of tree nodes
-    const PointT *points;     // pointer to array of points
-    int nPoints;              // number of points
+    std::vector<Node> nodes;  ///< array of tree nodes
+    const PointT *points;     ///< pointer to array of points
+    int nPoints{};            ///< number of points
 
     void buildNode(int *indices, int n_points, int depth);
 
@@ -111,6 +135,9 @@ private:
     }
 
 public:
+    /**
+     * @brief Constructor.
+     */
     KdTree() = default;
 
     void setPoints(PointT *points, int nPoints) {
@@ -118,6 +145,9 @@ public:
         this->nPoints = nPoints;
     }
 
+    /**
+     * @brief Build the KdTree
+     */
     void buildTree();
 
     template<typename PointU>
@@ -150,16 +180,53 @@ private:
     KdTree<Photon> kdtree;  ///< kdtree structure with the position of the photons.
 
 public:
+    /**
+     * @brief Constructor
+     */
     PhotonMap() = default;
+
+    /**
+     * @brief Destructor
+     */
     virtual ~PhotonMap() = default;
 
+    /**
+     * @brief Get the ith photon of the photon map
+     * Retrieves the ith photon in the photons member vector.
+     * @param i the index of the photon to get
+     * @return the photon in question.
+     */
     const Photon &getIthPhoton(int i) const;
-    void setPhotons(std::vector<Photon> &p);
 
+    /**
+     * @fn void setPhotons(const std::vector<Photon> &p)
+     * Sets the photons class member to the given vector.
+     * @param p the vector to set.
+     */
+    void setPhotons(const std::vector<Photon> &p);
+
+    /**
+     * @fn const size_t nPhotons() const
+     * @brief returns the number of photons.
+     * @return the number of photons.
+     */
     const size_t nPhotons() const;
 
+    /**
+     * @fn void build()
+     * @brief Builds the Photon Map.
+     * Builds the Kdtree member of the PhotonMap.
+     */
     void build();
 
+    /**
+     * @fn std::vector<int> queryKNearestPhotons(Vec3f &p, int k, float &max_dist2) const
+     * @brief Get the k nearest photons to one given photon.
+     * @param p the targeted photon.
+     * @param k the number of neighbors to get.
+     * @param max_dist2 the maximum of distance get get the neighbors.
+     * @return a vector with the indices of the nearest photons.
+     */
     std::vector<int> queryKNearestPhotons(Vec3f &p, int k, float &max_dist2) const;
 };
 

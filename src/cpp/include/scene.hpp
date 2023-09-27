@@ -10,18 +10,18 @@
 #include <vector>
 
 #include "../../../externals/tinyobjloader/tiny_obj_loader.h"
-#include "core.h"
-#include "primitive.h"
+#include "core.hpp"
+#include "primitive.hpp"
 
 // create default BxDF
-boost::shared_ptr <BxDF> createDefaultBxDF() {
+boost::shared_ptr<BxDF> createDefaultBxDF() {
     return boost::make_shared<Lambert>(Vec3f(0.9f));
 }
 
 // create BxDF from tinyobj material
-boost::shared_ptr <BxDF> createBxDF(tinyobj::material_t &material,
-                                    float reflectance = 0.0f,
-                                    float transmittance = 0.0f, float roughness = 0.0f) {
+boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
+                                   float reflectance = 0.0f,
+                                   float transmittance = 0.0f, float roughness = 0.0f) {
     const Vec3f kd =
             Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
     const Vec3f ks =
@@ -54,8 +54,8 @@ boost::shared_ptr <BxDF> createBxDF(tinyobj::material_t &material,
 }
 
 // create AreaLight from tinyobj material
-boost::shared_ptr <AreaLight> createAreaLight(tinyobj::material_t &material,
-                                              Triangle *tri) {
+boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
+                                             Triangle *tri) {
     if (material.emission[0] > 0 || material.emission[1] > 0 ||
         material.emission[2] > 0) {
         Vec3f le =
@@ -67,7 +67,7 @@ boost::shared_ptr <AreaLight> createAreaLight(tinyobj::material_t &material,
 }
 
 // create PointLight
-boost::shared_ptr <PointLight> createPointLight(Vec3f emission, Vec3f position) {
+boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
     if (emission[0] > 0 || emission[1] > 0 ||
         emission[2] > 0) {
         Vec3f le =
@@ -78,7 +78,7 @@ boost::shared_ptr <PointLight> createPointLight(Vec3f emission, Vec3f position) 
     }
 }
 
-boost::shared_ptr <SpotLight> createSpotLight(Vec3f emission, Vec3f position, Vec3f direction, float angle) {
+boost::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position, Vec3f direction, float angle) {
     if (emission[0] > 0 || emission[1] > 0 ||
         emission[2] > 0) {
         Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
@@ -88,7 +88,7 @@ boost::shared_ptr <SpotLight> createSpotLight(Vec3f emission, Vec3f position, Ve
     }
 }
 
-boost::shared_ptr <TubeLight> createTubeLight(Vec3f emission, Triangle *tri, Vec3f direction, float angle) {
+boost::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri, Vec3f direction, float angle) {
     if (emission[0] > 0 || emission[1] > 0 ||
         emission[2] > 0) {
         Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
@@ -122,26 +122,26 @@ public:
     // mesh data
     // NOTE: assuming size of normals, texcoords == size of vertices
     std::vector<float> vertices;
-    std::vector <uint32_t> indices;
+    std::vector<uint32_t> indices;
     std::vector<float> normals;
 
-    std::vector <boost::optional<tinyobj::material_t>> materials;
+    std::vector<boost::optional<tinyobj::material_t>> materials;
 
     // triangles
     // NOTE: per face
-    std::vector <Triangle> triangles;
+    std::vector<Triangle> triangles;
 
     // BxDFs
     // NOTE: per face
-    std::vector <boost::shared_ptr<BxDF>> bxdfs;
+    std::vector<boost::shared_ptr<BxDF>> bxdfs;
 
     // lights
     // NOTE: per face
-    std::vector <boost::shared_ptr<Light>> lights;
+    std::vector<boost::shared_ptr<Light>> lights;
 
     // primitives
     // NOTE: per face
-    std::vector <Primitive> primitives;
+    std::vector<Primitive> primitives;
 
     Scene() = default;
 
@@ -152,7 +152,7 @@ public:
     }
 
     void addFaceInfosMat(std::vector<float> vertices,
-                         std::vector <uint32_t> indices,
+                         std::vector<uint32_t> indices,
                          std::vector<float> normals, Material mat) {
         for (uint32_t &i: indices) {
             i += nVertices();
@@ -204,7 +204,7 @@ public:
     }
 
     void addFaceInfos(std::vector<float> &vertices,
-                      std::vector <uint32_t> &indices, std::vector<float> &normals,
+                      std::vector<uint32_t> &indices, std::vector<float> &normals,
                       Vec3f &colors, Vec3f &ambient, Vec3f &specular,
                       float &shininess, float &transparency, int &illum,
                       float ior = 0.0f, float reflectance = 0.0f,
@@ -270,7 +270,7 @@ public:
         // populate lights, primitives
         for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
             // add light
-            boost::shared_ptr <Light> light = nullptr;
+            boost::shared_ptr<Light> light = nullptr;
             const auto material = this->materials[faceID];
             if (material) {
                 tinyobj::material_t m = material.value();
@@ -292,7 +292,7 @@ public:
     }
 
     void addLight(std::vector<float> newVertices,
-                  std::vector <uint32_t> newIndices, std::vector<float> newNormals,
+                  std::vector<uint32_t> newIndices, std::vector<float> newNormals,
                   float intensity, Vec3f color) {
         for (uint32_t &i: newIndices) {
             i += nVertices();
@@ -340,7 +340,7 @@ public:
     }
 
     void addCaptor(std::vector<float> newVertices,
-                   std::vector <uint32_t> newIndices, std::vector<float> newNormals) {
+                   std::vector<uint32_t> newIndices, std::vector<float> newNormals) {
         for (uint32_t &i: newIndices) {
             i += nVertices();
         }
@@ -357,7 +357,7 @@ public:
     }
 
     void addPointLight(Vec3f position, float intensity, Vec3f color) {
-        boost::shared_ptr <Light> light;
+        boost::shared_ptr<Light> light;
         light = createPointLight(color * intensity, position);
         if (light != nullptr) {
             lights.push_back(light);
@@ -365,15 +365,15 @@ public:
     }
 
     void addSpotLight(Vec3f position, float intensity, Vec3f color, Vec3f direction, float angle) {
-        boost::shared_ptr <Light> light;
+        boost::shared_ptr<Light> light;
         light = createSpotLight(color * intensity, position, direction, angle);
         if (light != nullptr) {
             lights.push_back(light);
         }
     }
 
-    void addTubeLight(Triangle * tri, float intensity, Vec3f color, Vec3f direction, float angle) {
-        boost::shared_ptr <Light> light;
+    void addTubeLight(Triangle *tri, float intensity, Vec3f color, Vec3f direction, float angle) {
+        boost::shared_ptr<Light> light;
         light = createTubeLight(color * intensity, tri, direction, angle);
         if (light != nullptr) {
             lights.push_back(light);
@@ -416,8 +416,8 @@ public:
             for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f) {
                 const size_t fv = static_cast<size_t>(shape.mesh.num_face_vertices[f]);
 
-                std::vector <Vec3f> vertices;
-                std::vector <Vec3f> normals;
+                std::vector<Vec3f> vertices;
+                std::vector<Vec3f> normals;
 
                 // loop over vertices
                 // get vertices, normals, texcoords of a triangle
@@ -468,7 +468,7 @@ public:
 
                 // populate materials
                 const int materialID = shape.mesh.material_ids[f];
-                boost::optional <tinyobj::material_t> material = boost::none;
+                boost::optional<tinyobj::material_t> material = boost::none;
                 if (materialID != -1) {
                     material = materials[materialID];
                 }
@@ -506,7 +506,7 @@ public:
         // populate lights, primitives
         for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
             // add light
-            boost::shared_ptr <Light> light = nullptr;
+            boost::shared_ptr<Light> light = nullptr;
             const auto material = this->materials[faceID];
             if (material) {
                 tinyobj::material_t m = material.value();
@@ -526,7 +526,7 @@ public:
 
     uint32_t nFaces() const { return indices.size() / 3; }
 
-    std::vector <Triangle> getTriangles() const { return triangles; }
+    std::vector<Triangle> getTriangles() const { return triangles; }
 
     void build() {
 #ifdef __OUTPUT__
@@ -606,9 +606,9 @@ public:
         }
     }
 
-    size_t nLights() const { return lights.size();}
+    size_t nLights() const { return lights.size(); }
 
-    boost::shared_ptr <Light> sampleLight(Sampler &sampler, float &pdf) const {
+    boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
         uint32_t lightIdx = lights.size() * sampler.getNext1D();
         if (lightIdx == lights.size())
             lightIdx--;
@@ -616,7 +616,7 @@ public:
         return lights[lightIdx];
     }
 
-    boost::shared_ptr <Light> sampleLight(float &pdf, unsigned int idx) const {
+    boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const {
         if (idx == lights.size())
             idx--;
         pdf = 1.0f / (lights.size());
