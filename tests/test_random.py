@@ -1,6 +1,7 @@
 from photonmap import UniformSampler
 import random
 
+
 def test_random_sampler():
     sampler = UniformSampler()
     rng1 = sampler.getNext1D()

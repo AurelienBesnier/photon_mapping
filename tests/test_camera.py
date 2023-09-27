@@ -33,4 +33,3 @@ def test_camera():
     image.writePPM("output.ppm")
     image_written = True
     assert image_written
-

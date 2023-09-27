@@ -18,6 +18,7 @@ def test_vec3_mul():
     v = Vec3(2) * 2
     assert (v[0] == 4 and v[1] == 4 and v[2] == 4)
 
+
 def test_vec3_div():
     v = Vec3(2) / 2.0
     assert (v[0] == 1 and v[1] == 1 and v[2] == 1)

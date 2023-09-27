@@ -29,4 +29,3 @@ def test_photonmaps():
 
     assert (integrator.getPhotonMap().nPhotons() > 0)
     assert (integrator.getPhotonMapC().nPhotons() > 0)
-

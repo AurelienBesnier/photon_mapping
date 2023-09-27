@@ -2,7 +2,6 @@ from photonmap import Camera, Image, Ray, Vec2, Vec3, Scene, IntersectInfo
 
 
 def test_intersection():
-
     scene = Scene()
     scene.loadModel("./tests/cornellbox-water2.obj")
     scene.build()
