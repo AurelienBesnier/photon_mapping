@@ -1,5 +1,5 @@
-#ifndef _SAMPLER_H
-#define _SAMPLER_H
+#ifndef SAMPLER_H
+#define SAMPLER_H
 
 #include <cstdint>
 #include <limits>

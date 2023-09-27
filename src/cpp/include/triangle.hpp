@@ -1,5 +1,5 @@
-#ifndef _SHAPE_H
-#define _SHAPE_H
+#ifndef SHAPE_H
+#define SHAPE_H
 
 #include "core.hpp"
 #include "sampler.hpp"
@@ -18,25 +18,55 @@ public:
     Vec3f geometricNormal; ///< The geometric normal of the triangle.
     float surfaceArea;  ///< The surface area of the triangle.
 
+    /**
+     * @brief Parameterized constructor
+     * @param vertices
+     * @param indices
+     * @param normals
+     * @param faceID
+     */
     Triangle(float *vertices, unsigned int *indices, float *normals,
              uint32_t faceID);
 
-    // return vertex position
+    /**
+     * @brief Returns a vertex's position.
+     * @param vertexID The id of the vertex to get.
+     * @return The 3D position of the vertex.
+     */
     Vec3f getVertexPosition(uint32_t vertexID) const;
 
-    // return vertex normal
+    /**
+     * @brief Returns a vertex's normal.
+     * @param vertexID The id of the vertex to get.
+     * @return The normal of the vertex.
+     */
     Vec3f getVertexNormal(uint32_t vertexID) const;
 
-    // return vertex indices
+    /**
+     * @brief Get the indices of the triangle.
+     * @return The indices of the Triangle.
+     */
     Vec3ui getIndices() const;
 
-    // return geometric normal
+    /**
+     * @brief Get the geometric normal of the triangle.
+     * @return The geometric normal of the Triangle.
+     */
     Vec3f getGeometricNormal() const;
 
-    // compute shading normal at given position
+    /**
+     * Computes the shading normal at a given position.
+     * @param barycentric barycentric coordinates to get the normal of.
+     * @return The shading normal of the Triangle of the position.
+     */
     Vec3f computeShadingNormal(Vec2f &barycentric) const;
 
-    // sample point on the triangle
+    /**
+     * @brief Sample a point on the triangle.
+     * @param sampler
+     * @param pdf
+     * @return
+     */
     SurfaceInfo samplePoint(Sampler &sampler, float &pdf) const;
 };
 

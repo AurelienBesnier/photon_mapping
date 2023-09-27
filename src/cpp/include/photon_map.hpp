@@ -1,5 +1,5 @@
-#ifndef _PHOTON_MAP_H
-#define _PHOTON_MAP_H
+#ifndef PHOTON_MAP_H
+#define PHOTON_MAP_H
 
 #include <type_traits>
 #include <numeric>

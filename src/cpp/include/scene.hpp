@@ -1,4 +1,4 @@
-#ifndef _SCENE_H
+#ifndef SCENE_H
 #define _SCENE_H
 
 #include <embree3/rtcore.h>
@@ -98,14 +98,26 @@ boost::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri, Vec3
     }
 }
 
+/**
+ * Class reprensenting a 3D scene.
+ * @class Scene
+ */
 class Scene {
 private:
     // embree
-    RTCDevice device{};
-    RTCScene scene{};
+    RTCDevice device{}; ///< The embree device to use
+    RTCScene scene{}; ///< The embree scene
 
+    /**
+     * @brief Whether a face is light source or not
+     * @param faceID the id of the face
+     * @return true if the face emits light else false.
+     */
     [[nodiscard]] bool hasLight(uint32_t faceID) const { return lights[faceID] != nullptr; }
 
+    /**
+     * @brief clears the objects in the scene.
+     */
     void clear() {
         vertices.clear();
         indices.clear();
@@ -121,30 +133,28 @@ private:
 public:
     // mesh data
     // NOTE: assuming size of normals, texcoords == size of vertices
-    std::vector<float> vertices;
-    std::vector<uint32_t> indices;
-    std::vector<float> normals;
+    std::vector<float> vertices; ///< The vertices of the scene.
+    std::vector<uint32_t> indices; ///< The indices of the scene.
+    std::vector<float> normals; ///< The normals of the scene.
 
-    std::vector<boost::optional<tinyobj::material_t>> materials;
+    std::vector<boost::optional<tinyobj::material_t>> materials; ///< The materials of the scene.
 
-    // triangles
-    // NOTE: per face
-    std::vector<Triangle> triangles;
+    std::vector<Triangle> triangles; ///< The triangles of the scene per face.
 
-    // BxDFs
-    // NOTE: per face
-    std::vector<boost::shared_ptr<BxDF>> bxdfs;
+    std::vector<boost::shared_ptr<BxDF>> bxdfs; ///< The bxdfs of the scene per face.
 
-    // lights
-    // NOTE: per face
-    std::vector<boost::shared_ptr<Light>> lights;
+    std::vector<boost::shared_ptr<Light>> lights; ///< The lights of the scene per face.
 
-    // primitives
-    // NOTE: per face
-    std::vector<Primitive> primitives;
+    std::vector<Primitive> primitives; ///< The primitives of the scene per face.
 
+    /**
+     * @brief Constructor
+     */
     Scene() = default;
 
+    /**
+     * @brief Destructor
+     */
     ~Scene() {
         clear();
         rtcReleaseScene(scene);
@@ -203,6 +213,22 @@ public:
         }
     }
 
+    /**
+     * @brief Adds a face to the scene with the provided info.
+     * @param vertices
+     * @param indices
+     * @param normals
+     * @param colors
+     * @param ambient
+     * @param specular
+     * @param shininess
+     * @param transparency
+     * @param illum
+     * @param ior
+     * @param reflectance
+     * @param transmittance
+     * @param roughness
+     */
     void addFaceInfos(std::vector<float> &vertices,
                       std::vector<uint32_t> &indices, std::vector<float> &normals,
                       Vec3f &colors, Vec3f &ambient, Vec3f &specular,
@@ -259,6 +285,12 @@ public:
         }
     }
 
+    /**
+     * @fn void setupTriangles()
+     * @brief Setup the triangles of the scene with the data provided thus far.
+     * Must be used after adding all the faces of the desired scene.
+     * @warning Should not be used after loading an obj file.
+     */
     void setupTriangles() {
         // populate  triangles
         for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
@@ -291,6 +323,16 @@ public:
 #endif
     }
 
+    /**
+     * @fn void addLight(std::vector<float> newVertices, std::vector<uint32_t> newIndices,
+     * std::vector<float> newNormals,  float intensity, Vec3f color)
+     * @brief adds the given mesh as a light source.
+     * @param newVertices The vertices of the mesh
+     * @param newIndices The indices of the mesh
+     * @param newNormals The normals of the mesh
+     * @param intensity The intensity of the light emission of the mesh
+     * @param color The color of the light.
+     */
     void addLight(std::vector<float> newVertices,
                   std::vector<uint32_t> newIndices, std::vector<float> newNormals,
                   float intensity, Vec3f color) {
@@ -528,6 +570,10 @@ public:
 
     std::vector<Triangle> getTriangles() const { return triangles; }
 
+    /**
+     * @fn void build()
+     * @brief Creates the embree scene.
+     */
     void build() {
 #ifdef __OUTPUT__
         std::cout << "[Scene] building scene..." << std::endl;
@@ -606,8 +652,19 @@ public:
         }
     }
 
+    /**
+     * @fn size_t nLights() const
+     * @brief Get the number of light sources in the scene.
+     * @return the number of light sources in the scene.
+     */
     size_t nLights() const { return lights.size(); }
 
+    /**
+     * @brief samples a random light source in the scene.
+     * @param sampler
+     * @param pdf
+     * @return a pointer towards the light source
+     */
     boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
         uint32_t lightIdx = lights.size() * sampler.getNext1D();
         if (lightIdx == lights.size())
@@ -616,6 +673,12 @@ public:
         return lights[lightIdx];
     }
 
+    /**
+     * @brief samples a specific light source in the scene.
+     * @param pdf
+     * @param idx the index of the light source
+     * @return a pointer towards the light source
+     */
     boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const {
         if (idx == lights.size())
             idx--;

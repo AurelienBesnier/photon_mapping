@@ -1,5 +1,5 @@
-#ifndef _MATERIAL_H
-#define _MATERIAL_H
+#ifndef MATERIAL_H
+#define MATERIAL_H
 
 #include <memory>
 
@@ -193,7 +193,7 @@ public:
 // NOTE: due to the asymmetry of BSDF, we need to use a different scaling factor
 // for photon tracing
 // https://pbr-book.org/3ed-2018/Light_Transport_III_Bidirectional_Methods/The_Path-Space_Measurement_Equation#Non-symmetricScattering
-class Glass : public BxDF {
+class [[maybe_unused]] Glass : public BxDF {
 private:
     Vec3f rho;
     float ior;

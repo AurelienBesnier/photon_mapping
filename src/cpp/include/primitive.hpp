@@ -1,5 +1,5 @@
-#ifndef _PRIMITIVE_H
-#define _PRIMITIVE_H
+#ifndef PRIMITIVE_H
+#define PRIMITIVE_H
 
 #include <cmath>
 #include <memory>
