@@ -381,6 +381,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def(py::self *= float())
             .def(float() * py::self)
             .def(py::self * float())
+            .def(py::self / float())
+            .def(float() / py::self)
             .def(-py::self)
             .def("__setitem__",
                  [](Vec3<float> &self, int index, float val) { self[index] = val; })
@@ -460,7 +462,9 @@ PYBIND11_MODULE(libphotonmap_core, m) {
             .def("nVertices", &Scene::nVertices,
                  "Function that returns the number of vertices in the scene")
             .def("nFaces", &Scene::nFaces,
-                 "Function that returns the number of faces in the scene");
+                 "Function that returns the number of faces in the scene")
+             .def("nLights", &Scene::nLights,
+                 "Returns the number of light sources in the scene");
 
     // IntersectInfo
     py::class_<IntersectInfo>(m, "IntersectInfo")

@@ -10,8 +10,11 @@
 #include "material.hpp"
 #include "triangle.hpp"
 
-// primitive provides an abstraction layer of the object's shape(triangle),
-// material, area light
+/**
+ * Primitive provides an abstraction layer of the object's shape(triangle),
+ * material, area light
+ * @class
+ */
 class Primitive {
 public:
     Triangle *triangle;

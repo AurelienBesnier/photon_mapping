@@ -1,4 +1,4 @@
-from photonmap import Camera, Image, Ray, Vec2, Vec3, PI
+from photonmap import Camera, Image, Ray, Vec2, Vec3
 
 
 def test_camera():
@@ -16,7 +16,6 @@ def test_camera():
 
     camera = Camera(lookfrom, lookat, vup, vfov, aspect_ratio,
                     aperture, dist_to_focus)
-    image_written = False
 
     image = Image(image_width, image_height)
     for i in range(image_height):
@@ -33,4 +32,5 @@ def test_camera():
 
     image.writePPM("output.ppm")
     image_written = True
-    assert (image_written)
+    assert image_written
+

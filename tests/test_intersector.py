@@ -1,8 +1,7 @@
 from photonmap import Camera, Image, Ray, Vec2, Vec3, Scene, IntersectInfo
 
 
-def test_intersector():
-    intersector_worked = False
+def test_intersection():
 
     scene = Scene()
     scene.loadModel("./tests/cornellbox-water2.obj")
@@ -40,5 +39,5 @@ def test_intersector():
                 image.setPixel(i, j, Vec3(0.0))
 
     image.writePPM("output.ppm")
-    intersector_worked = True
-    assert (intersector_worked)
+    intersection_worked = True
+    assert intersection_worked

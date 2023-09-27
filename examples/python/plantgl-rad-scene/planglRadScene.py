@@ -396,17 +396,17 @@ def read_rad(file: str, invert_normals: bool):
                         mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness}
                         materials[name] = mat
                         i += 5
-                    elif type == "trans":
-                        li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
-                        roughness = float(li[4])
-                        trans = float(li[5])
-                        tspec = float(li[6])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
-                               "trans": trans, "tspec": tspec}
-                        materials[name] = mat
-                        i += 5
+                    # elif type == "trans":
+                    #     li = lines[i + 4].split(" ")
+                    #     color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
+                    #     spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                    #     roughness = float(li[4])
+                    #     trans = float(li[5])
+                    #     tspec = float(li[6])
+                    #     mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
+                    #            "trans": trans, "tspec": tspec}
+                    #     materials[name] = mat
+                    #     i += 5
                     elif type == "light":
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
@@ -763,7 +763,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :return:
     """
     n_samples = 2
-    n_photons = 1000000*4
+    n_photons = 100000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50

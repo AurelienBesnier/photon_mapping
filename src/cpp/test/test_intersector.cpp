@@ -7,7 +7,7 @@ int main() {
     const unsigned height = 512;
 
     Scene scene;
-    scene.loadModel("cornell_box.obj");
+    scene.loadModel("./cornell_box.obj");
     scene.build();
 
     float aspect_ratio = 16.0 / 9.0;
@@ -18,7 +18,6 @@ int main() {
     float aperture = 0.1;
     Camera camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
 
-    //Camera camera(Vec3f(0, 1, 7), Vec3f(0, 0, -1), 0.25f * PI);
 
     Image image(width, height);
     for (unsigned i = 0; i < height; ++i) {

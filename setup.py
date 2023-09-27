@@ -37,7 +37,7 @@ class CMakeBuild(build_ext):
         # auxiliary "native" libs
 
         debug = int(os.environ.get("DEBUG", 0)) if self.debug is None else self.debug
-        cfg = "Debug" #if debug else "Release"
+        cfg = "Debug" if debug else "Release"
         if cfg == "Release":
             opt = "-DCMAKE_CXX_FLAGS_RELEASE=-O3"
         else:

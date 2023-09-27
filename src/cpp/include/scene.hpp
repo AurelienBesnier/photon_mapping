@@ -1,5 +1,5 @@
 #ifndef SCENE_H
-#define _SCENE_H
+#define SCENE_H
 
 #include <embree3/rtcore.h>
 
@@ -424,14 +424,29 @@ public:
 
     // load obj file
     // TODO: remove vertex duplication
+    /**
+     * @fn void loadModel(const std::string &filename)
+     * @brief Loads an obj file as the scene.
+     *
+     * @param filename the filename of the .obj scene.
+     */
     void loadModel(const std::string &filename) {
         boost::filesystem::path filepath(filename);
         clear();
+        std::string mtl_folder;
 
-        // spdlog::info("[Scene] loading: {}", filepath.generic_string());
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+        const size_t last_slash_idx = filename.rfind('\\');
+#else
+        const size_t last_slash_idx = filename.rfind('/');
+#endif
+        if (std::string::npos != last_slash_idx)
+        {
+            mtl_folder = filename.substr(0, last_slash_idx);
+        }
 
         tinyobj::ObjReaderConfig reader_config;
-        reader_config.mtl_search_path = "./";
+        reader_config.mtl_search_path = mtl_folder;
         reader_config.triangulate = true;
 
         tinyobj::ObjReader reader;
@@ -564,15 +579,25 @@ public:
         }
     }
 
+    /**
+     * @fn uint32_t nVertices() const
+     * @brief Get the number of vertices in the scene
+     * @return the number of vertices in the scene
+     */
     uint32_t nVertices() const { return vertices.size() / 3; }
 
+    /**
+     * @fn uint32_t nFaces() const
+     * @brief Get the number of faces in the scene
+     * @return the number of faces in the scene
+     */
     uint32_t nFaces() const { return indices.size() / 3; }
 
     std::vector<Triangle> getTriangles() const { return triangles; }
 
     /**
      * @fn void build()
-     * @brief Creates the embree scene.
+     * @brief Creates the embree scene with all the previous info.
      */
     void build() {
 #ifdef __OUTPUT__
@@ -660,6 +685,7 @@ public:
     size_t nLights() const { return lights.size(); }
 
     /**
+     * @fn boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const
      * @brief samples a random light source in the scene.
      * @param sampler
      * @param pdf
@@ -674,6 +700,7 @@ public:
     }
 
     /**
+     * @fn  boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const
      * @brief samples a specific light source in the scene.
      * @param pdf
      * @param idx the index of the light source

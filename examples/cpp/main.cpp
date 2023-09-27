@@ -65,7 +65,7 @@ int main() {
     float aperture = 0.1;
     Camera camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
   Scene scene;
-  scene.loadModel("mesh.obj");
+  scene.loadModel("./mesh.obj");
   scene.build();
 
   // photon tracing and build photon map

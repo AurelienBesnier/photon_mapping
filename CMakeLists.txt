@@ -3,7 +3,7 @@ project(photon_mapping LANGUAGES CXX)
 
 include_directories("${CMAKE_SOURCE_DIR}/src/cpp/include/")
 
-option(BUILD_TESTS "build tests" ON)
+option(BUILD_TESTS "build c++ tests" ON)
 option(BUILD_CXX_EXAMPLE "build c++ example" ON)
 set(CMAKE_IGNORE_PATH "/usr/local")
 # --- Build setup
@@ -11,11 +11,13 @@ set(CMAKE_IGNORE_PATH "/usr/local")
 find_package(TBB CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
     message(WARNING "failed to find Boost")
 endif()
-set(Boost_USE_MULTITHREAD ON)
 
 # OpenMP
 if(APPLE)
@@ -53,15 +55,13 @@ add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -march=native -fexceptions -fopenmp")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
 target_include_directories(pm INTERFACE "src/cpp/include")
 
 target_compile_features(pm INTERFACE cxx_std_20)
-
-
 set_target_properties(pm
         PROPERTIES
         CXX_STANDARD 20
@@ -69,10 +69,9 @@ set_target_properties(pm
         CXX_EXTENSIONS NO
         )
 
-target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX)
-target_link_libraries(pm INTERFACE tinyobjloader)
-target_link_libraries(pm INTERFACE embree)
-target_link_libraries(pm INTERFACE ${Boost_LIBRARIES})
+
+target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX tinyobjloader embree)
+target_link_libraries(pm INTERFACE Boost::headers)
 target_link_libraries(pm INTERFACE photon_map primitive triangle image)
 
 # examples
