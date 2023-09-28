@@ -712,15 +712,16 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dic
                            trans, illum, 1, refl, trans, 1.0 - shininess)
 
 
-def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
+def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str):
     """
-    Adds circular captors to the scene. the captors needs to be in a file called captors.csv.
+    Adds circular captors to the scene. the captors needs to be in a file
+    :param filename:
     :param scene:
     :param captor_dict:
     :return:
     """
     lastTriangleId = scene.nFaces()
-    with open("captors.csv", 'r') as f:
+    with open(filename, 'r') as f:
         next(f)
         captorId = 0
         for line in f:
@@ -748,10 +749,14 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
             normals.append(normal[1])
             normals.append(normal[2])
             triangleCount = 0
-
-            x1 = r * cos(0)
-            y1 = r * sin(0)
-            z1 = 0
+            if znorm == 1:
+                x1 = r * cos(0)
+                y1 = r * sin(0)
+                z1 = 0
+            else:
+                x1 = r * cos(0)
+                y1 = 0
+                z1 = r * sin(0)
             point1 = [x1 + pos[0], y1 + pos[1], z1 + pos[2]]
             vertices.append(point1[0])
             vertices.append(point1[1])
@@ -761,9 +766,15 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict):
             normals.append(normal[2])
             i = 0
             while i < 359:
-                x2 = r * cos((i + deltaAngle) * val)
-                y2 = r * sin((i + deltaAngle) * val)
-                z2 = 0
+                if znorm == 1:
+                    x2 = r * cos((i + deltaAngle) * val)
+                    y2 = r * sin((i + deltaAngle) * val)
+                    z2 = 0
+                else:
+                    x2 = r * cos((i + deltaAngle) * val)
+                    y2 = 0
+                    z2 = r * sin((i + deltaAngle) * val)
+
                 point2 = [x2 + pos[0], y2 + pos[1], z2 + pos[2]]
                 vertices.append(point2[0])
                 vertices.append(point2[1])
@@ -912,7 +923,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
             add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-            addCaptors(scene, captor_dict)
+            addCaptors(scene, captor_dict, "captors.csv")
 
             scene.build()
             scene.setupTriangles()
@@ -954,9 +965,6 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             # correct_energy(captor_energy, integrals[integral_idx])
 
             # print("Done!")
-            # now = datetime.now()
-            # current_time = now.strftime("%H:%M:%S")
-            # print("Current Time =", current_time)
         write_captor_energy(captor_energy, w, n_photons, nb_exp)
         integral_idx += 1
 

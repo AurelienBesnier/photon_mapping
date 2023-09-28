@@ -13,12 +13,23 @@
 #include "core.hpp"
 #include "primitive.hpp"
 
-// create default BxDF
+/**
+ * @brief Creates a default Lambert BxDF.
+ * @return a pointer towards this bxdf.
+ */
 boost::shared_ptr<BxDF> createDefaultBxDF() {
     return boost::make_shared<Lambert>(Vec3f(0.9f));
 }
 
-// create BxDF from tinyobj material
+
+/**
+ * @brief Creates a BxDF with material data.
+ * @param material The obj material data.
+ * @param reflectance A reflectance.
+ * @param transmittance A transmittance.
+ * @param roughness The roughness info for light scattering.
+ * @return a pointer towards this bxdf.
+ */
 boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
                                    float reflectance = 0.0f,
                                    float transmittance = 0.0f, float roughness = 0.0f) {
@@ -53,7 +64,12 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     }
 }
 
-// create AreaLight from tinyobj material
+/**
+ * @brief create AreaLight from tinyobj material
+  * @param material The obj material data.
+  * @param tri The triangles
+  * @return A pointer towards the area light.
+ */
 boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
                                              Triangle *tri) {
     if (material.emission[0] > 0 || material.emission[1] > 0 ||
@@ -66,7 +82,12 @@ boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
     }
 }
 
-// create PointLight
+/**
+ * @brief Creates a point light at the specified position
+ * @param emission The emission power of the point light.
+ * @param position The position of the point light.
+ * @return A pointer towards the point light.
+ */
 boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
     if (emission[0] > 0 || emission[1] > 0 ||
         emission[2] > 0) {
@@ -78,6 +99,14 @@ boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
     }
 }
 
+/**
+ * @brief Creates a spot light at the specified position
+ * @param emission The emission power of the spot light.
+ * @param position The position of the spot light.
+ * @param direction The direction of emission of the spot light.
+ * @param angle The angle of diffussion of the spot light.
+ * @return A pointer towards the spot light.
+ */
 boost::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position, Vec3f direction, float angle) {
     if (emission[0] > 0 || emission[1] > 0 ||
         emission[2] > 0) {
@@ -87,6 +116,7 @@ boost::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position, Vec
         return nullptr;
     }
 }
+
 
 boost::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri, Vec3f direction, float angle) {
     if (emission[0] > 0 || emission[1] > 0 ||
@@ -388,6 +418,12 @@ public:
         }
     }
 
+    /**
+     * @brief Adds the specified mesh as a virtual captor.
+     * @param newVertices The vertices of the mesh
+     * @param newIndices The indices of the triangles of the mesh
+     * @param newNormals The normals of the mesh.
+     */
     void addCaptor(std::vector<float> newVertices,
                    std::vector<uint32_t> newIndices, std::vector<float> newNormals) {
         for (uint32_t &i: newIndices) {
@@ -405,6 +441,12 @@ public:
         }
     }
 
+    /**
+     * @brief Put a point light at the specified position.
+     * @param position The 3d position.
+     * @param intensity The intensity of the light
+     * @param color The color of the light
+     */
     void addPointLight(Vec3f position, float intensity, Vec3f color) {
         boost::shared_ptr<Light> light;
         light = createPointLight(color * intensity, position);
@@ -413,6 +455,14 @@ public:
         }
     }
 
+    /**
+     * @brief Put a spot light at the specified position.
+     * @param position The 3d position.
+     * @param intensity The intensity of the light
+     * @param color The color of the light
+     * @param direction The direction of the spot light
+     * @param angle The angle of diffusion of the spot light
+     */
     void addSpotLight(Vec3f position, float intensity, Vec3f color, Vec3f direction, float angle) {
         boost::shared_ptr<Light> light;
         light = createSpotLight(color * intensity, position, direction, angle);
