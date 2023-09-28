@@ -8,9 +8,48 @@ from math import cos, sin
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
+from scipy.integrate import simpson
 
 from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler
 from photonmap import libphotonmap_core
+import gc
+
+
+def get_integral_of_band(band: range, spectrum: dict) -> float:
+    """
+    Returns the integral of the band as a percentage
+    Parameters
+    ----------
+    band: range
+        The section of the spectrum to get.
+    spectrum: dict
+        The whole spectrum of the band.
+
+    Returns
+    -------
+
+    """
+    spec_range = []
+    for i in band:
+        spec_range.append(spectrum[i])
+    I_simps = simpson(y=spec_range, x=None, axis=-1, even='avg')
+
+    return I_simps / 100  # get as percentage
+
+
+def correct_energy(shenergy: dict, correction_ratio):
+    """
+    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.
+    Parameters
+    ----------
+    shenergy: dict
+
+    Returns
+    -------
+
+    """
+    for k, v in shenergy.items():
+        shenergy[k] = int(v * correction_ratio)
 
 
 def setup_dataset_materials(wavelength: int):
@@ -289,8 +328,8 @@ def write_captor_energy(energy, w, n_photons, nb_exp):
                 elevation = 1400
             else:
                 elevation = 1800
-            print("captor n°" + str(k) + " has " + str(v/nb_exp) + " photons on it")
-            f.write(str(k) + "," + str(v/nb_exp) + "," + str(elevation) + "\n")
+            print("captor n°" + str(k) + " has " + str(v / nb_exp) + " photons on it")
+            f.write(str(k) + "," + str(v / nb_exp) + "," + str(elevation) + "\n")
 
     print("Done!")
 
@@ -301,7 +340,6 @@ def captor_add_energy(captor_dict, integrator, energy):
     :param energy:
     :param captor_dict:
     :param integrator:
-    :param w:
     :return:
     """
     photonmap = integrator.getPhotonMapCaptors()
@@ -758,7 +796,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :return:
     """
     n_samples = 2
-    n_photons = 1000000
+    n_photons = 10000000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -782,10 +820,11 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
 
     # Setting up spectrum bands
-    spectrum = "par"
+    spectrum = "whole"
     spec_file = "chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
+    integrals = []
     band: range
     band1: range
     band2: range
@@ -795,6 +834,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         band = range(start, 500, step)
         bands.append(band)
         wavelengths.append(get_average_of_band(band, spec_dict))
+        integrals.append(get_integral_of_band(band, spec_dict))
         bands.append(band)
     elif spectrum.lower().startswith("green"):
         start = bisect.bisect_right(list(spec_dict.keys()), 500)
@@ -802,18 +842,21 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         band = range(start, 600, step)
         bands.append(band)
         wavelengths.append(get_average_of_band(band, spec_dict))
+        integrals.append(get_integral_of_band(band, spec_dict))
     elif spectrum.lower().startswith("red"):
         start = bisect.bisect_right(list(spec_dict.keys()), 600)
         start = list(spec_dict.keys())[start]
         band = range(start, 700, step)
         bands.append(band)
         wavelengths.append(get_average_of_band(band, spec_dict))
+        integrals.append(get_integral_of_band(band, spec_dict))
     elif spectrum.lower().startswith("far red"):
         start = bisect.bisect_right(list(spec_dict.keys()), 700)
         start = list(spec_dict.keys())[start]
         band = range(start, 800, step)
         bands.append(band)
         wavelengths.append(get_average_of_band(band, spec_dict))
+        integrals.append(get_integral_of_band(band, spec_dict))
     elif spectrum.lower().startswith("par"):
         start2 = bisect.bisect_right(list(spec_dict.keys()), 500)
         start3 = bisect.bisect_right(list(spec_dict.keys()), 600)
@@ -828,6 +871,9 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         wavelengths.append(get_average_of_band(band1, spec_dict))
         wavelengths.append(get_average_of_band(band2, spec_dict))
         wavelengths.append(get_average_of_band(band3, spec_dict))
+        integrals.append(get_integral_of_band(band1, spec_dict))
+        integrals.append(get_integral_of_band(band2, spec_dict))
+        integrals.append(get_integral_of_band(band3, spec_dict))
     else:
         start2 = bisect.bisect_right(list(spec_dict.keys()), 500)
         start3 = bisect.bisect_right(list(spec_dict.keys()), 600)
@@ -847,12 +893,18 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         wavelengths.append(get_average_of_band(band2, spec_dict))
         wavelengths.append(get_average_of_band(band3, spec_dict))
         wavelengths.append(get_average_of_band(band4, spec_dict))
+        integrals.append(get_integral_of_band(band1, spec_dict))
+        integrals.append(get_integral_of_band(band2, spec_dict))
+        integrals.append(get_integral_of_band(band3, spec_dict))
+        integrals.append(get_integral_of_band(band4, spec_dict))
 
     nb_exp = 10
+    integral_idx = 0
     for w in wavelengths:
         captor_energy = {}
+        gc.collect()
         for exp in range(nb_exp):
-            print("************-Experience nb "+str(exp+1)+"-************")
+            print("************-Experience nb " + str(exp + 1) + "-************")
             scene = libphotonmap_core.Scene()
             materialsR, materialsT = setup_dataset_materials(w)
             captor_dict = {}
@@ -898,12 +950,15 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #
             # image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
+            # print("correction ratio: " + str(integrals[integral_idx]))
+            # correct_energy(captor_energy, integrals[integral_idx])
 
             # print("Done!")
             # now = datetime.now()
             # current_time = now.strftime("%H:%M:%S")
             # print("Current Time =", current_time)
         write_captor_energy(captor_energy, w, n_photons, nb_exp)
+        integral_idx += 1
 
 
 if __name__ == "__main__":

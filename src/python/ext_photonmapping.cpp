@@ -22,7 +22,7 @@ void visualizePhotonMap(const PhotonMapping &integrator, const Scene &scene,
                         const std::string_view &filename,
                         UniformSampler &sampler) {
     // visualize photon map
-    const PhotonMap photon_map = integrator.getPhotonMapGlobal();
+    const PhotonMap& photon_map = integrator.getPhotonMapGlobal();
 
     if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
@@ -70,7 +70,7 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image,
                                const PhotonMapping &integrator) {
 
     // visualize photon map
-    const PhotonMap photon_map = integrator.getPhotonMapCaptors();
+    const PhotonMap& photon_map = integrator.getPhotonMapCaptors();
     if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
         for (unsigned int i = 0; i < height; ++i) {
@@ -117,7 +117,7 @@ void visualizeCausticsPhotonMap(const Scene &scene, Image &image,
                                 const PhotonMapping &integrator) {
 
     // visualize photon map
-    const PhotonMap photon_map = integrator.getPhotonMapCaustics();
+    const PhotonMap& photon_map = integrator.getPhotonMapCaustics();
 
     if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)

@@ -116,6 +116,7 @@ private:
     [[nodiscard]] bool hasLight(uint32_t faceID) const { return lights[faceID] != nullptr; }
 
     /**
+     * @fn void clear()
      * @brief clears the objects in the scene.
      */
     void clear() {
@@ -214,6 +215,12 @@ public:
     }
 
     /**
+     * @fn void addFaceInfos(std::vector<float> &vertices,
+                      std::vector<uint32_t> &indices, std::vector<float> &normals,
+                      Vec3f &colors, Vec3f &ambient, Vec3f &specular,
+                      float &shininess, float &transparency, int &illum,
+                      float ior = 0.0f, float reflectance = 0.0f,
+                      float transmittance = 0.0f, float roughness = 0.0f)
      * @brief Adds a face to the scene with the provided info.
      * @param vertices
      * @param indices
@@ -422,7 +429,6 @@ public:
         }
     }
 
-    // load obj file
     // TODO: remove vertex duplication
     /**
      * @fn void loadModel(const std::string &filename)
@@ -635,7 +641,13 @@ public:
         rtcCommitScene(scene);
     }
 
-    // ray-scene intersection
+    /**
+     * @fn bool intersect(const Ray &ray, IntersectInfo &info) const
+     * @brief Gets the intersection information of a ray in the scene.
+     * @param ray The ray in the scene
+     * @param info The intersection information to retrieve
+     * @return True if the ray hit the scene.
+     */
     bool intersect(const Ray &ray, IntersectInfo &info) const {
         RTCRayHit rayhit{};
         rayhit.ray.org_x = ray.origin[0];

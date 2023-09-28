@@ -4,6 +4,10 @@ minimal but extensible header only implementation of photon mapping in C++.
 
 original git: ![https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
 
+> [!NOTE]  
+> This Project aims at determining the illumination of virtual plants and study
+> the influence of their environment.
+
 # How to compile:
 create and activate the conda environment:
 ```bash
@@ -29,7 +33,6 @@ make -j
 * Direct illumination with explicit light sampling
 * Indirect illumination with final gathering
 * Caustics photon map
-* Reference path tracing integrator
 * Load obj model
 
 ## Requirements

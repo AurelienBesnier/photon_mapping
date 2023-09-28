@@ -79,7 +79,10 @@ public:
     virtual Vec2f getNext2D() = 0;
 };
 
-// uniform distribution sampler
+/**
+ * @brief Uniform distribution sampler
+ * @class UniformSampler.
+ */
 class UniformSampler : public Sampler {
 public:
     UniformSampler() : Sampler() {}

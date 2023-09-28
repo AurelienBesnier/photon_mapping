@@ -392,6 +392,15 @@ private:
     }
 
 public:
+    /**
+     * @brief Parameterized Constructor
+     * @param nPhotonsGlobal
+     * @param nEstimationGlobal
+     * @param nPhotonsCausticsMultiplier
+     * @param nEstimationCaustics
+     * @param strictCalcDepth
+     * @param maxDepth
+     */
     PhotonMapping(int nPhotonsGlobal, int nEstimationGlobal,
                   float nPhotonsCausticsMultiplier, int nEstimationCaustics,
                   int strictCalcDepth, int maxDepth)
@@ -402,13 +411,33 @@ public:
 
     const PhotonMap &getPhotonMapGlobal() const { return globalPhotonMap; }
 
+    /**
+     * @fn const PhotonMap &getPhotonMapCaptors() const
+     * @brief Get the captor photon map
+     * @return The reference of the captor photonmap
+     */
     const PhotonMap &getPhotonMapCaptors() const { return captorPhotonMap; }
 
+    /**
+     * @fn bool hasCaustics() const
+     * @brief Get whether the integrator has a caustic photonmap.
+     * @return True if the integrator has a cautic photonmap
+     */
     bool hasCaustics() const { return finalGatheringDepth > 0; }
 
+    /**
+     * @fn const PhotonMap &getPhotonMapCaustics() const
+     * @brief Get the caustic photon map
+     * @return The reference of the caustic photonmap
+     */
     const PhotonMap &getPhotonMapCaustics() const { return causticsPhotonMap; }
 
-    // photon tracing and build photon map
+    /**
+     * @fn void build(const Scene &scene, Sampler &sampler) override.
+     * @brief Trace the photons an build the photon maps.
+     * @param scene the scene to photonmap.
+     * @param sampler the sampler of random numbers.
+     */
     void build(const Scene &scene, Sampler &sampler) override {
 
         if (scene.nLights() <= 0)
@@ -517,7 +546,7 @@ public:
         globalPhotonMap.setPhotons(photons);
         globalPhotonMap.build();
 
-        std::cout << "Number of photons: " << globalPhotonMap.nPhotons()
+        std::cout << "Number of photons in the photonmap: " << globalPhotonMap.nPhotons()
                   << std::endl;
 
         // build caustics photon map
@@ -642,6 +671,14 @@ public:
         }
     }
 
+    /**
+     * @fn Vec3f integrate(Ray &ray_in, const Scene &scene, Sampler &sampler) const override
+     * @brief Start integration of a ray.
+     * @param ray_in the ray in question.
+     * @param scene the scene to integrate
+     * @param sampler the random number sampler
+     * @return a Vec3f of the radiance of a pixel.
+     */
     Vec3f integrate(Ray &ray_in, const Scene &scene,
                     Sampler &sampler) const override {
         return integrateRecursive(ray_in, scene, sampler, 0);
