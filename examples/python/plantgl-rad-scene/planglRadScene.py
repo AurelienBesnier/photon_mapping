@@ -432,17 +432,17 @@ def read_rad(file: str, invert_normals: bool):
                         mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness}
                         materials[name] = mat
                         i += 5
-                    # elif type == "trans":
-                    #     li = lines[i + 4].split(" ")
-                    #     color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                    #     spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
-                    #     roughness = float(li[4])
-                    #     trans = float(li[5])
-                    #     tspec = float(li[6])
-                    #     mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
-                    #            "trans": trans, "tspec": tspec}
-                    #     materials[name] = mat
-                    #     i += 5
+                    elif type == "trans":
+                        li = lines[i + 4].split(" ")
+                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
+                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                        roughness = float(li[4])
+                        trans = float(li[5])
+                        tspec = float(li[6])
+                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
+                               "trans": trans, "tspec": tspec}
+                        materials[name] = mat
+                        i += 5
                     elif type == "light":
                         li = lines[i + 4].split(" ")
                         color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
@@ -908,24 +908,26 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band3, spec_dict))
         integrals.append(get_integral_of_band(band4, spec_dict))
 
-    nb_exp = 1
+    nb_exp = 10
     integral_idx = 0
+    scene = libphotonmap_core.Scene()
     for w in wavelengths:
         captor_energy = {}
         gc.collect()
         for exp in range(nb_exp):
             print("************-Experience nb " + str(exp + 1) + "-************")
-            scene = libphotonmap_core.Scene()
             materialsR, materialsT = setup_dataset_materials(w)
+            scene.clear()
             captor_dict = {}
             for sh in sc:
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
-            add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-            addCaptors(scene, captor_dict, "captors2.csv")
+            # add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
+            addCaptors(scene, captor_dict, "captors.csv")
 
-            scene.build()
             scene.setupTriangles()
+            scene.build()
+
 
             print("Building photonMap...")
             integrator = PhotonMapping(n_photons, n_estimation_global,
@@ -934,8 +936,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
-            integrator.build(scene, sampler)
-            # print("Done!")
+            integrator.buildNoKdtree(scene, sampler)
+            print("Done!")
             # image.clear()
             # print("Printing photonmap image...")
             # visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth,
@@ -952,12 +954,12 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #
             # image.clear()
             # print("Done!")
-            #
+
             # print("Rendering image...")
             # image = libphotonmap_core.Image(image_width, image_height)
             # Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene,
             #        "output-photonmapping-" + str(w) + "nm.ppm")
-            #
+
             # image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))

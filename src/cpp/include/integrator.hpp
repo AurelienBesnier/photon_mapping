@@ -432,6 +432,241 @@ public:
      */
     const PhotonMap &getPhotonMapCaustics() const { return causticsPhotonMap; }
 
+        /**
+     * @fn void buildNoKdtree(const Scene &scene, Sampler &sampler).
+     * @brief Trace the photons an but don't build the photon maps kdtree.
+     * @param scene the scene to photonmap.
+     * @param sampler the sampler of random numbers.
+     */
+    void buildNoKdtree(const Scene &scene, Sampler &sampler) {
+
+        if (scene.nLights() <= 0)
+            return;
+        std::vector<Photon> photons;
+        std::vector<Photon> captorPhotons;
+
+        // init sampler for each thread
+        std::vector<std::unique_ptr<Sampler>> samplers(omp_get_max_threads());
+        for (int i = 0; i < samplers.size(); ++i) {
+            samplers[i] = sampler.clone();
+            samplers[i]->setSeed(samplers[i]->getSeed() * (i + 1));
+        }
+
+// build global photon map
+// photon tracing
+#ifdef __OUTPUT__
+        std::cout << "[PhotonMapping] tracing photons to build global photon map"
+                  << std::endl;
+#endif
+
+        std::cout << "nb photons per lights: "
+                  << nPhotonsGlobal / scene.lights.size() << std::endl;
+        for (unsigned int l = 0; l < scene.lights.size(); ++l) {
+            // std::vector<Photon> photonsLights; // photon for a specific light
+#pragma omp parallel for
+            for (unsigned int i = 0; i < nPhotonsGlobal / scene.lights.size(); ++i) {
+                Sampler &sampler_per_thread = *samplers[omp_get_thread_num()];
+
+                // sample initial ray from light and set initial throughput
+                Vec3f throughput;
+                Ray ray = sampleRayFromLight(scene, sampler_per_thread, throughput, l);
+
+                // trace photons
+                // whenever hitting diffuse surface, add photon to the photon array
+                // recursively tracing photon with russian roulette
+                // TODO: debug nan value
+                for (int k = 0; k < maxDepth; ++k) {
+#ifdef __OUTPUT__
+                    if (std::isnan(throughput[0]) || std::isnan(throughput[1]) ||
+                        std::isnan(throughput[2])) {
+                        std::cerr << "[PhotonMapping] photon throughput is NaN"
+                                  << std::endl;
+                        break;
+                    } else if (throughput[0] < 0 || throughput[1] < 0 ||
+                               throughput[2] < 0) {
+                        std::cerr << "[PhotonMapping] photon throughput is minus"
+                                  << std::endl;
+                        break;
+                    }
+#endif
+
+                    IntersectInfo info;
+                    if (scene.intersect(ray, info)) {
+                        const BxDFType bxdf_type = info.hitPrimitive->getBxDFType();
+#pragma omp critical
+                        if (bxdf_type == BxDFType::DIFFUSE) {
+                            // TODO: remove lock to get more speed
+                            Photon p(throughput, info.surfaceInfo.position, -ray.direction,
+                                     info.hitPrimitive->triangle[0].faceID);
+                            photons.emplace_back(p);
+                        } else if (bxdf_type == BxDFType::CAPTOR) {
+                            Photon p(throughput, info.surfaceInfo.position, -ray.direction,
+                                     info.hitPrimitive->triangle[0].faceID);
+                            captorPhotons.emplace_back(p);
+                        }
+
+                        // russian roulette
+                        if (k > 0) {
+                            const float russian_roulette_prob =
+                                    std::min(std::max(throughput[0],
+                                                      std::max(throughput[1], throughput[2])),
+                                             1.0f);
+                            if (sampler_per_thread.getNext1D() >= russian_roulette_prob) {
+                                break;
+                            }
+                            throughput /= russian_roulette_prob;
+                        }
+
+                        // sample direction by BxDF
+                        Vec3f dir;
+                        float pdf_dir;
+                        const Vec3f f =
+                                info.hitPrimitive->sampleBxDF(-ray.direction, info.surfaceInfo,
+                                                              TransportDirection::FROM_LIGHT,
+                                                              sampler_per_thread, dir, pdf_dir);
+
+                        // update throughput and ray
+                        throughput *= f *
+                                      cosTerm(-ray.direction, dir, info.surfaceInfo,
+                                              TransportDirection::FROM_LIGHT) /
+                                      pdf_dir;
+                        ray = Ray(info.surfaceInfo.position, dir);
+                    } else {
+                        // photon goes to the sky
+                        break;
+                    }
+                }
+            }
+        }
+
+// build photon map
+#ifdef __OUTPUT__
+        std::cout << "[PhotonMapping] building global photon map" << std::endl;
+#endif
+        globalPhotonMap.setPhotons(photons);
+
+        std::cout << "Number of photons in the photonmap: " << globalPhotonMap.nPhotons()
+                  << std::endl;
+
+        // build caustics photon map
+        if (finalGatheringDepth > 0) {
+            photons.clear();
+            // photon tracing
+#ifdef __OUTPUT__
+            std::cout
+                    << "[PhotonMapping] tracing photons to build caustics photon map"
+                    << std::endl;
+#endif
+
+            std::cout << "nb photons per lights (caustics): "
+                      << nPhotonsCaustics / scene.lights.size() << std::endl;
+            for (unsigned int l = 0; l < scene.lights.size(); ++l) {
+#pragma omp parallel for
+                for (unsigned int i = 0; i < nPhotonsCaustics; ++i) {
+                    Sampler &sampler_per_thread = *samplers[omp_get_thread_num()];
+
+                    // sample initial ray from light and set initial throughput
+                    Vec3f throughput;
+                    Ray ray =
+                            sampleRayFromLight(scene, sampler_per_thread, throughput, l);
+
+                    // when hitting diffuse surface after specular, add photon to the
+                    // photon array
+                    bool prev_specular = false;
+                    for (unsigned int k = 0; k < maxDepth; ++k) {
+#ifdef __OUTPUT__
+                        if (std::isnan(throughput[0]) || std::isnan(throughput[1]) ||
+                            std::isnan(throughput[2])) {
+                            std::cout << "[PhotonMapping] photon throughput is NaN"
+                                      << std::endl;
+                            break;
+                        } else if (throughput[0] < 0 || throughput[1] < 0 ||
+                                   throughput[2] < 0) {
+                            std::cout << "[PhotonMapping] photon throughput is minus"
+                                      << std::endl;
+                            break;
+                        }
+#endif
+
+                        IntersectInfo info;
+                        if (scene.intersect(ray, info)) {
+                            const BxDFType bxdf_type = info.hitPrimitive->getBxDFType();
+
+                            // break when hitting diffuse surface without previous specular
+                            if (!prev_specular && bxdf_type == BxDFType::DIFFUSE) {
+                                break;
+                            }
+
+                            // add photon when hitting diffuse surface after specular
+                            if (prev_specular && bxdf_type == BxDFType::DIFFUSE) {
+                                // TODO: remove lock to get more speed
+#pragma omp critical
+                                {
+                                    Photon p(throughput, info.surfaceInfo.position,
+                                             -ray.direction,
+                                             info.hitPrimitive->triangle[0].faceID);
+                                    photons.emplace_back(p);
+                                }
+                                break;
+
+                            } else if (bxdf_type == BxDFType::CAPTOR) {
+#pragma omp critical
+                                {
+                                    Photon p(throughput, info.surfaceInfo.position,
+                                             -ray.direction,
+                                             info.hitPrimitive->triangle[0].faceID);
+                                    captorPhotons.emplace_back(p);
+                                }
+                                break;
+                            }
+
+                            prev_specular = (bxdf_type == BxDFType::SPECULAR);
+
+                            // russian roulette
+                            if (k > 0) {
+                                const float russian_roulette_prob =
+                                        std::min(std::max(throughput[0],
+                                                          std::max(throughput[1], throughput[2])),
+                                                 1.0f);
+                                if (sampler_per_thread.getNext1D() >= russian_roulette_prob) {
+                                    break;
+                                }
+                                throughput /= russian_roulette_prob;
+                            }
+
+                            // sample direction by BxDF
+                            Vec3f dir;
+                            float pdf_dir;
+                            const Vec3f f = info.hitPrimitive->sampleBxDF(
+                                    -ray.direction, info.surfaceInfo,
+                                    TransportDirection::FROM_LIGHT, sampler_per_thread, dir,
+                                    pdf_dir);
+
+                            // update throughput and ray
+                            throughput *= f *
+                                          cosTerm(-ray.direction, dir, info.surfaceInfo,
+                                                  TransportDirection::FROM_LIGHT) /
+                                          pdf_dir;
+                            ray = Ray(info.surfaceInfo.position, dir);
+                        } else {
+                            // photon goes to the sky
+                            break;
+                        }
+                    }
+                }
+            }
+#ifdef __OUTPUT__
+            std::cout << "[PhotonMapping] building caustics photon map" << std::endl;
+#endif
+        }
+        causticsPhotonMap.setPhotons(photons);
+        if (!captorPhotons.empty()) {
+            std::cout << "building captor photonmap..." << std::endl;
+            captorPhotonMap.setPhotons(captorPhotons);
+            std::cout << "Done!" << std::endl;
+        }
+    }
+
     /**
      * @fn void build(const Scene &scene, Sampler &sampler) override.
      * @brief Trace the photons an build the photon maps.
