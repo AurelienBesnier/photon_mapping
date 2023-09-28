@@ -8,6 +8,7 @@ from math import cos, sin
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
+from photonmap.libphotonmap_core import Render, visualizePhotonMap, visualizeCaptorsPhotonMap
 from scipy.integrate import simpson
 
 from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler
@@ -301,8 +302,6 @@ def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr
 
     # Adding the model of plant
     addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
-
-    return sc
 
 
 def write_captor_energy(energy, w, n_photons, nb_exp):
@@ -729,13 +728,13 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
             x = float(row[0])
             y = float(row[1])
             z = float(row[2])
-            r = float(row[3]) * 100.0
+            r = float(row[3])
             xnorm = float(row[4])
             ynorm = float(row[5])
             znorm = float(row[6])
-            pos = [x / r, y / r, z / r]
+            pos = [x / 1000, y / 1000, z / 1000]
             normal = [xnorm, ynorm, znorm]
-            r = 0.01
+            r = r/1000
             vertices = VectorFloat()
             normals = VectorFloat()
             triangles = VectorUint()
@@ -909,7 +908,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band3, spec_dict))
         integrals.append(get_integral_of_band(band4, spec_dict))
 
-    nb_exp = 10
+    nb_exp = 1
     integral_idx = 0
     for w in wavelengths:
         captor_energy = {}
@@ -923,7 +922,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
             add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-            addCaptors(scene, captor_dict, "captors.csv")
+            addCaptors(scene, captor_dict, "captors2.csv")
 
             scene.build()
             scene.setupTriangles()
@@ -936,7 +935,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
             integrator.build(scene, sampler)
-            print("Done!")
+            # print("Done!")
             # image.clear()
             # print("Printing photonmap image...")
             # visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth,
@@ -956,7 +955,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #
             # print("Rendering image...")
             # image = libphotonmap_core.Image(image_width, image_height)
-            # #Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene,
+            # Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene,
             #        "output-photonmapping-" + str(w) + "nm.ppm")
             #
             # image.clear()
