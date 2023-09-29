@@ -2,7 +2,6 @@
 
 minimal but extensible header only implementation of photon mapping in C++.
 
-original git: ![https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
 
 > [!NOTE]  
 > This Project aims at determining the illumination of virtual plants and study
@@ -47,7 +46,16 @@ make -j
 * [Embree](https://github.com/embree/embree)
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
+## Authors
+This project was originaly developed by yumcyawiz. Main extension were developed by Aurélien Besnier with contribution of J. Bertheloot, F. Boudon, E. Faure.
+This work was funded by INRAe Metaprogramme DIGIT-BIO (Digital biology to explore and predict living organisms in their environment). 
+
+## Use case 
+This project is used in the coupling of [MorphoNet](https://morphonet.org) and [L-Py](https://github.com/openalea/lpy) for the project Physioscope.
+
 ## References
+
+original git: ![https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
 
 * Jensen, Henrik Wann. Realistic image synthesis using photon mapping. AK Peters/crc Press, 2001.
 * https://pbr-book.org/3ed-2018/Light_Transport_III_Bidirectional_Methods/Stochastic_Progressive_Photon_Mapping# 
