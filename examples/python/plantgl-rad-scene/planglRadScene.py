@@ -5,6 +5,7 @@ import re
 import sys
 from collections import OrderedDict
 from math import cos, sin
+import time
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
@@ -915,6 +916,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         captor_energy = {}
         gc.collect()
         for exp in range(nb_exp):
+            start = time.time()
+
             print("************-Experience nb " + str(exp + 1) + "-************")
             materialsR, materialsT = setup_dataset_materials(w)
             scene.clear()
@@ -963,7 +966,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])
-
+            print("Time taken: " + str(time.time() - start))
             # print("Done!")
         write_captor_energy(captor_energy, w, n_photons, nb_exp)
         integral_idx += 1
