@@ -8,7 +8,7 @@ from math import cos, sin
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
-from photonmap.libphotonmap_core import Render, visualizePhotonMap, visualizeCaptorsPhotonMap
+# from photonmap.libphotonmap_core import Render, visualizePhotonMap, visualizeCaptorsPhotonMap
 from scipy.integrate import simpson
 
 from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler
@@ -734,7 +734,7 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
             znorm = float(row[6])
             pos = [x / 1000, y / 1000, z / 1000]
             normal = [xnorm, ynorm, znorm]
-            r = r/1000
+            r = r / 1000
             vertices = VectorFloat()
             normals = VectorFloat()
             triangles = VectorUint()
@@ -923,11 +923,10 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
             # add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-            addCaptors(scene, captor_dict, "captors.csv")
+            addCaptors(scene, captor_dict, "captors_expe2.csv")
 
             scene.setupTriangles()
             scene.build()
-
 
             print("Building photonMap...")
             integrator = PhotonMapping(n_photons, n_estimation_global,
@@ -958,7 +957,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             # print("Rendering image...")
             # image = libphotonmap_core.Image(image_width, image_height)
             # Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene,
-            #        "output-photonmapping-" + str(w) + "nm.ppm")
+            #        "output-photonmapping-" + str(w) + "nm.ppfm")
 
             # image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
