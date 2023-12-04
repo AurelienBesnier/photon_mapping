@@ -2,6 +2,7 @@ name: photonmap
 channels:
   - conda-forge
   - openalea3
+  - fredboudon
   - defaults
 dependencies:
   - python=3.10
