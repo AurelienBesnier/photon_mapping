@@ -9,10 +9,22 @@ import time
 
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
-# from photonmap.libphotonmap_core import Render, visualizePhotonMap, visualizeCaptorsPhotonMap
+
+from photonmap.libphotonmap_core import (
+    Render,
+    visualizePhotonMap,
+    visualizeCausticsPhotonMap,
+    visualizeCaptorsPhotonMap,
+)
 from scipy.integrate import simpson
 
-from photonmap import Vec3, VectorUint, VectorFloat, PhotonMapping, UniformSampler
+from photonmap import (
+    Vec3,
+    VectorUint,
+    VectorFloat,
+    PhotonMapping,
+    UniformSampler,
+)
 from photonmap import libphotonmap_core
 import gc
 
@@ -34,7 +46,7 @@ def get_integral_of_band(band: range, spectrum: dict) -> float:
     spec_range = []
     for i in band:
         spec_range.append(spectrum[i])
-    I_simps = simpson(y=spec_range, x=None, axis=-1, even='avg')
+    I_simps = simpson(y=spec_range, x=None, axis=-1)
 
     return I_simps / 100  # get as percentage
 
@@ -71,29 +83,43 @@ def setup_dataset_materials(wavelength: int):
     materialsR = {}
     for element in ("Plant", "Env"):  # Reflectances
         files = []
-        dir_pathReflect = os.path.dirname(__file__) + "/PO/" + element + "/ReflectancesMean/"
+        dir_pathReflect = (
+            os.path.dirname(__file__) + "/PO/" + element + "/ReflectancesMean/"
+        )
         for path in os.listdir(dir_pathReflect):
             if os.path.isfile(os.path.join(dir_pathReflect, path)):
-                if not path.startswith('.'):
+                if not path.startswith("."):
                     files.append(path)
         for file in files:
-            matName = file.split('.')[0]
-            contentReflect, stepReflect, startReflect = read_spectrum_file(os.path.join(dir_pathReflect, file))
-            materialsR[matName] = float(contentReflect[wavelength]) if float(contentReflect[wavelength]) > 0 \
+            matName = file.split(".")[0]
+            contentReflect, stepReflect, startReflect = read_spectrum_file(
+                os.path.join(dir_pathReflect, file)
+            )
+            materialsR[matName] = (
+                float(contentReflect[wavelength])
+                if float(contentReflect[wavelength]) > 0
                 else 0.0
+            )
 
     for element in ("Plant", "Env"):  # Transmittances
         files = []
-        dir_pathTransmit = os.path.dirname(__file__) + "/PO/" + element + "/TransmittancesMean/"
+        dir_pathTransmit = (
+            os.path.dirname(__file__) + "/PO/" + element + "/TransmittancesMean/"
+        )
         for path in os.listdir(dir_pathTransmit):
             if os.path.isfile(os.path.join(dir_pathTransmit, path)):
-                if not path.startswith('.'):
+                if not path.startswith("."):
                     files.append(path)
         for file in files:
-            matName = file.split('.')[0]
-            contentTransmit, stepTransmit, startTransmit = read_spectrum_file(os.path.join(dir_pathTransmit, file))
-            materialsT[matName] = float(contentTransmit[wavelength]) if float(contentTransmit[wavelength]) > 0 \
+            matName = file.split(".")[0]
+            contentTransmit, stepTransmit, startTransmit = read_spectrum_file(
+                os.path.join(dir_pathTransmit, file)
+            )
+            materialsT[matName] = (
+                float(contentTransmit[wavelength])
+                if float(contentTransmit[wavelength]) > 0
                 else 0.0
+            )
 
     return materialsR, materialsT
 
@@ -168,7 +194,8 @@ def get_average_of_band(band: range, spectrum: dict) -> int:
         b_dict[i] = spectrum[i]
         cpt += 1
     avg = counts / cpt
-    res_key, res_val = min(b_dict.items(), key=lambda x: abs(avg - x[1]))  # get the closest wavelength of that average
+    # get the closest wavelength of that average
+    res_key, res_val = min(b_dict.items(), key=lambda x: abs(avg - x[1]))
     return res_key
 
 
@@ -191,12 +218,12 @@ def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     """
     content = OrderedDict()
     cpt_comment = 0
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         lines = f.readlines()
         for line in lines:
             if line[0] != '"':  # ignore comment
                 ls = re.split(r"\s+|;+", line, maxsplit=1)
-                content[int(ls[0])] = float(ls[1].replace(',', '.'))
+                content[int(ls[0])] = float(ls[1].replace(",", "."))
             else:
                 cpt_comment += 1
         first_line = re.split(r"\s+|;+", lines[cpt_comment], maxsplit=1)
@@ -226,7 +253,9 @@ def denormalize(f: float) -> int:
     return int(255 * f)
 
 
-def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor):
+def addModel(
+    lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor
+):
     ctr = 0
     for sh in lscene:
         sh.apply(tr)
@@ -277,16 +306,35 @@ def addModel(lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, sc
         transparency = sh.appearance.transparency
         illum = 6  # to use the leaf bxdf
 
-        sc.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess, transparency, illum, 1,
-                        1 - transparency, transparency, 1.0 - shininess)
+        sc.addFaceInfos(
+            vertices,
+            indices,
+            normals,
+            diffuse,
+            ambient,
+            specular,
+            shininess,
+            transparency,
+            illum,
+            1,
+            1 - transparency,
+            transparency,
+            1.0 - shininess,
+        )
 
         for _ in mesh.indexList:
             tr2shmap[ctr] = sh.id
             ctr += 1
 
 
-def add_lpy_file_to_scene(sc: libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: Vec3,
-                          scale_factor):
+def add_lpy_file_to_scene(
+    sc: libphotonmap_core.Scene,
+    filename: str,
+    t: int,
+    tr2shmap: dict,
+    anchor: Vec3,
+    scale_factor,
+):
     """
     Adds the lpy mesh to the photonmapping scene.
     :param sc:
@@ -319,7 +367,7 @@ def write_captor_energy(energy, w, n_photons, nb_exp):
 
     filename = "captor_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         f.write("id,n_photons,elevation\n")
         for k, v in od.items():
             if k <= 119:
@@ -394,7 +442,7 @@ def read_rad(file: str, invert_normals: bool):
     :param invert_normals: whether to invert the normals or not.
     :return: A plantGL Scene.
     """
-    with open(file, 'r') as f:
+    with open(file, "r") as f:
         lines = f.readlines()
         materials = {}
         shapes = {}
@@ -419,34 +467,81 @@ def read_rad(file: str, invert_normals: bool):
                 if materials.get(name) is None:
                     if type == "plastic":
                         li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                        color = Color3(
+                            denormalize(float(li[0])),
+                            denormalize(float(li[1])),
+                            denormalize(float(li[2])),
+                        )
+                        spec = Color3(
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                        )
                         roughness = float(li[4])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness}
+                        mat = {
+                            "name": name,
+                            "type": type,
+                            "color": color,
+                            "spec": spec,
+                            "roughness": roughness,
+                        }
                         materials[name] = mat
                         i += 5
                     elif type == "metal":
                         li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                        color = Color3(
+                            denormalize(float(li[0])),
+                            denormalize(float(li[1])),
+                            denormalize(float(li[2])),
+                        )
+                        spec = Color3(
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                        )
                         roughness = float(li[4])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness}
+                        mat = {
+                            "name": name,
+                            "type": type,
+                            "color": color,
+                            "spec": spec,
+                            "roughness": roughness,
+                        }
                         materials[name] = mat
                         i += 5
                     elif type == "trans":
                         li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
-                        spec = Color3(denormalize(float(li[3])), denormalize(float(li[3])), denormalize(float(li[3])))
+                        color = Color3(
+                            denormalize(float(li[0])),
+                            denormalize(float(li[1])),
+                            denormalize(float(li[2])),
+                        )
+                        spec = Color3(
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                            denormalize(float(li[3])),
+                        )
                         roughness = float(li[4])
                         trans = float(li[5])
                         tspec = float(li[6])
-                        mat = {"name": name, "type": type, "color": color, "spec": spec, "roughness": roughness,
-                               "trans": trans, "tspec": tspec}
+                        mat = {
+                            "name": name,
+                            "type": type,
+                            "color": color,
+                            "spec": spec,
+                            "roughness": roughness,
+                            "trans": trans,
+                            "tspec": tspec,
+                        }
                         materials[name] = mat
                         i += 5
                     elif type == "light":
                         li = lines[i + 4].split(" ")
-                        color = Color3(denormalize(float(li[0])), denormalize(float(li[1])), denormalize(float(li[2])))
+                        color = Color3(
+                            denormalize(float(li[0])),
+                            denormalize(float(li[1])),
+                            denormalize(float(li[2])),
+                        )
                         mat = {"name": name, "type": type, "color": color}
                         materials[name] = mat
                         i += 5
@@ -463,10 +558,19 @@ def read_rad(file: str, invert_normals: bool):
                             i += 1
                             vert = []
                             l = re.split(r"\s+|;+", lines[i])
-                            vert.append((float(l[0]) / scale_factor,
-                                         float(l[1]) / scale_factor,
-                                         float(l[2]) / scale_factor))
-                            shapes[name] = {"vertices": vert, "type": type, "size": 1, "material": material}
+                            vert.append(
+                                (
+                                    float(l[0]) / scale_factor,
+                                    float(l[1]) / scale_factor,
+                                    float(l[2]) / scale_factor,
+                                )
+                            )
+                            shapes[name] = {
+                                "vertices": vert,
+                                "type": type,
+                                "size": 1,
+                                "material": material,
+                            }
                         else:
                             i += 3
                             vert = []
@@ -479,18 +583,28 @@ def read_rad(file: str, invert_normals: bool):
                                 l3 = re.split(r"\s+|;+", lines[i + 3])
                                 r = float(l3[0]) / scale_factor
 
-                                x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
-                                    l[2]) / scale_factor
+                                x, y, z = (
+                                    float(l[0]) / scale_factor,
+                                    float(l[1]) / scale_factor,
+                                    float(l[2]) / scale_factor,
+                                )
                                 x2, y2, z2 = (
-                                    float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
-                                    float(l2[2]) / scale_factor)
+                                    float(l2[0]) / scale_factor,
+                                    float(l2[1]) / scale_factor,
+                                    float(l2[2]) / scale_factor,
+                                )
                                 vert.append((x + r, y + r, z + r))
                                 vert.append((x - r, y - r, z - r))
 
                                 vert.append((x2 + r, y2 + r, z2 + r))
                                 vert.append((x2 - r, y2 - r, z2 - r))
 
-                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material}
+                                shapes[name] = {
+                                    "vertices": vert,
+                                    "type": type,
+                                    "size": len(vert),
+                                    "material": material,
+                                }
                                 i += 3
                             elif type == "cone":
                                 l = re.split(r"\s+|;+", lines[i + 1])
@@ -499,11 +613,16 @@ def read_rad(file: str, invert_normals: bool):
                                 r = float(l3[0]) / scale_factor
                                 r2 = float(l3[1]) / scale_factor
 
-                                x, y, z = float(l[0]) / scale_factor, float(l[1]) / scale_factor, float(
-                                    l[2]) / scale_factor
+                                x, y, z = (
+                                    float(l[0]) / scale_factor,
+                                    float(l[1]) / scale_factor,
+                                    float(l[2]) / scale_factor,
+                                )
                                 x2, y2, z2 = (
-                                    float(l2[0]) / scale_factor, float(l2[1]) / scale_factor,
-                                    float(l2[2]) / scale_factor)
+                                    float(l2[0]) / scale_factor,
+                                    float(l2[1]) / scale_factor,
+                                    float(l2[2]) / scale_factor,
+                                )
 
                                 ratio = r / r2
 
@@ -523,21 +642,37 @@ def read_rad(file: str, invert_normals: bool):
                                             maxi = index[j]
                                 for u in range(0, maxi + 1):
                                     mvector = mesh.pointAt(u)
-                                    mesh.pointList[u] = ((mvector[0] / 10 +
-                                                          pos[0], mvector[1] / 10 +
-                                                          pos[1], mvector[2] / 10 + pos[2]))
+                                    mesh.pointList[u] = (
+                                        mvector[0] / 10 + pos[0],
+                                        mvector[1] / 10 + pos[1],
+                                        mvector[2] / 10 + pos[2],
+                                    )
 
-                                shapes[name] = {"vertices": vert, "type": type, "size": len(vert), "material": material
-                                    , "mesh": mesh}
+                                shapes[name] = {
+                                    "vertices": vert,
+                                    "type": type,
+                                    "size": len(vert),
+                                    "material": material,
+                                    "mesh": mesh,
+                                }
                                 i += 3
                             else:
                                 for j in range(tmp, tmp + nbCoords):
                                     l = re.split(r"\s+|;+", lines[j])
-                                    vert.append((float(l[0]) / scale_factor,
-                                                 float(l[1]) / scale_factor,
-                                                 float(l[2]) / scale_factor))
+                                    vert.append(
+                                        (
+                                            float(l[0]) / scale_factor,
+                                            float(l[1]) / scale_factor,
+                                            float(l[2]) / scale_factor,
+                                        )
+                                    )
                                     i = j
-                                    shapes[name] = {"vertices": vert, "type": type, "size": size, "material": material}
+                                    shapes[name] = {
+                                        "vertices": vert,
+                                        "type": type,
+                                        "size": size,
+                                        "material": material,
+                                    }
                             if name == "anchor":
                                 anchor = vert[1]
         for sh, val in shapes.items():
@@ -552,20 +687,34 @@ def read_rad(file: str, invert_normals: bool):
                 s.geometry = val["mesh"]
                 if mat["type"] == "light":
                     s.name += str(vert[0])
-                    s.appearance = Material(name=name, ambient=Color3(mat["color"]),
-                                            emission=Color3(mat["color"]))
+                    s.appearance = Material(
+                        name=name,
+                        ambient=Color3(mat["color"]),
+                        emission=Color3(mat["color"]),
+                    )
 
                 elif mat["type"] == "trans":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                            specular=Color3(mat["spec"]),
-                                            shininess=1 - mat["roughness"], transparency=mat["trans"])
+                    s.appearance = Material(
+                        name=mat["name"],
+                        ambient=Color3(mat["color"]),
+                        specular=Color3(mat["spec"]),
+                        shininess=1 - mat["roughness"],
+                        transparency=mat["trans"],
+                    )
                 else:
                     if Color3(mat["spec"]) == Color3(0, 0, 0):
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            shininess=1 - mat["roughness"],
+                        )
                     else:
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                specular=Color3(mat["spec"]), shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            specular=Color3(mat["spec"]),
+                            shininess=1 - mat["roughness"],
+                        )
                 s.appearance.name = mat["name"]
                 sc.add(s)
 
@@ -602,20 +751,34 @@ def read_rad(file: str, invert_normals: bool):
                 s.name = sh
                 if mat["type"] == "light":
                     s.name += str(vert[0])
-                    s.appearance = Material(name=name, ambient=Color3(mat["color"]),
-                                            emission=Color3(mat["color"]))
+                    s.appearance = Material(
+                        name=name,
+                        ambient=Color3(mat["color"]),
+                        emission=Color3(mat["color"]),
+                    )
 
                 elif mat["type"] == "trans":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                            specular=Color3(mat["spec"]),
-                                            shininess=1 - mat["roughness"], transparency=mat["trans"])
+                    s.appearance = Material(
+                        name=mat["name"],
+                        ambient=Color3(mat["color"]),
+                        specular=Color3(mat["spec"]),
+                        shininess=1 - mat["roughness"],
+                        transparency=mat["trans"],
+                    )
                 else:
                     if Color3(mat["spec"]) == Color3(0, 0, 0):
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            shininess=1 - mat["roughness"],
+                        )
                     else:
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                specular=Color3(mat["spec"]), shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            specular=Color3(mat["spec"]),
+                            shininess=1 - mat["roughness"],
+                        )
                 s.appearance.name = mat["name"]
                 sc.add(s)
             else:
@@ -637,22 +800,36 @@ def read_rad(file: str, invert_normals: bool):
                 s.geometry = ts
                 s.name = sh
                 if mat["type"] == "light":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                            emission=Color3(mat["color"]))
+                    s.appearance = Material(
+                        name=mat["name"],
+                        ambient=Color3(mat["color"]),
+                        emission=Color3(mat["color"]),
+                    )
                 elif mat["type"] == "trans":
-                    s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                            specular=Color3(mat["spec"]),
-                                            shininess=1 - mat["roughness"], transparency=mat["trans"])
+                    s.appearance = Material(
+                        name=mat["name"],
+                        ambient=Color3(mat["color"]),
+                        specular=Color3(mat["spec"]),
+                        shininess=1 - mat["roughness"],
+                        transparency=mat["trans"],
+                    )
                 else:
                     if Color3(mat["spec"]) == Color3(0, 0, 0):
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            shininess=1 - mat["roughness"],
+                        )
                     else:
-                        s.appearance = Material(name=mat["name"], ambient=Color3(mat["color"]),
-                                                specular=Color3(mat["spec"]), shininess=1 - mat["roughness"])
+                        s.appearance = Material(
+                            name=mat["name"],
+                            ambient=Color3(mat["color"]),
+                            specular=Color3(mat["spec"]),
+                            shininess=1 - mat["roughness"],
+                        )
                 s.appearance.name = mat["name"]
                 sc.add(s)
-        save_name = file.split('.')[0] + ".obj"
+        save_name = file.split(".")[0] + ".obj"
         sc.save(save_name)
         return sc, anchor, scale_factor
 
@@ -666,7 +843,13 @@ def watts_to_emission(w):
     return w * 2.0 / 10.0
 
 
-def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dict, materialsT: dict):
+def add_shape(
+    scene: libphotonmap_core.Scene,
+    sh: Shape,
+    w: int,
+    materialsR: dict,
+    materialsT: dict,
+):
     """
     Adds a PlantGL Shape to the Photon Mapping scene.
     :param scene: A libphotonmap_core Scene
@@ -679,10 +862,16 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dic
     normals = VectorFloat(flatten(sh.geometry.normalList))
     indices = VectorUint(flatten(sh.geometry.indexList))
     vertices = VectorFloat(flatten(sh.geometry.pointList))
-    ambient = Vec3(sh.appearance.ambient.red / 255.0, sh.appearance.ambient.green / 255.0,
-                   sh.appearance.ambient.blue / 255.0)
-    specular = Vec3(sh.appearance.specular.red / 255.0, sh.appearance.specular.green / 255.0,
-                    sh.appearance.specular.blue / 255.0)
+    ambient = Vec3(
+        sh.appearance.ambient.red / 255.0,
+        sh.appearance.ambient.green / 255.0,
+        sh.appearance.ambient.blue / 255.0,
+    )
+    specular = Vec3(
+        sh.appearance.specular.red / 255.0,
+        sh.appearance.specular.green / 255.0,
+        sh.appearance.specular.blue / 255.0,
+    )
     diffuse = ambient
     material_name = sh.appearance.name
     trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
@@ -691,6 +880,7 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dic
         illum = 1
 
     if trans > 0.0:
+        illum = 7
         print("Transparent material: " + material_name)
 
     shininess = sh.appearance.shininess
@@ -698,18 +888,32 @@ def add_shape(scene: libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dic
     light_color = wavelength2Rgb(w)
     # print(str(light_color[0])+" "+str(light_color[1])+" "+str(light_color[2]))
     if len(indices) == 0:
-        coords = re.findall(r"[-+]?\d*\.*\d+", sh.name)  # regex to get the coords
+        # regex to get the coords
+        coords = re.findall(r"[-+]?\d*\.*\d+", sh.name)
         # coords[0] is the id of the light
         pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
         print(coords)
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(400), light_color)
+        scene.addPointLight(pos, watts_to_emission(4000), light_color)
 
     if emission != Color3(0, 0, 0):
-        scene.addLight(vertices, indices, normals, watts_to_emission(400), light_color)
+        scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
     else:
-        scene.addFaceInfos(vertices, indices, normals, diffuse, ambient, specular, shininess,
-                           trans, illum, 1, refl, trans, 1.0 - shininess)
+        scene.addFaceInfos(
+            vertices,
+            indices,
+            normals,
+            diffuse,
+            ambient,
+            specular,
+            shininess,
+            trans,
+            illum,
+            1,
+            refl,
+            trans,
+            1.0 - shininess,
+        )
 
 
 def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str):
@@ -721,11 +925,11 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
     :return:
     """
     lastTriangleId = scene.nFaces()
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         next(f)
         captorId = 0
         for line in f:
-            row = line.split(',')
+            row = line.split(",")
             x = float(row[0])
             y = float(row[1])
             z = float(row[2])
@@ -806,8 +1010,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :param scale_factor: The scale factor to get a meter.
     :return:
     """
-    n_samples = 2
-    n_photons = 10000000
+    n_samples = 10
+    n_photons = 100000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -822,16 +1026,19 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     image = libphotonmap_core.Image(image_width, image_height)
     lookfrom = Vec3(0.5, 0.5, 1.5)
     lookat = Vec3(anchor[0], anchor[1], anchor[2])
+    print(anchor[0], anchor[1], anchor[2])
     vup = Vec3(0, 0, -1)
     vfov = 50.0
     dist_to_focus = 3.0
     aperture = 0.01
 
     # coordinates must be in meters
-    camera = libphotonmap_core.Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
+    camera = libphotonmap_core.Camera(
+        lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
+    )
 
     # Setting up spectrum bands
-    spectrum = "whole"
+    spectrum = "blue"
     spec_file = "chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
@@ -909,7 +1116,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band3, spec_dict))
         integrals.append(get_integral_of_band(band4, spec_dict))
 
-    nb_exp = 10
+    nb_exp = 1
     integral_idx = 0
     scene = libphotonmap_core.Scene()
     for w in wavelengths:
@@ -925,44 +1132,90 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             for sh in sc:
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
-            # add_lpy_file_to_scene(scene, "rose-simple4.lpy", 150, tr2shmap, anchor, scale_factor)
-            addCaptors(scene, captor_dict, "captors_expe2.csv")
+            add_lpy_file_to_scene(
+                scene, "rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
+            )
+            addCaptors(scene, captor_dict, "captors_expe1.csv")
 
             scene.setupTriangles()
             scene.build()
 
             print("Building photonMap...")
-            integrator = PhotonMapping(n_photons, n_estimation_global,
-                                       n_photons_caustics_multiplier, n_estimation_caustics,
-                                       final_gathering_depth, max_depth)
+            integrator = PhotonMapping(
+                n_photons,
+                n_estimation_global,
+                n_photons_caustics_multiplier,
+                n_estimation_caustics,
+                final_gathering_depth,
+                max_depth,
+            )
 
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
-            integrator.buildNoKdtree(scene, sampler)
+            # build no kdtree if not rendering
+            integrator.build(scene, sampler)
             print("Done!")
-            # image.clear()
-            # print("Printing photonmap image...")
-            # visualizePhotonMap(integrator, scene, image, image_height, image_width, camera, n_photons, max_depth,
-            #                    "photonmap-" + str(w) + "nm.ppm", sampler)
-            # image.clear()
-            #
-            # print("Printing captor photonmap image...")
-            # visualizeCaptorsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
-            #                           "photonmap-captors-" + str(w) + "nm.ppm", sampler, integrator)
-            #
-            # image.clear()
-            # # visualizeCausticsPhotonMap(scene, image, image_height, image_width, camera, n_photons, max_depth,
-            # #                           "photonmap-cautics.ppm", sampler)
-            #
-            # image.clear()
-            # print("Done!")
+            print("Printing photonmap image...")
+            visualizePhotonMap(
+                integrator,
+                scene,
+                image,
+                image_height,
+                image_width,
+                camera,
+                n_photons,
+                max_depth,
+                "photonmap-" + str(w) + "nm.ppm",
+                sampler,
+            )
+            image.clear()
 
-            # print("Rendering image...")
-            # image = libphotonmap_core.Image(image_width, image_height)
-            # Render(sampler, image, image_height, image_width, n_samples, camera, integrator, scene,
-            #        "output-photonmapping-" + str(w) + "nm.ppfm")
+            print("Printing captor photonmap image...")
+            visualizeCaptorsPhotonMap(
+                scene,
+                image,
+                image_height,
+                image_width,
+                camera,
+                n_photons,
+                max_depth,
+                "photonmap-captors-" + str(w) + "nm.ppm",
+                sampler,
+                integrator,
+            )
 
-            # image.clear()
+            image.clear()
+            # visualizeCausticsPhotonMap(
+            #     scene,
+            #     image,
+            #     image_width,
+            #     image_height,
+            #     camera,
+            #     n_photons,
+            #     max_depth,
+            #     "photonmap-cautics.ppm",
+            #     sampler,
+            #     integrator,
+            # )
+
+            image.clear()
+            print("Done!")
+
+            print("Rendering image...")
+            image = libphotonmap_core.Image(image_width, image_height)
+            Render(
+                sampler,
+                image,
+                image_height,
+                image_width,
+                n_samples,
+                camera,
+                integrator,
+                scene,
+                "output-photonmapping-" + str(w) + "nm.ppm",
+            )
+
+            image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])

@@ -609,7 +609,7 @@ public:
                                 }
                                 break;
 
-                            } else if (bxdf_type == BxDFType::CAPTOR) {
+                            } else if (prev_specular && bxdf_type == BxDFType::CAPTOR) {
 #pragma omp critical
                                 {
                                     Photon p(throughput, info.surfaceInfo.position,
