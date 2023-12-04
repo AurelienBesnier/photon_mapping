@@ -20,10 +20,10 @@ jobs:
   
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
-        python-version: '3.9'
+        python-version: '3.10'
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -34,6 +34,8 @@ jobs:
         sudo conda config --set always_yes yes
         sudo conda config --set remote_read_timeout_secs 600
         sudo conda config --set auto_update_conda False
+        sudo conda install -n base conda-libmamba-solver 
+        sudo conda config --set solver libmamba
     - name: Install dependencies
       run: |
         conda env create --file environment.yml --name photonmap
