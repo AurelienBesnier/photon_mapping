@@ -25,7 +25,7 @@ def test_reflection():
 
     sampler = UniformSampler(1)
 
-    integrator.build(scene, sampler)
+    integrator.build(scene, sampler, True)
     print("Done!")
 
     assert (integrator.getPhotonMap().nPhotons() >= 100)
