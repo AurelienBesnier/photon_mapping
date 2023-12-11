@@ -283,9 +283,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   // Integrator
   // PhotonMapping class
   py::class_<PhotonMapping>(m, "PhotonMapping")
-      .def(py::init<int, int, float, int, int, int>())
-      .def("build", &PhotonMapping::build, py::arg("scene"), py::arg("sampler"))
-      .def("buildNoKdtree", &PhotonMapping::buildNoKdtree, "Builds the photon map")
+      .def(py::init<unsigned long long, int, float, int, int, int>())
+      .def("build", &PhotonMapping::build, py::arg("scene"), py::arg("sampler"), py::arg("forRendering"))
       .def("integrate", &PhotonMapping::integrate, py::arg("ray_in"),
            py::arg("scene"), py::arg("sampler"))
       .def("getPhotonMap", &PhotonMapping::getPhotonMapGlobal,

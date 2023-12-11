@@ -104,7 +104,8 @@ def setup_dataset_materials(wavelength: int):
     for element in ("Plant", "Env"):  # Transmittances
         files = []
         dir_pathTransmit = (
-            os.path.dirname(__file__) + "/PO/" + element + "/TransmittancesMean/"
+            os.path.dirname(__file__) + "/PO/" + 
+            element + "/TransmittancesMean/"
         )
         for path in os.listdir(dir_pathTransmit):
             if os.path.isfile(os.path.join(dir_pathTransmit, path)):
@@ -376,8 +377,10 @@ def write_captor_energy(energy, w, n_photons, nb_exp):
                 elevation = 1400
             else:
                 elevation = 1800
-            print("captor n°" + str(k) + " has " + str(v / nb_exp) + " photons on it")
-            f.write(str(k) + "," + str(v / nb_exp) + "," + str(elevation) + "\n")
+            print("captor n°" + str(k) + " has " + 
+                  str(v / nb_exp) + " photons on it")
+            f.write(str(k) + "," + str(v / nb_exp) + 
+                    "," + str(elevation) + "\n")
 
     print("Done!")
 
@@ -874,13 +877,15 @@ def add_shape(
     )
     diffuse = ambient
     material_name = sh.appearance.name
-    trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
-    refl = 0.0 if materialsR.get(material_name) is None else materialsR[material_name]
+    trans = 0.0 if materialsT.get(
+        material_name) is None else materialsT[material_name]
+    refl = 0.0 if materialsR.get(
+        material_name) is None else materialsR[material_name]
     if specular != Color3(0, 0, 0):
         illum = 1
 
     if trans > 0.0:
-        illum = 7
+        illum = 9
         print("Transparent material: " + material_name)
 
     shininess = sh.appearance.shininess
@@ -897,7 +902,8 @@ def add_shape(
         scene.addPointLight(pos, watts_to_emission(4000), light_color)
 
     if emission != Color3(0, 0, 0):
-        scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
+        scene.addLight(vertices, indices, normals,
+                       watts_to_emission(4000), light_color)
     else:
         scene.addFaceInfos(
             vertices,
@@ -1010,13 +1016,13 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :param scale_factor: The scale factor to get a meter.
     :return:
     """
-    n_samples = 10
-    n_photons = 100000
+    n_samples = 1
+    n_photons = int(1e8)
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
-    max_depth = 100
+    max_depth = 24
 
     aspect_ratio = 16.0 / 9.0
 
@@ -1038,7 +1044,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     )
 
     # Setting up spectrum bands
-    spectrum = "blue"
+    spectrum = "red"
     spec_file = "chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
@@ -1125,7 +1131,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         for exp in range(nb_exp):
             start = time.time()
 
-            print("************-Experience nb " + str(exp + 1) + "-************")
+            print("************-Experience nb " + 
+                  str(exp + 1) + "-************")
             materialsR, materialsT = setup_dataset_materials(w)
             scene.clear()
             captor_dict = {}
@@ -1153,69 +1160,69 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
             # build no kdtree if not rendering
-            integrator.build(scene, sampler)
-            print("Done!")
-            print("Printing photonmap image...")
-            visualizePhotonMap(
-                integrator,
-                scene,
-                image,
-                image_height,
-                image_width,
-                camera,
-                n_photons,
-                max_depth,
-                "photonmap-" + str(w) + "nm.ppm",
-                sampler,
-            )
-            image.clear()
-
-            print("Printing captor photonmap image...")
-            visualizeCaptorsPhotonMap(
-                scene,
-                image,
-                image_height,
-                image_width,
-                camera,
-                n_photons,
-                max_depth,
-                "photonmap-captors-" + str(w) + "nm.ppm",
-                sampler,
-                integrator,
-            )
-
-            image.clear()
-            # visualizeCausticsPhotonMap(
+            integrator.build(scene, sampler, False)
+            # print("Done!")
+            # print("Printing photonmap image...")
+            # visualizePhotonMap(
+            #     integrator,
             #     scene,
             #     image,
-            #     image_width,
             #     image_height,
+            #     image_width,
             #     camera,
             #     n_photons,
             #     max_depth,
-            #     "photonmap-cautics.ppm",
+            #     "photonmap-" + str(w) + "nm.ppm",
+            #     sampler,
+            # )
+            # image.clear()
+            #
+            # print("Printing captor photonmap image...")
+            # visualizeCaptorsPhotonMap(
+            #     scene,
+            #     image,
+            #     image_height,
+            #     image_width,
+            #     camera,
+            #     n_photons,
+            #     max_depth,
+            #     "photonmap-captors-" + str(w) + "nm.ppm",
             #     sampler,
             #     integrator,
             # )
-
-            image.clear()
-            print("Done!")
-
-            print("Rendering image...")
-            image = libphotonmap_core.Image(image_width, image_height)
-            Render(
-                sampler,
-                image,
-                image_height,
-                image_width,
-                n_samples,
-                camera,
-                integrator,
-                scene,
-                "output-photonmapping-" + str(w) + "nm.ppm",
-            )
-
-            image.clear()
+            #
+            # image.clear()
+            # # visualizeCausticsPhotonMap(
+            # #     scene,
+            # #     image,
+            # #     image_width,
+            # #     image_height,
+            # #     camera,
+            # #     n_photons,
+            # #     max_depth,
+            # #     "photonmap-cautics.ppm",
+            # #     sampler,
+            # #     integrator,
+            # # )
+            #
+            # image.clear()
+            # print("Done!")
+            #
+            # print("Rendering image...")
+            # image = libphotonmap_core.Image(image_width, image_height)
+            # Render(
+            #     sampler,
+            #     image,
+            #     image_height,
+            #     image_width,
+            #     n_samples,
+            #     camera,
+            #     integrator,
+            #     scene,
+            #     "output-photonmapping-" + str(w) + "nm.ppm",
+            # )
+            #
+            # image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])

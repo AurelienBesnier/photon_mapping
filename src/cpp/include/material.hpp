@@ -509,7 +509,7 @@ public:
     }
 };
 
-class SimpleLeaf : public BxDF {
+class Refltr : public BxDF {
 private:
     Vec3f rho;
     float reflectance;
@@ -517,7 +517,7 @@ private:
     float roughness;
 
 public:
-    SimpleLeaf(const Vec3f &rho, float reflectance, float transmittance, float roughness)
+    Refltr(const Vec3f &rho, float reflectance, float transmittance, float roughness)
             : BxDF(BxDFType::DIFFUSE), rho(rho), reflectance(reflectance), transmittance(transmittance),
               roughness(roughness) {}
 

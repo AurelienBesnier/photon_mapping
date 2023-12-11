@@ -1,7 +1,6 @@
 name: photonmap
 channels:
   - conda-forge
-  - openalea3
   - fredboudon
   - defaults
 dependencies:
@@ -17,3 +16,4 @@ dependencies:
   - boost=1.78.0
   - openmp=8.0.1
   - openalea.lpy=3.13.0
+  - scipy==1.11.4

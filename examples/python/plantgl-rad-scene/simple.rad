@@ -1,0 +1,100 @@
+# -*- text -*-
+# fichier rad pour Sec2
+# généré le 27/11/23 15:29 par ifg.py
+#
+# Cf. <dossier Sec2>/Doxygen/html/index.html
+# Sec2 utilise le formalisme "Radiance" pour la description des scènes:
+# http://paulbourke.net/dataformats/rad/
+#
+
+#
+# On déclare une lumiere blanche qu'on nomme "eclairage"
+#  - Les deux zéros qui commencent la 2ème ligne sont obligatoires,
+#    comme pour toute déclaration en langage "radiance";
+#  - le "3" qui les suit est le nombre de paramètres que sec2 devra lire,"
+#    i.e les intensites de rouge, vert et et bleu dans la ligne suivante
+# NOTE : tous ces chiffres pourraient figurer sur une seule ligne.
+void light eclairage
+0
+0
+3
+1. 1. 1.
+#
+
+#
+# On utilise la lumière "eclairage" pour créer une source ponctuelle spérique :
+# Il y a 4 paramètres cette fois :
+# - les coordonnées 3D du centre,
+# - le rayon de la sphère
+# NOTE : la sphere est assimilée à 1 point et son rayon n'est pas pris en compte.
+#
+eclairage point lampe
+0
+0
+4
+0 0 1000
+1
+#
+
+#
+# On déclare un matériau de type "plastic" qu'on nomme "terre", de couleur ocre
+#  avec 5 paramètres :
+#   - les reflectances dans le rouge le vert et le bleu,
+#   - un indice de specularité
+#   - un indice de rugosité -- sans effet sur les images--
+void plastic terre
+0
+0
+5
+0.75 0.5 0.25
+0.03
+1.0
+#
+
+#
+# On déclare un matériau "peinture", de couleur blanche
+void plastic peinture
+0
+0
+5
+1 1 1   0.7   0.5
+#
+
+#
+# On utilise le matériau "terre" pour décrire un sol carré :
+# Il y a cette fois 12 paramètres : # - 4 triplets <x y z> qui définissent les quatre coins
+terre polygon dalle
+0
+0
+12
+ 1000.000 1000.000 0.000
+-1000.000 1000.000 0.000
+-1000.000 -1000.000 0.000
+1000.000 -1000.000 0.000
+#
+
+#
+# On utilise le matériau "peinture" pour créer une paroi verticale#  parallèle aux X et au bord du sol :
+# Elle va renvoyer des photons par des réflexions diffuses et spéculaire.
+peinture polygon paroi_X
+0
+0
+12
+ -1000.000 500.000 500.000
+-1000.000 -500.000 500.000
+-1000.000 -500.000 0.000
+-1000.000 500.000 0.000
+#
+
+#
+# On crée une autre paroi peinte perpendiculaire à la première :
+peinture polygon paroi_y
+0
+0
+12
+ 500.000 -1000.000 500.000
+500.000 -1000.000 0.000
+-500.000 -1000.000 0.000
+-500.000 -1000.000 500.000
+#
+

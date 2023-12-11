@@ -5,36 +5,42 @@
 #include "scene.hpp"
 #include <chrono>
 
-void Render(UniformSampler &sampler, Image &image, const int &height,
-            const int &width, const int &n_samples, const Camera &camera,
-            PhotonMapping &integrator, const Scene &scene) {
-  const float height_div = 1.0 / height;
-#pragma omp parallel for collapse(2) schedule(dynamic, 1)
-  for (unsigned i = 0; i < height; ++i) {
-    for (unsigned j = 0; j < width; ++j) {
+void Render(UniformSampler &sampler, Image &image, const unsigned &height,
+		const unsigned &width, const unsigned &n_samples, Camera &camera,
+            PhotonMapping &integrator, Scene &scene,
+            const std::string &filename) {
+  if (integrator.getPhotonMapGlobal().nPhotons() <= 0)
+    return;
+  // #pragma omp parallel for collapse(2) schedule(dynamic, 1)
+  for (unsigned int i = 0; i < height; ++i) {
+
+    std::cout << "\033[A\33[2K\r";
+    std::cout << "rendering scanline " << i + 1 << "/" << height << "..."
+              << std::endl;
+#pragma omp parallel for
+    for (unsigned int j = 0; j < width; ++j) {
       // init sampler
       sampler = UniformSampler(j + width * i);
 
       for (unsigned k = 0; k < n_samples; ++k) {
-        const float u = (2.0f * (j + sampler.getNext1D()) - width) * height_div;
-        const float v =
-            (2.0f * (i + sampler.getNext1D()) - height) * height_div;
+        const float u = (2.0f * (j + sampler.getNext1D()) - width) / height;
+        const float v = (2.0f * (i + sampler.getNext1D()) - height) / height;
 
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(u, v), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
           const Vec3f radiance =
               integrator.integrate(ray, scene, sampler) / pdf;
-
+#ifdef __OUTPUT__
           if (std::isnan(radiance[0]) || std::isnan(radiance[1]) ||
               std::isnan(radiance[2])) {
-            //std::cout<<"radiance is NaN"<<std::endl;
+            std::cerr << "radiance is NaN" << std::endl;
             continue;
           } else if (radiance[0] < 0 || radiance[1] < 0 || radiance[2] < 0) {
-              //std::cout<<"radiance is minus"<<std::endl;
+            std::cerr << "radiance is minus" << std::endl;
             continue;
           }
-
+#endif
           image.addPixel(i, j, radiance);
         } else {
           image.setPixel(i, j, Vec3fZero);
@@ -42,13 +48,15 @@ void Render(UniformSampler &sampler, Image &image, const int &height,
       }
     }
   }
+  image.divide(n_samples);
+  image.writePPM(filename.data());
 }
 
 int main() {
   const unsigned width = 512;
   const unsigned height = 512;
-  const unsigned n_samples = 128;
-  const unsigned n_photons = 100000;
+  const unsigned n_samples = 10;
+  const unsigned long long n_photons = 100000;
   const unsigned n_estimation_global = 100;
   const float n_photons_caustics_multiplier = 50;
   const unsigned n_estimation_caustics = 50;
@@ -86,7 +94,7 @@ int main() {
     std::cout<<"[main] tracing rays from camera..."<<std::endl;
 
   start = std::chrono::steady_clock::now();
-  Render(sampler, image, height, width, n_samples, camera, integrator, scene);
+  Render(sampler, image, height, width, n_samples, camera, integrator, scene, "output.ppm");
   end = std::chrono::steady_clock::now();
 
   elapsed_seconds = end - start;

@@ -7,7 +7,7 @@ from pathlib import Path
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 # Convert distutils Windows platform specifiers to CMake -A arguments
 PLAT_TO_CMAKE = {
@@ -137,11 +137,10 @@ ext_modules = [
 ]
 
 setup(
-    name="libphotonmap_core",
+    name="photonmap",
     version=__version__,
     author="Aurélien Besnier",
-    author_email="aurelien.besnier@lirmm.fr",
-    url="",
+    url="https://github.com/AurelienBesnier/photon_mapping.git",
     description="A photonmapper python wrapper with pybind11",
     long_description="",
     ext_modules=ext_modules,

@@ -32,7 +32,7 @@ boost::shared_ptr<BxDF> createDefaultBxDF() {
 boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
                                    float reflectance = 0.0f,
                                    float transmittance = 0.0f,
-                                   float roughness = 0.0f) {
+                                   float roughness = 0.5f) {
   const Vec3f kd =
       Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
   const Vec3f ks =
@@ -57,7 +57,7 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     // Transparent
     return boost::make_shared<Transparent>(kd, material.ior);
   case 9:
-    return boost::make_shared<SimpleLeaf>(kd, reflectance, transmittance,
+    return boost::make_shared<Refltr>(kd, reflectance, transmittance,
                                           roughness);
   default:
     // lambert
