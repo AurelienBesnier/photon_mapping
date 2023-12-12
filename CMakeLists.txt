@@ -62,16 +62,16 @@ add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fsigned-char -fexceptions -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++2b -fsigned-char -fexceptions -fopenmp -march=native")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
 target_include_directories(pm INTERFACE "src/cpp/include")
 
-target_compile_features(pm INTERFACE cxx_std_20)
+target_compile_features(pm INTERFACE cxx_std_23)
 set_target_properties(pm
         PROPERTIES
-        CXX_STANDARD 20
+        CXX_STANDARD 23
         CXX_STANDARD_REQUIRED YES
         CXX_EXTENSIONS NO
         )
