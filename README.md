@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
+![example workflow](https://github.com/AurelienBesnier/photon_mapping/blob/main/.github/workflows/build-docs-upload.yml)
 # photon_mapping
 
 minimal but extensible header only implementation of photon mapping in C++.
