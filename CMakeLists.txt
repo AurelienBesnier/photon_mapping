@@ -37,6 +37,11 @@ if(APPLE)
     endif()
 endif()
 
+if(WIN32)
+    set(CMAKE_C_COMPILER gcc)
+    set(CMAKE_CXX_COMPILER g++)
+endif()
+
 find_package(OpenMP)
 if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
