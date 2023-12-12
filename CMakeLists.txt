@@ -14,6 +14,7 @@ find_package(Threads REQUIRED)
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+set(Boost_USE_RELEASE_LIBS ON)
 find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
     message(WARNING "failed to find Boost")
@@ -38,6 +39,7 @@ if(APPLE)
 endif()
 
 if(WIN32)
+	message(STATUS "Compiling on windows")
     set(CMAKE_C_COMPILER gcc)
     set(CMAKE_CXX_COMPILER g++)
 endif()
@@ -60,7 +62,7 @@ add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -DLINUX -fsigned-char -fexceptions -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -fsigned-char -fexceptions -fopenmp")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
@@ -76,7 +78,7 @@ set_target_properties(pm
 
 
 target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX tinyobjloader embree)
-target_link_libraries(pm INTERFACE Boost::headers)
+target_link_libraries(pm INTERFACE Boost::boost Boost::dynamic_linking)
 target_link_libraries(pm INTERFACE photon_map primitive triangle image)
 
 # examples

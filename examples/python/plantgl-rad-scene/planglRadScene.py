@@ -104,8 +104,7 @@ def setup_dataset_materials(wavelength: int):
     for element in ("Plant", "Env"):  # Transmittances
         files = []
         dir_pathTransmit = (
-            os.path.dirname(__file__) + "/PO/" + 
-            element + "/TransmittancesMean/"
+            os.path.dirname(__file__) + "/PO/" + element + "/TransmittancesMean/"
         )
         for path in os.listdir(dir_pathTransmit):
             if os.path.isfile(os.path.join(dir_pathTransmit, path)):
@@ -377,10 +376,8 @@ def write_captor_energy(energy, w, n_photons, nb_exp):
                 elevation = 1400
             else:
                 elevation = 1800
-            print("captor n°" + str(k) + " has " + 
-                  str(v / nb_exp) + " photons on it")
-            f.write(str(k) + "," + str(v / nb_exp) + 
-                    "," + str(elevation) + "\n")
+            print("captor n°" + str(k) + " has " + str(v / nb_exp) + " photons on it")
+            f.write(str(k) + "," + str(v / nb_exp) + "," + str(elevation) + "\n")
 
     print("Done!")
 
@@ -877,10 +874,8 @@ def add_shape(
     )
     diffuse = ambient
     material_name = sh.appearance.name
-    trans = 0.0 if materialsT.get(
-        material_name) is None else materialsT[material_name]
-    refl = 0.0 if materialsR.get(
-        material_name) is None else materialsR[material_name]
+    trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
+    refl = 0.0 if materialsR.get(material_name) is None else materialsR[material_name]
     if specular != Color3(0, 0, 0):
         illum = 1
 
@@ -902,8 +897,7 @@ def add_shape(
         scene.addPointLight(pos, watts_to_emission(4000), light_color)
 
     if emission != Color3(0, 0, 0):
-        scene.addLight(vertices, indices, normals,
-                       watts_to_emission(4000), light_color)
+        scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
     else:
         scene.addFaceInfos(
             vertices,
@@ -1016,35 +1010,35 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :param scale_factor: The scale factor to get a meter.
     :return:
     """
-    n_samples = 1
-    n_photons = int(1e8)
+    # n_samples = 1
+    n_photons = int(1e7)
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
     max_depth = 24
 
-    aspect_ratio = 16.0 / 9.0
+    # aspect_ratio = 16.0 / 9.0
+    #
+    # image_width = 1024
+    # image_height = int(image_width / aspect_ratio)
 
-    image_width = 1024
-    image_height = int(image_width / aspect_ratio)
-
-    image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(0.5, 0.5, 1.5)
-    lookat = Vec3(anchor[0], anchor[1], anchor[2])
+    # image = libphotonmap_core.Image(image_width, image_height)
+    # lookfrom = Vec3(0.5, 0.5, 1.5)
+    # lookat = Vec3(anchor[0], anchor[1], anchor[2])
     print(anchor[0], anchor[1], anchor[2])
-    vup = Vec3(0, 0, -1)
-    vfov = 50.0
-    dist_to_focus = 3.0
-    aperture = 0.01
+    # vup = Vec3(0, 0, -1)
+    # vfov = 50.0
+    # dist_to_focus = 3.0
+    # aperture = 0.01
 
     # coordinates must be in meters
-    camera = libphotonmap_core.Camera(
-        lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
-    )
+    # camera = libphotonmap_core.Camera(
+    #     lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
+    # )
 
     # Setting up spectrum bands
-    spectrum = "red"
+    spectrum = "whole"
     spec_file = "chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
@@ -1122,7 +1116,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band3, spec_dict))
         integrals.append(get_integral_of_band(band4, spec_dict))
 
-    nb_exp = 1
+    nb_exp = 10
     integral_idx = 0
     scene = libphotonmap_core.Scene()
     for w in wavelengths:
@@ -1131,8 +1125,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         for exp in range(nb_exp):
             start = time.time()
 
-            print("************-Experience nb " + 
-                  str(exp + 1) + "-************")
+            print("************-Experience nb " + str(exp + 1) + "-************")
             materialsR, materialsT = setup_dataset_materials(w)
             scene.clear()
             captor_dict = {}
@@ -1228,6 +1221,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             # correct_energy(captor_energy, integrals[integral_idx])
             print("Time taken: " + str(time.time() - start))
             # print("Done!")
+            gc.collect()
         write_captor_energy(captor_energy, w, n_photons, nb_exp)
         integral_idx += 1
 
