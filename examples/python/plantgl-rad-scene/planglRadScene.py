@@ -1,23 +1,17 @@
 import bisect
+from collections import OrderedDict
+import gc
+from math import cos, sin
 import os
 import random
 import re
 import sys
-from collections import OrderedDict
-from math import cos, sin
 import time
 
-from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
-
-from photonmap.libphotonmap_core import (
-    Render,
-    visualizePhotonMap,
-    visualizeCausticsPhotonMap,
-    visualizeCaptorsPhotonMap,
-)
 from scipy.integrate import simpson
 
+from openalea.lpy import Lsystem
 from photonmap import (
     Vec3,
     VectorUint,
@@ -26,7 +20,12 @@ from photonmap import (
     UniformSampler,
 )
 from photonmap import libphotonmap_core
-import gc
+from photonmap.libphotonmap_core import (
+    Render,
+    visualizePhotonMap,
+    visualizeCausticsPhotonMap,
+    visualizeCaptorsPhotonMap,
+)
 
 
 def get_integral_of_band(band: range, spectrum: dict) -> float:
@@ -365,7 +364,7 @@ def write_captor_energy(energy, w, n_photons, nb_exp):
     elif 800 > w > 700:
         band = "700-800"
 
-    filename = "captor_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
+    filename = "results/captor_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
 
     with open(filename, "w") as f:
         f.write("id,n_photons,elevation\n")
@@ -457,16 +456,16 @@ def read_rad(file: str, invert_normals: bool):
             elif lines[i].startswith("#"):
                 continue
             elif lines[i].startswith("scale_factor"):
-                li = lines[i].split(" ")
+                li = lines[i].split(None)
                 scale_factor = float(li[1])
             elif lines[i].startswith("void"):  # material
-                li = lines[i].split(" ")
+                li = lines[i].split(None)
                 type = li[1]
                 name = li[2].strip("\n")
                 # print("material name: " + str(name))
                 if materials.get(name) is None:
                     if type == "plastic":
-                        li = lines[i + 4].split(" ")
+                        li = lines[i + 4].split(None)
                         color = Color3(
                             denormalize(float(li[0])),
                             denormalize(float(li[1])),
@@ -488,7 +487,7 @@ def read_rad(file: str, invert_normals: bool):
                         materials[name] = mat
                         i += 5
                     elif type == "metal":
-                        li = lines[i + 4].split(" ")
+                        li = lines[i + 4].split(None)
                         color = Color3(
                             denormalize(float(li[0])),
                             denormalize(float(li[1])),
@@ -510,7 +509,7 @@ def read_rad(file: str, invert_normals: bool):
                         materials[name] = mat
                         i += 5
                     elif type == "trans":
-                        li = lines[i + 4].split(" ")
+                        li = lines[i + 4].split(None)
                         color = Color3(
                             denormalize(float(li[0])),
                             denormalize(float(li[1])),
@@ -536,7 +535,7 @@ def read_rad(file: str, invert_normals: bool):
                         materials[name] = mat
                         i += 5
                     elif type == "light":
-                        li = lines[i + 4].split(" ")
+                        li = lines[i + 4].split(None)
                         color = Color3(
                             denormalize(float(li[0])),
                             denormalize(float(li[1])),
@@ -549,12 +548,12 @@ def read_rad(file: str, invert_normals: bool):
                 keys = materials.keys()
                 for k in keys:
                     if lines[i].startswith(k):
-                        li = lines[i].split(" ")
+                        li = lines[i].split(None)
                         material = li[0]
                         type = li[1]
                         name = li[2].strip("\n")
 
-                        if type == "point_light":
+                        if type == "point_light" or type == "point":
                             i += 1
                             vert = []
                             l = re.split(r"\s+|;+", lines[i])
@@ -891,12 +890,11 @@ def add_shape(
         # regex to get the coords
         coords = re.findall(r"[-+]?\d*\.*\d+", sh.name)
         # coords[0] is the id of the light
-        pos = Vec3(float(coords[1]), float(coords[2]), float(coords[3]))
-        print(coords)
+        pos = Vec3(float(coords[0]), float(coords[1]), float(coords[2]))
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(4000), light_color)
+        scene.addPointLight(pos, watts_to_emission(40000), light_color)
 
-    if emission != Color3(0, 0, 0):
+    elif emission != Color3(0, 0, 0):
         scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
     else:
         scene.addFaceInfos(
@@ -1010,36 +1008,35 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :param scale_factor: The scale factor to get a meter.
     :return:
     """
-    # n_samples = 1
-    n_photons = int(1e7)
+    n_samples = 1
+    n_photons = int(1e11)
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
     final_gathering_depth = 0
     max_depth = 24
 
-    # aspect_ratio = 16.0 / 9.0
+    aspect_ratio = 16.0 / 9.0
     #
-    # image_width = 1024
-    # image_height = int(image_width / aspect_ratio)
+    image_width = 1024
+    image_height = int(image_width / aspect_ratio)
 
-    # image = libphotonmap_core.Image(image_width, image_height)
-    # lookfrom = Vec3(0.5, 0.5, 1.5)
-    # lookat = Vec3(anchor[0], anchor[1], anchor[2])
-    print(anchor[0], anchor[1], anchor[2])
-    # vup = Vec3(0, 0, -1)
-    # vfov = 50.0
-    # dist_to_focus = 3.0
-    # aperture = 0.01
+    image = libphotonmap_core.Image(image_width, image_height)
+    lookfrom = Vec3(0.5, 0.5, 1.5)
+    lookat = Vec3(anchor[0], anchor[1], anchor[2])
+    vup = Vec3(0, 0, -1)
+    vfov = 50.0
+    dist_to_focus = 2.0
+    aperture = 0.01
 
     # coordinates must be in meters
-    # camera = libphotonmap_core.Camera(
-    #     lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
-    # )
+    camera = libphotonmap_core.Camera(
+        lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
+    )
 
     # Setting up spectrum bands
-    spectrum = "whole"
-    spec_file = "chambre1_spectrum"
+    spectrum = "blue"
+    spec_file = "spectrum/chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
     integrals = []
@@ -1116,12 +1113,11 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band3, spec_dict))
         integrals.append(get_integral_of_band(band4, spec_dict))
 
-    nb_exp = 10
+    nb_exp = 1
     integral_idx = 0
     scene = libphotonmap_core.Scene()
     for w in wavelengths:
         captor_energy = {}
-        gc.collect()
         for exp in range(nb_exp):
             start = time.time()
 
@@ -1132,10 +1128,10 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             for sh in sc:
                 add_shape(scene, sh, w, materialsR, materialsT)
             tr2shmap = {}
-            add_lpy_file_to_scene(
-                scene, "rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
-            )
-            addCaptors(scene, captor_dict, "captors_expe1.csv")
+            # add_lpy_file_to_scene(
+            #     scene, "assets/rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
+            # )
+            addCaptors(scene, captor_dict, "captors/captors_expe1.csv")
 
             scene.setupTriangles()
             scene.build()
@@ -1165,7 +1161,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #     camera,
             #     n_photons,
             #     max_depth,
-            #     "photonmap-" + str(w) + "nm.ppm",
+            #     "results/photonmap-" + str(w) + "nm.ppm",
             #     sampler,
             # )
             # image.clear()
@@ -1179,7 +1175,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #     camera,
             #     n_photons,
             #     max_depth,
-            #     "photonmap-captors-" + str(w) + "nm.ppm",
+            #     "results/photonmap-captors-" + str(w) + "nm.ppm",
             #     sampler,
             #     integrator,
             # )
@@ -1193,7 +1189,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             # #     camera,
             # #     n_photons,
             # #     max_depth,
-            # #     "photonmap-cautics.ppm",
+            # #     "results/photonmap-cautics.ppm",
             # #     sampler,
             # #     integrator,
             # # )
@@ -1212,22 +1208,22 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #     camera,
             #     integrator,
             #     scene,
-            #     "output-photonmapping-" + str(w) + "nm.ppm",
+            #     "results/output-photonmapping-" + str(w) + "nm.ppm",
             # )
-            #
+
             # image.clear()
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])
             print("Time taken: " + str(time.time() - start))
             # print("Done!")
-            gc.collect()
         write_captor_energy(captor_energy, w, n_photons, nb_exp)
         integral_idx += 1
 
 
 if __name__ == "__main__":
-    # sc, anchor, scale_factor = read_rad("chambre2.rad", True)
-    sc, anchor, scale_factor = read_rad("testChamber.rad", False)
+    # sc, anchor, scale_factor = read_rad("assets/chambre2.rad", True)
+    sc, anchor, scale_factor = read_rad("assets/testChamber.rad", False)
+    #sc, anchor, scale_factor = read_rad("assets/simple.rad", False)
 
     photonmap_plantglScene(sc, anchor, scale_factor)

@@ -7,7 +7,7 @@
 
 void Render(UniformSampler &sampler, Image &image, const unsigned &height,
 		const unsigned &width, const unsigned &n_samples, Camera &camera,
-            PhotonMapping &integrator, Scene &scene,
+            PhotonMapping &integrator, const Scene &scene,
             const std::string &filename) {
   if (integrator.getPhotonMapGlobal().nPhotons() <= 0)
     return;
@@ -28,7 +28,7 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
 
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           const Vec3f radiance =
               integrator.integrate(ray, scene, sampler) / pdf;
 #ifdef __OUTPUT__

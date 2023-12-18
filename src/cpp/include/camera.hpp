@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "core.hpp"
+#include "scene.hpp"
 
 /**
  * @brief Class representing the camera.
@@ -13,7 +14,7 @@
 class Camera {
 public:
     /**
-     * @brief Constructor
+     * @brief ConstructorScene&
      *
      * Constructor of the Camera class.
      * @param lookfrom the position of the camera.
@@ -50,9 +51,28 @@ public:
      * @param uv the Image pixel coordinates.
      * @param ray The reference for a ray to trace.
      * @param pdf
+     * @return true if the ray intersects with the scene.
+     */
+	bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf, const Scene& scene) const {
+        Vec3f rd = lens_radius * random_in_unit_disk();
+        Vec3f offset = u * rd[0] + v * rd[1];
+        pdf = 1.0f;
+
+        ray = Ray(origin + offset, lower_left_corner + uv[1] * horizontal +
+                                   uv[0] * vertical - origin - offset);
+        IntersectInfo info;
+        return scene.intersect(ray, info); // Check if the ray intersects with the scene
+    }
+
+    /**
+     * @fn bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf) const
+     * @brief Samples a point in the image to render from the camera view point.
+     * @param uv the Image pixel coordinates.
+     * @param ray The reference for a ray to trace.
+     * @param pdf
      * @return true if sampling success.
      */
-    bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf) const {
+	bool sampleRay(const Vec2f &uv, Ray &ray, float &pdf) const {
         Vec3f rd = lens_radius * random_in_unit_disk();
         Vec3f offset = u * rd[0] + v * rd[1];
         pdf = 1.0f;

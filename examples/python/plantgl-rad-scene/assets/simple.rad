@@ -6,7 +6,7 @@
 # Sec2 utilise le formalisme "Radiance" pour la description des scènes:
 # http://paulbourke.net/dataformats/rad/
 #
-
+scale_factor 100
 #
 # On déclare une lumiere blanche qu'on nomme "eclairage"
 #  - Les deux zéros qui commencent la 2ème ligne sont obligatoires,
@@ -18,7 +18,7 @@ void light eclairage
 0
 0
 3
-1. 1. 1.
+1.0 1.0 1.0
 #
 
 #
@@ -29,11 +29,7 @@ void light eclairage
 # NOTE : la sphere est assimilée à 1 point et son rayon n'est pas pris en compte.
 #
 eclairage point lampe
-0
-0
-4
 0 0 1000
-1
 #
 
 #
@@ -46,9 +42,7 @@ void plastic terre
 0
 0
 5
-0.75 0.5 0.25
-0.03
-1.0
+0.75 0.5 0.25 0.03 1.0
 #
 
 #
@@ -57,7 +51,7 @@ void plastic peinture
 0
 0
 5
-1 1 1   0.7   0.5
+1 1 1 0.7 0.5
 #
 
 #
@@ -67,7 +61,7 @@ terre polygon dalle
 0
 0
 12
- 1000.000 1000.000 0.000
+1000.000 1000.000 0.000
 -1000.000 1000.000 0.000
 -1000.000 -1000.000 0.000
 1000.000 -1000.000 0.000
@@ -80,7 +74,7 @@ peinture polygon paroi_X
 0
 0
 12
- -1000.000 500.000 500.000
+-1000.000 500.000 500.000
 -1000.000 -500.000 500.000
 -1000.000 -500.000 0.000
 -1000.000 500.000 0.000
@@ -92,7 +86,7 @@ peinture polygon paroi_y
 0
 0
 12
- 500.000 -1000.000 500.000
+500.000 -1000.000 500.000
 500.000 -1000.000 0.000
 -500.000 -1000.000 0.000
 -500.000 -1000.000 500.000

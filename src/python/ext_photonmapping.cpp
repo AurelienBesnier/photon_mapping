@@ -32,7 +32,7 @@ void visualizePhotonMap(const PhotonMapping &integrator, const Scene &scene,
         const float v = (2.0f * i - height) / height;
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           IntersectInfo info;
           if (scene.intersect(ray, info)) {
             // query photon map
@@ -79,7 +79,7 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image,
         const float v = (2.0f * i - height) / height;
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           IntersectInfo info;
           if (scene.intersect(ray, info)) {
             // query photon map
@@ -127,7 +127,7 @@ void visualizeCausticsPhotonMap(const Scene &scene, Image &image,
         const float v = (2.0f * i - height) / height;
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           IntersectInfo info;
           if (scene.intersect(ray, info)) {
             // query photon map
@@ -158,7 +158,7 @@ void visualizeCausticsPhotonMap(const Scene &scene, Image &image,
 
 void Render(UniformSampler &sampler, Image &image, const unsigned &height,
             unsigned &width, unsigned &n_samples, Camera &camera,
-            PhotonMapping &integrator, Scene &scene,
+            PhotonMapping &integrator, const Scene &scene,
             std::string_view &filename) {
   if (integrator.getPhotonMapGlobal().nPhotons() <= 0)
     return;
@@ -173,13 +173,13 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
       // init sampler
       sampler = UniformSampler(j + width * i);
 
-      for (unsigned k = 0; k < n_samples; ++k) {
+      for (unsigned int k = 0; k < n_samples; ++k) {
         const float u = (2.0f * (j + sampler.getNext1D()) - width) / height;
         const float v = (2.0f * (i + sampler.getNext1D()) - height) / height;
 
         Ray ray;
         float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf)) {
+        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           const Vec3f radiance =
               integrator.integrate(ray, scene, sampler) / pdf;
 #ifdef __OUTPUT__
@@ -194,7 +194,7 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
 #endif
           image.addPixel(i, j, radiance);
         } else {
-          image.setPixel(i, j, Vec3fZero);
+          image.setPixel(i, j, Vec3f(0.4f,0.7f,1.0f));
         }
       }
     }
@@ -276,9 +276,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   // Camera
   py::class_<Camera>(m, "Camera")
       .def(py::init<Vec3<float>, Vec3<float>, Vec3<float>, float, float, float,
-                    float>())
-      .def("sampleRay", &Camera::sampleRay, py::arg("uv"), py::arg("ray"),
-           py::arg("pdf"));
+                    float>());
 
   // Integrator
   // PhotonMapping class
