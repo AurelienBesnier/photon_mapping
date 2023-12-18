@@ -13,7 +13,7 @@ dependencies:
   - cmake
   - tbb
   - tbb-devel
-  - boost=1.83
+  - boost=1.78
   - openmp
   - openalea.lpy
   - scipy
