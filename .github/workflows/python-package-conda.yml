@@ -82,7 +82,7 @@ jobs:
           mingw-w64-x86_64-gcc
 
     - name: Put MSYS2_MinGW64 on PATH
-      run: echo "D:/a/_temp/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "D:/a/_temp/msys64/mingw64/bin" >> $GITHUB_PATH
     - name: build
       run: |
         python3 -m pip install .
