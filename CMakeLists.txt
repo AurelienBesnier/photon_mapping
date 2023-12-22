@@ -49,10 +49,12 @@ if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
 endif()
 
-# Embree4
+# Embree3
 find_package(embree 3.0 REQUIRED)
 if (${embree_FOUND})
   message(STATUS "Found Embree")
+  set("EMBREE_ISA_AVX2" ON)
+  set("EMBREE_ISA_SSE42" ON)
 else()
   message(FATAL_ERROR "Could not find Embree")
 endif()

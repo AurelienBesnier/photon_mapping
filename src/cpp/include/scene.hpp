@@ -741,6 +741,8 @@ public:
 
     RTCIntersectContext context{};
     rtcInitIntersectContext(&context);
+    RTCIntersectContextFlags flags;
+    context.flags = RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT;
 
     rtcIntersect1(scene, &context, &rayhit);
 

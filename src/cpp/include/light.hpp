@@ -12,7 +12,8 @@ enum LightType {
     Area, ///< Area light source
     PointL, ///< Point light source
     SpotL, ///< Spot light source
-    TubeL ///< Tube light source
+    TubeL, ///< Tube light source
+    Directional ///< Directional light source (Sun)
 };
 
 /**

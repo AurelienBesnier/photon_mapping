@@ -892,7 +892,7 @@ def add_shape(
         # coords[0] is the id of the light
         pos = Vec3(float(coords[0]), float(coords[1]), float(coords[2]))
         # print(emission)
-        scene.addPointLight(pos, watts_to_emission(40000), light_color)
+        scene.addPointLight(pos, watts_to_emission(4000), light_color)
 
     elif emission != Color3(0, 0, 0):
         scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
@@ -1009,7 +1009,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     :return:
     """
     n_samples = 1
-    n_photons = int(1e11)
+    n_photons = int(1e9)
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
@@ -1017,7 +1017,6 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     max_depth = 24
 
     aspect_ratio = 16.0 / 9.0
-    #
     image_width = 1024
     image_height = int(image_width / aspect_ratio)
 
@@ -1035,7 +1034,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     )
 
     # Setting up spectrum bands
-    spectrum = "blue"
+    spectrum = "whole"
     spec_file = "spectrum/chambre1_spectrum"
     spec_dict, step, start = read_spectrum_file(spec_file)
     wavelengths = []
