@@ -1,24 +1,34 @@
-import sys
+from datetime import datetime
 import random
+import sys
 
 from photonmap.libphotonmap_core import *
 
-from datetime import datetime
-
 if __name__ == '__main__':
-    width = 512
-    height = 512
-    n_samples = 10
-    n_photons = 10000
+    n_samples = 25
+    n_photons = 100000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
-    final_gathering_depth = 1
+    final_gathering_depth = 4
     max_depth = 100
+    
+    aspect_ratio = 4/3
+    image_width = 1024
+    image_height = int(image_width / aspect_ratio)
+    image = Image(image_width, image_height)
 
-    image = Image(width, height)
+    lookfrom = Vec3(6.1, 2.4, -7)
+    lookat = Vec3(6.6, 2.0, 1.0)
+    vup = Vec3(0, -1, 0)
+    vfov = 25.0
+    dist_to_focus = 5.0
+    aperture = 0.01
 
-    camera = Camera(Vec3(0, 5, -7), Vec3(0.4, -0.4, 1), 0.5 * PI)
+    # coordinates must be in meters
+    camera = Camera(
+        lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
+    )
 
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -38,16 +48,37 @@ if __name__ == '__main__':
 
     sampler = UniformSampler(random.randint(0, sys.maxsize))
 
-    integrator.build(scene, sampler)
+    integrator.build(scene, sampler, True)
     print("Done!")
 
     print("Printing photonmap image...")
-    visualizePhotonMap(scene, image, width, height, camera, n_photons, max_depth, "photonmap.ppm")
+    visualizePhotonMap(
+                integrator,
+                scene,
+                image,
+                image_height,
+                image_width,
+                camera,
+                n_photons,
+                max_depth,
+                "photonmap.ppm",
+                sampler,
+            )
     print("Done!")
 
     print("Rendering image...")
-    image = Image(width, height)
-    Render(sampler, image, height, width, n_samples, camera, integrator, scene, "output-photonmapping.ppm")
+    image = Image(image_width, image_height)
+    Render(
+            sampler,
+            image,
+            image_height,
+            image_width,
+            n_samples,
+            camera,
+            integrator,
+            scene,
+            "output-photonmapping.ppm",
+        )
 
     print("Done!")
     now = datetime.now()
