@@ -44,48 +44,48 @@ jobs:
       run: |
         pytest
 
-  windows:
-    name: ${{ matrix.os }} 
-    runs-on: ${{ matrix.os }}
-    env:
-      CMAKE_GENERATOR: Ninja
-    defaults:
-      run:
-        shell: bash -l {0}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]
-        solver: ["libmamba"]
-      max-parallel: 5
+  #windows:
+    #name: ${{ matrix.os }} 
+    #runs-on: ${{ matrix.os }}
+    #env:
+     # CMAKE_GENERATOR: Ninja
+   # defaults:
+     # run:
+    #    shell: bash -l {0}
+    #strategy:
+      #fail-fast: false
+     # matrix:
+      #  os: [windows-latest]
+       # solver: ["libmamba"]
+      #max-parallel: 5
       
-    environment: anaconda_build
+    #environment: anaconda_build
   
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-        python-version: ${{ matrix.python-version }}
-        environment-file: environment.yml
-        conda-solver: ${{ matrix.solver }}
-        auto-activate-base: false
-    - uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-ninja
-          mingw-w64-x86_64-gcc
+    #steps:
+   # - uses: actions/checkout@v4
+    #- name: Set up Python 3.10
+   #   uses: actions/setup-python@v4
+     # with:
+   #     python-version: '3.10'
+   # - uses: conda-incubator/setup-miniconda@v3
+    #  with:
+     #   auto-update-conda: true
+     #   python-version: ${{ matrix.python-version }}
+      #  environment-file: environment.yml
+     #   conda-solver: ${{ matrix.solver }}
+      #  auto-activate-base: false
+   # - uses: msys2/setup-msys2@v2
+    #  with:
+    #    update: true
+   #     install: >-
+   #       mingw-w64-x86_64-ninja
+    #      mingw-w64-x86_64-gcc
 
-    - name: Put MSYS2_MinGW64 on PATH
-      run: echo "D:/a/_temp/msys64/mingw64/bin" >> $GITHUB_PATH
-    - name: build
-      run: |
-        python3 -m pip install .
-    - name: Test with pytest
-      run: |
-        pytest
+   # - name: Put MSYS2_MinGW64 on PATH
+    #  run: echo "D:/a/_temp/msys64/mingw64/bin" >> $GITHUB_PATH
+    #- name: build
+     # run: |
+      #  python3 -m pip install .
+    #- name: Test with pytest
+     # run: |
+      #  pytest
