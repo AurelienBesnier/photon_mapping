@@ -50,7 +50,7 @@ if(NOT OpenMP_CXX_FOUND)
 endif()
 
 # Embree3
-find_package(embree 3.0 REQUIRED)
+find_package(embree 4.0 REQUIRED)
 if (${embree_FOUND})
   message(STATUS "Found Embree")
   set("EMBREE_ISA_AVX2" ON)

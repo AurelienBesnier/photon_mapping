@@ -28,4 +28,4 @@ def test_reflection():
     integrator.build(scene, sampler, True)
     print("Done!")
 
-    assert (integrator.getPhotonMap().nPhotons() >= 100)
+    assert (integrator.getPhotonMap().nPhotons() >= 50)

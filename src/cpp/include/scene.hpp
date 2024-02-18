@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <embree3/rtcore.h>
+#include <embree4/rtcore.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
@@ -58,7 +58,7 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     return boost::make_shared<Transparent>(kd, material.ior);
   case 9:
     return boost::make_shared<Refltr>(kd, reflectance, transmittance,
-                                          roughness);
+                                      roughness);
   default:
     // lambert
     return boost::make_shared<Lambert>(kd);
@@ -735,16 +735,22 @@ public:
     rayhit.ray.dir_x = ray.direction[0];
     rayhit.ray.dir_y = ray.direction[1];
     rayhit.ray.dir_z = ray.direction[2];
-    rayhit.ray.tnear = Ray::tmin;
-    rayhit.ray.tfar = ray.tmax;
+    rayhit.ray.tnear = 0;
+    rayhit.ray.tfar = std::numeric_limits<float>::infinity();
+    rayhit.ray.mask = -1;
+
+    rayhit.ray.flags = 0;
     rayhit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+    rayhit.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
+    rayhit.hit.instPrimID[0] = RTC_INVALID_GEOMETRY_ID;
 
-    RTCIntersectContext context{};
-    rtcInitIntersectContext(&context);
-    RTCIntersectContextFlags flags;
-    context.flags = RTC_INTERSECT_CONTEXT_FLAG_INCOHERENT;
+    RTCRayQueryContext context;
+    rtcInitRayQueryContext(&context);
+    RTCIntersectArguments args;
+    rtcInitIntersectArguments(&args);
+    args.context = &context;
 
-    rtcIntersect1(scene, &context, &rayhit);
+    rtcIntersect1(scene, &rayhit, &args);
 
     if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
       info.t = rayhit.ray.tfar;

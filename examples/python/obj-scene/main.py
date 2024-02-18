@@ -5,23 +5,23 @@ import sys
 from photonmap.libphotonmap_core import *
 
 if __name__ == '__main__':
-    n_samples = 25
-    n_photons = 100000
+    n_samples = 2
+    n_photons = 1000000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
-    final_gathering_depth = 4
-    max_depth = 100
+    final_gathering_depth = 1
+    max_depth = 24
     
     aspect_ratio = 4/3
-    image_width = 1024
+    image_width = 512
     image_height = int(image_width / aspect_ratio)
     image = Image(image_width, image_height)
 
     lookfrom = Vec3(6.1, 2.4, -7)
     lookat = Vec3(6.6, 2.0, 1.0)
     vup = Vec3(0, -1, 0)
-    vfov = 25.0
+    vfov = 20.0
     dist_to_focus = 5.0
     aperture = 0.01
 
