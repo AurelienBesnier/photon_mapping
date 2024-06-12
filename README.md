@@ -29,8 +29,8 @@ cd examples/python/plantgl-rad-scene
 python planglRadScene.py
 ```
 
-* Le résultat de la simulation se retrouve dans le dossier: ./examples/python/plantgl-rad-scene/results/
-* Les outils pour évaluation le résultat: ./examples/python/plantgl-rad-scene/Evaluation Simulation SEC2/
+* Le résultat de la simulation se retrouve dans le dossier: [https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results](./results/)
+* Les outils pour évaluation le résultat: [https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/Evaluation%20Simulation%20SEC2](.Evaluation Simulation SEC2/)
 
 ![](img/cornellbox-water_pm.png)
 
