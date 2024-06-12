@@ -1,0 +1,1202 @@
+# simulationDate Wed Jun  5 11:33:48 2024
+# actualNbPhotons 999999936
+----------
+Capteur disk  : 
+disque de centre (110,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17894
+----------
+Capteur disk  : 
+disque de centre (210,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18685
+----------
+Capteur disk  : 
+disque de centre (310,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19943
+----------
+Capteur disk  : 
+disque de centre (410,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20671
+----------
+Capteur disk  : 
+disque de centre (510,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22007
+----------
+Capteur disk  : 
+disque de centre (610,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22703
+----------
+Capteur disk  : 
+disque de centre (710,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23615
+----------
+Capteur disk  : 
+disque de centre (810,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24465
+----------
+Capteur disk  : 
+disque de centre (910,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24760
+----------
+Capteur disk  : 
+disque de centre (1010,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25301
+----------
+Capteur disk  : 
+disque de centre (1110,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25746
+----------
+Capteur disk  : 
+disque de centre (1210,930,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25854
+----------
+Capteur disk  : 
+disque de centre (110,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17780
+----------
+Capteur disk  : 
+disque de centre (210,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18941
+----------
+Capteur disk  : 
+disque de centre (310,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19663
+----------
+Capteur disk  : 
+disque de centre (410,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20859
+----------
+Capteur disk  : 
+disque de centre (510,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21868
+----------
+Capteur disk  : 
+disque de centre (610,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23021
+----------
+Capteur disk  : 
+disque de centre (710,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23610
+----------
+Capteur disk  : 
+disque de centre (810,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24523
+----------
+Capteur disk  : 
+disque de centre (910,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24732
+----------
+Capteur disk  : 
+disque de centre (1010,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25667
+----------
+Capteur disk  : 
+disque de centre (1110,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25440
+----------
+Capteur disk  : 
+disque de centre (1210,1030,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25801
+----------
+Capteur disk  : 
+disque de centre (110,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17829
+----------
+Capteur disk  : 
+disque de centre (210,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18763
+----------
+Capteur disk  : 
+disque de centre (310,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19555
+----------
+Capteur disk  : 
+disque de centre (410,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20651
+----------
+Capteur disk  : 
+disque de centre (510,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21657
+----------
+Capteur disk  : 
+disque de centre (610,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22713
+----------
+Capteur disk  : 
+disque de centre (710,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23970
+----------
+Capteur disk  : 
+disque de centre (810,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24362
+----------
+Capteur disk  : 
+disque de centre (910,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24685
+----------
+Capteur disk  : 
+disque de centre (1010,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25317
+----------
+Capteur disk  : 
+disque de centre (1110,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25313
+----------
+Capteur disk  : 
+disque de centre (1210,1130,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25851
+----------
+Capteur disk  : 
+disque de centre (110,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17107
+----------
+Capteur disk  : 
+disque de centre (210,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18611
+----------
+Capteur disk  : 
+disque de centre (310,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19101
+----------
+Capteur disk  : 
+disque de centre (410,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20343
+----------
+Capteur disk  : 
+disque de centre (510,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21356
+----------
+Capteur disk  : 
+disque de centre (610,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22290
+----------
+Capteur disk  : 
+disque de centre (710,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23351
+----------
+Capteur disk  : 
+disque de centre (810,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23970
+----------
+Capteur disk  : 
+disque de centre (910,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24578
+----------
+Capteur disk  : 
+disque de centre (1010,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24542
+----------
+Capteur disk  : 
+disque de centre (1110,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24938
+----------
+Capteur disk  : 
+disque de centre (1210,1230,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25131
+----------
+Capteur disk  : 
+disque de centre (110,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16867
+----------
+Capteur disk  : 
+disque de centre (210,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18447
+----------
+Capteur disk  : 
+disque de centre (310,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19508
+----------
+Capteur disk  : 
+disque de centre (410,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20355
+----------
+Capteur disk  : 
+disque de centre (510,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21265
+----------
+Capteur disk  : 
+disque de centre (610,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22003
+----------
+Capteur disk  : 
+disque de centre (710,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22935
+----------
+Capteur disk  : 
+disque de centre (810,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23684
+----------
+Capteur disk  : 
+disque de centre (910,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24260
+----------
+Capteur disk  : 
+disque de centre (1010,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24781
+----------
+Capteur disk  : 
+disque de centre (1110,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25055
+----------
+Capteur disk  : 
+disque de centre (1210,1330,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25241
+----------
+Capteur disk  : 
+disque de centre (110,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16754
+----------
+Capteur disk  : 
+disque de centre (210,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17938
+----------
+Capteur disk  : 
+disque de centre (310,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18788
+----------
+Capteur disk  : 
+disque de centre (410,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19868
+----------
+Capteur disk  : 
+disque de centre (510,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20817
+----------
+Capteur disk  : 
+disque de centre (610,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21868
+----------
+Capteur disk  : 
+disque de centre (710,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22696
+----------
+Capteur disk  : 
+disque de centre (810,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23103
+----------
+Capteur disk  : 
+disque de centre (910,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23739
+----------
+Capteur disk  : 
+disque de centre (1010,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24216
+----------
+Capteur disk  : 
+disque de centre (1110,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24228
+----------
+Capteur disk  : 
+disque de centre (1210,1430,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24484
+----------
+Capteur disk  : 
+disque de centre (110,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16428
+----------
+Capteur disk  : 
+disque de centre (210,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17406
+----------
+Capteur disk  : 
+disque de centre (310,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18327
+----------
+Capteur disk  : 
+disque de centre (410,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19713
+----------
+Capteur disk  : 
+disque de centre (510,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20856
+----------
+Capteur disk  : 
+disque de centre (610,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21671
+----------
+Capteur disk  : 
+disque de centre (710,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22766
+----------
+Capteur disk  : 
+disque de centre (810,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22948
+----------
+Capteur disk  : 
+disque de centre (910,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23697
+----------
+Capteur disk  : 
+disque de centre (1010,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24101
+----------
+Capteur disk  : 
+disque de centre (1110,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24044
+----------
+Capteur disk  : 
+disque de centre (1210,1530,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23929
+----------
+Capteur disk  : 
+disque de centre (110,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 15540
+----------
+Capteur disk  : 
+disque de centre (210,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16979
+----------
+Capteur disk  : 
+disque de centre (310,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18065
+----------
+Capteur disk  : 
+disque de centre (410,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19009
+----------
+Capteur disk  : 
+disque de centre (510,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20063
+----------
+Capteur disk  : 
+disque de centre (610,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21270
+----------
+Capteur disk  : 
+disque de centre (710,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22113
+----------
+Capteur disk  : 
+disque de centre (810,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22636
+----------
+Capteur disk  : 
+disque de centre (910,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23188
+----------
+Capteur disk  : 
+disque de centre (1010,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23157
+----------
+Capteur disk  : 
+disque de centre (1110,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23620
+----------
+Capteur disk  : 
+disque de centre (1210,1630,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23357
+----------
+Capteur disk  : 
+disque de centre (110,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 15244
+----------
+Capteur disk  : 
+disque de centre (210,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16294
+----------
+Capteur disk  : 
+disque de centre (310,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17511
+----------
+Capteur disk  : 
+disque de centre (410,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18425
+----------
+Capteur disk  : 
+disque de centre (510,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19516
+----------
+Capteur disk  : 
+disque de centre (610,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20426
+----------
+Capteur disk  : 
+disque de centre (710,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21619
+----------
+Capteur disk  : 
+disque de centre (810,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21705
+----------
+Capteur disk  : 
+disque de centre (910,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22285
+----------
+Capteur disk  : 
+disque de centre (1010,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22902
+----------
+Capteur disk  : 
+disque de centre (1110,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22957
+----------
+Capteur disk  : 
+disque de centre (1210,1730,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22699
+----------
+Capteur disk  : 
+disque de centre (110,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 14102
+----------
+Capteur disk  : 
+disque de centre (210,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 15310
+----------
+Capteur disk  : 
+disque de centre (310,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16144
+----------
+Capteur disk  : 
+disque de centre (410,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17002
+----------
+Capteur disk  : 
+disque de centre (510,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18156
+----------
+Capteur disk  : 
+disque de centre (610,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18967
+----------
+Capteur disk  : 
+disque de centre (710,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19893
+----------
+Capteur disk  : 
+disque de centre (810,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20404
+----------
+Capteur disk  : 
+disque de centre (910,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20712
+----------
+Capteur disk  : 
+disque de centre (1010,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21158
+----------
+Capteur disk  : 
+disque de centre (1110,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21527
+----------
+Capteur disk  : 
+disque de centre (1210,1830,1000), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21581
+----------
+Capteur disk  : 
+disque de centre (110,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17849
+----------
+Capteur disk  : 
+disque de centre (210,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19057
+----------
+Capteur disk  : 
+disque de centre (310,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20202
+----------
+Capteur disk  : 
+disque de centre (410,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21921
+----------
+Capteur disk  : 
+disque de centre (510,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23459
+----------
+Capteur disk  : 
+disque de centre (610,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24707
+----------
+Capteur disk  : 
+disque de centre (710,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 26346
+----------
+Capteur disk  : 
+disque de centre (810,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27097
+----------
+Capteur disk  : 
+disque de centre (910,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27306
+----------
+Capteur disk  : 
+disque de centre (1010,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27893
+----------
+Capteur disk  : 
+disque de centre (1110,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27933
+----------
+Capteur disk  : 
+disque de centre (1210,930,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28321
+----------
+Capteur disk  : 
+disque de centre (110,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18274
+----------
+Capteur disk  : 
+disque de centre (210,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19556
+----------
+Capteur disk  : 
+disque de centre (310,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20791
+----------
+Capteur disk  : 
+disque de centre (410,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22136
+----------
+Capteur disk  : 
+disque de centre (510,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23613
+----------
+Capteur disk  : 
+disque de centre (610,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25160
+----------
+Capteur disk  : 
+disque de centre (710,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 26580
+----------
+Capteur disk  : 
+disque de centre (810,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27357
+----------
+Capteur disk  : 
+disque de centre (910,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27861
+----------
+Capteur disk  : 
+disque de centre (1010,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28475
+----------
+Capteur disk  : 
+disque de centre (1110,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28462
+----------
+Capteur disk  : 
+disque de centre (1210,1030,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28097
+----------
+Capteur disk  : 
+disque de centre (110,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18077
+----------
+Capteur disk  : 
+disque de centre (210,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19230
+----------
+Capteur disk  : 
+disque de centre (310,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20867
+----------
+Capteur disk  : 
+disque de centre (410,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 22611
+----------
+Capteur disk  : 
+disque de centre (510,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24744
+----------
+Capteur disk  : 
+disque de centre (610,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 26029
+----------
+Capteur disk  : 
+disque de centre (710,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27645
+----------
+Capteur disk  : 
+disque de centre (810,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28321
+----------
+Capteur disk  : 
+disque de centre (910,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28448
+----------
+Capteur disk  : 
+disque de centre (1010,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29013
+----------
+Capteur disk  : 
+disque de centre (1110,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28935
+----------
+Capteur disk  : 
+disque de centre (1210,1130,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29566
+----------
+Capteur disk  : 
+disque de centre (110,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18165
+----------
+Capteur disk  : 
+disque de centre (210,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20035
+----------
+Capteur disk  : 
+disque de centre (310,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21463
+----------
+Capteur disk  : 
+disque de centre (410,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23289
+----------
+Capteur disk  : 
+disque de centre (510,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25510
+----------
+Capteur disk  : 
+disque de centre (610,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27368
+----------
+Capteur disk  : 
+disque de centre (710,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29597
+----------
+Capteur disk  : 
+disque de centre (810,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29868
+----------
+Capteur disk  : 
+disque de centre (910,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30550
+----------
+Capteur disk  : 
+disque de centre (1010,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30423
+----------
+Capteur disk  : 
+disque de centre (1110,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30334
+----------
+Capteur disk  : 
+disque de centre (1210,1230,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30162
+----------
+Capteur disk  : 
+disque de centre (110,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18124
+----------
+Capteur disk  : 
+disque de centre (210,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19265
+----------
+Capteur disk  : 
+disque de centre (310,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21410
+----------
+Capteur disk  : 
+disque de centre (410,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23588
+----------
+Capteur disk  : 
+disque de centre (510,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 25590
+----------
+Capteur disk  : 
+disque de centre (610,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27922
+----------
+Capteur disk  : 
+disque de centre (710,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29841
+----------
+Capteur disk  : 
+disque de centre (810,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30679
+----------
+Capteur disk  : 
+disque de centre (910,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30960
+----------
+Capteur disk  : 
+disque de centre (1010,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30970
+----------
+Capteur disk  : 
+disque de centre (1110,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30858
+----------
+Capteur disk  : 
+disque de centre (1210,1330,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31243
+----------
+Capteur disk  : 
+disque de centre (110,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17839
+----------
+Capteur disk  : 
+disque de centre (210,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19583
+----------
+Capteur disk  : 
+disque de centre (310,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21698
+----------
+Capteur disk  : 
+disque de centre (410,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23982
+----------
+Capteur disk  : 
+disque de centre (510,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 26705
+----------
+Capteur disk  : 
+disque de centre (610,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29266
+----------
+Capteur disk  : 
+disque de centre (710,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31308
+----------
+Capteur disk  : 
+disque de centre (810,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32404
+----------
+Capteur disk  : 
+disque de centre (910,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32202
+----------
+Capteur disk  : 
+disque de centre (1010,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32218
+----------
+Capteur disk  : 
+disque de centre (1110,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31754
+----------
+Capteur disk  : 
+disque de centre (1210,1430,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31852
+----------
+Capteur disk  : 
+disque de centre (110,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17594
+----------
+Capteur disk  : 
+disque de centre (210,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19349
+----------
+Capteur disk  : 
+disque de centre (310,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21459
+----------
+Capteur disk  : 
+disque de centre (410,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23928
+----------
+Capteur disk  : 
+disque de centre (510,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27406
+----------
+Capteur disk  : 
+disque de centre (610,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30215
+----------
+Capteur disk  : 
+disque de centre (710,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32006
+----------
+Capteur disk  : 
+disque de centre (810,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32628
+----------
+Capteur disk  : 
+disque de centre (910,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32414
+----------
+Capteur disk  : 
+disque de centre (1010,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31754
+----------
+Capteur disk  : 
+disque de centre (1110,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31266
+----------
+Capteur disk  : 
+disque de centre (1210,1530,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31084
+----------
+Capteur disk  : 
+disque de centre (110,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17024
+----------
+Capteur disk  : 
+disque de centre (210,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19306
+----------
+Capteur disk  : 
+disque de centre (310,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21499
+----------
+Capteur disk  : 
+disque de centre (410,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24443
+----------
+Capteur disk  : 
+disque de centre (510,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27690
+----------
+Capteur disk  : 
+disque de centre (610,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30238
+----------
+Capteur disk  : 
+disque de centre (710,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32830
+----------
+Capteur disk  : 
+disque de centre (810,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 33682
+----------
+Capteur disk  : 
+disque de centre (910,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 33109
+----------
+Capteur disk  : 
+disque de centre (1010,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32362
+----------
+Capteur disk  : 
+disque de centre (1110,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31599
+----------
+Capteur disk  : 
+disque de centre (1210,1630,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30635
+----------
+Capteur disk  : 
+disque de centre (110,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 16616
+----------
+Capteur disk  : 
+disque de centre (210,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 18534
+----------
+Capteur disk  : 
+disque de centre (310,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 20672
+----------
+Capteur disk  : 
+disque de centre (410,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 23754
+----------
+Capteur disk  : 
+disque de centre (510,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27151
+----------
+Capteur disk  : 
+disque de centre (610,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29528
+----------
+Capteur disk  : 
+disque de centre (710,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32151
+----------
+Capteur disk  : 
+disque de centre (810,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32718
+----------
+Capteur disk  : 
+disque de centre (910,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 32468
+----------
+Capteur disk  : 
+disque de centre (1010,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 31622
+----------
+Capteur disk  : 
+disque de centre (1110,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30677
+----------
+Capteur disk  : 
+disque de centre (1210,1730,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30019
+----------
+Capteur disk  : 
+disque de centre (110,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 15724
+----------
+Capteur disk  : 
+disque de centre (210,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 17366
+----------
+Capteur disk  : 
+disque de centre (310,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 19752
+----------
+Capteur disk  : 
+disque de centre (410,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 21835
+----------
+Capteur disk  : 
+disque de centre (510,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 24929
+----------
+Capteur disk  : 
+disque de centre (610,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 27601
+----------
+Capteur disk  : 
+disque de centre (710,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29604
+----------
+Capteur disk  : 
+disque de centre (810,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 30522
+----------
+Capteur disk  : 
+disque de centre (910,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29833
+----------
+Capteur disk  : 
+disque de centre (1010,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 29393
+----------
+Capteur disk  : 
+disque de centre (1110,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28513
+----------
+Capteur disk  : 
+disque de centre (1210,1830,1400), de direction (0,0,1),  et de rayon 10
+
+nb particules = 28209

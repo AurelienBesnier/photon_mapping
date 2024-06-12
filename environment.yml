@@ -1,0 +1,18 @@
+name: photonmap
+channels:
+  - conda-forge
+  - openalea3
+dependencies:
+  - python=3.12
+  - pybind11
+  - pytest
+  - embree
+  - make
+  - cxx-compiler
+  - cmake
+  - tbb
+  - tbb-devel
+  - boost
+  - openmp
+  - openalea.lpy
+  - scipy

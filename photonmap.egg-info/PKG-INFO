@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: photonmap
+Version: 0.1.0
+Summary: A photonmapper python wrapper with pybind11
+Home-page: https://github.com/AurelienBesnier/photon_mapping.git
+Author: Aurélien Besnier
+Requires-Python: >=3.9
+License-File: LICENSE
+Provides-Extra: test
+Requires-Dist: pytest; extra == "test"
