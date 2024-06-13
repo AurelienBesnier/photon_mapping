@@ -32,8 +32,12 @@ def read_current_resultat(file: str):
 
 if __name__ == "__main__":
     res_sec2 = read_sec2_resultat("res_sec2/mesures.txt")
-    res_current_1000, res_current_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_ancien.csv")
+    res_current_1000, res_current_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm.csv")
     res_cur = res_current_1000 + res_current_1400
+    
+    res_sec2 = read_sec2_resultat("res_sec2/mesures.txt")
+    res_old_1000, res_old_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_ancien.csv")
+    res_old = res_old_1000 + res_old_1400
 	    
     res_cor_diffuse_1000, res_cor_diffuse_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_correctDiffuse.csv")
     res_cor_diffuse = res_cor_diffuse_1000 + res_cor_diffuse_1400
@@ -44,11 +48,11 @@ if __name__ == "__main__":
     res_cor_captor_dir_1000, res_cor_captor_dir_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_BackfaceCaptor.csv")
     res_cor_captor_dir = res_cor_captor_dir_1000 + res_cor_captor_dir_1400
     
-    res_cor_captor_geo_1000, res_cor_captor_geo_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_correctCaptorGeo.csv")
+    res_cor_captor_geo_1000, res_cor_captor_geo_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm.csv")
     res_cor_captor_geo = res_cor_captor_geo_1000 + res_cor_captor_geo_1400
     
-    res_old_1000, res_old_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_old.csv")
-    res_old = res_old_1000 + res_old_1400
+    res_cor_illum_1000, res_cor_illum_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_correctIllumination.csv")
+    res_cor_illum = res_cor_illum_1000 + res_cor_illum_1400
     
     res_lcg_1000, res_lcg_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_RAND.csv")
     res_lcg = res_lcg_1000 + res_lcg_1400
@@ -63,7 +67,7 @@ if __name__ == "__main__":
     #plt.plot(x, res_sec2, 'r')
     #plt.plot(x, res_cur, 'g')
     #plt.legend(["Resultat SEC2", "Current resultat"])
-    #plt.title("Wavelength 655-665 nm")
+    #plt.title("Wavelength 655-665 nm / Après de modifier la géométrie de captor")
     #plt.ylabel("Nb of photon")
     #plt.xlabel("Index of captor")
     #plt.show()
@@ -73,9 +77,9 @@ if __name__ == "__main__":
     	#np.subtract(res_cor_diffuse, res_sec2),
     	#np.subtract(res_cor_tnear, res_sec2),
     	#np.subtract(res_cor_captor_dir, res_sec2),
-    	#np.subtract(res_cor_captor_geo, res_sec2),
-    	#np.subtract(res_cur, res_sec2)
-    	np.subtract(res_cur, res_sec2)
+    	#np.subtract(res_cor_captor_geo, res_sec2)
+  	np.subtract(res_cor_captor_dir, res_sec2),
+  	np.subtract(res_cor_captor_geo, res_sec2)
     	
     	#PRNG test
     	#np.subtract(res_cur, res_sec2),
@@ -87,11 +91,12 @@ if __name__ == "__main__":
     	# Correct Bug
     	#"Correct Diffuse & Speculaire", 
     	#"Correct Tnear", 
-    	#"Correct Captor Dir", 
+    	#"Correct Back-face Culling", 
     	#"Correct Captor Geo", 
-    	#"Backface Culling"
     	
-    	"Original"
+    	
+    	"Ignorer les faces arrière",
+    	"Modifier la géométrie de capteur"
     	
     	# PRNG test
     	#"PCG", 

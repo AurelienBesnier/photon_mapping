@@ -1209,7 +1209,7 @@ def addCaptors(scene: libphotonmap_core.Scene, scale_factor: int, captor_dict: d
             triangles = VectorUint()
 
             val = 3.14285 / 180
-            deltaAngle = 2
+            deltaAngle = 45
             vertices.append(pos[0])
             vertices.append(pos[1])
             vertices.append(pos[2])
