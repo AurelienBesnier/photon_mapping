@@ -95,6 +95,10 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
   case 7:
     // Transparent
     return boost::make_shared<Transparent>(kd, material.ior);
+  case 8:
+    //Phong for plant
+    return boost::make_shared<PhongPlant>(kd, ks, roughness, transmittance);
+
   case 9:
     return boost::make_shared<Refltr>(kd, reflectance, transmittance,
                                       roughness);
@@ -103,8 +107,6 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     //return boost::make_shared<Lambert>(kd);
     //phong
     return boost::make_shared<Phong>(kd, ks, roughness, transmittance);
-    //blinn phong
-    //return boost::make_shared<BlinnPhong>(kd, ks, roughness, reflectance);
   }
 }
 
@@ -844,7 +846,7 @@ public:
 
     rtcCommitScene(scene);
   }
-
+  
   // int getTriangleID(int geoID, int primID) const {
   //   int triId = 0;
 

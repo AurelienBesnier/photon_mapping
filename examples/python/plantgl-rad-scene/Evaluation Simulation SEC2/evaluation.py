@@ -30,6 +30,16 @@ def read_current_resultat(file: str):
     
     return res_current_1000, res_current_1400
 
+def read_resultat_plant(file: str):
+    id = []
+    photons = []
+    df = pd.read_csv(file)
+    for index, r in df.iterrows():
+        id.append(r[id])
+        photons.append(r[n_photons])
+    
+    return id, photons
+
 if __name__ == "__main__":
     res_sec2 = read_sec2_resultat("res_sec2/mesures.txt")
     res_current_1000, res_current_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm.csv")
@@ -105,10 +115,10 @@ if __name__ == "__main__":
     	#"Xoroshiro"
     ]
     
-    plt.title("La différence entre le résultat de notre moteur et SEC2")
-    plt.ylabel("Nb of photon")
-    plt.boxplot(res_dif, patch_artist=False, labels=labels)
-    plt.show()
+    #plt.title("La différence entre le résultat de notre moteur et SEC2")
+    #plt.ylabel("Nb of photon")
+    #plt.boxplot(res_dif, patch_artist=False, labels=labels)
+    #plt.show()
 
     #x = ["PCG", "LCG", "SplitMix", "Xoroshiro"]
     #y = [288.5, 292.2, 298.1, 291.8]
@@ -118,13 +128,21 @@ if __name__ == "__main__":
     #plt.xlabel("Pseudo random number generator")
     #plt.show()
     
-    #x = [1,2,4,8]
+    x = [1,2,4,8]
     #y = [1298.5, 662.6, 346.4, 263.72]
-    #y = [1442.3, 734.8, 380.4, 286.3]
-    #plt.plot(x, y, '-s')
-    #plt.title("Performance according to number of threads")
-    #plt.ylabel("Times (s)")
-    #plt.xlabel("Number of threads")
+    y = [1442.3, 734.8, 380.4, 286.3]
+    plt.plot(x, y, '-s')
+    plt.title("Performances avec des différents nombre de threads")
+    plt.ylabel("Temps (s)")
+    plt.xlabel("Nombre de threads")
+    plt.show()
+    
+    #x = ["SEC2", "Notre moteur original", "Notre moteur courrant"]
+    #y = [2113, 1264, 286]
+    #plt.bar(x, y)
+    #plt.title("Performance de chaque version de moteur")
+    #plt.ylabel("Temps (s)")
+    #plt.xlabel("Version de moteur")
     #plt.show()
 
     # xls = pd.ExcelFile(r"simuMesureExpes12_tout.xls") # use r before absolute file path 

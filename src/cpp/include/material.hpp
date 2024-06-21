@@ -26,7 +26,8 @@ struct Material {
 enum class BxDFType {
     DIFFUSE, ///< Diffuse surface
     SPECULAR, ///< Specular surface
-    CAPTOR ///< Captor surface
+    CAPTOR, ///< Captor surface
+    PHONGCAPTOR
 };
 
 /**
@@ -173,6 +174,9 @@ public:
         const float cosThetaI = cosTheta(wi);
 
         Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+        }
         
         Vec3f refl = reflect(wo, normal);
         float lobeSpecular = dot(refl, wi);
@@ -196,6 +200,92 @@ public:
         wi = sampleCosineHemisphere(sampler.getNext2D(), pdf);
         
         Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+            wi = wi * (-1);
+        }
+
+        float prob = sampler.getNext1D();   
+        float spec = specular[0];
+        float diff = rho[0];
+        
+        //diffuse
+        if(prob < diff) {
+            return evaluate(wo, wi, transport_dir);
+        
+        //specular
+        } else if(prob < diff + spec) {
+            wi = reflect(wo, normal);
+            pdf = 1.0;
+            return evaluate(wo, wi, transport_dir);
+
+        //transmit
+        } else if(prob < diff + spec + transmittance) {
+            wi = wi * (-1);
+
+            return evaluate(wo, wi, transport_dir);
+        
+        //absorb
+        } else {
+            return Vec3f(0,0,0);
+        }
+    }
+
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        std::vector<DirectionPair> ret;
+        return ret;
+    }
+};
+
+class PhongPlant : public BxDF {
+private:
+    Vec3f rho; //diffuse
+    Vec3f specular; 
+    float roughness;
+    float transmittance;
+    
+public:
+    explicit PhongPlant(const Vec3f &rho, const Vec3f &specular, float roughness, float transmittance) : BxDF(BxDFType::PHONGCAPTOR), 
+        rho(rho), specular(specular), roughness(roughness), transmittance(transmittance) {}
+
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+        }
+        
+        Vec3f refl = reflect(wo, normal);
+        float lobeSpecular = dot(refl, wi);
+        
+        if(lobeSpecular > 0) {
+            lobeSpecular = std::pow(lobeSpecular, roughness);
+        } else {
+            lobeSpecular = 0;
+        }
+
+        
+        return rho * dot(normal, wo) + lobeSpecular * specular;
+    }
+    
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+
+        // cosine weighted hemisphere sampling
+        wi = sampleCosineHemisphere(sampler.getNext2D(), pdf);
+        
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+            wi = wi * (-1);
+        }
 
         float prob = sampler.getNext1D();   
         float spec = specular[0];

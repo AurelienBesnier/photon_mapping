@@ -456,7 +456,8 @@ def addCapteurPgl(sc, scale_factor: int, filename: str):
 
     return Scene([pglScene, sc])
 
-def addModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor):
+def addModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy: dict):
+    max_energy = shenergy[max(shenergy, key=shenergy.get)]
     ctr = 0
     pglScene = Scene()
     for sh in lscene:
@@ -480,9 +481,19 @@ def addModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor):
                             )
 
         idx = mesh.indexList
-        print(idx)
+        
         tmpSh= Shape(TriangleSet(vertices, idx, mesh.normalList))
-        tmpSh.appearance = sh.appearance
+        #tmpSh.appearance = sh.appearance
+
+        cur_sh_energy = 0
+        if sh.id in shenergy:
+            cur_sh_energy = shenergy[sh.id]
+
+        ratio = cur_sh_energy / max_energy
+        r = (int)(255 * ratio) 
+        g = (int)(255 * ratio) 
+        b = (int)(255 * ratio) 
+        tmpSh.appearance = Material(ambient=Color3(r,g,b), diffuse=sh.appearance.diffuse)
 
         pglScene.add(tmpSh)
 
@@ -540,7 +551,11 @@ def addModel(
         specular_b = float(sh.appearance.specular.blue) / 255.0
         specular = Vec3(specular_r, specular_g, specular_b)
         transparency = sh.appearance.transparency
-        illum = 6  # to use the leaf bxdf
+        illum = 8  # to use the leaf bxdf
+
+        refl = (r + g + b) / 3
+        spec = (specular_r + specular_g + specular_b) / 3
+        
 
         sc.addFaceInfos(
             vertices,
@@ -548,12 +563,13 @@ def addModel(
             normals,
             diffuse,
             ambient,
-            specular,
+            spec,
             shininess,
             transparency,
             illum,
+            sh.name,
             1,
-            1 - transparency,
+            refl,
             transparency,
             1.0 - shininess,
         )
@@ -582,11 +598,11 @@ def add_lpy_file_to_scene(
     :return:
     """
     lsystem = Lsystem(filename)
-    lstring = lsystem.derive(lsystem.axiom, t)
-    lscene = lsystem.sceneInterpretation(lstring)
+    #lstring = lsystem.derive(lsystem.axiom, 150)
+    #lscene = lsystem.sceneInterpretation(lstring)
 
     # Adding the model of plant
-    addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
+    #addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
 
 
 def write_captor_energy(energy, w_start, w_end, n_photons, nb_exp):
@@ -641,7 +657,7 @@ def compute_energy(tr2shmap, integrator):
     :param integrator:
     :return:
     """
-    photonmap = integrator.getPhotonMap()
+    photonmap = integrator.getPhotonMapCaptors()
     shenergy = {}
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
@@ -652,19 +668,10 @@ def compute_energy(tr2shmap, integrator):
             else:
                 shenergy[triId] = 1
 
-    if integrator.hasCaustics():
-        cPhotonMap = integrator.getPhotonMapC()
-        for i in range(cPhotonMap.nPhotons()):
-            intersection = cPhotonMap.getIthPhoton(i)
-            triId = tr2shmap.get(intersection.triId)
-            if triId is not None:  # check if the element hit is an element of the plant
-                if triId in shenergy:
-                    shenergy[triId] += 1
-                else:
-                    shenergy[triId] = 1
-
     for k, v in shenergy.items():
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
+    
+    return shenergy
 
 
 def cylinder_vertices(start, end, rayon):
@@ -1209,7 +1216,7 @@ def addCaptors(scene: libphotonmap_core.Scene, scale_factor: int, captor_dict: d
             triangles = VectorUint()
 
             val = 3.14285 / 180
-            deltaAngle = 45
+            deltaAngle = 10
             vertices.append(pos[0])
             vertices.append(pos[1])
             vertices.append(pos[2])
@@ -1381,6 +1388,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     nb_exp = 1
     integral_idx = 0
     scene = libphotonmap_core.Scene()
+
     #for index in range(len(wavelengths)):
     for index in range(1):
         captor_energy = {}
@@ -1394,16 +1402,25 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             for sh in sc:
                 add_shape(scene, sh, wavelengths[index], materialsR, materialsS, materialsT)
             tr2shmap = {}
-            print(scene.nFaces())
+
+            # print(scene.nFaces())
             # add_lpy_file_to_scene(
-            #     scene, "assets/rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
+            #      scene, "assets/rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
             # )
+            
+            # lsystem = Lsystem("assets/rose-simple4.lpy")
+            # lstring = lsystem.derive(lsystem.axiom, 128)
+            # lscene = lsystem.sceneInterpretation(lstring)
+            # # Adding the model of plant
+            # addModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
+            
             addCaptors(scene, scale_factor, captor_dict, "captors/captors_expe1.csv")
-            print(scene.nFaces())
+            #print(scene.nFaces())
             scene.tnear = ray_t_near
             scene.setupTriangles()
             scene.build()
 
+           
             print("Building photonMap...")
             integrator = PhotonMapping(
                 n_photons,
@@ -1413,6 +1430,8 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
                 final_gathering_depth,
                 max_depth,
             )
+
+            
 
             sampler = UniformSampler(random.randint(1, sys.maxsize))
             
@@ -1484,6 +1503,12 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])
+
+            #Plant Energie
+            #captor_energy = compute_energy(tr2shmap, integrator)
+            #sc = addModelPgl(lscene, Tesselator(), sc, anchor, scale_factor, captor_energy)
+            #Viewer.display(sc)
+
             print("Time taken: " + str(time.time() - start))
             # print("Done!")
         write_captor_energy(captor_energy, band_start[index], band_end[index], n_photons, nb_exp)
@@ -1492,21 +1517,23 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
 
 if __name__ == "__main__":
 
-    lsystem = Lsystem( "assets/rose-simple4.lpy")
-    lstring = lsystem.derive(lsystem.axiom, 150)
-    lscene = lsystem.sceneInterpretation(lstring)
+    # lsystem = Lsystem( "assets/rose-simple4.lpy")
+    # lstring = lsystem.derive(lsystem.axiom, 150)
+    # lscene = lsystem.sceneInterpretation(lstring)
 
     # sc, anchor, scale_factor = read_rad("assets/chambre2.rad", True)
     sc, anchor, scale_factor = read_rad("assets/testChamber.rad", False)
     #sc, anchor, scale_factor = read_rad("assets/chamberVide.rad", False)
     #sc, anchor, scale_factor = read_rad("assets/simple.rad", False)
-    
-    photonmap_plantglScene(sc, anchor, scale_factor)
 
-    #sc = addModelPgl(lscene, Tesselator(), sc, anchor, scale_factor)
+    shenergy = photonmap_plantglScene(sc, anchor, scale_factor)
+
+    #sc = addModelPgl(lscene, Tesselator(), sc, anchor, scale_factor, shenergy)
     #sc = addCapteurPgl(sc, scale_factor, "captors/captors_expe1.csv")
     #sc = addLightDirectionPgl(sc, scale_factor)
-    #Viewer.display(sc)
+    
+
+    
 
     
     

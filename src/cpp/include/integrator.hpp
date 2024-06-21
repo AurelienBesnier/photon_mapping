@@ -483,8 +483,9 @@ public:
 								info.hitPrimitive->getBxDFType();
 
 						bool is_captor = (bxdf_type == BxDFType::CAPTOR);
+						bool is_phong_captor = (bxdf_type == BxDFType::PHONGCAPTOR);
 
-						if (is_captor)
+						if (is_captor || is_phong_captor)
 						{
 							//check if rayon contact captor from above
 							float test_ouverture = -dot(info.surfaceInfo.shadingNormal, ray.direction);
