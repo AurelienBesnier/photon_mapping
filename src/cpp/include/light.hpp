@@ -234,11 +234,11 @@ public:
      * @return
      */
     Vec3f sampleDirection(const SurfaceInfo &surfInfo, Sampler &sampler, float &pdf) override {
-        Vec3f dir = sampleCosineHemisphere(sampler.getNext2D(), pdf);
-        Vec3f wo = localToWorld(dir, surfInfo.dpdu, surfInfo.shadingNormal, surfInfo.dpdv);
-
-        // transform direction from local to world
-        return wo;
+        Vec3f dir = sampleSphere(sampler.getNext2D(), pdf);
+        //Vec3f wo = localToWorld(dir, surfInfo.dpdu, surfInfo.shadingNormal, surfInfo.dpdv);
+        pdf = 1;
+        dir = normalize(dir);
+        return dir;
     }
 };
 

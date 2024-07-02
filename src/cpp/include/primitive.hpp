@@ -9,6 +9,7 @@
 #include "light.hpp"
 #include "material.hpp"
 #include "triangle.hpp"
+#include <string>
 
 /**
  * Primitive provides an abstraction layer of the object's shape(triangle),
@@ -20,10 +21,11 @@ public:
     Triangle *triangle; ///< The triangles of the primitive.
     boost::shared_ptr<BxDF> bxdf; ///< A pointer of the bxdf of the primitive.
     boost::shared_ptr<Light> areaLight; ///< a pointer towards the Light source of the primitive (nullptr if not a light)
+    std::string name;
 
-    Primitive(Triangle *triangle, boost::shared_ptr<BxDF> &bxdf,
+    Primitive(Triangle *triangle, boost::shared_ptr<BxDF> &bxdf, std::string name,
               const boost::shared_ptr<Light> &areaLight = nullptr)
-            : triangle(triangle), bxdf(bxdf), areaLight(areaLight) {}
+            : triangle(triangle), bxdf(bxdf), areaLight(areaLight), name(name) {}
 
     /**
      * @brief Gets whether the primitive has an area light or not.

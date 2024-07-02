@@ -1,15 +1,17 @@
 import bisect
 from collections import OrderedDict
 import gc
-from math import cos, sin
+from math import cos, sin, pi
 import os
 import random
 import re
 import sys
 import time
+import pandas as pd
 
-from openalea.plantgl.all import *
+from openalea.plantgl.all import * 
 from scipy.integrate import simpson
+from scipy.spatial import Delaunay
 
 from openalea.lpy import Lsystem
 from photonmap import (
@@ -65,21 +67,25 @@ def correct_energy(shenergy: dict, correction_ratio):
         shenergy[k] = int(v * correction_ratio)
 
 
-def setup_dataset_materials(wavelength: int):
+def setup_dataset_materials(w_start: int, w_end: int):
     """
     Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
     the simulation.
     Parameters
     ----------
-    wavelength: int
-        The wavelength to study.
+    w_start: int
+        The first wavelength of band.
+    w_end: int
+        The last wavelength of band.
 
     Returns
     -------
 
     """
     materialsT = {}
+    materialsS = {}
     materialsR = {}
+
     for element in ("Plant", "Env"):  # Reflectances
         files = []
         dir_pathReflect = (
@@ -94,9 +100,12 @@ def setup_dataset_materials(wavelength: int):
             contentReflect, stepReflect, startReflect = read_spectrum_file(
                 os.path.join(dir_pathReflect, file)
             )
+            
+            refl = get_average_of_props(range(w_start, w_end, 1), contentReflect)
+            
             materialsR[matName] = (
-                float(contentReflect[wavelength])
-                if float(contentReflect[wavelength]) > 0
+                float(refl)
+                if float(refl) > 0
                 else 0.0
             )
 
@@ -114,13 +123,30 @@ def setup_dataset_materials(wavelength: int):
             contentTransmit, stepTransmit, startTransmit = read_spectrum_file(
                 os.path.join(dir_pathTransmit, file)
             )
+
+            trans = get_average_of_props(range(w_start, w_end, 1), contentTransmit)
+            
             materialsT[matName] = (
-                float(contentTransmit[wavelength])
-                if float(contentTransmit[wavelength]) > 0
+                float(trans)
+                if float(trans) > 0
                 else 0.0
             )
 
-    return materialsR, materialsT
+    #Specularities
+    dir_pathSpec = (os.path.dirname(__file__) + "/PO/Specularities.xlsx")
+    contentSpec = (pd.ExcelFile(dir_pathSpec)).parse(0)
+    mat_names = contentSpec["Materiau"]
+    mat_spec = contentSpec["Valeur estimee visuellement"]
+    
+    for i in range(len(mat_spec)):
+        materialsS[mat_names[i]] = (
+            float(mat_spec[i])
+            if float(mat_spec[i]) > 0
+            else 0.0
+        )
+
+
+    return materialsR, materialsS, materialsT
 
 
 def wavelength2Rgb(w: int) -> Vec3:
@@ -198,6 +224,16 @@ def get_average_of_band(band: range, spectrum: dict) -> int:
     return res_key
 
 
+def get_average_of_props(band: range, props: dict) -> float:
+    res = 0.0
+    count = 0
+    for i in band:
+        res += props[i]
+        count += 1
+    
+    res /= count
+    return res
+
 def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     """
     Parse a spectrum file.
@@ -251,6 +287,218 @@ def flatten(lt: list) -> list:
 def denormalize(f: float) -> int:
     return int(255 * f)
 
+def sphericalToCartesian(theta, phi, x_seg, y_seg):
+    theta = theta * pi / 2 / y_seg
+    phi = phi * 2 * pi / x_seg
+    return Vector3(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta))
+
+def crossVector(a, b):
+    res = Vector3(0,0,0)
+    res[0] = a[1] * b[2] - b[1] * a[2]
+    res[1] = - a[0] * b[2] + b[0] * a[2]
+    res[2] = a[0] * b[1] - b[0] * a[1] 
+    return res
+
+def orthonormalBasis(n):
+    t = Vector3(0,0,0)
+    b = Vector3(0,0,0)
+
+    if abs(n[1]) < 0.9:
+        t = crossVector(n, Vector3(0, 1, 0))
+    else:
+        t = crossVector(n, Vector3(0, 0, -1))
+    
+    t.normalize()
+    b = crossVector(t, n)
+    b.normalize()
+
+    return t, b 
+
+def geoHemisphere(centre, normal, rayon):
+    vertices = []
+    triangles = []
+    normals = []
+
+    x_segment = 10
+    y_segment = 5
+   
+    for i in range(y_segment):
+        theta = i * pi / 2 / y_segment
+        for j in range(x_segment):
+            phi = j * 2 * pi / x_segment
+            v1 = sphericalToCartesian(i, j, x_segment, y_segment)
+            v2 = sphericalToCartesian(i, j + 1, x_segment, y_segment)
+            v3 = sphericalToCartesian(i + 1, j, x_segment, y_segment)
+            v4 = sphericalToCartesian(i + 1, j + 1, x_segment, y_segment)
+            #add vert
+            v_count = len(vertices)
+            vertices.append(v1)
+            vertices.append(v2)
+            vertices.append(v3)
+            vertices.append(v4)
+            
+            #add normal:: normals et vertices sont egaux car c'est une sphere unité
+            normals.append(v1)
+            normals.append(v2)
+            normals.append(v3)
+            normals.append(v4)
+
+            #add triangle
+            triangles.append(Index3(v_count, v_count + 1, v_count + 2))
+            triangles.append(Index3(v_count + 1, v_count + 2, v_count + 3))
+
+    #apply transform
+    t, b = orthonormalBasis(normal)
+    for i, v in enumerate(vertices):
+        v_r = Vector3(0,0,0)
+        v_r[0] = v[0] * t[0] + v[1] * normal[0] + v[2] * b[0]
+        v_r[1] = v[0] * t[1] + v[1] * normal[1] + v[2] * b[1]
+        v_r[2] = v[0] * t[2] + v[1] * normal[2] + v[2] * b[2]
+        vertices[i] = rayon * v_r + centre
+
+    return Shape(TriangleSet(vertices, triangles, normals))
+    
+
+def averageVector(listVectors):
+    sum = Vector3(0,0,0)
+    for v in listVectors:
+        sum = sum + v
+    
+    sum = sum / len(listVectors)
+
+    return sum
+
+
+
+
+def addLightDirectionPgl(sc, scale_factor):
+    pglScene = Scene()
+    
+    for sh in sc:
+        vertices = sh.geometry.pointList
+        normals = sh.geometry.normalList
+        if len(vertices) == 4:
+            centre = averageVector(vertices)
+            normal = averageVector(normals)
+            normal.normalize()
+            rayon = 50 * scale_factor
+          
+            sh_dir = geoHemisphere(centre, normal, rayon)
+            sh_dir.appearance.ambient = Color3(1,0,0)
+            
+            pglScene.add(sh_dir)
+
+    return Scene([pglScene, sc])
+
+def addCapteurPgl(sc, scale_factor: int, filename: str):
+    pglScene = Scene()
+
+    with open(filename, "r") as f:
+        next(f)
+        captorId = 0
+        for line in f:
+            row = line.split(",")
+            x = float(row[0])
+            y = float(row[1])
+            z = float(row[2])
+            r = float(row[3])
+            xnorm = float(row[4])
+            ynorm = float(row[5])
+            znorm = float(row[6])
+            pos = [x / scale_factor, y / scale_factor, z / scale_factor]
+            normal = [xnorm, ynorm, znorm]
+            r = r / scale_factor
+            vertices = []
+            normals = []
+            triangles = []
+
+            val = 3.14285 / 180
+            deltaAngle = 45
+
+            vertices.append(Vector3(pos[0], pos[1], pos[2]))
+            normals.append(Vector3(normal[0], normal[1], normal[2]))
+ 
+            triangleCount = 0
+            if znorm == 1:
+                x1 = r * cos(0)
+                y1 = r * sin(0)
+                z1 = 0
+            else:
+                x1 = r * cos(0)
+                y1 = 0
+                z1 = r * sin(0)
+            point1 = [x1 + pos[0], y1 + pos[1], z1 + pos[2]]
+    
+            vertices.append(Vector3(point1[0], point1[1], point1[2]))
+            normals.append(Vector3(normal[0], normal[1], normal[2]))
+            i = 0
+            while i < 359:
+                if znorm == 1:
+                    x2 = r * cos((i + deltaAngle) * val)
+                    y2 = r * sin((i + deltaAngle) * val)
+                    z2 = 0
+                else:
+                    x2 = r * cos((i + deltaAngle) * val)
+                    y2 = 0
+                    z2 = r * sin((i + deltaAngle) * val)
+
+                point2 = [x2 + pos[0], y2 + pos[1], z2 + pos[2]]
+                vertices.append(Vector3(point2[0], point2[1], point2[2]))
+                normals.append(Vector3(normal[0], normal[1], normal[2]))
+                triangles.append( Index3(triangleCount + 1, triangleCount + 2, 0) )
+
+                triangleCount += 1
+                i += deltaAngle
+
+            tmpSh= Shape(TriangleSet(vertices, triangles, normals))
+            tmpSh.appearance.ambient = Color3(1,0,0)
+            pglScene.add(tmpSh)
+
+    return Scene([pglScene, sc])
+
+def addModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy: dict):
+    max_energy = shenergy[max(shenergy, key=shenergy.get)]
+    ctr = 0
+    pglScene = Scene()
+    for sh in lscene:
+        sh.apply(tr)
+        mesh = tr.result
+        mesh.computeNormalList()
+        indexListSize = mesh.indexListSize()
+        vertices = []
+        maxi = 0
+        for i in range(0, indexListSize):
+            index = mesh.indexAt(i)
+            typeF = mesh.faceSize(i)
+            for j in range(0, typeF):
+                if index[j] > maxi:
+                    maxi = index[j]
+        for k in range(0, maxi + 1):
+            mvector = mesh.pointAt(k)
+            vertices.append(Vector3((mvector[0] / (scale_factor / 10) + anchor[0]),
+                            (mvector[1] / (scale_factor / 10) + anchor[1]),
+                            (mvector[2] / (scale_factor / 10) + anchor[2])),
+                            )
+
+        idx = mesh.indexList
+        
+        tmpSh= Shape(TriangleSet(vertices, idx, mesh.normalList))
+        #tmpSh.appearance = sh.appearance
+
+        cur_sh_energy = 0
+        if sh.id in shenergy:
+            cur_sh_energy = shenergy[sh.id]
+
+        ratio = cur_sh_energy / max_energy
+        r = (int)(255 * ratio) 
+        g = (int)(255 * ratio) 
+        b = (int)(255 * ratio) 
+        tmpSh.appearance = Material(ambient=Color3(r,g,b), diffuse=sh.appearance.diffuse)
+
+        pglScene.add(tmpSh)
+
+
+    return Scene([pglScene, sc])
 
 def addModel(
     lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor
@@ -303,7 +551,11 @@ def addModel(
         specular_b = float(sh.appearance.specular.blue) / 255.0
         specular = Vec3(specular_r, specular_g, specular_b)
         transparency = sh.appearance.transparency
-        illum = 6  # to use the leaf bxdf
+        illum = 8  # to use the leaf bxdf
+
+        refl = (r + g + b) / 3
+        spec = (specular_r + specular_g + specular_b) / 3
+        
 
         sc.addFaceInfos(
             vertices,
@@ -311,12 +563,13 @@ def addModel(
             normals,
             diffuse,
             ambient,
-            specular,
+            spec,
             shininess,
             transparency,
             illum,
+            sh.name,
             1,
-            1 - transparency,
+            refl,
             transparency,
             1.0 - shininess,
         )
@@ -345,24 +598,16 @@ def add_lpy_file_to_scene(
     :return:
     """
     lsystem = Lsystem(filename)
-    lstring = lsystem.derive(lsystem.axiom, t)
-    lscene = lsystem.sceneInterpretation(lstring)
+    #lstring = lsystem.derive(lsystem.axiom, 150)
+    #lscene = lsystem.sceneInterpretation(lstring)
 
     # Adding the model of plant
-    addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
+    #addModel(lscene, Tesselator(), tr2shmap, sc, anchor, scale_factor)
 
 
-def write_captor_energy(energy, w, n_photons, nb_exp):
+def write_captor_energy(energy, w_start, w_end, n_photons, nb_exp):
     od = OrderedDict(sorted(energy.items()))
-    band = ""
-    if 500 > w > 400:
-        band = "400-500"
-    elif 600 > w > 500:
-        band = "500-600"
-    elif 700 > w > 600:
-        band = "600-700"
-    elif 800 > w > 700:
-        band = "700-800"
+    band = str(w_start) + "-" + str(w_end)
 
     filename = "results/captor_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
 
@@ -390,10 +635,14 @@ def captor_add_energy(captor_dict, integrator, energy):
     :return:
     """
     photonmap = integrator.getPhotonMapCaptors()
+    print(photonmap.nPhotons())
     print("writing captor energy...")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
         captorId = captor_dict.get(intersection.triId)
+        if captorId is None:
+            print(captorId)
+
         if captorId is not None:  # check if the element hit is a captor
             if captorId in energy:
                 energy[captorId] += 1
@@ -408,7 +657,7 @@ def compute_energy(tr2shmap, integrator):
     :param integrator:
     :return:
     """
-    photonmap = integrator.getPhotonMap()
+    photonmap = integrator.getPhotonMapCaptors()
     shenergy = {}
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
@@ -419,20 +668,30 @@ def compute_energy(tr2shmap, integrator):
             else:
                 shenergy[triId] = 1
 
-    if integrator.hasCaustics():
-        cPhotonMap = integrator.getPhotonMapC()
-        for i in range(cPhotonMap.nPhotons()):
-            intersection = cPhotonMap.getIthPhoton(i)
-            triId = tr2shmap.get(intersection.triId)
-            if triId is not None:  # check if the element hit is an element of the plant
-                if triId in shenergy:
-                    shenergy[triId] += 1
-                else:
-                    shenergy[triId] = 1
-
     for k, v in shenergy.items():
         print("organ n°" + str(k) + " has " + str(v) + " photons on it")
+    
+    return shenergy
 
+
+def cylinder_vertices(start, end, rayon):
+    vert = []
+    direction = end - start
+    direction.normalize()
+    horizontal = crossVector(direction, Vector3(0,0,1))
+    
+    
+    v1 = end + rayon * horizontal
+    v2 = start + rayon * horizontal
+    v3 = start - rayon * horizontal
+    v4 = end - rayon * horizontal
+
+    vert.append((v1[0], v1[1], v1[2]))
+    vert.append((v2[0], v2[1], v2[2]))
+    vert.append((v3[0], v3[1], v3[2]))
+    vert.append((v4[0], v4[1], v4[2]))
+
+    return vert
 
 def read_rad(file: str, invert_normals: bool):
     """
@@ -592,12 +851,15 @@ def read_rad(file: str, invert_normals: bool):
                                     float(l2[1]) / scale_factor,
                                     float(l2[2]) / scale_factor,
                                 )
-                                vert.append((x + r, y + r, z + r))
-                                vert.append((x - r, y - r, z - r))
 
-                                vert.append((x2 + r, y2 + r, z2 + r))
-                                vert.append((x2 - r, y2 - r, z2 - r))
+                                vert = cylinder_vertices(Vector3(x,y,z), Vector3(x2,y2,z2), 0)
+                                # vert.append((x + r, y + r, z + r))
+                                # vert.append((x - r, y - r, z - r))
 
+                                # vert.append((x2 + r, y2 + r, z2 + r))
+                                # vert.append((x2 - r, y2 - r, z2 - r))
+
+                                
                                 shapes[name] = {
                                     "vertices": vert,
                                     "type": type,
@@ -722,19 +984,19 @@ def read_rad(file: str, invert_normals: bool):
                 i = 0
                 indList = []
                 if nbCoords == 9:
-                    ind = Index3(i, i + 2, i + 1)
+                    ind = Index3(i, i + 1, i + 2)
                     indList.append(ind)
-                    ind = Index3(i, i + 3, i + 2)
+                    ind = Index3(i, i + 2, i + 3)
                     indList.append(ind)
-                    ind = Index3(i, i + 4, i + 3)
+                    ind = Index3(i, i + 3, i + 4)
                     indList.append(ind)
-                    ind = Index3(i, i + 5, i + 4)
+                    ind = Index3(i, i + 4, i + 5)
                     indList.append(ind)
-                    ind = Index3(i, i + 6, i + 5)
+                    ind = Index3(i, i + 5, i + 6)
                     indList.append(ind)
-                    ind = Index3(i, i + 7, i + 6)
+                    ind = Index3(i, i + 6, i + 7)
                     indList.append(ind)
-                    ind = Index3(i, i + 8, i + 7)
+                    ind = Index3(i, i + 7, i + 8)
                     indList.append(ind)
                 else:
                     while i < nbCoords:
@@ -781,6 +1043,7 @@ def read_rad(file: str, invert_normals: bool):
                 s.appearance.name = mat["name"]
                 sc.add(s)
             else:
+                #triangulate quad
                 ts = TriangleSet(vert)
                 i = 0
                 indList = []
@@ -794,6 +1057,7 @@ def read_rad(file: str, invert_normals: bool):
                     indList.append(ind)
                     indList.append(ind2)
                     i += 4
+                
                 ts.indexList = Index3Array(indList)
                 ts.computeNormalList()
                 s.geometry = ts
@@ -847,6 +1111,7 @@ def add_shape(
     sh: Shape,
     w: int,
     materialsR: dict,
+    materialsS: dict,
     materialsT: dict,
 ):
     """
@@ -866,21 +1131,26 @@ def add_shape(
         sh.appearance.ambient.green / 255.0,
         sh.appearance.ambient.blue / 255.0,
     )
-    specular = Vec3(
-        sh.appearance.specular.red / 255.0,
-        sh.appearance.specular.green / 255.0,
-        sh.appearance.specular.blue / 255.0,
-    )
     diffuse = ambient
+
+
     material_name = sh.appearance.name
     trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
     refl = 0.0 if materialsR.get(material_name) is None else materialsR[material_name]
-    if specular != Color3(0, 0, 0):
-        illum = 1
+    specular = 0.0 if materialsS.get(material_name) is None else materialsS[material_name]
+
+    #print(material_name, refl, specular, trans)
+    #trans = sh.appearance.transparency
+    #refl = (sh.appearance.ambient.red / 255.0)
+    #specular = (sh.appearance.specular.red / 255.0)
+    
+    #using mat Phong
+    illum = 1
 
     if trans > 0.0:
-        illum = 9
+        #illum = 9
         print("Transparent material: " + material_name)
+
 
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
@@ -895,7 +1165,8 @@ def add_shape(
         scene.addPointLight(pos, watts_to_emission(4000), light_color)
 
     elif emission != Color3(0, 0, 0):
-        scene.addLight(vertices, indices, normals, watts_to_emission(4000), light_color)
+
+        scene.addLight(vertices, indices, normals, 400, light_color, sh.name)
     else:
         scene.addFaceInfos(
             vertices,
@@ -907,14 +1178,15 @@ def add_shape(
             shininess,
             trans,
             illum,
+            sh.name,
             1,
             refl,
             trans,
-            1.0 - shininess,
+            1.0 - shininess
         )
 
 
-def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str):
+def addCaptors(scene: libphotonmap_core.Scene, scale_factor: int, captor_dict: dict, filename: str):
     """
     Adds circular captors to the scene. the captors needs to be in a file
     :param filename:
@@ -927,6 +1199,7 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
         next(f)
         captorId = 0
         for line in f:
+            
             row = line.split(",")
             x = float(row[0])
             y = float(row[1])
@@ -935,15 +1208,15 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
             xnorm = float(row[4])
             ynorm = float(row[5])
             znorm = float(row[6])
-            pos = [x / 1000, y / 1000, z / 1000]
+            pos = [x / scale_factor, y / scale_factor, z / scale_factor]
             normal = [xnorm, ynorm, znorm]
-            r = r / 1000
+            r = r / scale_factor
             vertices = VectorFloat()
             normals = VectorFloat()
             triangles = VectorUint()
 
             val = 3.14285 / 180
-            deltaAngle = 45
+            deltaAngle = 10
             vertices.append(pos[0])
             vertices.append(pos[1])
             vertices.append(pos[2])
@@ -967,7 +1240,7 @@ def addCaptors(scene: libphotonmap_core.Scene, captor_dict: dict, filename: str)
             normals.append(normal[1])
             normals.append(normal[2])
             i = 0
-            while i < 359:
+            while i < 360:
                 if znorm == 1:
                     x2 = r * cos((i + deltaAngle) * val)
                     y2 = r * sin((i + deltaAngle) * val)
@@ -1010,18 +1283,20 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
     """
     n_samples = 1
     n_photons = int(1e9)
+    
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
-    final_gathering_depth = 0
-    max_depth = 24
+    final_gathering_depth = 0 #no caustics effet
+    max_depth = 50
+    ray_t_near = 0.1
 
     aspect_ratio = 16.0 / 9.0
     image_width = 1024
     image_height = int(image_width / aspect_ratio)
 
     image = libphotonmap_core.Image(image_width, image_height)
-    lookfrom = Vec3(0.5, 0.5, 1.5)
+    lookfrom = Vec3(1.5, 1.5, 1.5)
     lookat = Vec3(anchor[0], anchor[1], anchor[2])
     vup = Vec3(0, 0, -1)
     vfov = 50.0
@@ -1089,52 +1364,63 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
         integrals.append(get_integral_of_band(band2, spec_dict))
         integrals.append(get_integral_of_band(band3, spec_dict))
     else:
-        start2 = bisect.bisect_right(list(spec_dict.keys()), 500)
-        start3 = bisect.bisect_right(list(spec_dict.keys()), 600)
-        start4 = bisect.bisect_right(list(spec_dict.keys()), 700)
-        start2 = list(spec_dict.keys())[start2]
-        start3 = list(spec_dict.keys())[start3]
-        start4 = list(spec_dict.keys())[start4]
-        band1 = range(start, 500, step)
-        band2 = range(start2, 600, step)
-        band3 = range(start3, 700, step)
-        band4 = range(start4, 800, step)
+        #setup spectrum
+        band1 = range(401, 445, step)
+        band2 = range(655, 665, step)
+        band3 = range(735, 800, step)
+
         bands.append(band1)
         bands.append(band2)
         bands.append(band3)
-        bands.append(band4)
+
         wavelengths.append(get_average_of_band(band1, spec_dict))
         wavelengths.append(get_average_of_band(band2, spec_dict))
         wavelengths.append(get_average_of_band(band3, spec_dict))
-        wavelengths.append(get_average_of_band(band4, spec_dict))
+
         integrals.append(get_integral_of_band(band1, spec_dict))
         integrals.append(get_integral_of_band(band2, spec_dict))
         integrals.append(get_integral_of_band(band3, spec_dict))
-        integrals.append(get_integral_of_band(band4, spec_dict))
+
+
+    band_start = [400, 655, 735]
+    band_end = [445, 665, 800]
 
     nb_exp = 1
     integral_idx = 0
     scene = libphotonmap_core.Scene()
-    for w in wavelengths:
+
+    #for index in range(len(wavelengths)):
+    for index in range(1):
         captor_energy = {}
         for exp in range(nb_exp):
             start = time.time()
-
-            print("************-Experience nb " + str(exp + 1) + "-************")
-            materialsR, materialsT = setup_dataset_materials(w)
+            index = 1
+            print("************-Experience nb " + str(exp + 1)+ "-************")
+            materialsR, materialsS, materialsT = setup_dataset_materials(band_start[index], band_end[index])
             scene.clear()
             captor_dict = {}
             for sh in sc:
-                add_shape(scene, sh, w, materialsR, materialsT)
+                add_shape(scene, sh, wavelengths[index], materialsR, materialsS, materialsT)
             tr2shmap = {}
-            # add_lpy_file_to_scene(
-            #     scene, "assets/rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
-            # )
-            addCaptors(scene, captor_dict, "captors/captors_expe1.csv")
 
+            # print(scene.nFaces())
+            # add_lpy_file_to_scene(
+            #      scene, "assets/rose-simple4.lpy", 128, tr2shmap, anchor, scale_factor
+            # )
+            
+            # lsystem = Lsystem("assets/rose-simple4.lpy")
+            # lstring = lsystem.derive(lsystem.axiom, 128)
+            # lscene = lsystem.sceneInterpretation(lstring)
+            # # Adding the model of plant
+            # addModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
+            
+            addCaptors(scene, scale_factor, captor_dict, "captors/captors_expe1.csv")
+            #print(scene.nFaces())
+            scene.tnear = ray_t_near
             scene.setupTriangles()
             scene.build()
 
+           
             print("Building photonMap...")
             integrator = PhotonMapping(
                 n_photons,
@@ -1145,8 +1431,10 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
                 max_depth,
             )
 
-            sampler = UniformSampler(random.randint(1, sys.maxsize))
+            
 
+            sampler = UniformSampler(random.randint(1, sys.maxsize))
+            
             # build no kdtree if not rendering
             integrator.build(scene, sampler, False)
             # print("Done!")
@@ -1164,7 +1452,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #     sampler,
             # )
             # image.clear()
-            #
+            
             # print("Printing captor photonmap image...")
             # visualizeCaptorsPhotonMap(
             #     scene,
@@ -1178,6 +1466,7 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             #     sampler,
             #     integrator,
             # )
+            # image.clear()
             #
             # image.clear()
             # # visualizeCausticsPhotonMap(
@@ -1214,15 +1503,43 @@ def photonmap_plantglScene(sc, anchor, scale_factor):
             captor_add_energy(captor_dict, integrator, captor_energy)
             # print("correction ratio: " + str(integrals[integral_idx]))
             # correct_energy(captor_energy, integrals[integral_idx])
+
+            #Plant Energie
+            #captor_energy = compute_energy(tr2shmap, integrator)
+            #sc = addModelPgl(lscene, Tesselator(), sc, anchor, scale_factor, captor_energy)
+            #Viewer.display(sc)
+
             print("Time taken: " + str(time.time() - start))
             # print("Done!")
-        write_captor_energy(captor_energy, w, n_photons, nb_exp)
+        write_captor_energy(captor_energy, band_start[index], band_end[index], n_photons, nb_exp)
         integral_idx += 1
 
 
 if __name__ == "__main__":
+
+    # lsystem = Lsystem( "assets/rose-simple4.lpy")
+    # lstring = lsystem.derive(lsystem.axiom, 150)
+    # lscene = lsystem.sceneInterpretation(lstring)
+
     # sc, anchor, scale_factor = read_rad("assets/chambre2.rad", True)
     sc, anchor, scale_factor = read_rad("assets/testChamber.rad", False)
+    #sc, anchor, scale_factor = read_rad("assets/chamberVide.rad", False)
     #sc, anchor, scale_factor = read_rad("assets/simple.rad", False)
 
-    photonmap_plantglScene(sc, anchor, scale_factor)
+    shenergy = photonmap_plantglScene(sc, anchor, scale_factor)
+
+    #sc = addModelPgl(lscene, Tesselator(), sc, anchor, scale_factor, shenergy)
+    #sc = addCapteurPgl(sc, scale_factor, "captors/captors_expe1.csv")
+    #sc = addLightDirectionPgl(sc, scale_factor)
+    
+
+    
+
+    
+    
+
+
+# command visualiser Environnement PlantGL
+# ipython
+# %gui qt
+# run planglRadScene.py

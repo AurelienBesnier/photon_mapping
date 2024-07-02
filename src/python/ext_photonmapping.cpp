@@ -7,6 +7,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+#include <string>
 
 namespace py = pybind11;
 
@@ -313,7 +314,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
               .def(py::init<float*, uint32_t*, float*, uint32_t>());*/
 
   py::class_<Primitive>(m, "Primitive")
-      .def(py::init<Triangle *, boost::shared_ptr<BxDF> &,
+      .def(py::init<Triangle *, boost::shared_ptr<BxDF> &, std::string &,
                     const boost::shared_ptr<Light> &>())
       .def("hasAreaLight", &Primitive::hasAreaLight)
       .def("Le", &Primitive::Le, py::arg("surfInfo"), py::arg("dir"))
@@ -422,6 +423,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
       .def_readwrite("triangles", &Scene::triangles)
       .def_readwrite("vertices", &Scene::vertices)
       .def_readwrite("normals", &Scene::normals)
+      .def_readwrite("tnear", &Scene::tnear)
       .def("loadModel", &Scene::loadModel,
            "Function to load a model in the scene, must be an .obj file path",
            py::arg("filepath"))
@@ -431,12 +433,12 @@ PYBIND11_MODULE(libphotonmap_core, m) {
       .def("addFaceInfos", &Scene::addFaceInfos, py::arg("vertices"),
            py::arg("indices"), py::arg("normals"), py::arg("colors"),
            py::arg("ambient"), py::arg("specular"), py::arg("shininess"),
-           py::arg("transparency"), py::arg("illum"), py::arg("ior"),
+           py::arg("transparency"), py::arg("illum"), py::arg("mat_name"), py::arg("ior"),
            py::arg("reflectance"), py::arg("transmittance"),
            py::arg("roughness"))
       .def("addLight", &Scene::addLight, py::arg("vertices"),
            py::arg("indices"), py::arg("normals"), py::arg("intensity"),
-           py::arg("color"))
+           py::arg("color"), py::arg("mat_name"))
       .def("addCaptor", &Scene::addCaptor, py::arg("vertices"),
            py::arg("indices"), py::arg("normals"))
       .def("addPointLight", &Scene::addPointLight, py::arg("position"),

@@ -27,6 +27,18 @@ cmake -DCMAKE_BUILD_TYPE=Debug ../
 make -j
 ```
 
+# How to run example:
+
+```bash
+conda activate photonmap
+cd examples/python/plantgl-rad-scene
+python planglRadScene.py
+```
+
+* Le résultat de la simulation se retrouve dans le dossier: [./results/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results)
+* Les outils pour évaluation le résultat: [./Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/Evaluation%20Simulation%20SEC2)
+
+
 ![](img/cornellbox-water_pm.png)
 
 ## Features
@@ -49,7 +61,7 @@ make -j
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
 ## Authors
-This project was originaly developed by yumcyawiz. Main extension were developed by Aurélien Besnier with contribution of J. Bertheloot, F. Boudon, E. Faure.
+This project was originaly developed by yumcyawiz. Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
 This work was funded by INRAe Metaprogramme DIGIT-BIO (Digital biology to explore and predict living organisms in their environment). 
 
 ## Use case 

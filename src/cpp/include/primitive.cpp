@@ -26,7 +26,7 @@ Vec3f Primitive::evaluateBxDF(const Vec3f &wo, Vec3f wi,
 Vec3f Primitive::sampleBxDF(const Vec3f &wo, SurfaceInfo &surfInfo,
                             TransportDirection mode, Sampler &sampler, Vec3f &wi,
                             float &pdf) const {
-// world to local transform
+    // world to local transform
     Vec3f wo_l =
             worldToLocal(wo, surfInfo.dpdu, surfInfo.shadingNormal, surfInfo.dpdv);
 

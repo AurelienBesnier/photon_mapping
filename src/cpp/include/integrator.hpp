@@ -421,22 +421,23 @@ public:
 			return;
 		std::vector<Photon> photons;
 		std::vector<Photon> captorPhotons;
-
+		//omp_set_num_threads(4);
 		// init sampler for each thread
 		std::vector < std::unique_ptr
 				< Sampler >> samplers(omp_get_max_threads());
 		for (int i = 0; i < samplers.size(); ++i) {
 			samplers[i] = sampler.clone();
-			samplers[i]->setSeed(samplers[i]->getSeed() * (i + 1));
+			samplers[i]->setSeed(sampler.getSeed() * (i + 1));
+			
 		}
-
+		int maxDepthPosible = 0;
 // build global photon map
 // photon tracing
 #ifdef __OUTPUT__
         std::cout << "[PhotonMapping] tracing photons to build global photon map"
                   << std::endl;
 #endif
-
+	
 		std::cout << "nb photons per lights: "
 				<< nPhotonsGlobal / scene.lights.size() << std::endl;
 		for (unsigned int l = 0; l < scene.lights.size(); ++l) {
@@ -445,6 +446,7 @@ public:
 		    std::cout << "\033[A\33[2K\r";
 		    std::cout << "Tracing photons from light n° " << l + 1 << "/" << scene.lights.size() << "..."
 		              << std::endl;
+			
 #pragma omp parallel for
 			for (unsigned int i = 0; i < nPhotonsGlobal / scene.lights.size();
 					++i) {
@@ -459,7 +461,8 @@ public:
 				// whenever hitting diffuse surface, add photon to the photon array
 				// recursively tracing photon with russian roulette
 				// TODO: debug nan value
-				for (int k = 0; k < maxDepth; ++k) {
+				int d = 0;
+				for (int k = 0; k < maxDepth; ++k, d++) {
 #ifdef __OUTPUT__
                     if (std::isnan(throughput[0]) || std::isnan(throughput[1]) ||
                         std::isnan(throughput[2])) {
@@ -478,33 +481,38 @@ public:
 					if (scene.intersect(ray, info)) {
 						const BxDFType bxdf_type =
 								info.hitPrimitive->getBxDFType();
+
 						bool is_captor = (bxdf_type == BxDFType::CAPTOR);
-#pragma omp critical
-						if (is_captor)
+						bool is_phong_captor = (bxdf_type == BxDFType::PHONGCAPTOR);
+
+						if (is_captor || is_phong_captor)
 						{
-							Photon p(throughput, info.surfaceInfo.position,
+							//check if rayon contact captor from above
+							float test_ouverture = -dot(info.surfaceInfo.shadingNormal, ray.direction);
+							if(test_ouverture > 0.0001) 
+#pragma omp critical
+							{
+								Photon p(throughput, info.surfaceInfo.position,
 									-ray.direction,
 									info.hitPrimitive->triangle[0].faceID);
-							captorPhotons.emplace_back(p);
+
+								captorPhotons.emplace_back(p);
+							}
 						}
-						else if (bxdf_type == BxDFType::DIFFUSE && forRendering) {
+						else if (bxdf_type == BxDFType::DIFFUSE && forRendering) 
+#pragma omp critical
+						{
 							// TODO: remove lock to get more speed
 							Photon p(throughput, info.surfaceInfo.position,
 									-ray.direction,
 									info.hitPrimitive->triangle[0].faceID);
 							photons.emplace_back(p);
 						}
-						// russian roulette
-						if (k > 0) {
-							const float russian_roulette_prob = std::min(
-									std::max(throughput[0],
-											std::max(throughput[1],
-													throughput[2])), 1.0f);
-							if (sampler_per_thread.getNext1D()
-									>= russian_roulette_prob) {
-								break;
-							}
-							throughput /= russian_roulette_prob;
+
+						if(is_captor) {
+							k--;
+							ray = Ray(info.surfaceInfo.position, ray.direction);
+							continue;
 						}
 
 						// sample direction by BxDF
@@ -515,23 +523,29 @@ public:
 								TransportDirection::FROM_LIGHT,
 								sampler_per_thread, dir, pdf_dir);
 
+						if(length(f) == 0) {
+							break;
+						}
+
 						// update throughput and ray
-						if (!is_captor)
-							throughput *= f
-									* cosTerm(-ray.direction, dir,
-											info.surfaceInfo,
-											TransportDirection::FROM_LIGHT)
-									/ pdf_dir;
-						ray = Ray(info.surfaceInfo.position, dir);
+						throughput *= f / pdf_dir;
+						ray = Ray(info.surfaceInfo.position, normalize(dir));
 
 					} else {
 						// photon goes to the sky
 						break;
 					}
 				}
+
+				if(d > maxDepthPosible) {
+					maxDepthPosible = d;
+				}
 			}
+
+
 		}
 
+		std::cout << "Max depth possible: " << maxDepthPosible  << std::endl;
 // build photon map
 #ifdef __OUTPUT__
         std::cout << "[PhotonMapping] building global photon map" << std::endl;
@@ -654,6 +668,7 @@ public:
 							ray = Ray(info.surfaceInfo.position, dir);
 						} else {
 							// photon goes to the sky
+							
 							break;
 						}
 					}

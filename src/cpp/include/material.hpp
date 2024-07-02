@@ -2,7 +2,7 @@
 #define MATERIAL_H
 
 #include <memory>
-
+#include <cmath>
 #include "core.hpp"
 #include "sampler.hpp"
 
@@ -26,7 +26,8 @@ struct Material {
 enum class BxDFType {
     DIFFUSE, ///< Diffuse surface
     SPECULAR, ///< Specular surface
-    CAPTOR ///< Captor surface
+    CAPTOR, ///< Captor surface
+    PHONGCAPTOR
 };
 
 /**
@@ -132,6 +133,7 @@ public:
         // when wo, wi is under the surface, return 0
         const float cosThetaO = cosTheta(wo);
         const float cosThetaI = cosTheta(wi);
+
         if (cosThetaO < 0 || cosThetaI < 0) return {0};
 
         return rho / PI;
@@ -145,6 +147,170 @@ public:
         wi = sampleCosineHemisphere(sampler.getNext2D(), pdf);
 
         return evaluate(wo, wi, transport_dir);
+    }
+
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        std::vector<DirectionPair> ret;
+        return ret;
+    }
+};
+
+class Phong : public BxDF {
+private:
+    Vec3f rho; //diffuse
+    Vec3f specular;
+    float roughness;
+    float transmittance;
+
+public:
+    explicit Phong(const Vec3f &rho, const Vec3f &specular, float roughness, float transmittance) : BxDF(BxDFType::DIFFUSE),
+        rho(rho), specular(specular), roughness(roughness), transmittance(transmittance) {}
+
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+        }
+
+        Vec3f refl = reflect(wo, normal);
+        float lobeSpecular = dot(refl, wi);
+
+        if(lobeSpecular > 0) {
+            lobeSpecular = std::pow(lobeSpecular, roughness);
+        } else {
+            lobeSpecular = 0;
+        }
+
+
+        return rho * dot(normal, wo) + lobeSpecular * specular;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+
+        // cosine weighted hemisphere sampling
+        wi = sampleCosineHemisphere(sampler.getNext2D(), pdf);
+
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+            wi = wi * (-1);
+        }
+
+        float prob = sampler.getNext1D();
+        float spec = specular[0];
+        float diff = rho[0];
+
+        //diffuse
+        if(prob < diff) {
+            return evaluate(wo, wi, transport_dir);
+
+        //specular
+        } else if(prob < diff + spec) {
+            wi = reflect(wo, normal);
+            pdf = 1.0;
+            return evaluate(wo, wi, transport_dir);
+
+        //transmit
+        } else if(prob < diff + spec + transmittance) {
+            wi = wi * (-1);
+
+            return evaluate(wo, wi, transport_dir);
+
+        //absorb
+        } else {
+            return Vec3f(0,0,0);
+        }
+    }
+
+    std::vector<DirectionPair> sampleAllDirection(
+            Vec3f &wo, TransportDirection &transport_dir) const override {
+        std::vector<DirectionPair> ret;
+        return ret;
+    }
+};
+
+class PhongPlant : public BxDF {
+private:
+    Vec3f rho; //diffuse
+    Vec3f specular;
+    float roughness;
+    float transmittance;
+
+public:
+    explicit PhongPlant(const Vec3f &rho, const Vec3f &specular, float roughness, float transmittance) : BxDF(BxDFType::PHONGCAPTOR),
+        rho(rho), specular(specular), roughness(roughness), transmittance(transmittance) {}
+
+    Vec3f evaluate(Vec3f &wo, Vec3f &wi,
+                   TransportDirection &transport_dir) const override {
+        // when wo, wi is under the surface, return 0
+        const float cosThetaO = cosTheta(wo);
+        const float cosThetaI = cosTheta(wi);
+
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+        }
+
+        Vec3f refl = reflect(wo, normal);
+        float lobeSpecular = dot(refl, wi);
+
+        if(lobeSpecular > 0) {
+            lobeSpecular = std::pow(lobeSpecular, roughness);
+        } else {
+            lobeSpecular = 0;
+        }
+
+
+        return rho * dot(normal, wo) + lobeSpecular * specular;
+    }
+
+    Vec3f sampleDirection(Vec3f &wo,
+                          TransportDirection &transport_dir,
+                          Sampler &sampler, Vec3f &wi,
+                          float &pdf) const override {
+
+        // cosine weighted hemisphere sampling
+        wi = sampleCosineHemisphere(sampler.getNext2D(), pdf);
+
+        Vec3f normal = Vec3f(0,1,0);
+        if(cosTheta(wo) < 0) {
+            normal = normal * (-1);
+            wi = wi * (-1);
+        }
+
+        float prob = sampler.getNext1D();
+        float spec = specular[0];
+        float diff = rho[0];
+
+        //diffuse
+        if(prob < diff) {
+            return evaluate(wo, wi, transport_dir);
+
+        //specular
+        } else if(prob < diff + spec) {
+            wi = reflect(wo, normal);
+            pdf = 1.0;
+            return evaluate(wo, wi, transport_dir);
+
+        //transmit
+        } else if(prob < diff + spec + transmittance) {
+            wi = wi * (-1);
+
+            return evaluate(wo, wi, transport_dir);
+
+        //absorb
+        } else {
+            return Vec3f(0,0,0);
+        }
     }
 
     std::vector<DirectionPair> sampleAllDirection(
@@ -317,86 +483,13 @@ public:
                           Sampler &sampler, Vec3f &wi,
                           float &pdf) const override {
         // set appropriate ior, normal
-        float iorO, iorI;
-        Vec3f n;
-        if (wo[1] > 0) {
-            iorO = 1.0f;
-            iorI = ior;
-            n = Vec3f(0, 1, 0);
-        } else {
-            iorO = ior;
-            iorI = 1.0f;
-            n = Vec3f(0, -1, 0);
-        }
-
-        // fresnel reflectance
-        const float fr = fresnelR(dot(wo, n), iorO, iorI);
-
-        // reflection
-        if (sampler.getNext1D() < fr) {
-            wi = reflect(wo, n);
-            pdf = 1.0f;
-            return rho / absCosTheta(wi);
-        }
-            // refraction
-        else {
-            Vec3f tr;
-            if (refract(wo, n, iorO, iorI, tr)) {
-                wi = tr;
-                pdf = 1.0f;
-
-                float scaling = 1.0f;
-                if (transport_dir == TransportDirection::FROM_CAMERA) {
-                    scaling = (iorO * iorO) / (iorI * iorI);
-                }
-
-                return scaling * rho / absCosTheta(wi);
-            }
-                // total reflection
-            else {
-                wi = reflect(wo, n);
-                pdf = 1.0f;
-                return rho / absCosTheta(wi);
-            }
-        }
+        wi = -wo;
+        return 0;
     }
 
     std::vector<DirectionPair> sampleAllDirection(
             Vec3f &wo, TransportDirection &transport_dir) const override {
         std::vector<DirectionPair> ret;
-
-        // set appropriate ior, normal
-        float iorO, iorI;
-        Vec3f n;
-        if (wo[1] > 0) {
-            iorO = 1.0f;
-            iorI = ior;
-            n = Vec3f(0, 1, 0);
-        } else {
-            iorO = ior;
-            iorI = 1.0f;
-            n = Vec3f(0, -1, 0);
-        }
-
-        // fresnel reflectance
-        const float fr = fresnelR(dot(wo, n), iorO, iorI);
-
-        // reflection
-        const Vec3f wr = reflect(wo, n);
-        ret.emplace_back(wr, fr * rho / absCosTheta(wr));
-
-        // refraction
-        Vec3f tr;
-        if (refract(wo, n, iorO, iorI, tr)) {
-            float scaling = 1.0f;
-            if (transport_dir == TransportDirection::FROM_CAMERA) {
-                scaling = (iorO * iorO) / (iorI * iorI);
-            }
-
-            ret.emplace_back(tr, (1.0f - fr) * scaling * rho / absCosTheta(tr));
-        } else {
-            ret[0].second = rho / absCosTheta(wr);
-        }
         return ret;
     }
 };
@@ -543,6 +636,7 @@ public:
             n = Vec3f(0, -1, 0);
         }
 
+
         // reflection
         if (sampler.getNext1D() < reflectance) {
             wi = reflect(wo, n);
@@ -615,6 +709,7 @@ public:
 
         // fresnel reflectance
         const float fr = fresnelR(dot(wo, n), iorO, iorI);
+
 
         // reflection
         if (sampler.getNext1D() < fr) {

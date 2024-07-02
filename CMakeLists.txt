@@ -6,6 +6,8 @@ include_directories("${CMAKE_SOURCE_DIR}/src/cpp/include/")
 option(BUILD_TESTS "build c++ tests" ON)
 option(BUILD_CXX_EXAMPLE "build c++ example" ON)
 set(CMAKE_IGNORE_PATH "/usr/local")
+
+
 # --- Build setup
 
 find_package(TBB CONFIG REQUIRED)

@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <embree4/rtcore.h>
-
+#include <string>
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
@@ -13,11 +13,47 @@
 #include "core.hpp"
 #include "primitive.hpp"
 
+
+
+void intersectionFilter(const RTCFilterFunctionNArguments* args)
+{
+  if (args->context == nullptr) return;
+
+  assert(args->N == 1);
+  int* valid = args->valid;
+  
+  if (valid[0] != -1) return;
+  
+  RTCRay* ray = (RTCRay*)args->ray;
+  RTCHit* hit = (RTCHit*)args->hit;
+
+  //back culling
+  Vec3f normal(hit->Ng_x, hit->Ng_y, hit->Ng_z);
+  Vec3f direction(ray->dir_x, ray->dir_y, ray->dir_z);
+  float denominateur = dot(normalize(direction), normalize(normal));
+  
+  //test front face
+  if(denominateur >= 0.00001){
+    valid[0] = 0;
+  }
+  
+  //test bound UV
+  if(hit->u < 0 || hit->u > 1) {
+    valid[0] = 0;
+  }
+
+  if(hit->v < 0 || ( hit->v + hit->u ) > 1) {
+    valid[0] = 0;
+  }
+
+}
+
 /**
  * @brief Creates a default Lambert BxDF.
  * @return a pointer towards this bxdf.
  */
 boost::shared_ptr<BxDF> createDefaultBxDF() {
+  
   return boost::make_shared<Lambert>(Vec3f(0.9f));
 }
 
@@ -33,14 +69,17 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
                                    float reflectance = 0.0f,
                                    float transmittance = 0.0f,
                                    float roughness = 0.5f) {
+  
+  //calculate diffuse and specular with reflectance
   const Vec3f kd =
-      Vec3f(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+      Vec3f(1 - material.specular[0], 1 - material.specular[1], 1 - material.specular[2]) * reflectance;
   const Vec3f ks =
-      Vec3f(material.specular[0], material.specular[1], material.specular[2]);
+      Vec3f(material.specular[0], material.specular[1], material.specular[2]) * reflectance;
 
   if (material.illum == 2 && (ks == Vec3fZero)) {
     material.illum = 1;
   }
+
 
   switch (material.illum) {
   case 2:
@@ -56,12 +95,18 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
   case 7:
     // Transparent
     return boost::make_shared<Transparent>(kd, material.ior);
+  case 8:
+    //Phong for plant
+    return boost::make_shared<PhongPlant>(kd, ks, roughness, transmittance);
+
   case 9:
     return boost::make_shared<Refltr>(kd, reflectance, transmittance,
                                       roughness);
   default:
     // lambert
-    return boost::make_shared<Lambert>(kd);
+    //return boost::make_shared<Lambert>(kd);
+    //phong
+    return boost::make_shared<Phong>(kd, ks, roughness, transmittance);
   }
 }
 
@@ -126,6 +171,53 @@ boost::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri,
   }
 }
 
+// class SceneGeometry {
+//   public:
+//     std::vector<float> vertices;   ///< The vertices of the scene.
+//     std::vector<uint32_t> indices; ///< The indices of the scene.
+//     std::vector<float> normals;    ///< The normals of the scene.
+
+//     SceneGeometry(std::vector<float> _vertices, std::vector<uint32_t> _indices, std::vector<float> _normals){
+//       vertices = _vertices;
+//       indices = _indices;
+//       normals = _normals;
+//     }
+
+ 
+//     uint32_t nVertices() const { return vertices.size() / 3; }
+
+
+//     uint32_t nFaces() const { return indices.size() / 3; }
+
+//     void populateGeo(RTCScene scene, RTCDevice device) {
+//       RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
+//       int nb_vertex = nVertices();
+//       int nb_faces = nFaces();
+
+//       // set vertices
+//       float *vb = (float *)rtcSetNewGeometryBuffer(
+//           geom, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT3, 3 * sizeof(float),
+//           nb_vertex);
+//       for (size_t i = 0; i < vertices.size(); ++i) {
+//         vb[i] = vertices[i];
+//       }
+
+//       // set indices
+//       uint32_t *ib = (uint32_t *)rtcSetNewGeometryBuffer(
+//           geom, RTC_BUFFER_TYPE_INDEX, 0, RTC_FORMAT_UINT3, 3 * sizeof(uint32_t),
+//           nb_faces);
+//       for (size_t i = 0; i < indices.size(); ++i) {
+//         ib[i] = indices[i];
+//       }
+
+
+//       //rtcSetGeometryIntersectFilterFunction(geom, &intersectionFilter);
+//       rtcCommitGeometry(geom);
+//       rtcAttachGeometry(scene, geom);
+//       rtcReleaseGeometry(geom);
+//     }
+// };
+
 /**
  * Class reprensenting a 3D scene.
  * @class Scene
@@ -164,7 +256,8 @@ public:
       lights; ///< The lights of the scene per face.
 
   std::vector<Primitive> primitives; ///< The primitives of the scene per face.
-
+  //std::vector<SceneGeometry> geos;
+  float tnear = 0.1;
   /**
    * @brief Constructor
    */
@@ -178,6 +271,7 @@ public:
     rtcReleaseScene(scene);
     rtcReleaseDevice(device);
   }
+
 
   /**
    * @fn void clear()
@@ -208,6 +302,8 @@ public:
     this->normals.insert(std::end(this->normals), std::begin(normals),
                          std::end(normals));
 
+
+
     // populate materials
     for (size_t faceID = nFaces() - (indices.size() / 3); faceID < nFaces();
          ++faceID) {
@@ -229,7 +325,7 @@ public:
       m.dissolve = 1.0f - mat.transparency;
       m.ior = mat.ior;
       if (mat.transparency > 0)
-        m.illum = 7;
+        m.illum = 1;
       else
         m.illum = mat.illum;
       this->materials.emplace_back(m);
@@ -271,10 +367,14 @@ public:
    */
   void addFaceInfos(std::vector<float> &vertices,
                     std::vector<uint32_t> &indices, std::vector<float> &normals,
-                    Vec3f &colors, Vec3f &ambient, Vec3f &specular,
-                    float &shininess, float &transparency, int &illum,
+                    Vec3f &colors, Vec3f &ambient, float &specular,
+                    float &shininess, float &transparency, int &illum , std::string &mat_name,
                     float ior = 0.0f, float reflectance = 0.0f,
                     float transmittance = 0.0f, float roughness = 0.0f) {
+
+    // SceneGeometry envGeo(vertices, indices, normals);
+    // this->geos.emplace_back(envGeo);
+    
     for (uint32_t &i : indices) {
       i += nVertices();
     }
@@ -291,6 +391,7 @@ public:
          ++faceID) {
       tinyobj::material_t m;
 
+      m.name = mat_name;
       m.diffuse[0] = colors[0];
       m.diffuse[1] = colors[1];
       m.diffuse[2] = colors[2];
@@ -300,14 +401,14 @@ public:
       m.emission[0] = 0.00;
       m.emission[1] = 0.00;
       m.emission[2] = 0.00;
-      m.specular[0] = specular[0];
-      m.specular[1] = specular[1];
-      m.specular[2] = specular[2];
+      m.specular[0] = specular;
+      m.specular[1] = specular;
+      m.specular[2] = specular;
       m.shininess = shininess;
       m.dissolve = 1 - transparency;
       m.ior = ior;
       if (transparency > 0)
-        m.illum = 7;
+        m.illum = 1;
       else
         m.illum = illum;
       this->materials.emplace_back(m);
@@ -346,16 +447,20 @@ public:
       boost::shared_ptr<Light> light = nullptr;
       const auto material = this->materials[faceID];
       // std::cout << "material check" << std::endl;
+      std::string sh_name = "";
       if (material) {
+        
         tinyobj::material_t m = material.value();
+        sh_name = m.name;
         light = createAreaLight(m, &this->triangles[faceID]);
         if (light != nullptr) {
           lights.push_back(light);
         }
       }
+
       // add primitive
       // std::cout << "Adding primitives" << std::endl;
-      primitives.emplace_back(&this->triangles[faceID], this->bxdfs[faceID],
+      primitives.emplace_back(&this->triangles[faceID], this->bxdfs[faceID], sh_name,
                               light);
     }
     // std::cout << "Triangles setup! " << std::endl;
@@ -379,7 +484,11 @@ public:
    */
   void addLight(std::vector<float> newVertices,
                 std::vector<uint32_t> newIndices, std::vector<float> newNormals,
-                float intensity, Vec3f color) {
+                float intensity, Vec3f color, std::string mat_name) {
+
+    // SceneGeometry lightGeo(newVertices, newIndices, newNormals);
+    // this->geos.emplace_back(lightGeo);
+                  
     for (uint32_t &i : newIndices) {
       i += nVertices();
     }
@@ -395,6 +504,7 @@ public:
          ++faceID) {
       tinyobj::material_t m;
 
+      m.name = mat_name;
       m.diffuse[0] = color[0];
       m.diffuse[1] = color[1];
       m.diffuse[2] = color[2];
@@ -434,6 +544,10 @@ public:
   void addCaptor(std::vector<float> newVertices,
                  std::vector<uint32_t> newIndices,
                  std::vector<float> newNormals) {
+    
+    // SceneGeometry captorGeo(newVertices, newIndices, newNormals);
+    // this->geos.emplace_back(captorGeo);
+    
     for (uint32_t &i : newIndices) {
       i += nVertices();
     }
@@ -443,6 +557,8 @@ public:
                          std::end(newIndices));
     this->normals.insert(std::end(this->normals), std::begin(newNormals),
                          std::end(newNormals));
+    
+    
     for (size_t faceID = nFaces() - (newIndices.size() / 3); faceID < nFaces();
          ++faceID) {
 
@@ -650,8 +766,10 @@ public:
       // add light
       boost::shared_ptr<Light> light = nullptr;
       const auto material = this->materials[faceID];
+      std::string sh_name = "";
       if (material) {
         tinyobj::material_t m = material.value();
+        sh_name = m.name;
         light = createAreaLight(m, &this->triangles[faceID]);
         if (light != nullptr) {
           lights.push_back(light);
@@ -659,7 +777,7 @@ public:
       }
 
       // add primitive
-      primitives.emplace_back(&this->triangles[faceID], this->bxdfs[faceID],
+      primitives.emplace_back(&this->triangles[faceID], this->bxdfs[faceID], sh_name,
                               light);
     }
   }
@@ -694,6 +812,7 @@ public:
     scene = rtcNewScene(device);
 
     rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_MEDIUM);
+    //rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_HIGH);
     rtcSetSceneFlags(scene, RTC_SCENE_FLAG_ROBUST);
 
     RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
@@ -714,11 +833,30 @@ public:
       ib[i] = indices[i];
     }
 
+
+    rtcSetGeometryIntersectFilterFunction(geom, &intersectionFilter);
+
     rtcCommitGeometry(geom);
     rtcAttachGeometry(scene, geom);
     rtcReleaseGeometry(geom);
+
+    // for(size_t i = 0; i < geos.size(); i++) {
+    //   geos[i].populateGeo(scene, device);
+    // }
+
     rtcCommitScene(scene);
   }
+  
+  // int getTriangleID(int geoID, int primID) const {
+  //   int triId = 0;
+
+  //   for(size_t i = 0; i < geoID; i++) {
+  //     triId += geos[i].nFaces();
+  //   }
+  //   triId += primID;
+
+  //   return triId;
+  // }
 
   /**
    * @fn bool intersect(const Ray &ray, IntersectInfo &info) const
@@ -735,7 +873,7 @@ public:
     rayhit.ray.dir_x = ray.direction[0];
     rayhit.ray.dir_y = ray.direction[1];
     rayhit.ray.dir_z = ray.direction[2];
-    rayhit.ray.tnear = 0;
+    rayhit.ray.tnear = this->tnear; //err
     rayhit.ray.tfar = std::numeric_limits<float>::infinity();
     rayhit.ray.mask = -1;
 
@@ -755,8 +893,10 @@ public:
     if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
       info.t = rayhit.ray.tfar;
 
+      int triId = rayhit.hit.primID;
+      
       // get triangle shape
-      const Triangle &tri = this->triangles[rayhit.hit.primID];
+      const Triangle &tri = this->triangles[triId];
 
       // set surface info
       info.surfaceInfo.position = ray(info.t);
@@ -764,11 +904,12 @@ public:
       info.surfaceInfo.geometricNormal = tri.getGeometricNormal();
       info.surfaceInfo.shadingNormal =
           tri.computeShadingNormal(info.surfaceInfo.barycentric);
+          
       orthonormalBasis(info.surfaceInfo.shadingNormal, info.surfaceInfo.dpdu,
-                       info.surfaceInfo.dpdv);
-
+                        info.surfaceInfo.dpdv);
+ 
       // set primitive
-      info.hitPrimitive = &this->primitives[rayhit.hit.primID];
+      info.hitPrimitive = &this->primitives[triId];
 
       return true;
     } else {

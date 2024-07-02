@@ -1,0 +1,5 @@
+1 Thread = 1298.5s
+2 Thread = 662.6s
+4 Thread = 346.4s
+8 Thread = 263.72s
+

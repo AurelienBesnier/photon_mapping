@@ -288,6 +288,7 @@ inline Vec3f worldToLocal(const Vec3f &v, const Vec3f &lx, const Vec3f &ly,
     return {dot(v, lx), dot(v, ly), dot(v, lz)};
 }
 
+
 // transform direction from local to world
 inline Vec3f localToWorld(Vec3f v, Vec3f lx, Vec3f ly, Vec3f lz) {
     Vec3f ret;
@@ -306,6 +307,9 @@ inline Vec3f sphericalToCartesian(float theta, float phi) {
 static boost::random::mt19937 gen(std::chrono::system_clock::now().time_since_epoch().count());
 
 inline float randomInterval(float min, float max) {
+    if(min == max) {
+        return max;
+    }
     boost::random::uniform_real_distribution<float> dist(min, max);
 
     return dist(gen);

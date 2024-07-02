@@ -1,6 +1,6 @@
 #include "photon_map.hpp"
 #include <algorithm>
-#include<boost/sort/sort.hpp>
+#include <boost/sort/sort.hpp>
 
 template<typename T>
 void KdTree<T>::buildTree() {
