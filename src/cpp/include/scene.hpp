@@ -808,7 +808,7 @@ public:
 #endif
 
     // setup embree
-    device = rtcNewDevice(nullptr);
+    device = rtcNewDevice("hugepages=1");
     scene = rtcNewScene(device);
 
     rtcSetSceneBuildQuality(scene, RTC_BUILD_QUALITY_MEDIUM);

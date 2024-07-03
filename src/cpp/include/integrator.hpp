@@ -463,19 +463,21 @@ public:
 				// TODO: debug nan value
 				int d = 0;
 				for (int k = 0; k < maxDepth; ++k, d++) {
-#ifdef __OUTPUT__
                     if (std::isnan(throughput[0]) || std::isnan(throughput[1]) ||
                         std::isnan(throughput[2])) {
+#ifdef __OUTPUT__
                         std::cerr << "[PhotonMapping] photon throughput is NaN"
                                   << std::endl;
+#endif
                         break;
                     } else if (throughput[0] < 0 || throughput[1] < 0 ||
                                throughput[2] < 0) {
+#ifdef __OUTPUT__
                         std::cerr << "[PhotonMapping] photon throughput is minus"
                                   << std::endl;
+#endif
                         break;
                     }
-#endif
 
 					IntersectInfo info;
 					if (scene.intersect(ray, info)) {
@@ -685,14 +687,18 @@ public:
 		}
 
 		if (!captorPhotons.empty()) {
+#ifdef __OUTPUT__
 			std::cout << "building captor photonmap..." << std::endl;
+#endif
 			captorPhotonMap.setPhotons(captorPhotons);
 			if (forRendering)
 				captorPhotonMap.build();
 
+#ifdef __OUTPUT__
 			std::cout << "Number of photons on captor elements: "
 					<< captorPhotonMap.nPhotons() << std::endl;
 			std::cout << "Done!" << std::endl;
+#endif
 		}
 	}
 
