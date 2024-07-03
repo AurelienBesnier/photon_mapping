@@ -69,7 +69,7 @@ This project is used in the coupling of [MorphoNet](https://morphonet.org) and [
 
 ## References
 
-original git: ![https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
+original git: [https://github.com/yumcyaWiz/photon_mapping](https://github.com/yumcyaWiz/photon_mapping)
 
 * Jensen, Henrik Wann. Realistic image synthesis using photon mapping. AK Peters/crc Press, 2001.
 * https://pbr-book.org/3ed-2018/Light_Transport_III_Bidirectional_Methods/Stochastic_Progressive_Photon_Mapping# 
