@@ -109,53 +109,6 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image,
   image.writePPM(filename.data());
 }
 
-void visualizeCausticsPhotonMap(const Scene &scene, Image &image,
-                                const unsigned &height, const unsigned &width,
-                                const Camera &camera, const unsigned &n_photons,
-                                const unsigned &max_depth,
-                                const std::string_view &filename,
-                                UniformSampler &sampler,
-                                const PhotonMapping &integrator) {
-
-  // visualize photon map
-  const PhotonMap &photon_map = integrator.getPhotonMapCaustics();
-
-  if (photon_map.nPhotons() > 0)
-#pragma omp parallel for collapse(2) schedule(dynamic, 1)
-    for (unsigned int i = 0; i < height; ++i) {
-      for (unsigned int j = 0; j < width; ++j) {
-        const float u = (2.0f * j - width) / height;
-        const float v = (2.0f * i - height) / height;
-        Ray ray;
-        float pdf;
-        if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
-          IntersectInfo info;
-          if (scene.intersect(ray, info)) {
-            // query photon map
-            float r2;
-            const std::vector<int> photon_indices =
-                photon_map.queryKNearestPhotons(info.surfaceInfo.position, 1,
-                                                r2);
-            const int photon_idx = photon_indices[0];
-
-            // if distance to the photon is small enough, write photon's
-            // throughput to the image
-            if (r2 < 0.001f) {
-              const Photon &photon = photon_map.getIthPhoton(photon_idx);
-              image.setPixel(i, j, photon.throughput);
-            }
-          } else {
-            image.setPixel(i, j, Vec3fZero);
-          }
-        } else {
-          image.setPixel(i, j, Vec3fZero);
-        }
-      }
-    }
-
-  image.gammaCorrection(2.2f);
-  image.writePPM(filename.data());
-}
 
 void Render(UniformSampler &sampler, Image &image, const unsigned &height,
             unsigned &width, unsigned &n_samples, Camera &camera,
@@ -282,20 +235,15 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   // Integrator
   // PhotonMapping class
   py::class_<PhotonMapping>(m, "PhotonMapping")
-      .def(py::init<unsigned long long, int, float, int, int, int>())
+      .def(py::init<unsigned long long, int, int, int, int>())
       .def("build", &PhotonMapping::build, py::arg("scene"), py::arg("sampler"), py::arg("forRendering") = true)
       .def("integrate", &PhotonMapping::integrate, py::arg("ray_in"),
            py::arg("scene"), py::arg("sampler"))
       .def("getPhotonMap", &PhotonMapping::getPhotonMapGlobal,
            "Returns the photon map", py::return_value_policy::reference)
-      .def("getPhotonMapC", &PhotonMapping::getPhotonMapCaustics,
-           "Returns the caustics photon map",
-           py::return_value_policy::reference)
       .def("getPhotonMapCaptors", &PhotonMapping::getPhotonMapCaptors,
-           "Returns the captor photon map", py::return_value_policy::reference)
-      .def("hasCaustics", &PhotonMapping::hasCaustics,
-           "True if the final gathering depth is superior to 0");
-
+           "Returns the captor photon map", py::return_value_policy::reference);
+           
   // Lights
   py::enum_<LightType>(m, "LightType")
       .value("Area", Area)
@@ -446,7 +394,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
       .def("addSpotLight", &Scene::addSpotLight, py::arg("position"),
            py::arg("intensity"), py::arg("color"), py::arg("direction"),
            py::arg("angle"))
-      .def("build", &Scene::build)
+      .def("build", &Scene::build, py::arg("back_face_culling"))
       .def("getTriangles", &Scene::getTriangles,
            "Returns an array with the triangles of the scene")
       .def("intersect", &Scene::intersect, py::arg("ray"), py::arg("info"))
@@ -486,12 +434,6 @@ PYBIND11_MODULE(libphotonmap_core, m) {
         py::arg("sampler"));
 
   m.def("visualizeCaptorsPhotonMap", &visualizeCaptorsPhotonMap,
-        "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
-        py::arg("image"), py::arg("width"), py::arg("height"),
-        py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
-        py::arg("filename"), py::arg("sampler"), py::arg("integrator"));
-
-  m.def("visualizeCausticsPhotonMap", &visualizeCausticsPhotonMap,
         "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
         py::arg("image"), py::arg("width"), py::arg("height"),
         py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),

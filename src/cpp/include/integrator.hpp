@@ -58,20 +58,15 @@ private:
 	// number of photons used for radiance estimation by global photon map
 	const unsigned int nEstimationGlobal;
 
-	// number of photons for making caustics photon map
-	const unsigned long long nPhotonsCaustics;
-
-	// number of photons used for radiance estimation by caustics photon map
-	const unsigned int nEstimationCaustics;
-
 	// maximum depth to estimate radiance by final gathering
 	const unsigned int finalGatheringDepth;
 
 	// maximum depth of photon tracing, eye tracing
 	const unsigned int maxDepth;
 
+	const unsigned int nbThreads;
+
 	PhotonMap globalPhotonMap;
-	PhotonMap causticsPhotonMap;
 	PhotonMap captorPhotonMap;
 
 	// compute reflected radiance with global photon map
@@ -93,30 +88,6 @@ private:
 		if (!photon_indices.empty()) {
 			Lo /= (nPhotonsGlobal * PI * max_dist2);
 		}
-		return Lo;
-	}
-
-	// compute reflected radiance with caustics photon map
-	Vec3f computeCausticsWithPhotonMap(const Vec3f &wo,
-			IntersectInfo &info) const {
-		// get nearby photons
-		float max_dist2;
-		const std::vector<int> photon_indices =
-				causticsPhotonMap.queryKNearestPhotons(
-						info.surfaceInfo.position, nEstimationGlobal,
-						max_dist2);
-
-		Vec3f Lo;
-		for (const int photon_idx : photon_indices) {
-			const Photon &photon = causticsPhotonMap.getIthPhoton(photon_idx);
-			const Vec3f f = info.hitPrimitive->evaluateBxDF(wo, photon.wi,
-					info.surfaceInfo, TransportDirection::FROM_CAMERA);
-			Lo += f * photon.throughput;
-		}
-		if (!photon_indices.empty()) {
-			Lo /= (nPhotonsCaustics * PI * max_dist2);
-		}
-
 		return Lo;
 	}
 
@@ -284,15 +255,11 @@ private:
 					const Vec3f Ld = computeDirectIllumination(scene,
 							-ray.direction, info, sampler);
 
-					// compute caustics illumination with caustics photon map
-					const Vec3f Lc = computeCausticsWithPhotonMap(
-							-ray.direction, info);
-
 					// compute indirect illumination with final gathering
 					const Vec3f Li = computeIndirectIllumination(scene,
 							-ray.direction, info, sampler);
 
-					return (Ld + Lc + Li);
+					return (Ld + Li);
 				}
 			}
 			// if hitting specular surface, generate next ray and continue
@@ -360,21 +327,16 @@ public:
 	 * @brief Parameterized Constructor
 	 * @param nPhotonsGlobal
 	 * @param nEstimationGlobal
-	 * @param nPhotonsCausticsMultiplier
-	 * @param nEstimationCaustics
 	 * @param strictCalcDepth
 	 * @param maxDepth
 	 */
 	PhotonMapping(const unsigned long long &nPhotonsGlobal,
 			const int &nEstimationGlobal,
-			const float &nPhotonsCausticsMultiplier,
-			const int &nEstimationCaustics, const int &strictCalcDepth,
-			const int &maxDepth) :
+			const int &strictCalcDepth,
+			const int &maxDepth, const int &nbThreads) :
 			nPhotonsGlobal(nPhotonsGlobal), nEstimationGlobal(
-					nEstimationGlobal), nPhotonsCaustics(
-					nPhotonsGlobal * nPhotonsCausticsMultiplier), nEstimationCaustics(
-					nEstimationCaustics), finalGatheringDepth(strictCalcDepth), maxDepth(
-					maxDepth) {
+					nEstimationGlobal), finalGatheringDepth(strictCalcDepth), maxDepth(
+					maxDepth), nbThreads(nbThreads) {
 	}
 
 	const PhotonMap& getPhotonMapGlobal() const {
@@ -391,25 +353,6 @@ public:
 	}
 
 	/**
-	 * @fn bool hasCaustics() const
-	 * @brief Get whether the integrator has a caustic photonmap.
-	 * @return True if the integrator has a cautic photonmap
-	 */
-	bool hasCaustics() const {
-		return finalGatheringDepth > 0;
-	}
-
-	/**
-	 * @fn const PhotonMap &getPhotonMapCaustics() const
-	 * @brief Get the caustic photon map
-	 * @return The reference of the caustic photonmap
-	 */
-	const PhotonMap& getPhotonMapCaustics() const {
-		return causticsPhotonMap;
-	}
-
-
-	/**
 	 * @fn void build(const Scene &scene, Sampler &sampler) override.
 	 * @brief Trace the photons an build the photon maps.
 	 * @param scene the scene to photonmap.
@@ -421,7 +364,14 @@ public:
 			return;
 		std::vector<Photon> photons;
 		std::vector<Photon> captorPhotons;
-		//omp_set_num_threads(4);
+		int maxThreads = omp_get_max_threads();
+		if(nbThreads < maxThreads){
+			omp_set_num_threads(nbThreads);
+			std::cout << "Current number of threads is " << nbThreads << std::endl;
+		} else {
+			std::cout << "Maximum number of threads is " << maxThreads << std::endl;
+		}
+		
 		// init sampler for each thread
 		std::vector < std::unique_ptr
 				< Sampler >> samplers(omp_get_max_threads());
@@ -556,132 +506,6 @@ public:
 			globalPhotonMap.build();
 			std::cout << "Number of photons in the global photonmap: "
 					<< globalPhotonMap.nPhotons() << std::endl;
-		}
-
-		// build caustics photon map
-		if (finalGatheringDepth > 0) {
-			photons.clear();
-			// photon tracing
-#ifdef __OUTPUT__
-            std::cout
-                    << "[PhotonMapping] tracing photons to build caustics photon map"
-                    << std::endl;
-#endif
-
-			std::cout << "nb photons per lights (caustics): "
-					<< nPhotonsCaustics / scene.lights.size() << std::endl;
-			for (unsigned int l = 0; l < scene.lights.size(); ++l) {
-#pragma omp parallel for
-				for (unsigned int i = 0; i < nPhotonsCaustics; ++i) {
-					Sampler &sampler_per_thread =
-							*samplers[omp_get_thread_num()];
-
-					// sample initial ray from light and set initial throughput
-					Vec3f throughput;
-					Ray ray = sampleRayFromLight(scene, sampler_per_thread,
-							throughput, l);
-
-					// when hitting diffuse surface after specular, add photon to the
-					// photon array
-					bool prev_specular = false;
-					for (unsigned int k = 0; k < maxDepth; ++k) {
-#ifdef __OUTPUT__
-                        if (std::isnan(throughput[0]) || std::isnan(throughput[1]) ||
-                            std::isnan(throughput[2])) {
-                            std::cout << "[PhotonMapping] photon throughput is NaN"
-                                      << std::endl;
-                            break;
-                        } else if (throughput[0] < 0 || throughput[1] < 0 ||
-                                   throughput[2] < 0) {
-                            std::cout << "[PhotonMapping] photon throughput is minus"
-                                      << std::endl;
-                            break;
-                        }
-#endif
-
-						IntersectInfo info;
-						if (scene.intersect(ray, info)) {
-							const BxDFType bxdf_type =
-									info.hitPrimitive->getBxDFType();
-
-							// break when hitting diffuse surface without previous specular
-							if (!prev_specular
-									&& bxdf_type == BxDFType::DIFFUSE) {
-								break;
-							}
-
-							// add photon when hitting diffuse surface after specular
-							if (prev_specular
-									&& bxdf_type == BxDFType::DIFFUSE && forRendering) {
-								// TODO: remove lock to get more speed
-#pragma omp critical
-								{
-									Photon p(throughput,
-											info.surfaceInfo.position,
-											-ray.direction,
-											info.hitPrimitive->triangle[0].faceID);
-									photons.emplace_back(p);
-								}
-								break;
-
-							} else if (bxdf_type == BxDFType::CAPTOR) {
-#pragma omp critical
-								{
-									Photon p(throughput,
-											info.surfaceInfo.position,
-											-ray.direction,
-											info.hitPrimitive->triangle[0].faceID);
-									captorPhotons.emplace_back(p);
-								}
-								break;
-							}
-
-							prev_specular = (bxdf_type == BxDFType::SPECULAR);
-
-							// russian roulette
-							if (k > 0) {
-								const float russian_roulette_prob = std::min(
-										std::max(throughput[0],
-												std::max(throughput[1],
-														throughput[2])), 1.0f);
-								if (sampler_per_thread.getNext1D()
-										>= russian_roulette_prob) {
-									break;
-								}
-								throughput /= russian_roulette_prob;
-							}
-
-							// sample direction by BxDF
-							Vec3f dir;
-							float pdf_dir;
-							const Vec3f f = info.hitPrimitive->sampleBxDF(
-									-ray.direction, info.surfaceInfo,
-									TransportDirection::FROM_LIGHT,
-									sampler_per_thread, dir, pdf_dir);
-
-							// update throughput and ray
-							throughput *= f
-									* cosTerm(-ray.direction, dir,
-											info.surfaceInfo,
-											TransportDirection::FROM_LIGHT)
-									/ pdf_dir;
-							ray = Ray(info.surfaceInfo.position, dir);
-						} else {
-							// photon goes to the sky
-							
-							break;
-						}
-					}
-				}
-			}
-#ifdef __OUTPUT__
-            std::cout << "[PhotonMapping] building caustics photon map" << std::endl;
-#endif
-		}
-
-		if (forRendering){
-			causticsPhotonMap.setPhotons(photons);
-			causticsPhotonMap.build();
 		}
 
 		if (!captorPhotons.empty()) {

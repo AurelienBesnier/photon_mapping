@@ -73,14 +73,14 @@ if __name__ == "__main__":
     res_splitmix_1000, res_splitmix_1400 = read_current_resultat("res_final/captor_result-1000000000-655-665-nm_SplitMix.csv")
     res_splitmix = res_splitmix_1000 + res_splitmix_1400
     
-    #x = range(0, len(res_sec2))
-    #plt.plot(x, res_sec2, 'r')
+    x = range(0, len(res_sec2))
+    plt.plot(x, res_sec2, 'r')
     #plt.plot(x, res_cur, 'g')
-    #plt.legend(["Resultat SEC2", "Current resultat"])
-    #plt.title("Wavelength 655-665 nm / Après de modifier la géométrie de captor")
-    #plt.ylabel("Nb of photon")
-    #plt.xlabel("Index of captor")
-    #plt.show()
+    plt.legend(["Resultat SEC2", "Current resultat"])
+    plt.title("Wavelength 655-665 nm")
+    plt.ylabel("Nb of photon")
+    plt.xlabel("Index of captor")
+    plt.show()
     
     res_dif = [
     	# Correct Bug
@@ -128,14 +128,14 @@ if __name__ == "__main__":
     #plt.xlabel("Pseudo random number generator")
     #plt.show()
     
-    x = [1,2,4,8]
+    #x = [1,2,4,8]
     #y = [1298.5, 662.6, 346.4, 263.72]
-    y = [1442.3, 734.8, 380.4, 286.3]
-    plt.plot(x, y, '-s')
-    plt.title("Performances avec des différents nombre de threads")
-    plt.ylabel("Temps (s)")
-    plt.xlabel("Nombre de threads")
-    plt.show()
+    #y = [1442.3, 734.8, 380.4, 286.3]
+    #plt.plot(x, y, '-s')
+    #plt.title("Performances avec des différents nombre de threads")
+    #plt.ylabel("Temps (s)")
+    #plt.xlabel("Nombre de threads")
+    #plt.show()
     
     #x = ["SEC2", "Notre moteur original", "Notre moteur courrant"]
     #y = [2113, 1264, 286]
