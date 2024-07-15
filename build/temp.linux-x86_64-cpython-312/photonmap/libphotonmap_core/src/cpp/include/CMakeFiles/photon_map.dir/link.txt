@@ -1,2 +1,0 @@
-/home/tmnguyen/anaconda3/envs/photonmap/bin/x86_64-conda-linux-gnu-ar qc libphoton_map.a CMakeFiles/photon_map.dir/photon_map.cpp.o
-/home/tmnguyen/anaconda3/envs/photonmap/bin/x86_64-conda-linux-gnu-ranlib libphoton_map.a

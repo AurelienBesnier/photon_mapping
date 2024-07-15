@@ -1,4 +1,4 @@
-from modules.Simulator import *
+from photonmap.Simulator import *
 
 if __name__ == "__main__":
 

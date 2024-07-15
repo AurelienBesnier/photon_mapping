@@ -1,2 +1,0 @@
-/home/tmnguyen/anaconda3/envs/photonmap/bin/x86_64-conda-linux-gnu-ar qc libimage.a CMakeFiles/image.dir/image.cpp.o
-/home/tmnguyen/anaconda3/envs/photonmap/bin/x86_64-conda-linux-gnu-ranlib libimage.a

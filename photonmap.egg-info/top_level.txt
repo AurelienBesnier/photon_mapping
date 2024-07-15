@@ -1,2 +1,0 @@
-photonmap
-photonmap/libphotonmap_core
