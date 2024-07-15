@@ -30,7 +30,7 @@ python planglRadScene.py
 ```
 
 * Le résultat de la simulation se retrouve dans le dossier: [./results/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results)
-* Les outils pour évaluation le résultat: [./Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/Evaluation%20Simulation%20SEC2)
+* Les outils pour évaluation le résultat: [.examples/python/Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/Evaluation%20Simulation%20SEC2)
 
 ![](img/cornellbox-water_pm.png)
 
