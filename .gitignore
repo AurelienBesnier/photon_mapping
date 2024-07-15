@@ -1,0 +1,5 @@
+# ignore ALL files in egg-info directory
+*.egg-info/
+
+# ignore ALL files in Build directory
+build/
