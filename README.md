@@ -54,7 +54,7 @@ python planglRadScene.py
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
 ## Authors
-This project was originaly developed by yumcyawiz. Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, T. Arsouze, E. Faure. 
+This project was originaly developed by [Yumcyawiz](https://github.com/yumcyaWiz/). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, T. Arsouze, E. Faure. 
 
 ## Use case 
 This project is used in the coupling of [MorphoNet](https://morphonet.org) and [L-Py](https://github.com/openalea/lpy) for the project Physioscope.
