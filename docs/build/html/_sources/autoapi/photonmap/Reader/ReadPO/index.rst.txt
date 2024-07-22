@@ -1,0 +1,40 @@
+:py:mod:`photonmap.Reader.ReadPO`
+=================================
+
+.. py:module:: photonmap.Reader.ReadPO
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Reader.ReadPO.setup_dataset_materials
+   photonmap.Reader.ReadPO.get_average_of_props_optic
+
+
+
+.. py:function:: setup_dataset_materials(w_start: int, w_end: int, po_dir: str)
+
+   Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
+   the simulation.
+
+   Parameters
+   ----------
+   w_start: int
+       The first wavelength of band.
+   w_end: int
+       The last wavelength of band.
+
+   Returns
+   -------
+
+
+
+.. py:function:: get_average_of_props_optic(band: range, props: dict) -> float
+
+

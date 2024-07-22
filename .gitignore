@@ -7,5 +7,10 @@ build/
 __pycache__/
 
 # Ignore doc source
+!docs/
+
 docs/*
-!docs/build/html/*
+!docs/build/
+
+docs/build/*
+!docs/build/html/

@@ -1,0 +1,42 @@
+:py:mod:`photonmap.Common.Math`
+===============================
+
+.. py:module:: photonmap.Common.Math
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Common.Math.denormalize
+   photonmap.Common.Math.sphericalToCartesian
+   photonmap.Common.Math.crossVector
+   photonmap.Common.Math.orthonormalBasis
+   photonmap.Common.Math.geoHemisphere
+   photonmap.Common.Math.averageVector
+
+
+
+.. py:function:: denormalize(f: float) -> int
+
+
+.. py:function:: sphericalToCartesian(theta, phi, x_seg, y_seg)
+
+
+.. py:function:: crossVector(a, b)
+
+
+.. py:function:: orthonormalBasis(n)
+
+
+.. py:function:: geoHemisphere(centre, normal, rayon)
+
+
+.. py:function:: averageVector(listVectors)
+
+

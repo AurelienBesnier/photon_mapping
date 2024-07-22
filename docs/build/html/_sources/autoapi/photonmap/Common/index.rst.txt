@@ -1,0 +1,16 @@
+:py:mod:`photonmap.Common`
+==========================
+
+.. py:module:: photonmap.Common
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   Math/index.rst
+   Outils/index.rst
+
+

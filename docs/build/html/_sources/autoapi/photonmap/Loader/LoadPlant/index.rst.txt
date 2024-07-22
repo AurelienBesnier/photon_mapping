@@ -1,0 +1,39 @@
+:py:mod:`photonmap.Loader.LoadPlant`
+====================================
+
+.. py:module:: photonmap.Loader.LoadPlant
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Loader.LoadPlant.add_lpy_file_to_scene
+   photonmap.Loader.LoadPlant.addPlantModel
+   photonmap.Loader.LoadPlant.addPlantModelPgl
+
+
+
+.. py:function:: add_lpy_file_to_scene(scene: photonmap.libphotonmap_core.Scene, filename: str, t: int, tr2shmap: dict, anchor: photonmap.Vec3, scale_factor)
+
+   Adds the lpy mesh to the photonmapping scene.
+   :param sc:
+   :param filename:
+   :param t:
+   :param tr2shmap:
+   :param anchor:
+   :param scale_factor:
+   :return:
+
+
+.. py:function:: addPlantModel(lscene, tr, tr2shmap, sc: photonmap.libphotonmap_core.Scene, anchor: photonmap.Vec3, scale_factor)
+
+
+.. py:function:: addPlantModelPgl(lscene, tr, sc, anchor: photonmap.Vec3, scale_factor, shenergy: dict)
+
+

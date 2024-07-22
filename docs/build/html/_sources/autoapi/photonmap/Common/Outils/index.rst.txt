@@ -1,0 +1,58 @@
+:py:mod:`photonmap.Common.Outils`
+=================================
+
+.. py:module:: photonmap.Common.Outils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Common.Outils.wavelength2Rgb
+   photonmap.Common.Outils.flatten
+   photonmap.Common.Outils.blockPrint
+   photonmap.Common.Outils.enablePrint
+
+
+
+.. py:function:: wavelength2Rgb(w: int) -> photonmap.Vec3
+
+   Convert a wavelength between 400 - 800 nm to RGB color
+   Parameters
+   ----------
+   w: int
+       The wavelength to convert
+
+   Returns
+   -------
+   RGB: Vec3
+       A Vec3 structure representing an RGB color.
+
+
+
+.. py:function:: flatten(lt: list) -> list
+
+   Flattens a list
+   Parameters
+   ----------
+   lt: list
+       a list
+
+   Returns
+   ---------
+   l: list
+       the flattened list
+
+
+
+.. py:function:: blockPrint()
+
+
+.. py:function:: enablePrint()
+
+

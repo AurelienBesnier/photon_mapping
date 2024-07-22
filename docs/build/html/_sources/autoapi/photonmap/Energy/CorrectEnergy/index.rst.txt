@@ -1,0 +1,88 @@
+:py:mod:`photonmap.Energy.CorrectEnergy`
+========================================
+
+.. py:module:: photonmap.Energy.CorrectEnergy
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Energy.CorrectEnergy.read_spectrum_file
+   photonmap.Energy.CorrectEnergy.get_integral_of_band
+   photonmap.Energy.CorrectEnergy.get_average_of_band
+   photonmap.Energy.CorrectEnergy.get_correct_energy_coeff
+   photonmap.Energy.CorrectEnergy.correct_energy
+
+
+
+.. py:function:: read_spectrum_file(filename: str) -> (collections.OrderedDict, int, int)
+
+   Parse a spectrum file.
+   Parameters
+   ----------
+   filename: str
+       The file to parse.
+
+   Returns
+   -------
+   content: dict
+       A dictionary with wavelength as key and photon count as value.
+   step: int
+       the step in the dictionary between two entries.
+   start: int
+       the first wavelength in the file.
+
+
+.. py:function:: get_integral_of_band(band: range, spectrum: dict) -> float
+
+   Returns the integral of the band as a percentage
+   Parameters
+   ----------
+   band: range
+       The section of the spectrum to get.
+   spectrum: dict
+       The whole spectrum of the band.
+
+   Returns
+   -------
+
+
+
+.. py:function:: get_average_of_band(band: range, spectrum: dict) -> int
+
+   Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.
+   Parameters
+   ----------
+   band: range
+       The range of wavelength to compute the average of photon to send.
+   spectrum: dict
+       a dictionary representing the spectrum of the light with a wavelength as the key and a count of photons as the
+       value.
+
+   Returns
+   -------
+   wavelength: int
+       The wavelength in question.
+
+
+.. py:function:: get_correct_energy_coeff(bands_spectre, spec_file: str)
+
+
+.. py:function:: correct_energy(shenergy: dict, correction_ratio)
+
+   Correct the energy computed during the simulation  with the integral of the chosen spectrum band.
+   Parameters
+   ----------
+   shenergy: dict
+
+   Returns
+   -------
+
+
+

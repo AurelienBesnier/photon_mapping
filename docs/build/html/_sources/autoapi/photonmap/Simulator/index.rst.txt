@@ -1,0 +1,93 @@
+:py:mod:`photonmap.Simulator`
+=============================
+
+.. py:module:: photonmap.Simulator
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Simulator.Simulator
+
+
+
+
+.. py:class:: Simulator
+
+
+   A class which include all the tools of simulation.
+
+   Attributes
+   ----------
+   name : str
+       first name of the person
+   surname : str
+       family name of the person
+   age : int
+       age of the person
+
+   Methods
+   -------
+   info(additional=""):
+       Prints the person's name and age.
+
+   .. py:method:: run()
+
+
+   .. py:method:: test_t_min(nb_photons, start_t, loop, is_only_lamp=False)
+
+
+   .. py:method:: initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp=False)
+
+
+   .. py:method:: render(integrator, scene, w, sampler)
+
+
+   .. py:method:: setupRoom(room_dir: str, po_dir: str, flip_normal=False)
+
+
+   .. py:method:: setupRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
+
+
+   .. py:method:: setupCaptor(captor_dir: str)
+
+
+   .. py:method:: setupPlant(plant_file: str, plant_pos=Vec3(0, 0, 0))
+
+
+   .. py:method:: initCameraRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
+
+
+   .. py:method:: readConfiguration(filename: str)
+
+      Read all the parameters of simulation in the configuration file
+
+      Parameters
+      ----------
+      filename: str
+          Name/directory of the configuration file.
+          
+      Returns
+      -------
+      nb_photons: int
+          The number of photons in simulation
+      maximum_depth: int
+          The maximum number of times that the light bounces in the scene 
+      scale_factor: float
+          The overall scale of the entire scene
+      t_min: float
+          The minimum distance between the point of intersection and the origin of the light ray
+      nb_thread: int
+          The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
+      is_backface_culling: bool
+          Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
+      bande_spectre: array
+          The list of spectral ranges used to run the simulation.
+
+
+

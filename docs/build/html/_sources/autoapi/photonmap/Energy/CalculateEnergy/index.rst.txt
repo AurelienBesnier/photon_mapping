@@ -1,0 +1,45 @@
+:py:mod:`photonmap.Energy.CalculateEnergy`
+==========================================
+
+.. py:module:: photonmap.Energy.CalculateEnergy
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Energy.CalculateEnergy.write_captor_energy
+   photonmap.Energy.CalculateEnergy.write_plant_energy
+   photonmap.Energy.CalculateEnergy.captor_add_energy
+   photonmap.Energy.CalculateEnergy.compute_energy
+
+
+
+.. py:function:: write_captor_energy(energy, w_start, w_end, n_photons)
+
+
+.. py:function:: write_plant_energy(energy, w_start, w_end, n_photons)
+
+
+.. py:function:: captor_add_energy(captor_dict, integrator, energy)
+
+   Compute the energy on each captor in the scene.
+   :param energy:
+   :param captor_dict:
+   :param integrator:
+   :return:
+
+
+.. py:function:: compute_energy(tr2shmap, integrator)
+
+   Computes the number of photons on each organ of the plant.
+   :param tr2shmap:
+   :param integrator:
+   :return:
+
+

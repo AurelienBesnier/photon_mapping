@@ -1,0 +1,31 @@
+:py:mod:`photonmap.Reader.ReadRADGeo`
+=====================================
+
+.. py:module:: photonmap.Reader.ReadRADGeo
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Reader.ReadRADGeo.cylinder_vertices
+   photonmap.Reader.ReadRADGeo.read_rad
+
+
+
+.. py:function:: cylinder_vertices(start, end, rayon)
+
+
+.. py:function:: read_rad(file: str, scale_factor: int, invert_normals: bool)
+
+   Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) a make a plantGL Scene
+   :param file: the rad filename
+   :param invert_normals: whether to invert the normals or not.
+   :return: A plantGL Scene.
+
+

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>photonmap.Energy.CorrectEnergy &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Photon Mapping Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Photon Mapping Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">photonmap.Energy.CorrectEnergy</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for photonmap.Energy.CorrectEnergy</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simpson</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="sd">&quot;&quot;&quot;This is the doc string for the file3 file where we can say things about the python module.add()</span>
+<span class="sd">We can write long text if we want.</span>
+
+<span class="sd">+ Objectif of this module is reading the measured PPFD of each wavelength to correct the output energy</span>
+<span class="sd">+ Data is located in this directory: ./spectrum/chambre1_spectrum  </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="read_spectrum_file">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.read_spectrum_file">[docs]</a>
+<span class="k">def</span> <span class="nf">read_spectrum_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse a spectrum file.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename: str</span>
+<span class="sd">        The file to parse.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    content: dict</span>
+<span class="sd">        A dictionary with wavelength as key and photon count as value.</span>
+<span class="sd">    step: int</span>
+<span class="sd">        the step in the dictionary between two entries.</span>
+<span class="sd">    start: int</span>
+<span class="sd">        the first wavelength in the file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">cpt_comment</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">:</span>  <span class="c1"># ignore comment</span>
+                <span class="n">ls</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+|;+&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">content</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">))</span>
+          
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cpt_comment</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">first_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+|;+&quot;</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">cpt_comment</span><span class="p">],</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">second_line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+|;+&quot;</span><span class="p">,</span> <span class="n">lines</span><span class="p">[</span><span class="n">cpt_comment</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">second_line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">content</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">first_line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="get_integral_of_band">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_integral_of_band">[docs]</a>
+<span class="k">def</span> <span class="nf">get_integral_of_band</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the integral of the band as a percentage</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    band: range</span>
+<span class="sd">        The section of the spectrum to get.</span>
+<span class="sd">    spectrum: dict</span>
+<span class="sd">        The whole spectrum of the band.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">spec_range</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
+            <span class="n">spec_range</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="n">I_simps</span> <span class="o">=</span> <span class="n">simpson</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">spec_range</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">800</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">total</span>  <span class="c1"># get as percentage</span></div>
+
+
+
+<div class="viewcode-block" id="get_average_of_band">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_average_of_band">[docs]</a>
+<span class="k">def</span> <span class="nf">get_average_of_band</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    band: range</span>
+<span class="sd">        The range of wavelength to compute the average of photon to send.</span>
+<span class="sd">    spectrum: dict</span>
+<span class="sd">        a dictionary representing the spectrum of the light with a wavelength as the key and a count of photons as the</span>
+<span class="sd">        value.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    wavelength: int</span>
+<span class="sd">        The wavelength in question.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cpt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">counts</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">b_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>  <span class="c1"># first for to get the average</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
+            <span class="n">counts</span> <span class="o">+=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">b_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">cpt</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">avg</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">cpt</span>
+    <span class="c1"># get the closest wavelength of that average</span>
+    <span class="n">res_key</span><span class="p">,</span> <span class="n">res_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">b_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">avg</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">res_key</span></div>
+
+
+<div class="viewcode-block" id="get_correct_energy_coeff">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_correct_energy_coeff">[docs]</a>
+<span class="k">def</span> <span class="nf">get_correct_energy_coeff</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">,</span> <span class="n">spec_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">spec_dict</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span><span class="n">spec_file</span><span class="p">)</span>
+    <span class="n">wavelengths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
+        <span class="n">r_band</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">bands_spectre</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">wavelengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_average_of_band</span><span class="p">(</span><span class="n">r_band</span><span class="p">,</span> <span class="n">spec_dict</span><span class="p">))</span>
+        <span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_integral_of_band</span><span class="p">(</span><span class="n">r_band</span><span class="p">,</span> <span class="n">spec_dict</span><span class="p">))</span>
+
+    
+    <span class="k">return</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">integrals</span></div>
+
+
+<div class="viewcode-block" id="correct_energy">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.correct_energy">[docs]</a>
+<span class="k">def</span> <span class="nf">correct_energy</span><span class="p">(</span><span class="n">shenergy</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">correction_ratio</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    shenergy: dict</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">shenergy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">shenergy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">correction_ratio</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tuan-Minh NGUYEN, Aurélien BESNIER.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

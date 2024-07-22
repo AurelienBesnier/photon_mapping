@@ -1,0 +1,16 @@
+:py:mod:`photonmap.Energy`
+==========================
+
+.. py:module:: photonmap.Energy
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   CalculateEnergy/index.rst
+   CorrectEnergy/index.rst
+
+

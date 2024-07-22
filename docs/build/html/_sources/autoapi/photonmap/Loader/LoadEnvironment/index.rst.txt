@@ -1,0 +1,34 @@
+:py:mod:`photonmap.Loader.LoadEnvironment`
+==========================================
+
+.. py:module:: photonmap.Loader.LoadEnvironment
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   photonmap.Loader.LoadEnvironment.add_environment
+   photonmap.Loader.LoadEnvironment.addLightDirectionPgl
+
+
+
+.. py:function:: add_environment(scene: photonmap.libphotonmap_core.Scene, sh: Shape, w: int, materialsR: dict, materialsS: dict, materialsT: dict, is_only_lamp=False)
+
+   Adds a PlantGL Shape to the Photon Mapping scene.
+   :param scene: A libphotonmap_core Scene
+   :param sh: The plantGL Shape to add
+   :param w: The wavelength of the light to simulate.
+   :param materialsR: The materials reflectance dictionary
+   :param materialsT: The materials transmittance dictionary
+   :return:
+
+
+.. py:function:: addLightDirectionPgl(sc, scale_factor)
+
+

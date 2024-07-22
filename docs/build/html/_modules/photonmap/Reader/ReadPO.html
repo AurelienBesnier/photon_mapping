@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>photonmap.Reader.ReadPO &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Photon Mapping Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Photon Mapping Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">photonmap.Reader.ReadPO</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for photonmap.Reader.ReadPO</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">photonmap.Energy.CorrectEnergy</span> <span class="kn">import</span> <span class="n">read_spectrum_file</span>
+
+<span class="c1">#Objectif of this module is read the optical properties (material) of each object </span>
+<span class="c1">#Calculate the average value of the spectrum range</span>
+<span class="c1">#Data is located in this directory: ./PO</span>
+
+<div class="viewcode-block" id="setup_dataset_materials">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadPO/index.html#photonmap.Reader.ReadPO.setup_dataset_materials">[docs]</a>
+<span class="k">def</span> <span class="nf">setup_dataset_materials</span><span class="p">(</span><span class="n">w_start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w_end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">po_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of</span>
+<span class="sd">    the simulation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    w_start: int</span>
+<span class="sd">        The first wavelength of band.</span>
+<span class="sd">    w_end: int</span>
+<span class="sd">        The last wavelength of band.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">materialsT</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">materialsS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">materialsR</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Plant&quot;</span><span class="p">,</span> <span class="s2">&quot;Env&quot;</span><span class="p">):</span>  <span class="c1"># Reflectances</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dir_pathReflect</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">&quot;/ReflectancesMean/&quot;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">contentReflect</span><span class="p">,</span> <span class="n">stepReflect</span><span class="p">,</span> <span class="n">startReflect</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="p">)</span>
+            
+            <span class="n">refl</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentReflect</span><span class="p">)</span>
+            
+            <span class="n">materialsR</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Plant&quot;</span><span class="p">,</span> <span class="s2">&quot;Env&quot;</span><span class="p">):</span>  <span class="c1"># Transmittances</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dir_pathTransmit</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">&quot;/TransmittancesMean/&quot;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">contentTransmit</span><span class="p">,</span> <span class="n">stepTransmit</span><span class="p">,</span> <span class="n">startTransmit</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentTransmit</span><span class="p">)</span>
+            
+            <span class="n">materialsT</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
+
+    <span class="c1">#Specularities</span>
+    <span class="n">dir_pathSpec</span> <span class="o">=</span> <span class="p">(</span><span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/Specularities.xlsx&quot;</span><span class="p">)</span>
+    <span class="n">contentSpec</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">dir_pathSpec</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">mat_names</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Materiau&quot;</span><span class="p">]</span>
+    <span class="n">mat_spec</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Valeur estimee visuellement&quot;</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">)):</span>
+        <span class="n">materialsS</span><span class="p">[</span><span class="n">mat_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+
+
+    <span class="k">return</span> <span class="n">materialsR</span><span class="p">,</span> <span class="n">materialsS</span><span class="p">,</span> <span class="n">materialsT</span></div>
+
+
+<div class="viewcode-block" id="get_average_of_props_optic">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadPO/index.html#photonmap.Reader.ReadPO.get_average_of_props_optic">[docs]</a>
+<span class="k">def</span> <span class="nf">get_average_of_props_optic</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">props</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">count</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">/=</span> <span class="n">count</span>
+    
+    <span class="k">return</span> <span class="n">res</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tuan-Minh NGUYEN, Aurélien BESNIER.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
