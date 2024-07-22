@@ -3,3 +3,9 @@
 
 # ignore ALL files in Build directory
 build/
+
+__pycache__/
+
+# Ignore doc source
+docs/
+!docs/build/html/

@@ -18,3 +18,4 @@ dependencies:
   - openmp
   - openalea.lpy
   - scipy
+  - matplotlib

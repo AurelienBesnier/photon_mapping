@@ -389,10 +389,9 @@ public:
 #endif
 	
 		std::cout << "nb photons per lights: "
-				<< nPhotonsGlobal / scene.lights.size() << std::endl;
+				<< nPhotonsGlobal / scene.lights.size() << std::endl << std::endl;
 		for (unsigned int l = 0; l < scene.lights.size(); ++l) {
 			// std::vector<Photon> photonsLights; // photon for a specific light
-			std::cout << std::endl;
 		    std::cout << "\033[A\33[2K\r";
 		    std::cout << "Tracing photons from light n° " << l + 1 << "/" << scene.lights.size() << "..."
 		              << std::endl;

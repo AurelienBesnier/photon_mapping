@@ -1,6 +1,8 @@
 
 from photonmap import libphotonmap_core
 from openalea.plantgl.all import * 
+from openalea.lpy import Lsystem
+from photonmap.Common.Outils import *
 from photonmap import (
     Vec3,
     VectorUint,

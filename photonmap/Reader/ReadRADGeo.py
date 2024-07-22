@@ -1,6 +1,5 @@
 from photonmap.Common.Math import *
 from openalea.plantgl.all import * 
-from photonmap import Vec3
 
 
 import re
@@ -27,7 +26,7 @@ def cylinder_vertices(start, end, rayon):
 
     return vert
 
-def read_rad(file: str, invert_normals: bool):
+def read_rad(file: str, scale_factor: int, invert_normals: bool):
     """
     Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) a make a plantGL Scene
     :param file: the rad filename
@@ -39,18 +38,14 @@ def read_rad(file: str, invert_normals: bool):
         materials = {}
         shapes = {}
         sc = Scene()
-        anchor = Vec3(0, 0, 0)
+       
         i = 0
-        scale_factor = 1
         for _ in range(len(lines)):
             i += 1
             if i >= len(lines):
                 break
             elif lines[i].startswith("#"):
                 continue
-            elif lines[i].startswith("scale_factor"):
-                li = lines[i].split(None)
-                scale_factor = float(li[1])
             elif lines[i].startswith("void"):  # material
                 li = lines[i].split(None)
                 type = li[1]
@@ -268,8 +263,7 @@ def read_rad(file: str, invert_normals: bool):
                                         "size": size,
                                         "material": material,
                                     }
-                            if name == "anchor":
-                                anchor = vert[1]
+                          
         for sh, val in shapes.items():
             mat_key = val["material"]
             mat = materials[mat_key]
@@ -428,4 +422,4 @@ def read_rad(file: str, invert_normals: bool):
                 sc.add(s)
         save_name = file.split(".")[0] + ".obj"
         sc.save(save_name)
-        return sc, anchor, scale_factor
+        return sc

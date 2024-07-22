@@ -10,6 +10,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     """
     Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
     the simulation.
+    
     Parameters
     ----------
     w_start: int

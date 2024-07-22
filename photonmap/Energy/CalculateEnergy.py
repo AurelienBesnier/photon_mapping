@@ -47,7 +47,7 @@ def captor_add_energy(captor_dict, integrator, energy):
     :return:
     """
     photonmap = integrator.getPhotonMapCaptors()
-    print(photonmap.nPhotons())
+    
     print("writing captor energy...")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)

@@ -24,7 +24,7 @@ void visualizePhotonMap(const PhotonMapping &integrator, const Scene &scene,
                         UniformSampler &sampler) {
   // visualize photon map
   const PhotonMap &photon_map = integrator.getPhotonMapGlobal();
-
+     
   if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
     for (unsigned int i = 0; i < height; ++i) {
@@ -45,10 +45,10 @@ void visualizePhotonMap(const PhotonMapping &integrator, const Scene &scene,
 
             // if distance to the photon is small enough, write photon's
             // throughput to the image
-            if (r2 < 0.001f) {
+            if (r2 < 1) {
               const Photon &photon = photon_map.getIthPhoton(photon_idx);
               image.setPixel(i, j, photon.throughput);
-            }
+            } 
           } else {
             image.setPixel(i, j, Vec3fZero);
           }
@@ -80,6 +80,7 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image,
         const float v = (2.0f * i - height) / height;
         Ray ray;
         float pdf;
+        
         if (camera.sampleRay(Vec2f(v, u), ray, pdf, scene)) {
           IntersectInfo info;
           if (scene.intersect(ray, info)) {
@@ -92,7 +93,7 @@ void visualizeCaptorsPhotonMap(const Scene &scene, Image &image,
 
             // if distance to the photon is small enough, write photon's
             // throughput to the image
-            if (r2 < 0.001f) {
+            if (r2 < 1) {
               const Photon &photon = photon_map.getIthPhoton(photon_idx);
               image.setPixel(i, j, photon.throughput);
             }
@@ -146,7 +147,7 @@ void Render(UniformSampler &sampler, Image &image, const unsigned &height,
             continue;
           }
 #endif
-          image.addPixel(i, j, radiance);
+          image.addPixel(i, j, radiance * 1000);
         } else {
           image.setPixel(i, j, Vec3f(0.4f,0.7f,1.0f));
         }
@@ -429,13 +430,13 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   m.def("visualizePhotonMap", &visualizePhotonMap,
         "Function to visualize the photonmap as a .ppm image",
         py::arg("integrator"), py::arg("Scene"), py::arg("image"),
-        py::arg("width"), py::arg("height"), py::arg("camera"),
+        py::arg("height"), py::arg("width"), py::arg("camera"),
         py::arg("n_photons"), py::arg("max_depth"), py::arg("filename"),
         py::arg("sampler"));
 
   m.def("visualizeCaptorsPhotonMap", &visualizeCaptorsPhotonMap,
         "Function to visualize the photonmap as a .ppm image", py::arg("Scene"),
-        py::arg("image"), py::arg("width"), py::arg("height"),
+        py::arg("image"), py::arg("height"), py::arg("width"),
         py::arg("camera"), py::arg("n_photons"), py::arg("max_depth"),
         py::arg("filename"), py::arg("sampler"), py::arg("integrator"));
 

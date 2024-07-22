@@ -1,4 +1,5 @@
 from photonmap import Vec3
+import sys, os
 #This module consist the common functions using in this project 
 
 def wavelength2Rgb(w: int) -> Vec3:
@@ -44,7 +45,7 @@ def wavelength2Rgb(w: int) -> Vec3:
         green = 0.0
         blue = 0.0
 
-    return Vec3(red, green, blue)
+    return photonmap.Vec3(red, green, blue)
 
 
 def flatten(lt: list) -> list:
@@ -62,3 +63,13 @@ def flatten(lt: list) -> list:
 
     """
     return [item for sublist in lt for item in sublist]
+
+
+def blockPrint():
+
+    sys.stdout = open(os.devnull, 'w')
+
+# Restore
+def enablePrint():
+
+    sys.stdout = sys.__stdout__

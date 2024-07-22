@@ -2,8 +2,13 @@ from scipy.integrate import simpson
 from collections import OrderedDict
 import re
 
-#Objectif of this module is reading the measured PPFD of each wavelength to correct the output energy
-#Data is located in this directory: ./spectrum/chambre1_spectrum
+"""This is the doc string for the file3 file where we can say things about the python module.add()
+We can write long text if we want.
+
++ Objectif of this module is reading the measured PPFD of each wavelength to correct the output energy
++ Data is located in this directory: ./spectrum/chambre1_spectrum  
+"""
+
 
 def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     """
@@ -24,12 +29,14 @@ def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     """
     content = OrderedDict()
     cpt_comment = 0
+
     with open(filename, "r") as f:
         lines = f.readlines()
         for line in lines:
             if line[0] != '"':  # ignore comment
                 ls = re.split(r"\s+|;+", line, maxsplit=1)
                 content[int(ls[0])] = float(ls[1].replace(",", "."))
+          
             else:
                 cpt_comment += 1
         first_line = re.split(r"\s+|;+", lines[cpt_comment], maxsplit=1)
@@ -51,14 +58,22 @@ def get_integral_of_band(band: range, spectrum: dict) -> float:
     -------
 
     """
+    a = 0.0
     spec_range = []
     for i in band:
         if i in spectrum:
             spec_range.append(spectrum[i])
+            a = a + spectrum[i]
     
     I_simps = simpson(y=spec_range, x=None, axis=-1)
 
-    return I_simps / 100  # get as percentage
+    total = 0.0
+    for i in range(400, 800):
+        if i in spectrum:
+            total = total + spectrum[i]
+
+    print(a, total)
+    return a / total  # get as percentage
 
 
 def get_average_of_band(band: range, spectrum: dict) -> int:

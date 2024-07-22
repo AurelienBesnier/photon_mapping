@@ -12,7 +12,7 @@ from photonmap import (
 #Objectif of this module is adding captors to the scene of photon mapping to the received energy 
 #Data is located in this directory: ./captors
 
-def addCaptors(scene: libphotonmap_core.Scene, scale_factor: int, captor_dict: dict, filename: str):
+def addCaptors(scene, scale_factor: int, captor_dict: dict, filename: str):
     """
     Adds circular captors to the scene. the captors needs to be in a file
     :param filename:

@@ -75,7 +75,7 @@ if __name__ == "__main__":
     
     x = range(0, len(res_sec2))
     plt.plot(x, res_sec2, 'r')
-    #plt.plot(x, res_cur, 'g')
+    plt.plot(x, res_cur, 'g')
     plt.legend(["Resultat SEC2", "Current resultat"])
     plt.title("Wavelength 655-665 nm")
     plt.ylabel("Nb of photon")

@@ -20,6 +20,7 @@ def add_environment(
     materialsR: dict,
     materialsS: dict,
     materialsT: dict,
+    is_only_lamp = False
 ):
     """
     Adds a PlantGL Shape to the Photon Mapping scene.
@@ -72,9 +73,9 @@ def add_environment(
         scene.addPointLight(pos, 400, light_color)
 
     elif emission != Color3(0, 0, 0):
+        scene.addLight(vertices, indices, normals, 4000, light_color, sh.name)
 
-        scene.addLight(vertices, indices, normals, 400, light_color, sh.name)
-    else:
+    elif is_only_lamp == False or material_name == "ecran":
         scene.addFaceInfos(
             vertices,
             indices,
