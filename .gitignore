@@ -8,4 +8,4 @@ __pycache__/
 
 # Ignore doc source
 docs/
-!docs/build/html/
+!docs/build/html/*
