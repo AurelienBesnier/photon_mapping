@@ -45,7 +45,7 @@ def wavelength2Rgb(w: int) -> Vec3:
         green = 0.0
         blue = 0.0
 
-    return photonmap.Vec3(red, green, blue)
+    return Vec3(red, green, blue)
 
 
 def flatten(lt: list) -> list:

@@ -1,42 +1,66 @@
 from collections import OrderedDict
+from photonmap.Loader.LoadCaptor import Captor
 
 #Objectif of this module is counting the number of photon on plant/captor
 #Resultat is located in this directory: ./results
 
-def write_captor_energy(energy, w_start, w_end, n_photons):
-    od = OrderedDict(sorted(energy.items()))
-    band = str(w_start) + "-" + str(w_end)
+def write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons):
 
-    filename = "results/captor_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
+    filename = "results/captor_result-" + str(n_photons) + ".csv"
 
     with open(filename, "w") as f:
-        f.write("id,n_photons,elevation\n")
-        for k, v in od.items():
-            if k <= 119:
-                elevation = 1000
-            elif k <= 239:
-                elevation = 1400
-            else:
-                elevation = 1800
-            print("captor n°" + str(k) + " has " + str(v) + " photons on it")
-            f.write(str(k) + "," + str(v) + "," + str(elevation) + "\n")
+        w_str = "id,xSite,ySite,zSite,radius"
+        for i in range(len(bands_spectre)):
+            w_str += ",N_mes_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
 
-    print("Done!")
+        for i in range(len(bands_spectre)):
+            w_str += ",N_sim_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+        
+        f.write(w_str + "\n")
 
-def write_plant_energy(energy, w_start, w_end, n_photons):
-    od = OrderedDict(sorted(energy.items()))
-    band = str(w_start) + "-" + str(w_end)
+        for k in range(len(captor_list)):
+            captor = captor_list[k]
+            w_str = str(k) + ',' + str(captor.xSite) + ',' + str(captor.ySite) + ',' + str(captor.zSite) + ',' + str(captor.radius)
+            
+            for i in range(len(bands_spectre)):
+                cur_n_mes = N_mes[i]
+                if k in cur_n_mes:
+                    w_str += ',' + str(cur_n_mes[k])
+                else:
+                    w_str += ',' + str(0)
 
-    filename = "results/plant_result-" + str(n_photons) + "-" + str(band) + "-nm.csv"
+            for i in range(len(bands_spectre)):
+                cur_n_sim = N_sim[i]
+                if k in cur_n_sim:
+                    w_str += ',' + str(cur_n_sim[k])
+                else:
+                    w_str += ',' + str(0)
+
+            f.write(w_str + "\n")
+
+    print("Done write captor energy!")
+
+def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
+    filename = "results/plant_result-" + str(n_photons) + ".csv"
 
     with open(filename, "w") as f:
-        f.write("id,n_photons\n")
-        for k, v in od.items():
+        w_str = "id"
+        for i in range(len(bands_spectre)):
+            w_str += ",N_sim_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+        f.write(w_str + "\n")
 
-            print("organes n°" + str(k) + " has " + str(v) + " photons on it")
-            f.write(str(k) + "," + str(v) + "\n")
+        for sh_id in list_plant:
+            w_str = str(sh_id)
 
-    print("Done!")
+            for i in range(len(bands_spectre)):
+                cur_ener = energies[i]
+                if sh_id in cur_ener:
+                    w_str += ',' + str(cur_ener[sh_id])
+                else:
+                    w_str += ',' + str(0)
+            f.write(w_str + "\n")
+
+    print("Done write plant energy!")
 
 def captor_add_energy(captor_dict, integrator, energy):
     """
@@ -52,8 +76,6 @@ def captor_add_energy(captor_dict, integrator, energy):
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
         captorId = captor_dict.get(intersection.triId)
-        if captorId is None:
-            print(captorId)
 
         if captorId is not None:  # check if the element hit is a captor
             if captorId in energy:
@@ -79,8 +101,5 @@ def compute_energy(tr2shmap, integrator):
                 shenergy[triId] += 1
             else:
                 shenergy[triId] = 1
-
-    for k, v in shenergy.items():
-        print("organ n°" + str(k) + " has " + str(v) + " photons on it")
     
     return shenergy

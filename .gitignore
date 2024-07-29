@@ -4,9 +4,10 @@
 # ignore ALL files in Build directory
 build/
 
+# ignore ALL files in pycache
 __pycache__/
 
-# Ignore doc source
+# Ignore doc source while keep html
 !docs/
 
 docs/*

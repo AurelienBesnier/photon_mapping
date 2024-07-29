@@ -2,7 +2,10 @@ import random
 import sys
 import time
 
+from openalea.plantgl.all import * 
+from openalea.lpy import Lsystem
 import matplotlib.pyplot as plt
+
 from photonmap import libphotonmap_core
 from photonmap import (
     Vec3,
@@ -49,10 +52,11 @@ class Simulator:
         self.t_min = 0
         self.nb_thread = 8
         self.is_backface_culling = False
-        self.bande_spectre = []
+        self.base_spectral_range = {"start": 0, "end": 0}
+        self.divided_spectral_range = []
         self.rendering = False
         #
-        self.captor_dir = ""
+        self.captor_file = ""
         self.plant_file = ""
         self.po_dir = ""
         
@@ -62,18 +66,17 @@ class Simulator:
         n_estimation_global = 100
         final_gathering_depth = 0 
 
-        # Setting up spectrum bands to correct energy
-        spec_file = "spectrum/chambre1_spectrum"
-        self.wavelengths, self.integrals = CorrectEnergy.get_correct_energy_coeff(self.bande_spectre, spec_file)
+        self.N_sim_captor = []
+        self.N_sim_plant = []
 
-        for index in range(len(self.bande_spectre)):
+        for index in range(len(self.divided_spectral_range)):
             start_time = time.time()
-            current_band = self.bande_spectre[index]
+            current_band = self.divided_spectral_range[index]
             
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
             scene.clear()
-            scene, has_captor, captor_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength)
+            scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength)
             
             #create integrator
             scene.tnear = self.t_min
@@ -104,27 +107,62 @@ class Simulator:
             #read energy of captor/plant
             captor_energy = {}
             if(has_captor):
-                CalculateEnergy.captor_add_energy(captor_dict, integrator, captor_energy)
-                CalculateEnergy.write_captor_energy(captor_energy, current_band["start"], current_band["end"], self.nb_photons)
+                CalculateEnergy.captor_add_energy(captor_triangle_dict, integrator, captor_energy)
+                self.N_sim_captor.append(captor_energy)
+                
 
             #Plant Energie
             plant_energy = {}
             if(has_plant):
                 plant_energy = CalculateEnergy.compute_energy(tr2shmap, integrator)
-                CalculateEnergy.write_plant_energy(plant_energy, current_band["start"], current_band["end"], self.nb_photons)
+                self.N_sim_plant.append(plant_energy)
             
             print("Time taken: " + str(time.time() - start_time))
 
-            
-            print("correction ratio: " + str(self.integrals[index]))
 
-            # correct_energy(captor_energy, integrals[index])
+        if len(self.N_sim_captor) > 0:
+            N_mes_captor = []
+            if self.spectrum_file != "":
+                # Setting up spectrum bands to correct energy
+                integrals = CorrectEnergy.get_correct_energy_coeff(self.base_spectral_range, self.divided_spectral_range, self.spectrum_file)
+                points_calibration = CorrectEnergy.get_points_calibration(self.list_captor, self.points_calibration_file, self.divided_spectral_range)
+                N_mes_captor = CorrectEnergy.calibration_energy(self.N_sim_captor, integrals, points_calibration)
 
-            #sc = addPlantModelPgl(lscene, Tesselator(), sc, anchor, scale_factor, captor_energy)
-            #sc = addCapteurPgl(sc, scale_factor, "captors/captors_expe1.csv")
-            #sc = addLightDirectionPgl(sc, scale_factor)
-            #Viewer.display(sc)      
+            CalculateEnergy.write_captor_energy(self.N_sim_captor, N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
+
+        
+        if len(self.N_sim_plant) > 0:
+            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
+    
+    
+    def visualiserSimulationScene(self, divided_spectral_range_index = -1):
+        # init visualize scene
+        sc = self.scene_pgl
+
+        #add light direction to scene
+        sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
+
+        #add plant to visualize scene
+        if self.plant_file != "":
+            lsystem = Lsystem(self.plant_file)
+            lstring = lsystem.derive(lsystem.axiom, 150)
+            plant_lscene = lsystem.sceneInterpretation(lstring)
             
+            if divided_spectral_range_index == -1:
+                sc = LoadPlant.addPlantModelPgl(plant_lscene, Tesselator(), sc, self.plantPos, self.scale_factor)
+
+            elif divided_spectral_range_index >= 0 and divided_spectral_range_index < len(self.divided_spectral_range):
+                #plant with energy
+                sc = LoadPlant.addPlantModelPgl(plant_lscene, Tesselator(), sc, self.plantPos, self.scale_factor, self.N_sim_plant[divided_spectral_range_index])
+            else:
+                print("Index of range spectral is not correct.")
+
+        #add captor
+        if self.captor_file != "":
+            sc = LoadCaptor.addCapteurPgl(sc, self.scale_factor, self.captor_file)
+        
+        Viewer.display(sc)
+
     def test_t_min(self, nb_photons, start_t, loop, is_only_lamp = False):
         if loop < 1:
             return
@@ -132,7 +170,7 @@ class Simulator:
         scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0 
-        current_band = self.bande_spectre[0]
+        current_band = self.divided_spectral_range[0]
         moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
         
         list_tmin = []
@@ -143,7 +181,7 @@ class Simulator:
             print("Test Tmin =", start_t)
 
             scene.clear()
-            scene, has_captor, captor_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
+            scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
 
             #create integrator
             scene.tnear = start_t
@@ -193,17 +231,17 @@ class Simulator:
         has_plant = False
         tr2shmap = {}
         if(self.plant_file != ""):
-            LoadPlant.add_lpy_file_to_scene(scene, self.plant_file, 128, tr2shmap, self.plantPos, self.scale_factor)
+            self.list_plant = LoadPlant.add_lpy_file_to_scene(scene, self.plant_file, 150, tr2shmap, self.plantPos, self.scale_factor)
             has_plant = True
 
         #add captor
         has_captor = False 
-        captor_dict = {}
-        if(self.captor_dir != ""):
-            LoadCaptor.addCaptors(scene, self.scale_factor, captor_dict, self.captor_dir)
+        captor_triangle_dict = {}
+        if(self.captor_file != ""):
+            self.list_captor = LoadCaptor.addCaptors(scene, self.scale_factor, captor_triangle_dict, self.captor_file)
             has_captor = True
         
-        return scene, has_captor, captor_dict, has_plant, tr2shmap
+        return scene, has_captor, captor_triangle_dict, has_plant, tr2shmap
 
     def render(self, integrator, scene, w, sampler):
         if self.rendering == False:
@@ -244,17 +282,19 @@ class Simulator:
         print("Done!")
             
 
-    def setupRoom(self, room_dir: str, po_dir: str,  flip_normal = False):
+    def setupRoom(self, room_file: str, po_dir: str,  flip_normal = False):
         self.po_dir = po_dir
-        self.scene_pgl = ReadRADGeo.read_rad(room_dir, self.scale_factor, flip_normal)
+        self.scene_pgl = ReadRADGeo.read_rad(room_file, self.scale_factor, flip_normal)
 
     def setupRender(self, lookfrom = Vec3(0,0,0), lookat = Vec3(0,0,0)):
         self.rendering = True
         #using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat)
 
-    def setupCaptor(self, captor_dir: str):
-        self.captor_dir = captor_dir
+    def setupCaptor(self, captor_file: str, spectrum_file: str, points_calibration_file: str):
+        self.captor_file = captor_file
+        self.spectrum_file = spectrum_file
+        self.points_calibration_file = points_calibration_file
 
     def setupPlant(self, plant_file: str, plant_pos = Vec3(0,0,0)):
         self.plant_file = plant_file
@@ -301,8 +341,10 @@ class Simulator:
             The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
         is_backface_culling: bool
             Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
-        bande_spectre: array
-            The list of spectral ranges used to run the simulation.
+        base_spectral_range: dict
+            The spectral range used to run the simulation
+        divided_spectral_range: array
+            The list of spectral ranges divided from the base spectral range.
         """
         #read file
         with open(filename, "r") as f:
@@ -324,13 +366,15 @@ class Simulator:
                             self.nb_thread = int(row[1])
                         case "$BACKFACE_CULLING":
                             self.is_backface_culling = True if (row[1].upper() == "YES") else False 
-                        case "$BANDES_SPECTRE":
+                        case "$BASE_SPECTRAL_RANGE":
+                            self.base_spectral_range = {"start": int(row[1]), "end": int(row[2])}
+                        case "$DIVIDED_SPECTRAL_RANGE":
                             nb_bande = int(row[1])
     
                             for i in range(nb_bande):
                                 start = int(row[(i + 1) * 2])
                                 end = int(row[(i + 1) * 2 + 1])
-                                self.bande_spectre.append({"start": start, "end": end})
+                                self.divided_spectral_range.append({"start": start, "end": end})
         
     
 

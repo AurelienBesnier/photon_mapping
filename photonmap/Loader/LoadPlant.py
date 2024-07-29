@@ -36,13 +36,14 @@ def add_lpy_file_to_scene(
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
     # Adding the model of plant
-    addPlantModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
+    return addPlantModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
 
 #add plant model to Scene
 def addPlantModel(
     lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor
 ):
     ctr = 0
+    list_sh_id = set()
     for sh in lscene:
         sh.apply(tr)
         mesh = tr.result
@@ -113,13 +114,16 @@ def addPlantModel(
             1.0 - shininess,
         )
 
+        list_sh_id.add(sh.id)
+
         for _ in mesh.indexList:
             tr2shmap[ctr] = sh.id
             ctr += 1
+    
+    return list_sh_id
 
 #add plant to a scene of PlantGL to visualize
-def addPlantModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy: dict):
-    max_energy = shenergy[max(shenergy, key=shenergy.get)]
+def addPlantModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy = {}):
     ctr = 0
     pglScene = Scene()
     for sh in lscene:
@@ -145,17 +149,21 @@ def addPlantModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy: dict)
         idx = mesh.indexList
         
         tmpSh= Shape(TriangleSet(vertices, idx, mesh.normalList))
-        #tmpSh.appearance = sh.appearance
+        tmpSh.appearance = sh.appearance
 
-        cur_sh_energy = 0
-        if sh.id in shenergy:
-            cur_sh_energy = shenergy[sh.id]
+        #change color of plant follow energy
+        if shenergy:
+            max_energy = shenergy[max(shenergy, key=shenergy.get)]
 
-        ratio = cur_sh_energy / max_energy
-        r = (int)(255 * ratio) 
-        g = (int)(255 * ratio) 
-        b = (int)(255 * ratio) 
-        tmpSh.appearance = Material(ambient=Color3(r,g,b), diffuse=sh.appearance.diffuse)
+            cur_sh_energy = 0
+            if sh.id in shenergy:
+                cur_sh_energy = shenergy[sh.id]
+
+            ratio = cur_sh_energy / max_energy
+            r = (int)(255 * ratio) 
+            g = (int)(255 * ratio) 
+            b = (int)(255 * ratio) 
+            tmpSh.appearance = Material(ambient=Color3(r,g,b), diffuse=sh.appearance.diffuse)
 
         pglScene.add(tmpSh)
 
