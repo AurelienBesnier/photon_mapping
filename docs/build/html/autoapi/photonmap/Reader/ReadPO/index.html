@@ -99,17 +99,17 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Reader.ReadPO.setup_dataset_materials" title="photonmap.Reader.ReadPO.setup_dataset_materials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_dataset_materials</span></code></a>(w_start, w_end, po_dir)</p></td>
-<td><p>Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of</p></td>
+<td><p>Fills the materialsR (reflection), materialsS (specular) and materialsT (transmission) dictionaries with information from the provided data for the materials of</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Reader.ReadPO.get_average_of_props_optic" title="photonmap.Reader.ReadPO.get_average_of_props_optic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_average_of_props_optic</span></code></a>(→ float)</p></td>
-<td><p></p></td>
+<td><p>Calculate the average value of an optical property in a spectral range</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Reader.ReadPO.setup_dataset_materials">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Reader.ReadPO.</span></span><span class="sig-name descname"><span class="pre">setup_dataset_materials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">po_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Reader/ReadPO.html#setup_dataset_materials"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Reader.ReadPO.setup_dataset_materials" title="Link to this definition"></a></dt>
-<dd><p>Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
+<dd><p>Fills the materialsR (reflection), materialsS (specular) and materialsT (transmission) dictionaries with information from the provided data for the materials of
 the simulation.</p>
 <section id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
@@ -118,17 +118,46 @@ the simulation.</p>
 </dd>
 <dt>w_end: int</dt><dd><p>The last wavelength of band.</p>
 </dd>
+<dt>po_dir: str</dt><dd><p>The folder which contains all the optical properties of the room</p>
+</dd>
 </dl>
 </section>
 <section id="returns">
 <h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>materialsR<span class="classifier">dict</span></dt><dd><p>The reflections of all the materials</p>
+</dd>
+<dt>materialsS<span class="classifier">dict</span></dt><dd><p>The specularities of all the materials</p>
+</dd>
+<dt>materialsT<span class="classifier">dict</span></dt><dd><p>The transmission of all the materials</p>
+</dd>
+</dl>
 </section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Reader.ReadPO.get_average_of_props_optic">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Reader.ReadPO.</span></span><span class="sig-name descname"><span class="pre">get_average_of_props_optic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../../../_modules/photonmap/Reader/ReadPO.html#get_average_of_props_optic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Reader.ReadPO.get_average_of_props_optic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Calculate the average value of an optical property in a spectral range</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>band: range</dt><dd><p>The spectral range which is considered</p>
+</dd>
+<dt>props: dict</dt><dd><p>A dictionary which contains the optical properties calculated for each wavelength in spectral range</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<blockquote>
+<div><dl class="simple">
+<dt>result: float</dt><dd><p>the average optical property in a spectral range</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</dd></dl>
 
 </section>
 </section>

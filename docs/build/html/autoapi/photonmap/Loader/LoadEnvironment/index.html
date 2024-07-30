@@ -99,29 +99,58 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadEnvironment.add_environment" title="photonmap.Loader.LoadEnvironment.add_environment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_environment</span></code></a>(scene, sh, w, materialsR, materialsS, ...)</p></td>
-<td><p>Adds a PlantGL Shape to the Photon Mapping scene.</p></td>
+<td><p>Adds a PlantGL Shape of the room to the Photon Mapping scene.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Loader.LoadEnvironment.addLightDirectionPgl" title="photonmap.Loader.LoadEnvironment.addLightDirectionPgl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addLightDirectionPgl</span></code></a>(sc, scale_factor)</p></td>
-<td><p></p></td>
+<td><p>Adds a PlantGL Shape of the room to the Photon Mapping scene.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadEnvironment.add_environment">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadEnvironment.</span></span><span class="sig-name descname"><span class="pre">add_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.libphotonmap_core.Scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_only_lamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadEnvironment.html#add_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadEnvironment.add_environment" title="Link to this definition"></a></dt>
-<dd><p>Adds a PlantGL Shape to the Photon Mapping scene.
-:param scene: A libphotonmap_core Scene
-:param sh: The plantGL Shape to add
-:param w: The wavelength of the light to simulate.
-:param materialsR: The materials reflectance dictionary
-:param materialsT: The materials transmittance dictionary
-:return:</p>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadEnvironment.</span></span><span class="sig-name descname"><span class="pre">add_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">materialsT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_only_lamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadEnvironment.html#add_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadEnvironment.add_environment" title="Link to this definition"></a></dt>
+<dd><p>Adds a PlantGL Shape of the room to the Photon Mapping scene.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>scene<span class="classifier">libphotonmap_core.Scene</span></dt><dd><p>The photon mapping scene used to run the simulation</p>
+</dd>
+<dt>sh<span class="classifier">Shape</span></dt><dd><p>The plantGL Shape to add</p>
+</dd>
+<dt>w<span class="classifier">int</span></dt><dd><p>The wavelength of the light to simulate.</p>
+</dd>
+<dt>materialsR<span class="classifier">dict</span></dt><dd><p>The materials reflection dictionary</p>
+</dd>
+<dt>materialsS<span class="classifier">dict</span></dt><dd><p>The materials specularity dictionary</p>
+</dd>
+<dt>materialsT<span class="classifier">dict</span></dt><dd><p>The materials transmission dictionary</p>
+</dd>
+<dt>is_only_lamp<span class="classifier">bool</span></dt><dd><p>If True, add only the lamps and captors, If False, add all the objects in room</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadEnvironment.addLightDirectionPgl">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadEnvironment.</span></span><span class="sig-name descname"><span class="pre">addLightDirectionPgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadEnvironment.html#addLightDirectionPgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadEnvironment.addLightDirectionPgl" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Adds a PlantGL Shape of the room to the Photon Mapping scene.</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>sc<span class="classifier">Lscene</span></dt><dd><p>The plantgl scene</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A PlantGL Scene with the hemisphere of each surface</p>
+</div></blockquote>
+</section>
+</dd></dl>
 
 </section>
 </section>

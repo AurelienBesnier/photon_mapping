@@ -11,26 +11,39 @@ from photonmap import (
     UniformSampler,
 )
 
-#Objectif of this module is adding captors to the scene of Photon Mapping to calculate the received energy 
+#Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy 
 #Data is located in this directory: ./assets
 
 def add_lpy_file_to_scene(
-    scene: libphotonmap_core.Scene,
-    filename: str,
-    t: int,
-    tr2shmap: dict,
-    anchor: Vec3,
-    scale_factor,
+    scene,
+    filename,
+    t,
+    tr2shmap,
+    anchor,
+    scale_factor
 ):
     """
     Adds the lpy mesh to the photonmapping scene.
-    :param sc:
-    :param filename:
-    :param t:
-    :param tr2shmap:
-    :param anchor:
-    :param scale_factor:
-    :return:
+
+    Parameters
+    ----------
+    scene : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    filename : str
+        The link to the lpy file
+    t : int
+        The number of iteration applied
+    tr2shmap : dict
+        The dictionary of triangles of plant
+    anchor : Vec3
+        The position of the plant
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    
+    Returns
+    -------
+        Add all the mesh of plant to the scene and return the list of index of organs
+
     """
     lsystem = Lsystem(filename)
     lstring = lsystem.derive(lsystem.axiom, t)
@@ -40,8 +53,28 @@ def add_lpy_file_to_scene(
 
 #add plant model to Scene
 def addPlantModel(
-    lscene, tr, tr2shmap, sc: libphotonmap_core.Scene, anchor: Vec3, scale_factor
+    lscene, tr, tr2shmap, sc, anchor, scale_factor
 ):
+    """
+    Add the PlantGL Shape of plant to the photon mapping scene. This function is calling by the function add_lpy_file_to_scene
+
+    Parameters
+    ----------
+    lscene : Lscene
+        The plantgl scene
+    tr : Tesselator
+        Tesselator
+    sc : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    tr2shmap : dict
+        The dictionary of triangles of plant
+    anchor : Vec3
+        The position of the plant
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+
+    """
+
     ctr = 0
     list_sh_id = set()
     for sh in lscene:
@@ -123,7 +156,30 @@ def addPlantModel(
     return list_sh_id
 
 #add plant to a scene of PlantGL to visualize
-def addPlantModelPgl(lscene, tr, sc, anchor: Vec3, scale_factor, shenergy = {}):
+def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy = {}):
+    """
+    Add the plant mesh to the PlantGL scene to visualize the scene
+
+    Parameters
+    ----------
+    lscene : Lscene
+        The plantgl scene
+    tr : Tesselator
+        Tesselator
+    sc : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    anchor : Vec3
+        The position of the plant
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    shenergy : dict
+        The dictionary of received energies in each organes of plant
+
+    Returns
+    -------
+        A PlantGL Scene with the plant
+    """
+        
     ctr = 0
     pglScene = Scene()
     for sh in lscene:

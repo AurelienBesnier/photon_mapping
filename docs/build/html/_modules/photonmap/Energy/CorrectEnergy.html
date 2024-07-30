@@ -74,6 +74,9 @@
   <h1>Source code for photonmap.Energy.CorrectEnergy</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">simpson</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">photonmap.Loader.LoadCaptor</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="sd">&quot;&quot;&quot;This is the doc string for the file3 file where we can say things about the python module.add()</span>
@@ -123,7 +126,7 @@
 
 <div class="viewcode-block" id="get_integral_of_band">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_integral_of_band">[docs]</a>
-<span class="k">def</span> <span class="nf">get_integral_of_band</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">get_integral_of_band</span><span class="p">(</span><span class="n">base_band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">divided_band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the integral of the band as a percentage</span>
 <span class="sd">    Parameters</span>
@@ -137,78 +140,56 @@
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">spec_range</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>
+    <span class="nb">sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">divided_band</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
-            <span class="n">spec_range</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    
-    <span class="n">I_simps</span> <span class="o">=</span> <span class="n">simpson</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">spec_range</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nb">sum</span> <span class="o">=</span> <span class="nb">sum</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">800</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base_band</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
             <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">total</span>  <span class="c1"># get as percentage</span></div>
+    <span class="k">return</span> <span class="nb">sum</span> <span class="o">/</span> <span class="n">total</span> </div>
 
-
-
-<div class="viewcode-block" id="get_average_of_band">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_average_of_band">[docs]</a>
-<span class="k">def</span> <span class="nf">get_average_of_band</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    band: range</span>
-<span class="sd">        The range of wavelength to compute the average of photon to send.</span>
-<span class="sd">    spectrum: dict</span>
-<span class="sd">        a dictionary representing the spectrum of the light with a wavelength as the key and a count of photons as the</span>
-<span class="sd">        value.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    wavelength: int</span>
-<span class="sd">        The wavelength in question.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cpt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">counts</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="n">b_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>  <span class="c1"># first for to get the average</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spectrum</span><span class="p">:</span>
-            <span class="n">counts</span> <span class="o">+=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">b_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">spectrum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">cpt</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">avg</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">cpt</span>
-    <span class="c1"># get the closest wavelength of that average</span>
-    <span class="n">res_key</span><span class="p">,</span> <span class="n">res_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">b_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">avg</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">res_key</span></div>
 
 
 <div class="viewcode-block" id="get_correct_energy_coeff">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_correct_energy_coeff">[docs]</a>
-<span class="k">def</span> <span class="nf">get_correct_energy_coeff</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">,</span> <span class="n">spec_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_correct_energy_coeff</span><span class="p">(</span><span class="n">base_spectral_range</span><span class="p">,</span> <span class="n">divided_spectral_range</span><span class="p">,</span> <span class="n">spec_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
     <span class="n">spec_dict</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span><span class="n">spec_file</span><span class="p">)</span>
-    <span class="n">wavelengths</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">base_band</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">base_spectral_range</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">base_spectral_range</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
-        <span class="n">r_band</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">bands_spectre</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-
-        <span class="n">wavelengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_average_of_band</span><span class="p">(</span><span class="n">r_band</span><span class="p">,</span> <span class="n">spec_dict</span><span class="p">))</span>
-        <span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_integral_of_band</span><span class="p">(</span><span class="n">r_band</span><span class="p">,</span> <span class="n">spec_dict</span><span class="p">))</span>
-
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">divided_spectral_range</span><span class="p">)):</span>
+        <span class="n">divided_band</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">divided_spectral_range</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">divided_spectral_range</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">integrals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_integral_of_band</span><span class="p">(</span><span class="n">base_band</span><span class="p">,</span> <span class="n">divided_band</span><span class="p">,</span> <span class="n">spec_dict</span><span class="p">))</span>
     
-    <span class="k">return</span> <span class="n">wavelengths</span><span class="p">,</span> <span class="n">integrals</span></div>
+    <span class="k">return</span> <span class="n">integrals</span></div>
 
 
-<div class="viewcode-block" id="correct_energy">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.correct_energy">[docs]</a>
-<span class="k">def</span> <span class="nf">correct_energy</span><span class="p">(</span><span class="n">shenergy</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">correction_ratio</span><span class="p">):</span>
+<div class="viewcode-block" id="get_points_calibration">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_points_calibration">[docs]</a>
+<span class="k">def</span> <span class="nf">get_points_calibration</span><span class="p">(</span><span class="n">list_captor</span><span class="p">,</span> <span class="n">points_calibration_file</span><span class="p">,</span> <span class="n">divided_spectral_range</span><span class="p">):</span>
+    <span class="n">points_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">points_calibration_file</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">divided_spectral_range</span><span class="p">)):</span>
+        <span class="n">cur_bande</span> <span class="o">=</span> <span class="n">divided_spectral_range</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">captor_index</span> <span class="o">=</span> <span class="n">findIndexOfCaptorInList</span><span class="p">(</span><span class="n">list_captor</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;xSite&quot;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ySite&quot;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;zSite&quot;</span><span class="p">])</span>
+            <span class="n">points</span><span class="p">[</span><span class="n">captor_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;Nmes_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cur_bande</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cur_bande</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">])]</span>
+        
+        <span class="n">points_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">points_calibration</span></div>
+
+
+<div class="viewcode-block" id="calibration_energy">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.calibration_energy">[docs]</a>
+<span class="k">def</span> <span class="nf">calibration_energy</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">correction_ratios</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.</span>
 <span class="sd">    Parameters</span>
@@ -219,8 +200,37 @@
 <span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">shenergy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">shenergy</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">correction_ratio</span><span class="p">)</span></div>
+    <span class="n">N_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)):</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cur_points_calibration</span> <span class="o">=</span> <span class="n">points_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1">#calculate N_sim appliqué le coefficient de correction </span>
+        <span class="n">N_sim_cor</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">energy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">N_sim_cor</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">correction_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+        
+        <span class="c1">#regression linear</span>
+        <span class="n">N_mes_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">N_sim_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+       
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cur_points_calibration</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">N_sim_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N_sim_cor</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">N_mes_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">N_sim_calibration</span><span class="p">,</span> <span class="n">N_mes_calibration</span><span class="p">)</span>
+
+        <span class="c1">#calculate Nmes</span>
+        <span class="n">N_mes_calculate</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">N_sim_cor</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur_points_calibration</span><span class="p">:</span>
+                <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_points_calibration</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">slope</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+        <span class="n">N_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N_mes_calculate</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">N_calibration</span> </div>
 
 </pre></div>
 

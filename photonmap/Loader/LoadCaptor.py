@@ -93,13 +93,26 @@ class Captor:
     def getGeometry(self):
         return self.vertices, self.triangles, self.normals
 
-def addCaptors(scene, scale_factor: int, captor_triangle_dict: dict, filename: str):
+def addCaptors(scene, scale_factor, captor_triangle_dict, filename):
     """
     Adds circular captors to the scene. the captors needs to be in a file
-    :param filename:
-    :param scene:
-    :param captor_dict:
-    :return:
+
+    Parameters
+    ----------
+    scene : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    captor_triangle_dict : dict
+        The dictionary of the triangles of captors
+    filename : str
+        The link to the file which contains the data of captors
+
+    
+    Returns
+    -------
+        Add all the mesh of captors to the scene and return the list of captors
+
     """
     lastTriangleId = scene.nFaces()
     captor_list = []
@@ -130,6 +143,27 @@ def addCaptors(scene, scale_factor: int, captor_triangle_dict: dict, filename: s
     return captor_list
 
 def findIndexOfCaptorInList(list_captor, x, y, z):
+    """
+    Find the index of a captor while knowing its position
+
+    Parameters
+    ----------
+    list_captor : Array
+        The list of the captor in the scene
+    x : float
+        x coordinate
+    y : float
+        y coordinate
+    z : float
+        z coordinate
+
+    Returns
+    -------
+        if not found, return -1 
+        if found, return the index of the captor
+
+    """
+        
     for i in range(len(list_captor)):
         if(list_captor[i].equal(x, y, z)):
             return i
@@ -137,6 +171,24 @@ def findIndexOfCaptorInList(list_captor, x, y, z):
 
 #add captor to a scene of PlantGL to visualize
 def addCapteurPgl(sc, scale_factor: int, filename: str):
+    """
+    Add the captors to the PlantGL scene to visualize the scene
+
+    Parameters
+    ----------
+    sc : Lscene
+        The plantgl scene
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    filename : float
+        The link to the file which contains the data of captors
+
+    Returns
+    -------
+        A PlantGL Scene with the captors
+
+    """
+        
     pglScene = Scene()
 
     with open(filename, "r") as f:

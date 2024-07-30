@@ -14,22 +14,34 @@ from photonmap import (
 #Objectif of this module is adding environment object to the scene of Photon Mapping
 
 def add_environment(
-    scene: libphotonmap_core.Scene,
-    sh: Shape,
-    w: int,
+    scene,
+    sh,
+    w,
     materialsR: dict,
     materialsS: dict,
     materialsT: dict,
     is_only_lamp = False
 ):
     """
-    Adds a PlantGL Shape to the Photon Mapping scene.
-    :param scene: A libphotonmap_core Scene
-    :param sh: The plantGL Shape to add
-    :param w: The wavelength of the light to simulate.
-    :param materialsR: The materials reflectance dictionary
-    :param materialsT: The materials transmittance dictionary
-    :return:
+    Adds a PlantGL Shape of the room to the Photon Mapping scene.
+
+    Parameters
+    ----------
+    scene : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    sh : Shape
+        The plantGL Shape to add
+    w : int 
+        The wavelength of the light to simulate.
+    materialsR : dict 
+        The materials reflection dictionary
+    materialsS : dict 
+        The materials specularity dictionary
+    materialsT : dict 
+        The materials transmission dictionary
+    is_only_lamp : bool
+        If True, add only the lamps and captors, If False, add all the objects in room
+
     """
     normals = VectorFloat(flatten(sh.geometry.normalList))
     indices = VectorUint(flatten(sh.geometry.indexList))
@@ -95,6 +107,20 @@ def add_environment(
 
 #add light direction to a scene of PlantGL to visualize
 def addLightDirectionPgl(sc, scale_factor):
+    """
+    Adds a PlantGL Shape of the room to the Photon Mapping scene.
+
+    Parameters
+    ----------
+    sc : Lscene
+        The plantgl scene
+    scale_factor : int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+
+    Returns
+    -------
+        A PlantGL Scene with the hemisphere of each surface
+    """
     pglScene = Scene()
     
     for sh in sc:

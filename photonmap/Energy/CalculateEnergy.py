@@ -11,7 +11,7 @@ def write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons):
     with open(filename, "w") as f:
         w_str = "id,xSite,ySite,zSite,radius"
         for i in range(len(bands_spectre)):
-            w_str += ",N_mes_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+            w_str += ",N_sim_calibration_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
 
         for i in range(len(bands_spectre)):
             w_str += ",N_sim_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])

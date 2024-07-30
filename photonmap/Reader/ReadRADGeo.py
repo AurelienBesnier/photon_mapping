@@ -5,9 +5,26 @@ from openalea.plantgl.all import *
 import re
 
 #Objectif of this module is read the geometry of each object of fichier RAD
-#Data is located in this directory: ./asset
 
 def cylinder_vertices(start, end, rayon):
+    """
+    Generate the geometry of a cylinder
+    
+    Parameters
+    ----------
+    start: Vec3
+        The center of the first circle of cylinder
+    end: Vec3
+        The center of the second circle of cylinder
+    rayon: float
+        The radius of these two circles
+    
+    Returns
+    -------
+        A array of vertices of an cylinder
+
+    """
+
     vert = []
     direction = end - start
     direction.normalize()
@@ -28,11 +45,23 @@ def cylinder_vertices(start, end, rayon):
 
 def read_rad(file: str, scale_factor: int, invert_normals: bool):
     """
-    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) a make a plantGL Scene
-    :param file: the rad filename
-    :param invert_normals: whether to invert the normals or not.
-    :return: A plantGL Scene.
+    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a make a plantGL Scene
+    
+    Parameters
+    ----------
+    file: str
+        the rad filename
+    scale_factor: int
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    invert_normals: bool
+        whether to invert the normals or not.
+    
+    Returns
+    -------
+        A plantGL Scene.
+
     """
+
     with open(file, "r") as f:
         lines = f.readlines()
         materials = {}

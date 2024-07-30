@@ -102,35 +102,93 @@
 <td><p>Adds the lpy mesh to the photonmapping scene.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Loader.LoadPlant.addPlantModel" title="photonmap.Loader.LoadPlant.addPlantModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addPlantModel</span></code></a>(lscene, tr, tr2shmap, sc, anchor, ...)</p></td>
-<td><p></p></td>
+<td><p>Add the PlantGL Shape of plant to the photon mapping scene. This function is calling by the function add_lpy_file_to_scene</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadPlant.addPlantModelPgl" title="photonmap.Loader.LoadPlant.addPlantModelPgl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addPlantModelPgl</span></code></a>(lscene, tr, sc, anchor, scale_factor, ...)</p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadPlant.addPlantModelPgl" title="photonmap.Loader.LoadPlant.addPlantModelPgl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addPlantModelPgl</span></code></a>(lscene, tr, sc, anchor, scale_factor)</p></td>
+<td><p>Add the plant mesh to the PlantGL scene to visualize the scene</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadPlant.add_lpy_file_to_scene">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">add_lpy_file_to_scene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.libphotonmap_core.Scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr2shmap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#add_lpy_file_to_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.add_lpy_file_to_scene" title="Link to this definition"></a></dt>
-<dd><p>Adds the lpy mesh to the photonmapping scene.
-:param sc:
-:param filename:
-:param t:
-:param tr2shmap:
-:param anchor:
-:param scale_factor:
-:return:</p>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">add_lpy_file_to_scene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr2shmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#add_lpy_file_to_scene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.add_lpy_file_to_scene" title="Link to this definition"></a></dt>
+<dd><p>Adds the lpy mesh to the photonmapping scene.</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>scene<span class="classifier">libphotonmap_core.Scene</span></dt><dd><p>The photon mapping scene used to run the simulation</p>
+</dd>
+<dt>filename<span class="classifier">str</span></dt><dd><p>The link to the lpy file</p>
+</dd>
+<dt>t<span class="classifier">int</span></dt><dd><p>The number of iteration applied</p>
+</dd>
+<dt>tr2shmap<span class="classifier">dict</span></dt><dd><p>The dictionary of triangles of plant</p>
+</dd>
+<dt>anchor<span class="classifier">Vec3</span></dt><dd><p>The position of the plant</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>Add all the mesh of plant to the scene and return the list of index of organs</p>
+</div></blockquote>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadPlant.addPlantModel">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">addPlantModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lscene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr2shmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.libphotonmap_core.Scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#addPlantModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.addPlantModel" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">addPlantModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lscene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr2shmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#addPlantModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.addPlantModel" title="Link to this definition"></a></dt>
+<dd><p>Add the PlantGL Shape of plant to the photon mapping scene. This function is calling by the function add_lpy_file_to_scene</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>lscene<span class="classifier">Lscene</span></dt><dd><p>The plantgl scene</p>
+</dd>
+<dt>tr<span class="classifier">Tesselator</span></dt><dd><p>Tesselator</p>
+</dd>
+<dt>sc<span class="classifier">libphotonmap_core.Scene</span></dt><dd><p>The photon mapping scene used to run the simulation</p>
+</dd>
+<dt>tr2shmap<span class="classifier">dict</span></dt><dd><p>The dictionary of triangles of plant</p>
+</dd>
+<dt>anchor<span class="classifier">Vec3</span></dt><dd><p>The position of the plant</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadPlant.addPlantModelPgl">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">addPlantModelPgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lscene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">photonmap.Vec3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shenergy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#addPlantModelPgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.addPlantModelPgl" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadPlant.</span></span><span class="sig-name descname"><span class="pre">addPlantModelPgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lscene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shenergy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadPlant.html#addPlantModelPgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadPlant.addPlantModelPgl" title="Link to this definition"></a></dt>
+<dd><p>Add the plant mesh to the PlantGL scene to visualize the scene</p>
+<section id="id2">
+<h4>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>lscene<span class="classifier">Lscene</span></dt><dd><p>The plantgl scene</p>
+</dd>
+<dt>tr<span class="classifier">Tesselator</span></dt><dd><p>Tesselator</p>
+</dd>
+<dt>sc<span class="classifier">libphotonmap_core.Scene</span></dt><dd><p>The photon mapping scene used to run the simulation</p>
+</dd>
+<dt>anchor<span class="classifier">Vec3</span></dt><dd><p>The position of the plant</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+<dt>shenergy<span class="classifier">dict</span></dt><dd><p>The dictionary of received energies in each organes of plant</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h4>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A PlantGL Scene with the plant</p>
+</div></blockquote>
+</section>
+</dd></dl>
 
 </section>
 </section>

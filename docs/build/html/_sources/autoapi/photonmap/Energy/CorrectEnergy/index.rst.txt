@@ -15,9 +15,9 @@ Functions
 
    photonmap.Energy.CorrectEnergy.read_spectrum_file
    photonmap.Energy.CorrectEnergy.get_integral_of_band
-   photonmap.Energy.CorrectEnergy.get_average_of_band
    photonmap.Energy.CorrectEnergy.get_correct_energy_coeff
-   photonmap.Energy.CorrectEnergy.correct_energy
+   photonmap.Energy.CorrectEnergy.get_points_calibration
+   photonmap.Energy.CorrectEnergy.calibration_energy
 
 
 
@@ -39,7 +39,7 @@ Functions
        the first wavelength in the file.
 
 
-.. py:function:: get_integral_of_band(band: range, spectrum: dict) -> float
+.. py:function:: get_integral_of_band(base_band: range, divided_band: range, spectrum: dict) -> float
 
    Returns the integral of the band as a percentage
    Parameters
@@ -54,27 +54,13 @@ Functions
 
 
 
-.. py:function:: get_average_of_band(band: range, spectrum: dict) -> int
-
-   Get the wavelength that represent the average of the count of photon send in a band of the spectrum of the light.
-   Parameters
-   ----------
-   band: range
-       The range of wavelength to compute the average of photon to send.
-   spectrum: dict
-       a dictionary representing the spectrum of the light with a wavelength as the key and a count of photons as the
-       value.
-
-   Returns
-   -------
-   wavelength: int
-       The wavelength in question.
+.. py:function:: get_correct_energy_coeff(base_spectral_range, divided_spectral_range, spec_file: str)
 
 
-.. py:function:: get_correct_energy_coeff(bands_spectre, spec_file: str)
+.. py:function:: get_points_calibration(list_captor, points_calibration_file, divided_spectral_range)
 
 
-.. py:function:: correct_energy(shenergy: dict, correction_ratio)
+.. py:function:: calibration_energy(energies, correction_ratios, points_calibration)
 
    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.
    Parameters

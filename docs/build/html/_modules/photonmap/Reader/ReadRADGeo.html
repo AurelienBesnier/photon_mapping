@@ -79,11 +79,28 @@
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="c1">#Objectif of this module is read the geometry of each object of fichier RAD</span>
-<span class="c1">#Data is located in this directory: ./asset</span>
 
 <div class="viewcode-block" id="cylinder_vertices">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadRADGeo/index.html#photonmap.Reader.ReadRADGeo.cylinder_vertices">[docs]</a>
 <span class="k">def</span> <span class="nf">cylinder_vertices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">rayon</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate the geometry of a cylinder</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start: Vec3</span>
+<span class="sd">        The center of the first circle of cylinder</span>
+<span class="sd">    end: Vec3</span>
+<span class="sd">        The center of the second circle of cylinder</span>
+<span class="sd">    rayon: float</span>
+<span class="sd">        The radius of these two circles</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A array of vertices of an cylinder</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">vert</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
     <span class="n">direction</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
@@ -107,11 +124,23 @@
 <a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadRADGeo/index.html#photonmap.Reader.ReadRADGeo.read_rad">[docs]</a>
 <span class="k">def</span> <span class="nf">read_rad</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">invert_normals</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) a make a plantGL Scene</span>
-<span class="sd">    :param file: the rad filename</span>
-<span class="sd">    :param invert_normals: whether to invert the normals or not.</span>
-<span class="sd">    :return: A plantGL Scene.</span>
+<span class="sd">    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a make a plantGL Scene</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file: str</span>
+<span class="sd">        the rad filename</span>
+<span class="sd">    scale_factor: int</span>
+<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
+<span class="sd">    invert_normals: bool</span>
+<span class="sd">        whether to invert the normals or not.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A plantGL Scene.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
         <span class="n">materials</span> <span class="o">=</span> <span class="p">{}</span>

@@ -90,22 +90,34 @@
 <div class="viewcode-block" id="add_environment">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadEnvironment/index.html#photonmap.Loader.LoadEnvironment.add_environment">[docs]</a>
 <span class="k">def</span> <span class="nf">add_environment</span><span class="p">(</span>
-    <span class="n">scene</span><span class="p">:</span> <span class="n">libphotonmap_core</span><span class="o">.</span><span class="n">Scene</span><span class="p">,</span>
-    <span class="n">sh</span><span class="p">:</span> <span class="n">Shape</span><span class="p">,</span>
-    <span class="n">w</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">scene</span><span class="p">,</span>
+    <span class="n">sh</span><span class="p">,</span>
+    <span class="n">w</span><span class="p">,</span>
     <span class="n">materialsR</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">materialsS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">materialsT</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">is_only_lamp</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adds a PlantGL Shape to the Photon Mapping scene.</span>
-<span class="sd">    :param scene: A libphotonmap_core Scene</span>
-<span class="sd">    :param sh: The plantGL Shape to add</span>
-<span class="sd">    :param w: The wavelength of the light to simulate.</span>
-<span class="sd">    :param materialsR: The materials reflectance dictionary</span>
-<span class="sd">    :param materialsT: The materials transmittance dictionary</span>
-<span class="sd">    :return:</span>
+<span class="sd">    Adds a PlantGL Shape of the room to the Photon Mapping scene.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scene : libphotonmap_core.Scene</span>
+<span class="sd">        The photon mapping scene used to run the simulation</span>
+<span class="sd">    sh : Shape</span>
+<span class="sd">        The plantGL Shape to add</span>
+<span class="sd">    w : int </span>
+<span class="sd">        The wavelength of the light to simulate.</span>
+<span class="sd">    materialsR : dict </span>
+<span class="sd">        The materials reflection dictionary</span>
+<span class="sd">    materialsS : dict </span>
+<span class="sd">        The materials specularity dictionary</span>
+<span class="sd">    materialsT : dict </span>
+<span class="sd">        The materials transmission dictionary</span>
+<span class="sd">    is_only_lamp : bool</span>
+<span class="sd">        If True, add only the lamps and captors, If False, add all the objects in room</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">sh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">normalList</span><span class="p">))</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">sh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">indexList</span><span class="p">))</span>
@@ -174,6 +186,20 @@
 <div class="viewcode-block" id="addLightDirectionPgl">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadEnvironment/index.html#photonmap.Loader.LoadEnvironment.addLightDirectionPgl">[docs]</a>
 <span class="k">def</span> <span class="nf">addLightDirectionPgl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a PlantGL Shape of the room to the Photon Mapping scene.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sc : Lscene</span>
+<span class="sd">        The plantgl scene</span>
+<span class="sd">    scale_factor : int</span>
+<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A PlantGL Scene with the hemisphere of each surface</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pglScene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">()</span>
     
     <span class="k">for</span> <span class="n">sh</span> <span class="ow">in</span> <span class="n">sc</span><span class="p">:</span>

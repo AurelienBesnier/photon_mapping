@@ -78,13 +78,12 @@
 
 <span class="c1">#Objectif of this module is read the optical properties (material) of each object </span>
 <span class="c1">#Calculate the average value of the spectrum range</span>
-<span class="c1">#Data is located in this directory: ./PO</span>
 
 <div class="viewcode-block" id="setup_dataset_materials">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadPO/index.html#photonmap.Reader.ReadPO.setup_dataset_materials">[docs]</a>
 <span class="k">def</span> <span class="nf">setup_dataset_materials</span><span class="p">(</span><span class="n">w_start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">w_end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">po_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of</span>
+<span class="sd">    Fills the materialsR (reflection), materialsS (specular) and materialsT (transmission) dictionaries with information from the provided data for the materials of</span>
 <span class="sd">    the simulation.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
@@ -93,11 +92,20 @@
 <span class="sd">        The first wavelength of band.</span>
 <span class="sd">    w_end: int</span>
 <span class="sd">        The last wavelength of band.</span>
+<span class="sd">    po_dir: str</span>
+<span class="sd">        The folder which contains all the optical properties of the room</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-
+<span class="sd">    materialsR : dict</span>
+<span class="sd">        The reflections of all the materials</span>
+<span class="sd">    materialsS : dict</span>
+<span class="sd">        The specularities of all the materials</span>
+<span class="sd">    materialsT : dict</span>
+<span class="sd">        The transmission of all the materials</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">materialsT</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">materialsS</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">materialsR</span> <span class="o">=</span> <span class="p">{}</span>
@@ -168,6 +176,22 @@
 <div class="viewcode-block" id="get_average_of_props_optic">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Reader/ReadPO/index.html#photonmap.Reader.ReadPO.get_average_of_props_optic">[docs]</a>
 <span class="k">def</span> <span class="nf">get_average_of_props_optic</span><span class="p">(</span><span class="n">band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the average value of an optical property in a spectral range </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    band: range</span>
+<span class="sd">        The spectral range which is considered</span>
+<span class="sd">    props: dict</span>
+<span class="sd">        A dictionary which contains the optical properties calculated for each wavelength in spectral range   </span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        result: float</span>
+<span class="sd">            the average optical property in a spectral range</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">res</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">band</span><span class="p">:</span>

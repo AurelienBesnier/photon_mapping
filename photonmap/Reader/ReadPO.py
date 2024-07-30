@@ -4,11 +4,10 @@ from photonmap.Energy.CorrectEnergy import read_spectrum_file
 
 #Objectif of this module is read the optical properties (material) of each object 
 #Calculate the average value of the spectrum range
-#Data is located in this directory: ./PO
 
 def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     """
-    Fills the materialsR and materialsT dictionaries with information from the provided data for the materials of
+    Fills the materialsR (reflection), materialsS (specular) and materialsT (transmission) dictionaries with information from the provided data for the materials of
     the simulation.
     
     Parameters
@@ -17,11 +16,20 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
         The first wavelength of band.
     w_end: int
         The last wavelength of band.
+    po_dir: str
+        The folder which contains all the optical properties of the room
 
     Returns
     -------
-
+    materialsR : dict
+        The reflections of all the materials
+    materialsS : dict
+        The specularities of all the materials
+    materialsT : dict
+        The transmission of all the materials
+    
     """
+
     materialsT = {}
     materialsS = {}
     materialsR = {}
@@ -89,6 +97,22 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     return materialsR, materialsS, materialsT
 
 def get_average_of_props_optic(band: range, props: dict) -> float:
+    """
+    Calculate the average value of an optical property in a spectral range 
+    
+    Parameters
+    ----------
+    band: range
+        The spectral range which is considered
+    props: dict
+        A dictionary which contains the optical properties calculated for each wavelength in spectral range   
+
+    Returns
+    -------
+        result: float
+            the average optical property in a spectral range
+    """
+
     res = 0.0
     count = 0
     for i in band:

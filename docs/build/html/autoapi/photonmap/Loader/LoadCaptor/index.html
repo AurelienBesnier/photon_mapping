@@ -94,32 +94,124 @@
 <span id="photonmap-loader-loadcaptor"></span><h1><a class="reference internal" href="#module-photonmap.Loader.LoadCaptor" title="photonmap.Loader.LoadCaptor"><code class="xref py py-mod docutils literal notranslate"><span class="pre">photonmap.Loader.LoadCaptor</span></code></a><a class="headerlink" href="#module-photonmap.Loader.LoadCaptor" title="Link to this heading"></a></h1>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.addCaptors" title="photonmap.Loader.LoadCaptor.addCaptors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addCaptors</span></code></a>(scene, scale_factor, captor_dict, filename)</p></td>
-<td><p>Adds circular captors to the scene. the captors needs to be in a file</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.addCapteurPgl" title="photonmap.Loader.LoadCaptor.addCapteurPgl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addCapteurPgl</span></code></a>(sc, scale_factor, filename)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.Captor" title="photonmap.Loader.LoadCaptor.Captor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Captor</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.addCaptors" title="photonmap.Loader.LoadCaptor.addCaptors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addCaptors</span></code></a>(scene, scale_factor, captor_triangle_dict, ...)</p></td>
+<td><p>Adds circular captors to the scene. the captors needs to be in a file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.findIndexOfCaptorInList" title="photonmap.Loader.LoadCaptor.findIndexOfCaptorInList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">findIndexOfCaptorInList</span></code></a>(list_captor, x, y, z)</p></td>
+<td><p>Find the index of a captor while knowing its position</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Loader.LoadCaptor.addCapteurPgl" title="photonmap.Loader.LoadCaptor.addCapteurPgl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">addCapteurPgl</span></code></a>(sc, scale_factor, filename)</p></td>
+<td><p>Add the captors to the PlantGL scene to visualize the scene</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.Captor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadCaptor.</span></span><span class="sig-name descname"><span class="pre">Captor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nor_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nor_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nor_z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.Captor.createGeometry">
+<span class="sig-name descname"><span class="pre">createGeometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor.createGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor.createGeometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.Captor.equal">
+<span class="sig-name descname"><span class="pre">equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xSite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ySite</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zSite</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor.equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor.equal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.Captor.getGeometry">
+<span class="sig-name descname"><span class="pre">getGeometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor.getGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor.getGeometry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.addCaptors">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadCaptor.</span></span><span class="sig-name descname"><span class="pre">addCaptors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#addCaptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.addCaptors" title="Link to this definition"></a></dt>
-<dd><p>Adds circular captors to the scene. the captors needs to be in a file
-:param filename:
-:param scene:
-:param captor_dict:
-:return:</p>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadCaptor.</span></span><span class="sig-name descname"><span class="pre">addCaptors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_triangle_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#addCaptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.addCaptors" title="Link to this definition"></a></dt>
+<dd><p>Adds circular captors to the scene. the captors needs to be in a file</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>scene<span class="classifier">libphotonmap_core.Scene</span></dt><dd><p>The photon mapping scene used to run the simulation</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+<dt>captor_triangle_dict<span class="classifier">dict</span></dt><dd><p>The dictionary of the triangles of captors</p>
+</dd>
+<dt>filename<span class="classifier">str</span></dt><dd><p>The link to the file which contains the data of captors</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>Add all the mesh of captors to the scene and return the list of captors</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.findIndexOfCaptorInList">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadCaptor.</span></span><span class="sig-name descname"><span class="pre">findIndexOfCaptorInList</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_captor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#findIndexOfCaptorInList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.findIndexOfCaptorInList" title="Link to this definition"></a></dt>
+<dd><p>Find the index of a captor while knowing its position</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>list_captor<span class="classifier">Array</span></dt><dd><p>The list of the captor in the scene</p>
+</dd>
+<dt>x<span class="classifier">float</span></dt><dd><p>x coordinate</p>
+</dd>
+<dt>y<span class="classifier">float</span></dt><dd><p>y coordinate</p>
+</dd>
+<dt>z<span class="classifier">float</span></dt><dd><p>z coordinate</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>if not found, return -1
+if found, return the index of the captor</p>
+</div></blockquote>
+</section>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.addCapteurPgl">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Loader.LoadCaptor.</span></span><span class="sig-name descname"><span class="pre">addCapteurPgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#addCapteurPgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.addCapteurPgl" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Add the captors to the PlantGL scene to visualize the scene</p>
+<section id="id3">
+<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>sc<span class="classifier">Lscene</span></dt><dd><p>The plantgl scene</p>
+</dd>
+<dt>scale_factor<span class="classifier">int</span></dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+<dt>filename<span class="classifier">float</span></dt><dd><p>The link to the file which contains the data of captors</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Returns<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A PlantGL Scene with the captors</p>
+</div></blockquote>
+</section>
+</dd></dl>
 
 </section>
 </section>

@@ -85,161 +85,233 @@
 
 <span class="c1">#Objectif of this module is adding captors to the scene of photon mapping to the received energy </span>
 <span class="c1">#Data is located in this directory: ./captors</span>
+<div class="viewcode-block" id="Captor">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor">[docs]</a>
+<span class="k">class</span> <span class="nc">Captor</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pos_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pos_z</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nor_x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nor_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nor_z</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span> <span class="o">=</span> <span class="n">pos_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span> <span class="o">=</span> <span class="n">pos_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span> <span class="o">=</span> <span class="n">pos_z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span> <span class="o">=</span> <span class="n">nor_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span> <span class="o">=</span> <span class="n">nor_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span> <span class="o">=</span> <span class="n">nor_z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createGeometry</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="Captor.createGeometry">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.createGeometry">[docs]</a>
+    <span class="k">def</span> <span class="nf">createGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
+        <span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
+        <span class="n">triangles</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">()</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="mf">3.14285</span> <span class="o">/</span> <span class="mi">180</span>
+        <span class="n">deltaAngle</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">triangleCount</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">z1</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">y1</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">360</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">z2</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">y2</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">z2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
+
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
+
+            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">triangleCount</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="n">deltaAngle</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="n">normals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">triangles</span> <span class="o">=</span> <span class="n">triangles</span></div>
+
+    
+<div class="viewcode-block" id="Captor.equal">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.equal">[docs]</a>
+    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xSite</span><span class="p">,</span> <span class="n">ySite</span><span class="p">,</span> <span class="n">zSite</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span> <span class="o">==</span> <span class="n">xSite</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span> <span class="o">==</span> <span class="n">ySite</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span> <span class="o">==</span> <span class="n">zSite</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Captor.getGeometry">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.getGeometry">[docs]</a>
+    <span class="k">def</span> <span class="nf">getGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normals</span></div>
+</div>
+
 
 <div class="viewcode-block" id="addCaptors">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCaptors">[docs]</a>
-<span class="k">def</span> <span class="nf">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">captor_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adds circular captors to the scene. the captors needs to be in a file</span>
-<span class="sd">    :param filename:</span>
-<span class="sd">    :param scene:</span>
-<span class="sd">    :param captor_dict:</span>
-<span class="sd">    :return:</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scene : libphotonmap_core.Scene</span>
+<span class="sd">        The photon mapping scene used to run the simulation</span>
+<span class="sd">    scale_factor : int</span>
+<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
+<span class="sd">    captor_triangle_dict : dict</span>
+<span class="sd">        The dictionary of the triangles of captors</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        The link to the file which contains the data of captors</span>
+
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Add all the mesh of captors to the scene and return the list of captors</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+    <span class="n">captor_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="n">captorId</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             
             <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
             <span class="n">xnorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
             <span class="n">ynorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
             <span class="n">znorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">z</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">]</span>
-            <span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">]</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">vertices</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
-            <span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
-            <span class="n">triangles</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">()</span>
 
-            <span class="n">val</span> <span class="o">=</span> <span class="mf">3.14285</span> <span class="o">/</span> <span class="mi">180</span>
-            <span class="n">deltaAngle</span> <span class="o">=</span> <span class="mi">10</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">triangleCount</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">znorm</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">y1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">z1</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">y1</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">z1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">point1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">360</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">znorm</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">x2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">y2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">z2</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">x2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">y2</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">z2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-
-                <span class="n">point2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point2</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-                <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-                <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
-                <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-                <span class="n">triangleCount</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="n">deltaAngle</span>
-
+            <span class="n">captor</span> <span class="o">=</span> <span class="n">Captor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
             <span class="n">scene</span><span class="o">.</span><span class="n">addCaptor</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
-                <span class="n">captor_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">captorId</span>
+                <span class="n">captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">captorId</span>
             <span class="n">captorId</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span></div>
+            <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+            <span class="n">captor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">captor_list</span></div>
 
+
+<div class="viewcode-block" id="findIndexOfCaptorInList">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.findIndexOfCaptorInList">[docs]</a>
+<span class="k">def</span> <span class="nf">findIndexOfCaptorInList</span><span class="p">(</span><span class="n">list_captor</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find the index of a captor while knowing its position</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_captor : Array</span>
+<span class="sd">        The list of the captor in the scene</span>
+<span class="sd">    x : float</span>
+<span class="sd">        x coordinate</span>
+<span class="sd">    y : float</span>
+<span class="sd">        y coordinate</span>
+<span class="sd">    z : float</span>
+<span class="sd">        z coordinate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        if not found, return -1 </span>
+<span class="sd">        if found, return the index of the captor</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_captor</span><span class="p">)):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">list_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">i</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
 
 
 <span class="c1">#add captor to a scene of PlantGL to visualize</span>
 <div class="viewcode-block" id="addCapteurPgl">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCapteurPgl">[docs]</a>
 <span class="k">def</span> <span class="nf">addCapteurPgl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add the captors to the PlantGL scene to visualize the scene</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sc : Lscene</span>
+<span class="sd">        The plantgl scene</span>
+<span class="sd">    scale_factor : int</span>
+<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
+<span class="sd">    filename : float</span>
+<span class="sd">        The link to the file which contains the data of captors</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A PlantGL Scene with the captors</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+        
     <span class="n">pglScene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">()</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="n">captorId</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
             <span class="n">xnorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
             <span class="n">ynorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
             <span class="n">znorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">y</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">z</span> <span class="o">/</span> <span class="n">scale_factor</span><span class="p">]</span>
-            <span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">]</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">normals</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">triangles</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="n">val</span> <span class="o">=</span> <span class="mf">3.14285</span> <span class="o">/</span> <span class="mi">180</span>
-            <span class="n">deltaAngle</span> <span class="o">=</span> <span class="mi">45</span>
+            <span class="n">captor</span> <span class="o">=</span> <span class="n">Captor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
 
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
- 
-            <span class="n">triangleCount</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="n">znorm</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">y1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">z1</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">x1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">y1</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">z1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">point1</span> <span class="o">=</span> <span class="p">[</span><span class="n">x1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
-    
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">point1</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">359</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">znorm</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">x2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">y2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">z2</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">x2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
-                    <span class="n">y2</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">z2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
+            <span class="n">pgl_vertices</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">pgl_triangles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">pgl_normals</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="n">point2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z2</span> <span class="o">+</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
-                <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">point2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">point2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">point2</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-                <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-                <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">Index3</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">)</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">pgl_vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
+                <span class="n">pgl_normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">normals</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">normals</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">normals</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
 
-                <span class="n">triangleCount</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">i</span> <span class="o">+=</span> <span class="n">deltaAngle</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">pgl_triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Index3</span><span class="p">(</span><span class="n">triangles</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">triangles</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">triangles</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
 
-            <span class="n">tmpSh</span><span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">TriangleSet</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">))</span>
+            <span class="n">tmpSh</span><span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">TriangleSet</span><span class="p">(</span><span class="n">pgl_vertices</span><span class="p">,</span> <span class="n">pgl_triangles</span><span class="p">,</span> <span class="n">pgl_normals</span><span class="p">))</span>
             <span class="n">tmpSh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">pglScene</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tmpSh</span><span class="p">)</span>
 

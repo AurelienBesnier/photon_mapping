@@ -99,25 +99,57 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Reader.ReadRADGeo.cylinder_vertices" title="photonmap.Reader.ReadRADGeo.cylinder_vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cylinder_vertices</span></code></a>(start, end, rayon)</p></td>
-<td><p></p></td>
+<td><p>Generate the geometry of a cylinder</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Reader.ReadRADGeo.read_rad" title="photonmap.Reader.ReadRADGeo.read_rad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_rad</span></code></a>(file, scale_factor, invert_normals)</p></td>
-<td><p>Parse a radiance file (<a class="reference external" href="https://radsite.lbl.gov/radiance/framed.html">https://radsite.lbl.gov/radiance/framed.html</a>) a make a plantGL Scene</p></td>
+<td><p>Parse a radiance file (<a class="reference external" href="https://radsite.lbl.gov/radiance/framed.html">https://radsite.lbl.gov/radiance/framed.html</a>) to a make a plantGL Scene</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Reader.ReadRADGeo.cylinder_vertices">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Reader.ReadRADGeo.</span></span><span class="sig-name descname"><span class="pre">cylinder_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rayon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Reader/ReadRADGeo.html#cylinder_vertices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Reader.ReadRADGeo.cylinder_vertices" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Generate the geometry of a cylinder</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>start: Vec3</dt><dd><p>The center of the first circle of cylinder</p>
+</dd>
+<dt>end: Vec3</dt><dd><p>The center of the second circle of cylinder</p>
+</dd>
+<dt>rayon: float</dt><dd><p>The radius of these two circles</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A array of vertices of an cylinder</p>
+</div></blockquote>
+</section>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Reader.ReadRADGeo.read_rad">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Reader.ReadRADGeo.</span></span><span class="sig-name descname"><span class="pre">read_rad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_normals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Reader/ReadRADGeo.html#read_rad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Reader.ReadRADGeo.read_rad" title="Link to this definition"></a></dt>
-<dd><p>Parse a radiance file (<a class="reference external" href="https://radsite.lbl.gov/radiance/framed.html">https://radsite.lbl.gov/radiance/framed.html</a>) a make a plantGL Scene
-:param file: the rad filename
-:param invert_normals: whether to invert the normals or not.
-:return: A plantGL Scene.</p>
+<dd><p>Parse a radiance file (<a class="reference external" href="https://radsite.lbl.gov/radiance/framed.html">https://radsite.lbl.gov/radiance/framed.html</a>) to a make a plantGL Scene</p>
+<section id="id1">
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>file: str</dt><dd><p>the rad filename</p>
+</dd>
+<dt>scale_factor: int</dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
+</dd>
+<dt>invert_normals: bool</dt><dd><p>whether to invert the normals or not.</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
+<blockquote>
+<div><p>A plantGL Scene.</p>
+</div></blockquote>
+</section>
 </dd></dl>
 
 </section>

@@ -20,10 +20,10 @@ Functions
 
 
 
-.. py:function:: write_captor_energy(energy, w_start, w_end, n_photons)
+.. py:function:: write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons)
 
 
-.. py:function:: write_plant_energy(energy, w_start, w_end, n_photons)
+.. py:function:: write_plant_energy(energies, list_plant, bands_spectre, n_photons)
 
 
 .. py:function:: captor_add_energy(captor_dict, integrator, energy)

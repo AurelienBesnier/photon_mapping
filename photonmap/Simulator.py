@@ -32,17 +32,44 @@ class Simulator:
 
     Attributes
     ----------
-    name : str
-        first name of the person
-    surname : str
-        family name of the person
-    age : int
-        age of the person
+    nb_photons: int
+        The number of photons in simulation
+    maximum_depth: int
+        The maximum number of times that the light bounces in the scene 
+    scale_factor: float
+        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+    t_min: float
+        The minimum distance between the point of intersection and the origin of the light ray
+    nb_thread: int
+        The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
+    is_backface_culling: bool
+        Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
+    base_spectral_range: dict
+        The spectral range used to run the simulation
+    divided_spectral_range: array
+        The list of spectral ranges divided from the base spectral range.
+    rendering: bool
+        Set to True to render the output images
+    N_sim_captor: dict
+        Number of received photons in each captor
+    N_sim_plant: dict
+        Number of received photons in each organ of plant
 
-    Methods
-    -------
-    info(additional=""):
-        Prints the person's name and age.
+    captor_file: str
+        The link to the file which contains the informations of the captors in the simulation
+    spectrum_file: str
+        The link to the file which contains the informations of the heterogeneity of the spectrum
+    points_calibration_file: str
+        The link to the file which contains the informations of the captors used to calibrate the final result 
+
+    plant_file: str
+        The link to the file of the model of plant. (currently only support .lpy file)
+    plantPos: Vec3
+        The position of the plant
+
+    po_dir: str
+        The link to the folder which contains the optical properties of the room
+    
     """
     #constructor
     def __init__(self):
@@ -62,6 +89,15 @@ class Simulator:
         
 
     def run(self):
+        """
+        Run the simulation with the configurations which is determined
+
+        Returns
+        -------
+            The number of received photons on each captor and organs of plant is saved into the files located in folde ./results 
+
+        """
+
         scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0 
@@ -136,6 +172,23 @@ class Simulator:
     
     
     def visualiserSimulationScene(self, divided_spectral_range_index = -1):
+        """
+        Visualize the scene of simulation with the tools of OpenAlea
+        To run this function, it has to run these command first:
+        -- ipython
+        -- %gui qt5
+
+        Parameters
+        ----------
+        divided_spectral_range_index: int
+            This variable allow us to visualize the color of the plant based on its received energies 
+
+        Returns
+        -------
+            A rendered scene in 3D
+
+        """
+
         # init visualize scene
         sc = self.scene_pgl
 
@@ -164,6 +217,26 @@ class Simulator:
         Viewer.display(sc)
 
     def test_t_min(self, nb_photons, start_t, loop, is_only_lamp = False):
+        """
+        Test the simulation with multiple values of Tmin to avoid the problem of auto-intersection
+
+        Parameters
+        ----------
+        nb_photons: int
+            The total number of photons is shooting from the light in the simulation 
+        start_t: float
+            The first (smallest) value of Tmin used to run the test
+        loop: int
+            The number of iteration. At each iteration, the current value Tmin is multiply with 10, then run the simulation
+        is_only_lamp: bool
+            If True, run the test with only the lamps and captors, If False, run the test with all the objects in scene
+
+        Returns
+        -------
+            A graph is generated to show the connection between the Tmin and the results of simulation
+
+        """
+                
         if loop < 1:
             return
 
@@ -219,7 +292,36 @@ class Simulator:
     
 
     def initSimulationScene(self, scene, current_band, moyenne_wavelength, is_only_lamp = False):
-        
+        """
+        Setup all the necessary objects (environment, captor, plant) in the simulation
+
+        Parameters
+        ----------
+
+        scene: libphotonmap_core.Scene
+            The object which contains all the object in the scene of simulation
+        current_band: dict
+            Current divided spectral range where the simulation is running
+        moyenne_wavelength: Vec3
+            The average wavelength of spectral range used to determine the color of the light
+        is_only_lamp: bool
+            if True, only the lamps and captors is added to the scene, if False, all the objects is added. 
+
+
+        Returns
+        -------
+            scene: libphotonmap_core.Scene
+                The object which contains all the object in the scene of simulation
+            has_captor: bool
+                Return true if the scene has the captors 
+            captor_triangle_dict: dict
+                Dictionary of the triangles of the captors. Using to counting the number of photons received in each captor
+            has_plant: bool
+                Return true if the scene has the model of plant 
+            tr2shmap: dict
+                Dictionary of the triangles of the plant. Using to counting the number of photons received in each organ of plant
+
+        """
         #add env
         materialsR, materialsS, materialsT = ReadPO.setup_dataset_materials(current_band["start"], current_band["end"], self.po_dir)
         scene.clear()
@@ -244,6 +346,26 @@ class Simulator:
         return scene, has_captor, captor_triangle_dict, has_plant, tr2shmap
 
     def render(self, integrator, scene, w, sampler):
+        """
+        Visualize the photon map of the simulation in the scene
+
+        Parameters
+        ----------
+        integrator: libphotonmap_core.PhotonMapping
+            The object which handles all the simulation of photon mapping
+        scene: libphotonmap_core.Scene
+            The object which contains all the object in the scene of simulation
+        w: Vec3
+            The average wavelength of spectral range used to determine the color of the light
+        sampler: libphotonmap_core.Sampler
+            The generator of the random number
+
+        Returns
+        -------
+            Rendered images is saved into the folder ./result
+
+        """
+
         if self.rendering == False:
             print("Enable rendering first !!!")
             return
@@ -283,25 +405,88 @@ class Simulator:
             
 
     def setupRoom(self, room_file: str, po_dir: str,  flip_normal = False):
+        """
+        Setup the room/environment of the simulation.
+
+        Parameters
+        ----------
+        room_file: str
+            The link to the file which contains the geometries of the room
+        po_dir: str
+            The link to the folder which contains the optical properties of the room
+        flip_normal: bool
+            Determine the direction of the vector normal of triangle. 
+        """
         self.po_dir = po_dir
         self.scene_pgl = ReadRADGeo.read_rad(room_file, self.scale_factor, flip_normal)
 
     def setupRender(self, lookfrom = Vec3(0,0,0), lookat = Vec3(0,0,0)):
+        """
+        Enable the capacity to render/visulize the photon map in the scene
+
+        Parameters
+        ----------
+        lookfrom: Vec3
+            The position of the camera.
+        lookat: Vec3
+            The point where the camera is looking at
+                
+        """
         self.rendering = True
         #using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat)
 
     def setupCaptor(self, captor_file: str, spectrum_file: str, points_calibration_file: str):
+        """
+        Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
+
+        Parameters
+        ----------
+        captor_file: str
+            The link to the file which contains the informations of the captors in the simulation
+        spectrum_file: str
+            The link to the file which contains the informations of the heterogeneity of the spectrum
+        points_calibration_file: str
+            The link to the file which contains the informations of the captors used to calibrate the final result 
+                
+        """
         self.captor_file = captor_file
         self.spectrum_file = spectrum_file
         self.points_calibration_file = points_calibration_file
 
     def setupPlant(self, plant_file: str, plant_pos = Vec3(0,0,0)):
+        """
+        Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
+
+        Parameters
+        ----------
+        plant_file: str
+            The link to the file of the model of plant. (currently only support .lpy file)
+        plantPos: Vec3
+            The position of the plant
+                
+        """
         self.plant_file = plant_file
         self.plantPos = plant_pos
         
 
     def initCameraRender(self, lookfrom = Vec3(0,0,0), lookat = Vec3(0,0,0)):
+        """
+        Init the camera to render image. Calling by the function setupRender
+
+        Parameters
+        ----------
+        lookfrom: Vec3
+            The position of the camera.
+        lookat: Vec3
+            The point where the camera is looking at
+                
+        Returns
+        -------
+        camera: libphotonmap_core.Camera
+            An object with all the informations of camera
+        """
+
         aspect_ratio = 16.0 / 9.0
         self.image_width = 512
         self.image_height = 512
@@ -327,24 +512,6 @@ class Simulator:
         filename: str
             Name/directory of the configuration file.
             
-        Returns
-        -------
-        nb_photons: int
-            The number of photons in simulation
-        maximum_depth: int
-            The maximum number of times that the light bounces in the scene 
-        scale_factor: float
-            The overall scale of the entire scene
-        t_min: float
-            The minimum distance between the point of intersection and the origin of the light ray
-        nb_thread: int
-            The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
-        is_backface_culling: bool
-            Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
-        base_spectral_range: dict
-            The spectral range used to run the simulation
-        divided_spectral_range: array
-            The list of spectral ranges divided from the base spectral range.
         """
         #read file
         with open(filename, "r") as f:
