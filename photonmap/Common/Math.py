@@ -4,14 +4,52 @@ from math import cos, sin, pi
 #This module consist the mathematical functions using in this project 
 
 def denormalize(f: float) -> int:
+    """
+    Convert a value from range (0 - 1) to (0 - 255)
+    
+    Parameters
+    ----------
+    f: float
+        The value to convert
+
+    """
+        
     return int(255 * f)
 
 def sphericalToCartesian(theta, phi, x_seg, y_seg):
+    """
+    Convert the quaternion of object from angle(theta, phi) to Vec3(x,y,z)
+    
+    Parameters
+    ----------
+    theta: float
+        The angle theta
+    phi: float
+        The angle phi
+    x_seg: int
+        The number of x segment
+    y_seg: int
+        The number of y segment
+
+    """
+
     theta = theta * pi / 2 / y_seg
     phi = phi * 2 * pi / x_seg
     return Vector3(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta))
 
 def crossVector(a, b):
+    """
+    Calculate the cross product of two vector
+    
+    Parameters
+    ----------
+    a: Vec3
+        The first vector
+    b: Vec3
+        The second vector
+
+    """
+
     res = Vector3(0,0,0)
     res[0] = a[1] * b[2] - b[1] * a[2]
     res[1] = - a[0] * b[2] + b[0] * a[2]
@@ -19,6 +57,23 @@ def crossVector(a, b):
     return res
 
 def orthonormalBasis(n):
+    """
+    Calculate the axis orthogonal from the vector normal
+    
+    Parameters
+    ----------
+    n: Vec3
+        The normal vector (first axe)
+
+    Returns
+    -------
+    t: Vec3
+        The second axe
+    b: Vec3
+        The third axe
+
+    """
+
     t = Vector3(0,0,0)
     b = Vector3(0,0,0)
 
@@ -34,6 +89,24 @@ def orthonormalBasis(n):
     return t, b 
 
 def geoHemisphere(centre, normal, rayon):
+    """
+    Generate the geometry of a hemisphere
+    
+    Parameters
+    ----------
+    centre: Vec3
+        The center of sphere
+    normal: Vec3
+        The normal vector 
+    rayon: float
+        The radius of sphere
+
+    Returns
+    -------
+        A Shape PlantGL
+
+    """
+
     vertices = []
     triangles = []
     normals = []
@@ -79,6 +152,16 @@ def geoHemisphere(centre, normal, rayon):
     
 
 def averageVector(listVectors):
+    """
+    Calculate the average vector of a list 
+    
+    Parameters
+    ----------
+    listVectors: array
+        The list of vector
+
+    """
+
     sum = Vector3(0,0,0)
     for v in listVectors:
         sum = sum + v

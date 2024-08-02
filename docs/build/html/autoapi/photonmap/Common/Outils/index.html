@@ -8,6 +8,7 @@
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
 
   
   <!--[if lt IE 9]>
@@ -19,6 +20,9 @@
         <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
         <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -47,6 +51,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing.html">Installing Photon Mapping tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../PlantRadScene.html">Code Examples</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">photonmap</span></code></a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../../index.html#subpackages">Subpackages</a><ul class="current">
@@ -104,24 +111,19 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Common.Outils.flatten" title="photonmap.Common.Outils.flatten"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten</span></code></a>(→ list)</p></td>
 <td><p>Flattens a list</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Common.Outils.blockPrint" title="photonmap.Common.Outils.blockPrint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blockPrint</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Common.Outils.enablePrint" title="photonmap.Common.Outils.enablePrint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enablePrint</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Common.Outils.wavelength2Rgb">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Common.Outils.</span></span><span class="sig-name descname"><span class="pre">wavelength2Rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">photonmap.Vec3</span></span></span><a class="reference internal" href="../../../../_modules/photonmap/Common/Outils.html#wavelength2Rgb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Common.Outils.wavelength2Rgb" title="Link to this definition"></a></dt>
-<dd><p>Convert a wavelength between 400 - 800 nm to RGB color
-Parameters
-———-
-w: int</p>
-<blockquote>
-<div><p>The wavelength to convert</p>
-</div></blockquote>
+<dd><p>Convert a wavelength between 400 - 800 nm to RGB color</p>
+<section id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>w: int</dt><dd><p>The wavelength to convert</p>
+</dd>
+</dl>
+</section>
 <section id="returns">
 <h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
 <dl class="simple">
@@ -134,31 +136,22 @@ w: int</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Common.Outils.flatten">
 <span class="sig-prename descclassname"><span class="pre">photonmap.Common.Outils.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../../../../_modules/photonmap/Common/Outils.html#flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Common.Outils.flatten" title="Link to this definition"></a></dt>
-<dd><p>Flattens a list
-Parameters
-———-
-lt: list</p>
-<blockquote>
-<div><p>a list</p>
-</div></blockquote>
+<dd><p>Flattens a list</p>
 <section id="id1">
-<h4>Returns<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>lt: list</dt><dd><p>a list</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h4>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>l: list</dt><dd><p>the flattened list</p>
 </dd>
 </dl>
 </section>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="photonmap.Common.Outils.blockPrint">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Common.Outils.</span></span><span class="sig-name descname"><span class="pre">blockPrint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Common/Outils.html#blockPrint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Common.Outils.blockPrint" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="photonmap.Common.Outils.enablePrint">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Common.Outils.</span></span><span class="sig-name descname"><span class="pre">enablePrint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Common/Outils.html#enablePrint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Common.Outils.enablePrint" title="Link to this definition"></a></dt>
-<dd></dd></dl>
 
 </section>
 </section>

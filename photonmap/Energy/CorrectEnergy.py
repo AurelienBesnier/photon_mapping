@@ -16,6 +16,7 @@ We can write long text if we want.
 def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     """
     Parse a spectrum file.
+
     Parameters
     ----------
     filename: str
@@ -29,6 +30,7 @@ def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
         the step in the dictionary between two entries.
     start: int
         the first wavelength in the file.
+
     """
     content = OrderedDict()
     cpt_comment = 0
@@ -50,15 +52,16 @@ def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
 def get_integral_of_band(base_band: range, divided_band: range, spectrum: dict) -> float:
     """
     Returns the integral of the band as a percentage
+
     Parameters
     ----------
-    band: range
-        The section of the spectrum to get.
+    base_band: range
+        The base spectral range which includes all the other spectral ranges
+    divided_band: range
+        The section of the base spectral range used to run the simulation
     spectrum: dict
         The whole spectrum of the band.
 
-    Returns
-    -------
 
     """
     sum = 0.0
@@ -75,6 +78,25 @@ def get_integral_of_band(base_band: range, divided_band: range, spectrum: dict) 
 
 
 def get_correct_energy_coeff(base_spectral_range, divided_spectral_range, spec_file : str):
+    """
+    Get the coefficients of energy's correction from the spectrum file
+
+    Parameters
+    ----------
+    base_spectral_range: range
+        The base spectral range which includes all the other spectral ranges
+    divided_spectral_range: range
+        The section of the base spectral range used to run the simulation
+    spec_file: str
+        The link to the file which contains the informations of the heterogeneity of the spectrum
+
+    Returns
+    -------
+    integrals: array
+        The list of the coefficents of energy's correction 
+
+    """
+        
     spec_dict, step, start = read_spectrum_file(spec_file)
     integrals = []
     base_band = range(base_spectral_range["start"], base_spectral_range["end"], 1)
@@ -87,6 +109,25 @@ def get_correct_energy_coeff(base_spectral_range, divided_spectral_range, spec_f
     return integrals
 
 def get_points_calibration(list_captor, points_calibration_file, divided_spectral_range):
+    """
+    Read the file which contains the points used for the calibration.
+
+    Parameters
+    ----------
+    captor_list : array
+        The list of captors
+    points_calibration_file: str
+        The link to the file which contains the informations of the captors used to calibrate the final result 
+    divided_spectral_range: array
+        The list of spectral ranges divided from the base spectral range.
+
+    Returns
+    -------
+    points_calibration: array
+        The list of the points used for the calibration
+
+    """
+
     points_calibration = []
     df = pd.read_csv(points_calibration_file)
 
@@ -103,13 +144,21 @@ def get_points_calibration(list_captor, points_calibration_file, divided_spectra
 
 def calibration_energy(energies, correction_ratios, points_calibration):
     """
-    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.
+    Calibrate energy from photons to Mmol / m2 / s
+
     Parameters
     ----------
-    shenergy: dict
-
+    energies : array
+        The list of captor's energies
+    correction_ratios: array
+        The list of the coefficents of energy's correction 
+    points_calibration: array
+        The list of the points used for the calibration
+    
     Returns
     -------
+    N_calibration: array
+        The list of captor's energies after the calibration
 
     """
     N_calibration = []

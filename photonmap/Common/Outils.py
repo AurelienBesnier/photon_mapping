@@ -1,10 +1,11 @@
 from photonmap import Vec3
-import sys, os
+
 #This module consist the common functions using in this project 
 
 def wavelength2Rgb(w: int) -> Vec3:
     """
     Convert a wavelength between 400 - 800 nm to RGB color
+    
     Parameters
     ----------
     w: int
@@ -51,6 +52,7 @@ def wavelength2Rgb(w: int) -> Vec3:
 def flatten(lt: list) -> list:
     """
     Flattens a list
+
     Parameters
     ----------
     lt: list
@@ -63,13 +65,3 @@ def flatten(lt: list) -> list:
 
     """
     return [item for sublist in lt for item in sublist]
-
-
-def blockPrint():
-
-    sys.stdout = open(os.devnull, 'w')
-
-# Restore
-def enablePrint():
-
-    sys.stdout = sys.__stdout__

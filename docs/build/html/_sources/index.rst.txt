@@ -14,3 +14,6 @@ documentation for details.
    :maxdepth: 4
    :caption: Contents:
 
+   installing.rst
+   guide.rst
+   PlantRadScene.ipynb

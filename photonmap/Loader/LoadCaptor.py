@@ -10,8 +10,36 @@ from photonmap import (
 )
 
 #Objectif of this module is adding captors to the scene of photon mapping to the received energy 
-#Data is located in this directory: ./captors
+
 class Captor:
+    """
+    A class which contains all the data of captor.
+
+    Attributes
+    ----------
+    xSite: float
+        The X coordinate of captor's position
+    ySite: float
+        The Y coordinate of captor's position
+    zSite: float
+        The Z coordinate of captor's position
+    xNormal: float
+        The X coordinate of captor's normal
+    yNormal: float
+        The Y coordinate of captor's normal
+    zNormal: float
+        The Z coordinate of captor's normal
+    radius: float
+        The radius of captor
+    vertices: array
+        The vertices of captor's geometry
+    normals: array
+        The normal vectors of each vertices in captor's geometry
+    triangles: array
+        The triangles of captor's geometry
+   
+    
+    """
     def __init__(self, pos_x = 0, pos_y = 0, pos_z = 0, nor_x = 0, nor_y = 0, nor_z = 0, r = 0):
         self.xSite = pos_x
         self.ySite = pos_y
@@ -24,6 +52,19 @@ class Captor:
         self.createGeometry()
     
     def createGeometry(self):
+        """
+        Create geometry of circular captor 
+
+        Returns
+        -------
+        vertices: array
+            The vertices of captor's geometry
+        normals: array
+            The normal vectors of each vertices in captor's geometry
+        triangles: array
+            The triangles of captor's geometry
+
+        """
         vertices = VectorFloat()
         normals = VectorFloat()
         triangles = VectorUint()
@@ -85,12 +126,45 @@ class Captor:
         self.triangles = triangles
     
     def equal(self, xSite, ySite, zSite):
+        """
+        Check if the coordinate is equal to the position of captor
+
+        Parameters
+        ----------
+        xSite: float
+            The X coordinate
+        ySite: float
+            The Y coordinate
+        zSite: float
+            The Z coordinate
+
+        Returns
+        -------
+            True if equal
+            False if not equal
+
+        """
+
         if self.xSite == xSite and self.ySite == ySite and self.zSite == zSite:
             return True
         
         return False
 
     def getGeometry(self):
+        """
+        Get geometry of captor
+
+        Returns
+        -------
+        vertices: array
+            The vertices of captor's geometry
+        normals: array
+            The normal vectors of each vertices in captor's geometry
+        triangles: array
+            The triangles of captor's geometry
+
+        """
+
         return self.vertices, self.triangles, self.normals
 
 def addCaptors(scene, scale_factor, captor_triangle_dict, filename):

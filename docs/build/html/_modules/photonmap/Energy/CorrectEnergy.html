@@ -7,6 +7,7 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
 
   
   <!--[if lt IE 9]>
@@ -18,6 +19,9 @@
         <script src="../../../_static/documentation_options.js?v=8d563738"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -44,6 +48,9 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing Photon Mapping tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../PlantRadScene.html">Code Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
 </ul>
 
@@ -92,6 +99,7 @@
 <span class="k">def</span> <span class="nf">read_spectrum_file</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a spectrum file.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename: str</span>
@@ -105,6 +113,7 @@
 <span class="sd">        the step in the dictionary between two entries.</span>
 <span class="sd">    start: int</span>
 <span class="sd">        the first wavelength in the file.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
     <span class="n">cpt_comment</span> <span class="o">=</span> <span class="mi">0</span>
@@ -129,15 +138,16 @@
 <span class="k">def</span> <span class="nf">get_integral_of_band</span><span class="p">(</span><span class="n">base_band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">divided_band</span><span class="p">:</span> <span class="nb">range</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the integral of the band as a percentage</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    band: range</span>
-<span class="sd">        The section of the spectrum to get.</span>
+<span class="sd">    base_band: range</span>
+<span class="sd">        The base spectral range which includes all the other spectral ranges</span>
+<span class="sd">    divided_band: range</span>
+<span class="sd">        The section of the base spectral range used to run the simulation</span>
 <span class="sd">    spectrum: dict</span>
 <span class="sd">        The whole spectrum of the band.</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">sum</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -157,6 +167,25 @@
 <div class="viewcode-block" id="get_correct_energy_coeff">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_correct_energy_coeff">[docs]</a>
 <span class="k">def</span> <span class="nf">get_correct_energy_coeff</span><span class="p">(</span><span class="n">base_spectral_range</span><span class="p">,</span> <span class="n">divided_spectral_range</span><span class="p">,</span> <span class="n">spec_file</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the coefficients of energy&#39;s correction from the spectrum file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_spectral_range: range</span>
+<span class="sd">        The base spectral range which includes all the other spectral ranges</span>
+<span class="sd">    divided_spectral_range: range</span>
+<span class="sd">        The section of the base spectral range used to run the simulation</span>
+<span class="sd">    spec_file: str</span>
+<span class="sd">        The link to the file which contains the informations of the heterogeneity of the spectrum</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    integrals: array</span>
+<span class="sd">        The list of the coefficents of energy&#39;s correction </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+        
     <span class="n">spec_dict</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span><span class="n">spec_file</span><span class="p">)</span>
     <span class="n">integrals</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_band</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">base_spectral_range</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">base_spectral_range</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
@@ -172,6 +201,25 @@
 <div class="viewcode-block" id="get_points_calibration">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_points_calibration">[docs]</a>
 <span class="k">def</span> <span class="nf">get_points_calibration</span><span class="p">(</span><span class="n">list_captor</span><span class="p">,</span> <span class="n">points_calibration_file</span><span class="p">,</span> <span class="n">divided_spectral_range</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the file which contains the points used for the calibration.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    captor_list : array</span>
+<span class="sd">        The list of captors</span>
+<span class="sd">    points_calibration_file: str</span>
+<span class="sd">        The link to the file which contains the informations of the captors used to calibrate the final result </span>
+<span class="sd">    divided_spectral_range: array</span>
+<span class="sd">        The list of spectral ranges divided from the base spectral range.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    points_calibration: array</span>
+<span class="sd">        The list of the points used for the calibration</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">points_calibration</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">points_calibration_file</span><span class="p">)</span>
 
@@ -191,13 +239,21 @@
 <a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.calibration_energy">[docs]</a>
 <span class="k">def</span> <span class="nf">calibration_energy</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">correction_ratios</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Correct the energy computed during the simulation  with the integral of the chosen spectrum band.</span>
+<span class="sd">    Calibrate energy from photons to Mmol / m2 / s</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    shenergy: dict</span>
-
+<span class="sd">    energies : array</span>
+<span class="sd">        The list of captor&#39;s energies</span>
+<span class="sd">    correction_ratios: array</span>
+<span class="sd">        The list of the coefficents of energy&#39;s correction </span>
+<span class="sd">    points_calibration: array</span>
+<span class="sd">        The list of the points used for the calibration</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">    N_calibration: array</span>
+<span class="sd">        The list of captor&#39;s energies after the calibration</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N_calibration</span> <span class="o">=</span> <span class="p">[]</span>

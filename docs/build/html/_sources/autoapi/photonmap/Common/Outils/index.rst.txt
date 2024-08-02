@@ -15,14 +15,13 @@ Functions
 
    photonmap.Common.Outils.wavelength2Rgb
    photonmap.Common.Outils.flatten
-   photonmap.Common.Outils.blockPrint
-   photonmap.Common.Outils.enablePrint
 
 
 
 .. py:function:: wavelength2Rgb(w: int) -> photonmap.Vec3
 
    Convert a wavelength between 400 - 800 nm to RGB color
+
    Parameters
    ----------
    w: int
@@ -38,6 +37,7 @@ Functions
 .. py:function:: flatten(lt: list) -> list
 
    Flattens a list
+
    Parameters
    ----------
    lt: list
@@ -48,11 +48,5 @@ Functions
    l: list
        the flattened list
 
-
-
-.. py:function:: blockPrint()
-
-
-.. py:function:: enablePrint()
 
 

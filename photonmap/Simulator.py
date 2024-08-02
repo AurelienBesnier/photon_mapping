@@ -45,7 +45,7 @@ class Simulator:
     is_backface_culling: bool
         Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
     base_spectral_range: dict
-        The spectral range used to run the simulation
+        The base spectral range which includes all the other spectral ranges
     divided_spectral_range: array
         The list of spectral ranges divided from the base spectral range.
     rendering: bool
@@ -150,7 +150,7 @@ class Simulator:
             #Plant Energie
             plant_energy = {}
             if(has_plant):
-                plant_energy = CalculateEnergy.compute_energy(tr2shmap, integrator)
+                plant_energy = CalculateEnergy.plant_add_energy(tr2shmap, integrator)
                 self.N_sim_plant.append(plant_energy)
             
             print("Time taken: " + str(time.time() - start_time))

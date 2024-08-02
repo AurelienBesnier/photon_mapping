@@ -4,7 +4,28 @@ from photonmap.Loader.LoadCaptor import Captor
 #Objectif of this module is counting the number of photon on plant/captor
 #Resultat is located in this directory: ./results
 
-def write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons):
+def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_photons):
+    """
+    Write the received energy of all the captors to a file.
+
+    Parameters
+    ----------
+    N_sim : dict
+        Number of received photons on each captor
+    N_calibration : dict
+        The energies after the calibration on each captor
+    captor_list : array
+        The list of captors
+    bands_spectre: dict
+        The divided spectral range used to run the simulation.
+    nb_photons: int
+        The number of photons in simulation
+
+    Returns
+    -------
+        A file with all the received energy of captors saved in folder ./results
+
+    """
 
     filename = "results/captor_result-" + str(n_photons) + ".csv"
 
@@ -23,9 +44,9 @@ def write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons):
             w_str = str(k) + ',' + str(captor.xSite) + ',' + str(captor.ySite) + ',' + str(captor.zSite) + ',' + str(captor.radius)
             
             for i in range(len(bands_spectre)):
-                cur_n_mes = N_mes[i]
-                if k in cur_n_mes:
-                    w_str += ',' + str(cur_n_mes[k])
+                cur_N_calibration = N_calibration[i]
+                if k in cur_N_calibration:
+                    w_str += ',' + str(cur_N_calibration[k])
                 else:
                     w_str += ',' + str(0)
 
@@ -41,6 +62,26 @@ def write_captor_energy(N_sim, N_mes, captor_list, bands_spectre, n_photons):
     print("Done write captor energy!")
 
 def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
+    """
+    Write the received energy of all the organs of plant to a file.
+
+    Parameters
+    ----------
+    energies : dict
+        Number of received photons on each plant's organs
+    list_plant : dict
+        The dictionary of plant's organs
+    bands_spectre: dict
+        The divided spectral range used to run the simulation.
+    nb_photons: int
+        The number of photons in simulation
+
+    Returns
+    -------
+        A file with all the received energy of plant's organs saved in folder ./results
+
+    """
+
     filename = "results/plant_result-" + str(n_photons) + ".csv"
 
     with open(filename, "w") as f:
@@ -65,10 +106,16 @@ def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
 def captor_add_energy(captor_dict, integrator, energy):
     """
     Compute the energy on each captor in the scene.
-    :param energy:
-    :param captor_dict:
-    :param integrator:
-    :return:
+
+    Parameters
+    ----------
+    captor_dict : dict
+        The dictionary of captor
+    integrator: libphotonmap_core.PhotonMapping
+        The object which handles all the simulation of photon mapping
+    energy: dict
+        The dictionary of captor's energy
+
     """
     photonmap = integrator.getPhotonMapCaptors()
     
@@ -84,12 +131,22 @@ def captor_add_energy(captor_dict, integrator, energy):
                 energy[captorId] = 1
 
 
-def compute_energy(tr2shmap, integrator):
+def plant_add_energy(tr2shmap, integrator):
     """
     Computes the number of photons on each organ of the plant.
-    :param tr2shmap:
-    :param integrator:
-    :return:
+
+    Parameters
+    ----------
+    tr2shmap : dict
+        The dictionary of plant's organs
+    integrator: libphotonmap_core.PhotonMapping
+        The object which handles all the simulation of photon mapping
+
+    Returns
+    -------
+    shenergy: dict
+        The dictionary of plant's energy
+
     """
     photonmap = integrator.getPhotonMapCaptors()
     shenergy = {}
