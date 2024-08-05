@@ -3,6 +3,7 @@
 
 # ignore ALL files in Build directory
 build/
+!docs/build/
 
 # ignore ALL files in pycache
 __pycache__/
