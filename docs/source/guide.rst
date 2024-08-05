@@ -13,7 +13,11 @@ The file simulation.ini contains all the basic configurations to run a simulatio
     
     $NB_PHOTONS 1000000000
 
+There are the configurations which can be defined in the file simulation.ini
+
 +------------------------+---------------+----------------------------------------------------------------------+
+| Configuration name     | Data type     | Description                                                          |
++========================+===============+======================================================================+
 | NB_PHOTONS             | int           | The number of photons used in the simulation                         |
 +------------------------+---------------+----------------------------------------------------------------------+
 | MAXIMUM_DEPTH          | int           | | The maximum number of times that the light bounces                 |
@@ -50,12 +54,39 @@ Room file
 
 | At this version, only files of type .rad is supported by our outil.
 | More informations of file .rad can be found in this file `refman.pdf <https://github.com/minhlucky9/photon_mapping/tree/main/docs/refman.pdf>`_
+| Example of an `.rad file <https://github.com/minhlucky9/photon_mapping/blob/main/examples/python/plantgl-rad-scene/assets/testChamber.rad>`_
 
 Optical property files
 ----------------------
 
-Captor file
+The files containing the optical properties are saved in this structure of folder:
+
+| .
+| ├── Specularities.xlsx
+| ├── Env
+| │   ├── ReflectancesMean
+| │   │   ├── .csv files
+| │   └── TransmittancesMean
+| │       ├── .csv files
+| ├── Plant
+| │   ├── ReflectancesMean
+| │   │   ├── .csv files
+| │   └── TransmittancesMean
+| │       ├── .csv files
+
+Whereas, the name of the .csv files is the same as the name of material which is defined in the room file (.rad)
+
+Captor files
 -----------
++-----------------------------+------------------+--------------+
+| File name                   | File description | File example |
++=============================+==================+==============+
+| Captor data file            |                  |              |
++-----------------------------+------------------+--------------+
+| Calibration points file     |                  |              |
++-----------------------------+------------------+--------------+
+| Spectral heterogeneity file |                  |              |
++-----------------------------+------------------+--------------+
 
 Plant file
 ----------
@@ -63,39 +94,12 @@ Plant file
 Run a simulation
 ========================
 
-Before starting to install the Photon Mapping tools, you should first install all dependencies in a conda environment. The simplest way to do this is to call
 
-.. code-block:: bash
-    
-    conda env create -f environment.yml
-
-You have to activate the conda environment before installing
-
-.. code-block:: bash
-    
-    conda activate photonmap
-
-To install as a Python library:
-
-.. code-block:: bash
-    
-    python -m pip install ./
 
 Visualize the room
 ========================
 
-The main example is located in the folder ./examples/python/plantgl-rad-scene
 
-.. code-block:: bash
-    
-    conda activate photonmap
-    cd examples/python/plantgl-rad-scene
-
-Command to run the example
-
-.. code-block:: bash
-    
-    python planglRadScene.py
 
 Test value Tmin
 ========================

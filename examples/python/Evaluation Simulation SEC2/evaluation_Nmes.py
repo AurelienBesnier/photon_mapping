@@ -47,12 +47,13 @@ if __name__ == "__main__":
     
     ids, cur_mes_600_655, cur_mes_655_665 = read_resultat_nmes("captor_result-1000000000.csv")
     
-    plt.plot(ids, cur_mes_655_665, 'r')
-    plt.plot(ids, res_sec2_655_665, 'g')
-    plt.legend(["Resultat SEC2", "Current resultat"])
-    plt.title("Wavelength 600-655 nm")
-    plt.ylabel("Mmol par m² par s ")
-    plt.xlabel("Index of captor")
+    z3 = np.polyfit(res_sec2_600_655, cur_mes_600_655, 1)
+    p3 = np.poly1d(z3)
+    plt.scatter(res_sec2_600_655, cur_mes_600_655, 20, 'b')
+    plt.plot(res_sec2_600_655, p3(res_sec2_600_655), 'r')
+    plt.title("Wavelength 600-655 nm / Mmol par m² par s ")
+    plt.ylabel("Current res")
+    plt.xlabel("Res sec2")
     plt.show()
 
 
