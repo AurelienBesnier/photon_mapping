@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from photonmap.Loader.LoadCaptor import Captor
+import os
 
 #Objectif of this module is counting the number of photon on plant/captor
 #Resultat is located in this directory: ./results
@@ -26,6 +27,9 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
         A file with all the received energy of captors saved in folder ./results
 
     """
+
+    if not os.path.exists("results"):
+        os.makedirs("results")
 
     filename = "results/captor_result-" + str(n_photons) + ".csv"
 
@@ -87,6 +91,9 @@ def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
 
     """
 
+    if not os.path.exists("results"):
+        os.makedirs("results")
+        
     filename = "results/plant_result-" + str(n_photons) + ".csv"
 
     with open(filename, "w") as f:

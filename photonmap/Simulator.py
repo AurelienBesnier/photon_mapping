@@ -1,6 +1,7 @@
 import random
 import sys
 import time
+import os
 
 from openalea.plantgl.all import * 
 from openalea.lpy import Lsystem
@@ -365,6 +366,9 @@ class Simulator:
             Rendered images is saved into the folder ./result
 
         """
+
+        if not os.path.exists("results"):
+            os.makedirs("results")
 
         if self.rendering == False:
             print("Enable rendering first !!!")
