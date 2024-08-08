@@ -31,8 +31,10 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
 
     with open(filename, "w") as f:
         w_str = "id,xSite,ySite,zSite,radius"
-        for i in range(len(bands_spectre)):
-            w_str += ",N_sim_calibration_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+  
+        if len(N_calibration) == len(bands_spectre):
+            for i in range(len(bands_spectre)):
+                w_str += ",N_sim_calibration_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
 
         for i in range(len(bands_spectre)):
             w_str += ",N_sim_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
@@ -43,13 +45,16 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
             captor = captor_list[k]
             w_str = str(k) + ',' + str(captor.xSite) + ',' + str(captor.ySite) + ',' + str(captor.zSite) + ',' + str(captor.radius)
             
-            for i in range(len(bands_spectre)):
-                cur_N_calibration = N_calibration[i]
-                if k in cur_N_calibration:
-                    w_str += ',' + str(cur_N_calibration[k])
-                else:
-                    w_str += ',' + str(0)
+            #write result calibration
+            if len(N_calibration) == len(bands_spectre):
+                for i in range(len(bands_spectre)):
+                    cur_N_calibration = N_calibration[i]
+                    if k in cur_N_calibration:
+                        w_str += ',' + str(cur_N_calibration[k])
+                    else:
+                        w_str += ',' + str(0)
 
+            #write result simulation
             for i in range(len(bands_spectre)):
                 cur_n_sim = N_sim[i]
                 if k in cur_n_sim:
@@ -119,7 +124,7 @@ def captor_add_energy(captor_dict, integrator, energy):
     """
     photonmap = integrator.getPhotonMapCaptors()
     
-    print("writing captor energy...")
+    print("calculating captor energy...")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
         captorId = captor_dict.get(intersection.triId)
@@ -149,6 +154,8 @@ def plant_add_energy(tr2shmap, integrator):
 
     """
     photonmap = integrator.getPhotonMapCaptors()
+    
+    print("calculating plant energy...")
     shenergy = {}
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)

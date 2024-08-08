@@ -16,4 +16,4 @@ documentation for details.
 
    installing.rst
    guide.rst
-   PlantRadScene.ipynb
+   code_example.rst

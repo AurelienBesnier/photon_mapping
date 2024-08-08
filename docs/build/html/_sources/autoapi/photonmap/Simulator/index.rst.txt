@@ -192,7 +192,7 @@ Classes
               
 
 
-   .. py:method:: setupCaptor(captor_file: str, spectrum_file: str, points_calibration_file: str)
+   .. py:method:: setupCaptor(captor_file: str, spectrum_file='', points_calibration_file='')
 
       Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 

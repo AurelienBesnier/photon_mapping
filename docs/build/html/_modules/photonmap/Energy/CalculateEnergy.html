@@ -50,7 +50,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing Photon Mapping tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../guide.html">User guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../PlantRadScene.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../code_example.html">Code example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
 </ul>
 
@@ -114,8 +114,10 @@
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">w_str</span> <span class="o">=</span> <span class="s2">&quot;id,xSite,ySite,zSite,radius&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
-            <span class="n">w_str</span> <span class="o">+=</span> <span class="s2">&quot;,N_sim_calibration_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">])</span>
+  
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">N_calibration</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
+                <span class="n">w_str</span> <span class="o">+=</span> <span class="s2">&quot;,N_sim_calibration_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">])</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
             <span class="n">w_str</span> <span class="o">+=</span> <span class="s2">&quot;,N_sim_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;start&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;end&quot;</span><span class="p">])</span>
@@ -126,13 +128,16 @@
             <span class="n">captor</span> <span class="o">=</span> <span class="n">captor_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">w_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">captor</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">captor</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">captor</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">captor</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span>
             
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
-                <span class="n">cur_N_calibration</span> <span class="o">=</span> <span class="n">N_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur_N_calibration</span><span class="p">:</span>
-                    <span class="n">w_str</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cur_N_calibration</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">w_str</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1">#write result calibration</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">N_calibration</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
+                    <span class="n">cur_N_calibration</span> <span class="o">=</span> <span class="n">N_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur_N_calibration</span><span class="p">:</span>
+                        <span class="n">w_str</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cur_N_calibration</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">w_str</span> <span class="o">+=</span> <span class="s1">&#39;,&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+            <span class="c1">#write result simulation</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bands_spectre</span><span class="p">)):</span>
                 <span class="n">cur_n_sim</span> <span class="o">=</span> <span class="n">N_sim</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur_n_sim</span><span class="p">:</span>
@@ -208,7 +213,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">photonmap</span> <span class="o">=</span> <span class="n">integrator</span><span class="o">.</span><span class="n">getPhotonMapCaptors</span><span class="p">()</span>
     
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;writing captor energy...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;calculating captor energy...&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">photonmap</span><span class="o">.</span><span class="n">nPhotons</span><span class="p">()):</span>
         <span class="n">intersection</span> <span class="o">=</span> <span class="n">photonmap</span><span class="o">.</span><span class="n">getIthPhoton</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">captorId</span> <span class="o">=</span> <span class="n">captor_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">intersection</span><span class="o">.</span><span class="n">triId</span><span class="p">)</span>
@@ -241,6 +246,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">photonmap</span> <span class="o">=</span> <span class="n">integrator</span><span class="o">.</span><span class="n">getPhotonMapCaptors</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;calculating plant energy...&quot;</span><span class="p">)</span>
     <span class="n">shenergy</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">photonmap</span><span class="o">.</span><span class="n">nPhotons</span><span class="p">()):</span>
         <span class="n">intersection</span> <span class="o">=</span> <span class="n">photonmap</span><span class="o">.</span><span class="n">getIthPhoton</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>

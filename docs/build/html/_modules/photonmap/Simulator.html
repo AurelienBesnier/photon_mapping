@@ -50,7 +50,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing Photon Mapping tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../guide.html">User guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../PlantRadScene.html">Code Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code_example.html">Code example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
 </ul>
 
@@ -243,7 +243,7 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">N_mes_captor</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="c1"># Setting up spectrum bands to correct energy</span>
                 <span class="n">integrals</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_correct_energy_coeff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span><span class="p">)</span>
                 <span class="n">points_calibration</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_points_calibration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">)</span>
@@ -542,7 +542,7 @@
 
 <div class="viewcode-block" id="Simulator.setupCaptor">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.setupCaptor">[docs]</a>
-    <span class="k">def</span> <span class="nf">setupCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">captor_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spectrum_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">points_calibration_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setupCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">captor_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spectrum_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">points_calibration_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors </span>
 

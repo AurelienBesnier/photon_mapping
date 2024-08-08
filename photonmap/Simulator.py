@@ -158,7 +158,7 @@ class Simulator:
 
         if len(self.N_sim_captor) > 0:
             N_mes_captor = []
-            if self.spectrum_file != "":
+            if self.spectrum_file != "" and self.points_calibration_file != "":
                 # Setting up spectrum bands to correct energy
                 integrals = CorrectEnergy.get_correct_energy_coeff(self.base_spectral_range, self.divided_spectral_range, self.spectrum_file)
                 points_calibration = CorrectEnergy.get_points_calibration(self.list_captor, self.points_calibration_file, self.divided_spectral_range)
@@ -436,7 +436,7 @@ class Simulator:
         #using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat)
 
-    def setupCaptor(self, captor_file: str, spectrum_file: str, points_calibration_file: str):
+    def setupCaptor(self, captor_file: str, spectrum_file = "", points_calibration_file = ""):
         """
         Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 
