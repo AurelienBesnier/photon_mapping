@@ -83,7 +83,108 @@
              
   <section id="code-example">
 <h1>Code example<a class="headerlink" href="#code-example" title="Link to this heading"></a></h1>
-<p>Create a simple simulation without using the input files.</p>
+<div class="line-block">
+<div class="line">Create a simple simulation without using the input files.</div>
+</div>
+<div class="line-block">
+<div class="line">Import the library and create an object Simulator</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup configuration</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#setup configuration</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup light and environment</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
+<span class="c1">#setup environment</span>
+<span class="n">vert_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>
+<span class="n">ind_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+<span class="n">mat_ground</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;trans&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">}</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_ground</span><span class="p">,</span> <span class="n">ind_ground</span><span class="p">,</span> <span class="n">mat_ground</span><span class="p">)</span>
+
+<span class="c1">#setup light</span>
+<span class="n">vert_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)]</span>
+<span class="n">ind_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="n">mat_light</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_light</span><span class="p">,</span> <span class="n">ind_light</span><span class="p">,</span> <span class="n">mat_light</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup captors and run</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#setup captor</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c1">#run</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Here is the completed program</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
+
+    <span class="c1">#setup configuration</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">1000000</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
+    <span class="c1">#setup environment</span>
+    <span class="n">vert_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>
+    <span class="n">ind_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">mat_ground</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+        <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">&quot;trans&quot;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">}</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_ground</span><span class="p">,</span> <span class="n">ind_ground</span><span class="p">,</span> <span class="n">mat_ground</span><span class="p">)</span>
+
+    <span class="c1">#setup light</span>
+    <span class="n">vert_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)]</span>
+    <span class="n">ind_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+    <span class="n">mat_light</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_light</span><span class="p">,</span> <span class="n">ind_light</span><span class="p">,</span> <span class="n">mat_light</span><span class="p">)</span>
+
+    <span class="c1">#setup captor</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+
+    <span class="c1">#run</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 
 

@@ -23,7 +23,7 @@ from photonmap.libphotonmap_core import (
 from photonmap.Reader import (ReadRADGeo, ReadPO)
 from photonmap.Energy import (CalculateEnergy, CorrectEnergy)
 from photonmap.Loader import (LoadCaptor, LoadEnvironment, LoadPlant)
-from photonmap.Common import (Outils)
+from photonmap.Common import (Outils, Math)
 
 
 
@@ -63,11 +63,14 @@ class Simulator:
     points_calibration_file: str
         The link to the file which contains the informations of the captors used to calibrate the final result 
 
+    list_captor: array
+        The list of captor in simulation
+    pgl_scene: openalea.plantgl.scenegraph.Scene
+        The plantgl scene object used to save the meshs of environment
     plant_file: str
         The link to the file of the model of plant. (currently only support .lpy file)
     plantPos: Vec3
         The position of the plant
-
     po_dir: str
         The link to the folder which contains the optical properties of the room
     
@@ -77,17 +80,110 @@ class Simulator:
         self.nb_photons = 0
         self.max_depth = 0
         self.scale_factor = 1
-        self.t_min = 0
+        self.t_min = 0.0001
         self.nb_thread = 8
         self.is_backface_culling = False
         self.base_spectral_range = {"start": 0, "end": 0}
-        self.divided_spectral_range = []
+        self.divided_spectral_range = [{"start": 0, "end": 0}]
         self.rendering = False
+        #
+        self.scene_pgl = Scene()
+        self.list_captor = []
         #
         self.captor_file = ""
         self.plant_file = ""
         self.po_dir = ""
+        self.spectrum_file = ""
+        self.points_calibration_file = ""
+
+    def resetScene(self):
+        """
+        Clear list of captors and list of object in scene
+        """
+        self.scene_pgl.clear()
+        self.list_captor.clear()    
+
+    def addEnvToScene(self, vertices, indices, mat):
+        """
+        Add a environment or light object to scene
+
+        Parameters
+        ----------
+        vertices : array
+            The list of vertex of object
+        indices: array
+            The list of triangle index
+        mat: dict
+            Material of object. Written in this form: 
+            { "name": str, "type": str, "color": tuple, "spec": float, "roughness": float, "trans": float }
+
+        Returns
+        -------
+            The object is added to the scene
+
+        """
+        sh = Shape()
+
+        #apply scale factor
+        for i in range(len(vertices)):
+            vertices[i] = tuple(x / self.scale_factor for x in vertices[i])
+
+        #set geometry
+        ts = TriangleSet(vertices)
+        ts.indexList = Index3Array(indices)
+        ts.computeNormalList()
+        sh.geometry = ts
+
+        #set material
+        if (mat["type"] == "light"):
+            sh.appearance = Material(
+                        name=mat["name"],
+                        ambient = Color3(mat["color"]),
+                        emission = Color3(mat["color"])
+                    )
+        elif (mat["type"] == "object"):
+            
+            sh.appearance = Material(
+                        name=mat["name"],
+                        ambient = Color3(mat["color"]),
+                        specular = Color3( Math.denormalize(float(mat["spec"])) ),
+                        shininess = 1 - mat["roughness"],
+                        transparency = mat["trans"]
+                    )
+        else:
+            sh.appearance = Material()
+
+        #add object to scene
+        self.scene_pgl.add(sh)
+
+    def addCaptorToScene(self, pos, normal, r):
+        """
+        Add a circular captor object to scene
+
+        Parameters
+        ----------
+        pos : tuple(int,int,int)
+            The position of captor
+        normal: tuple(int,int,int)
+            The vector normal of captor
+        r: float
+            The radius of captor
+
+        Returns
+        -------
+            The captor is added to the scene
+
+        """
+        captor = LoadCaptor.Captor(pos[0] / self.scale_factor, 
+                                   pos[1] / self.scale_factor, 
+                                   pos[2] / self.scale_factor, 
+                                   normal[0], 
+                                   normal[1], 
+                                   normal[2], 
+                                   r)
         
+        self.list_captor.append(captor)
+    
 
     def run(self):
         """
@@ -340,8 +436,9 @@ class Simulator:
         #add captor
         has_captor = False 
         captor_triangle_dict = {}
-        if(self.captor_file != ""):
-            self.list_captor = LoadCaptor.addCaptors(scene, self.scale_factor, captor_triangle_dict, self.captor_file)
+
+        if len(self.list_captor) > 0:
+            LoadCaptor.addCaptors(scene, captor_triangle_dict, self.list_captor)
             has_captor = True
         
         return scene, has_captor, captor_triangle_dict, has_plant, tr2shmap
@@ -458,6 +555,9 @@ class Simulator:
         self.spectrum_file = spectrum_file
         self.points_calibration_file = points_calibration_file
 
+        if(self.captor_file != ""):
+            self.list_captor += LoadCaptor.readCaptorsFile(self.scale_factor, self.captor_file)
+
     def setupPlant(self, plant_file: str, plant_pos = Vec3(0,0,0)):
         """
         Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
@@ -541,7 +641,8 @@ class Simulator:
                             self.base_spectral_range = {"start": int(row[1]), "end": int(row[2])}
                         case "$DIVIDED_SPECTRAL_RANGE":
                             nb_bande = int(row[1])
-    
+                            self.divided_spectral_range.clear()
+
                             for i in range(nb_bande):
                                 start = int(row[(i + 1) * 2])
                                 end = int(row[(i + 1) * 2 + 1])

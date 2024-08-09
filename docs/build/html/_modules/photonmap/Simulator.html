@@ -82,6 +82,7 @@
 <span></span><span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">openalea.plantgl.all</span> <span class="kn">import</span> <span class="o">*</span> 
 <span class="kn">from</span> <span class="nn">openalea.lpy</span> <span class="kn">import</span> <span class="n">Lsystem</span>
@@ -103,7 +104,7 @@
 <span class="kn">from</span> <span class="nn">photonmap.Reader</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ReadRADGeo</span><span class="p">,</span> <span class="n">ReadPO</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">photonmap.Energy</span> <span class="kn">import</span> <span class="p">(</span><span class="n">CalculateEnergy</span><span class="p">,</span> <span class="n">CorrectEnergy</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">photonmap.Loader</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LoadCaptor</span><span class="p">,</span> <span class="n">LoadEnvironment</span><span class="p">,</span> <span class="n">LoadPlant</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">photonmap.Common</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Outils</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">photonmap.Common</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Outils</span><span class="p">,</span> <span class="n">Math</span><span class="p">)</span>
 
 
 
@@ -145,11 +146,14 @@
 <span class="sd">    points_calibration_file: str</span>
 <span class="sd">        The link to the file which contains the informations of the captors used to calibrate the final result </span>
 
+<span class="sd">    list_captor: array</span>
+<span class="sd">        The list of captor in simulation</span>
+<span class="sd">    pgl_scene: openalea.plantgl.scenegraph.Scene</span>
+<span class="sd">        The plantgl scene object used to save the meshs of environment</span>
 <span class="sd">    plant_file: str</span>
 <span class="sd">        The link to the file of the model of plant. (currently only support .lpy file)</span>
 <span class="sd">    plantPos: Vec3</span>
 <span class="sd">        The position of the plant</span>
-
 <span class="sd">    po_dir: str</span>
 <span class="sd">        The link to the folder which contains the optical properties of the room</span>
 <span class="sd">    </span>
@@ -159,17 +163,119 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t_min</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_min</span> <span class="o">=</span> <span class="mf">0.0001</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_thread</span> <span class="o">=</span> <span class="mi">8</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_backface_culling</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_spectral_range</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rendering</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene_pgl</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1">#</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plant_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">po_dir</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="Simulator.resetScene">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.resetScene">[docs]</a>
+    <span class="k">def</span> <span class="nf">resetScene</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear list of captors and list of object in scene</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene_pgl</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>    </div>
+
+
+<div class="viewcode-block" id="Simulator.addEnvToScene">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addEnvToScene">[docs]</a>
+    <span class="k">def</span> <span class="nf">addEnvToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">mat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a environment or light object to scene</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vertices : array</span>
+<span class="sd">            The list of vertex of object</span>
+<span class="sd">        indices: array</span>
+<span class="sd">            The list of triangle index</span>
+<span class="sd">        mat: dict</span>
+<span class="sd">            Material of object. Written in this form: </span>
+<span class="sd">            { &quot;name&quot;: str, &quot;type&quot;: str, &quot;color&quot;: tuple, &quot;spec&quot;: float, &quot;roughness&quot;: float, &quot;trans&quot;: float }</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The object is added to the scene</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">()</span>
+
+        <span class="c1">#apply scale factor</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)):</span>
+            <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="c1">#set geometry</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">indexList</span> <span class="o">=</span> <span class="n">Index3Array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
+        <span class="n">sh</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">ts</span>
+
+        <span class="c1">#set material</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;light&quot;</span><span class="p">):</span>
+            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]),</span>
+                        <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
+                    <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">):</span>
+            
+            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]),</span>
+                        <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="n">Math</span><span class="o">.</span><span class="n">denormalize</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;spec&quot;</span><span class="p">]))</span> <span class="p">),</span>
+                        <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;roughness&quot;</span><span class="p">],</span>
+                        <span class="n">transparency</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;trans&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+
+        <span class="c1">#add object to scene</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene_pgl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Simulator.addCaptorToScene">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addCaptorToScene">[docs]</a>
+    <span class="k">def</span> <span class="nf">addCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a circular captor object to scene</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pos : tuple(int,int,int)</span>
+<span class="sd">            The position of captor</span>
+<span class="sd">        normal: tuple(int,int,int)</span>
+<span class="sd">            The vector normal of captor</span>
+<span class="sd">        r: float</span>
+<span class="sd">            The radius of captor</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The captor is added to the scene</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
+                                   <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
+                                   <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
+                                   <span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
+                                   <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
+                                   <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> 
+                                   <span class="n">r</span><span class="p">)</span>
         
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span></div>
+
+    
 
 <div class="viewcode-block" id="Simulator.run">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.run">[docs]</a>
@@ -433,8 +539,9 @@
         <span class="c1">#add captor</span>
         <span class="n">has_captor</span> <span class="o">=</span> <span class="kc">False</span> 
         <span class="n">captor_triangle_dict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">)</span>
             <span class="n">has_captor</span> <span class="o">=</span> <span class="kc">True</span>
         
         <span class="k">return</span> <span class="n">scene</span><span class="p">,</span> <span class="n">has_captor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">has_plant</span><span class="p">,</span> <span class="n">tr2shmap</span></div>
@@ -462,6 +569,9 @@
 <span class="sd">            Rendered images is saved into the folder ./result</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rendering</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Enable rendering first !!!&quot;</span><span class="p">)</span>
@@ -558,7 +668,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">=</span> <span class="n">captor_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">=</span> <span class="n">spectrum_file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">=</span> <span class="n">points_calibration_file</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">=</span> <span class="n">points_calibration_file</span>
+
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">+=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">readCaptorsFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulator.setupPlant">
@@ -652,7 +765,8 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">base_spectral_range</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])}</span>
                         <span class="k">case</span> <span class="s2">&quot;$DIVIDED_SPECTRAL_RANGE&quot;</span><span class="p">:</span>
                             <span class="n">nb_bande</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    
+                            <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
                             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_bande</span><span class="p">):</span>
                                 <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">])</span>
                                 <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>

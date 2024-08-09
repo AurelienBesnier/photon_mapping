@@ -21,6 +21,7 @@ Functions
 
 .. autoapisummary::
 
+   photonmap.Loader.LoadCaptor.readCaptorsFile
    photonmap.Loader.LoadCaptor.addCaptors
    photonmap.Loader.LoadCaptor.findIndexOfCaptorInList
    photonmap.Loader.LoadCaptor.addCapteurPgl
@@ -108,7 +109,24 @@ Functions
 
 
 
-.. py:function:: addCaptors(scene, scale_factor, captor_triangle_dict, filename)
+.. py:function:: readCaptorsFile(scale_factor, filename)
+
+   Read all the captors in a file
+
+   Parameters
+   ----------
+   scale_factor : int
+       The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+   filename : str
+       The link to the file which contains the data of captors
+
+   Returns
+   -------
+       return the list of captors
+
+
+
+.. py:function:: addCaptors(scene, captor_triangle_dict, list_captor)
 
    Adds circular captors to the scene. the captors needs to be in a file
 
@@ -116,17 +134,14 @@ Functions
    ----------
    scene : libphotonmap_core.Scene
        The photon mapping scene used to run the simulation
-   scale_factor : int
-       The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
    captor_triangle_dict : dict
        The dictionary of the triangles of captors
-   filename : str
-       The link to the file which contains the data of captors
-
+   list_captor : array
+       The list of captor
 
    Returns
    -------
-       Add all the mesh of captors to the scene and return the list of captors
+       Add all the mesh of captors to the scene 
 
 
 

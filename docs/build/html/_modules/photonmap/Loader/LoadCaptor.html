@@ -260,34 +260,27 @@
 </div>
 
 
-<div class="viewcode-block" id="addCaptors">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCaptors">[docs]</a>
-<span class="k">def</span> <span class="nf">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="readCaptorsFile">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.readCaptorsFile">[docs]</a>
+<span class="k">def</span> <span class="nf">readCaptorsFile</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adds circular captors to the scene. the captors needs to be in a file</span>
+<span class="sd">    Read all the captors in a file</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    scene : libphotonmap_core.Scene</span>
-<span class="sd">        The photon mapping scene used to run the simulation</span>
 <span class="sd">    scale_factor : int</span>
 <span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">    captor_triangle_dict : dict</span>
-<span class="sd">        The dictionary of the triangles of captors</span>
 <span class="sd">    filename : str</span>
 <span class="sd">        The link to the file which contains the data of captors</span>
 
-<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Add all the mesh of captors to the scene and return the list of captors</span>
+<span class="sd">        return the list of captors</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
     <span class="n">captor_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="n">captorId</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
             
             <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
@@ -300,16 +293,43 @@
             <span class="n">znorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
 
             <span class="n">captor</span> <span class="o">=</span> <span class="n">Captor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-            <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
-            <span class="n">scene</span><span class="o">.</span><span class="n">addCaptor</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
-                <span class="n">captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">captorId</span>
-            <span class="n">captorId</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
             <span class="n">captor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">captor_list</span></div>
+
+
+
+<div class="viewcode-block" id="addCaptors">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCaptors">[docs]</a>
+<span class="k">def</span> <span class="nf">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">list_captor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds circular captors to the scene. the captors needs to be in a file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scene : libphotonmap_core.Scene</span>
+<span class="sd">        The photon mapping scene used to run the simulation</span>
+<span class="sd">    captor_triangle_dict : dict</span>
+<span class="sd">        The dictionary of the triangles of captors</span>
+<span class="sd">    list_captor : array</span>
+<span class="sd">        The list of captor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Add all the mesh of captors to the scene </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_captor</span><span class="p">)):</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">list_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
+        <span class="n">scene</span><span class="o">.</span><span class="n">addCaptor</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
+            <span class="n">captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span></div>
+
 
 
 <div class="viewcode-block" id="findIndexOfCaptorInList">

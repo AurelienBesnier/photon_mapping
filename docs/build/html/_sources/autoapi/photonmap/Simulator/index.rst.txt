@@ -54,13 +54,60 @@ Classes
    points_calibration_file: str
        The link to the file which contains the informations of the captors used to calibrate the final result 
 
+   list_captor: array
+       The list of captor in simulation
+   pgl_scene: openalea.plantgl.scenegraph.Scene
+       The plantgl scene object used to save the meshs of environment
    plant_file: str
        The link to the file of the model of plant. (currently only support .lpy file)
    plantPos: Vec3
        The position of the plant
-
    po_dir: str
        The link to the folder which contains the optical properties of the room
+
+
+   .. py:method:: resetScene()
+
+      Clear list of captors and list of object in scene
+
+
+   .. py:method:: addEnvToScene(vertices, indices, mat)
+
+      Add a environment or light object to scene
+
+      Parameters
+      ----------
+      vertices : array
+          The list of vertex of object
+      indices: array
+          The list of triangle index
+      mat: dict
+          Material of object. Written in this form: 
+          { "name": str, "type": str, "color": tuple, "spec": float, "roughness": float, "trans": float }
+
+      Returns
+      -------
+          The object is added to the scene
+
+
+
+   .. py:method:: addCaptorToScene(pos, normal, r)
+
+      Add a circular captor object to scene
+
+      Parameters
+      ----------
+      pos : tuple(int,int,int)
+          The position of captor
+      normal: tuple(int,int,int)
+          The vector normal of captor
+      r: float
+          The radius of captor
+
+      Returns
+      -------
+          The captor is added to the scene
+
 
 
    .. py:method:: run()

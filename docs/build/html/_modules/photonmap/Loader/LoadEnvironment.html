@@ -138,15 +138,12 @@
 
 
     <span class="n">material_name</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">name</span>
-    <span class="n">trans</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">materialsT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsT</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
-    <span class="n">refl</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">materialsR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsR</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
-    <span class="n">specular</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">materialsS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsS</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">transparency</span> <span class="k">if</span> <span class="n">materialsT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsT</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
+    <span class="n">refl</span> <span class="o">=</span> <span class="p">(</span><span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">ambient</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">materialsR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsR</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
+    <span class="n">specular</span> <span class="o">=</span> <span class="p">(</span><span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">specular</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">)</span> <span class="k">if</span> <span class="n">materialsS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">material_name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">materialsS</span><span class="p">[</span><span class="n">material_name</span><span class="p">]</span>
 
     <span class="c1">#print(material_name, refl, specular, trans)</span>
-    <span class="c1">#trans = sh.appearance.transparency</span>
-    <span class="c1">#refl = (sh.appearance.ambient.red / 255.0)</span>
-    <span class="c1">#specular = (sh.appearance.specular.red / 255.0)</span>
-    
+
     <span class="c1">#using mat Phong</span>
     <span class="n">illum</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -157,6 +154,7 @@
 
     <span class="n">shininess</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">shininess</span>
     <span class="n">emission</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">emission</span>
+
     <span class="n">light_color</span> <span class="o">=</span> <span class="n">wavelength2Rgb</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
     <span class="c1"># print(str(light_color[0])+&quot; &quot;+str(light_color[1])+&quot; &quot;+str(light_color[2]))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

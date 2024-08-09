@@ -55,15 +55,12 @@ def add_environment(
 
 
     material_name = sh.appearance.name
-    trans = 0.0 if materialsT.get(material_name) is None else materialsT[material_name]
-    refl = 0.0 if materialsR.get(material_name) is None else materialsR[material_name]
-    specular = 0.0 if materialsS.get(material_name) is None else materialsS[material_name]
+    trans = sh.appearance.transparency if materialsT.get(material_name) is None else materialsT[material_name]
+    refl = (sh.appearance.ambient.red / 255.0) if materialsR.get(material_name) is None else materialsR[material_name]
+    specular = (sh.appearance.specular.red / 255.0) if materialsS.get(material_name) is None else materialsS[material_name]
 
     #print(material_name, refl, specular, trans)
-    #trans = sh.appearance.transparency
-    #refl = (sh.appearance.ambient.red / 255.0)
-    #specular = (sh.appearance.specular.red / 255.0)
-    
+
     #using mat Phong
     illum = 1
 
@@ -74,6 +71,7 @@ def add_environment(
 
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
+
     light_color = wavelength2Rgb(w)
     # print(str(light_color[0])+" "+str(light_color[1])+" "+str(light_color[2]))
     if len(indices) == 0:

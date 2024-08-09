@@ -140,6 +140,10 @@
 </dd>
 <dt>points_calibration_file: str</dt><dd><p>The link to the file which contains the informations of the captors used to calibrate the final result</p>
 </dd>
+<dt>list_captor: array</dt><dd><p>The list of captor in simulation</p>
+</dd>
+<dt>pgl_scene: openalea.plantgl.scenegraph.Scene</dt><dd><p>The plantgl scene object used to save the meshs of environment</p>
+</dd>
 <dt>plant_file: str</dt><dd><p>The link to the file of the model of plant. (currently only support .lpy file)</p>
 </dd>
 <dt>plantPos: Vec3</dt><dd><p>The position of the plant</p>
@@ -148,11 +152,64 @@
 </dd>
 </dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Simulator.Simulator.resetScene">
+<span class="sig-name descname"><span class="pre">resetScene</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.resetScene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.resetScene" title="Link to this definition"></a></dt>
+<dd><p>Clear list of captors and list of object in scene</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Simulator.Simulator.addEnvToScene">
+<span class="sig-name descname"><span class="pre">addEnvToScene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.addEnvToScene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.addEnvToScene" title="Link to this definition"></a></dt>
+<dd><p>Add a environment or light object to scene</p>
+<section id="parameters">
+<h5>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h5>
+<dl class="simple">
+<dt>vertices<span class="classifier">array</span></dt><dd><p>The list of vertex of object</p>
+</dd>
+<dt>indices: array</dt><dd><p>The list of triangle index</p>
+</dd>
+<dt>mat: dict</dt><dd><p>Material of object. Written in this form:
+{ “name”: str, “type”: str, “color”: tuple, “spec”: float, “roughness”: float, “trans”: float }</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h5>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h5>
+<blockquote>
+<div><p>The object is added to the scene</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="photonmap.Simulator.Simulator.addCaptorToScene">
+<span class="sig-name descname"><span class="pre">addCaptorToScene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.addCaptorToScene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.addCaptorToScene" title="Link to this definition"></a></dt>
+<dd><p>Add a circular captor object to scene</p>
+<section id="id1">
+<h5>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h5>
+<dl class="simple">
+<dt>pos<span class="classifier">tuple(int,int,int)</span></dt><dd><p>The position of captor</p>
+</dd>
+<dt>normal: tuple(int,int,int)</dt><dd><p>The vector normal of captor</p>
+</dd>
+<dt>r: float</dt><dd><p>The radius of captor</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h5>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h5>
+<blockquote>
+<div><p>The captor is added to the scene</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.run" title="Link to this definition"></a></dt>
 <dd><p>Run the simulation with the configurations which is determined</p>
-<section id="returns">
-<h5>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h5>
+<section id="id3">
+<h5>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h5>
 <blockquote>
 <div><p>The number of received photons on each captor and organs of plant is saved into the files located in folde ./results</p>
 </div></blockquote>
@@ -166,15 +223,15 @@
 To run this function, it has to run these command first:
 – ipython
 – %gui qt5</p>
-<section id="parameters">
-<h5>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h5>
+<section id="id4">
+<h5>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>divided_spectral_range_index: int</dt><dd><p>This variable allow us to visualize the color of the plant based on its received energies</p>
 </dd>
 </dl>
 </section>
-<section id="id1">
-<h5>Returns<a class="headerlink" href="#id1" title="Link to this heading"></a></h5>
+<section id="id5">
+<h5>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h5>
 <blockquote>
 <div><p>A rendered scene in 3D</p>
 </div></blockquote>
@@ -185,8 +242,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.test_t_min">
 <span class="sig-name descname"><span class="pre">test_t_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_photons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_only_lamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.test_t_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.test_t_min" title="Link to this definition"></a></dt>
 <dd><p>Test the simulation with multiple values of Tmin to avoid the problem of auto-intersection</p>
-<section id="id2">
-<h5>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h5>
+<section id="id6">
+<h5>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>nb_photons: int</dt><dd><p>The total number of photons is shooting from the light in the simulation</p>
 </dd>
@@ -198,8 +255,8 @@ To run this function, it has to run these command first:
 </dd>
 </dl>
 </section>
-<section id="id3">
-<h5>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h5>
+<section id="id7">
+<h5>Returns<a class="headerlink" href="#id7" title="Link to this heading"></a></h5>
 <blockquote>
 <div><p>A graph is generated to show the connection between the Tmin and the results of simulation</p>
 </div></blockquote>
@@ -210,8 +267,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.initSimulationScene">
 <span class="sig-name descname"><span class="pre">initSimulationScene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_band</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moyenne_wavelength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_only_lamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.initSimulationScene"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.initSimulationScene" title="Link to this definition"></a></dt>
 <dd><p>Setup all the necessary objects (environment, captor, plant) in the simulation</p>
-<section id="id4">
-<h5>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h5>
+<section id="id8">
+<h5>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>scene: libphotonmap_core.Scene</dt><dd><p>The object which contains all the object in the scene of simulation</p>
 </dd>
@@ -223,8 +280,8 @@ To run this function, it has to run these command first:
 </dd>
 </dl>
 </section>
-<section id="id5">
-<h5>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h5>
+<section id="id9">
+<h5>Returns<a class="headerlink" href="#id9" title="Link to this heading"></a></h5>
 <blockquote>
 <div><dl class="simple">
 <dt>scene: libphotonmap_core.Scene</dt><dd><p>The object which contains all the object in the scene of simulation</p>
@@ -246,8 +303,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.render">
 <span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">integrator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.render" title="Link to this definition"></a></dt>
 <dd><p>Visualize the photon map of the simulation in the scene</p>
-<section id="id6">
-<h5>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h5>
+<section id="id10">
+<h5>Parameters<a class="headerlink" href="#id10" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>integrator: libphotonmap_core.PhotonMapping</dt><dd><p>The object which handles all the simulation of photon mapping</p>
 </dd>
@@ -259,8 +316,8 @@ To run this function, it has to run these command first:
 </dd>
 </dl>
 </section>
-<section id="id7">
-<h5>Returns<a class="headerlink" href="#id7" title="Link to this heading"></a></h5>
+<section id="id11">
+<h5>Returns<a class="headerlink" href="#id11" title="Link to this heading"></a></h5>
 <blockquote>
 <div><p>Rendered images is saved into the folder ./result</p>
 </div></blockquote>
@@ -271,8 +328,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.setupRoom">
 <span class="sig-name descname"><span class="pre">setupRoom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">room_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">po_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip_normal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.setupRoom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.setupRoom" title="Link to this definition"></a></dt>
 <dd><p>Setup the room/environment of the simulation.</p>
-<section id="id8">
-<h5>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h5>
+<section id="id12">
+<h5>Parameters<a class="headerlink" href="#id12" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>room_file: str</dt><dd><p>The link to the file which contains the geometries of the room</p>
 </dd>
@@ -288,8 +345,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.setupRender">
 <span class="sig-name descname"><span class="pre">setupRender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lookfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vec3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vec3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.setupRender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.setupRender" title="Link to this definition"></a></dt>
 <dd><p>Enable the capacity to render/visulize the photon map in the scene</p>
-<section id="id9">
-<h5>Parameters<a class="headerlink" href="#id9" title="Link to this heading"></a></h5>
+<section id="id13">
+<h5>Parameters<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>lookfrom: Vec3</dt><dd><p>The position of the camera.</p>
 </dd>
@@ -303,8 +360,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.setupCaptor">
 <span class="sig-name descname"><span class="pre">setupCaptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">captor_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_calibration_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.setupCaptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.setupCaptor" title="Link to this definition"></a></dt>
 <dd><p>Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors</p>
-<section id="id10">
-<h5>Parameters<a class="headerlink" href="#id10" title="Link to this heading"></a></h5>
+<section id="id14">
+<h5>Parameters<a class="headerlink" href="#id14" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>captor_file: str</dt><dd><p>The link to the file which contains the informations of the captors in the simulation</p>
 </dd>
@@ -320,8 +377,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.setupPlant">
 <span class="sig-name descname"><span class="pre">setupPlant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plant_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plant_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vec3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.setupPlant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.setupPlant" title="Link to this definition"></a></dt>
 <dd><p>Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant</p>
-<section id="id11">
-<h5>Parameters<a class="headerlink" href="#id11" title="Link to this heading"></a></h5>
+<section id="id15">
+<h5>Parameters<a class="headerlink" href="#id15" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>plant_file: str</dt><dd><p>The link to the file of the model of plant. (currently only support .lpy file)</p>
 </dd>
@@ -335,8 +392,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.initCameraRender">
 <span class="sig-name descname"><span class="pre">initCameraRender</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lookfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vec3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lookat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vec3(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.initCameraRender"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.initCameraRender" title="Link to this definition"></a></dt>
 <dd><p>Init the camera to render image. Calling by the function setupRender</p>
-<section id="id12">
-<h5>Parameters<a class="headerlink" href="#id12" title="Link to this heading"></a></h5>
+<section id="id16">
+<h5>Parameters<a class="headerlink" href="#id16" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>lookfrom: Vec3</dt><dd><p>The position of the camera.</p>
 </dd>
@@ -344,8 +401,8 @@ To run this function, it has to run these command first:
 </dd>
 </dl>
 </section>
-<section id="id13">
-<h5>Returns<a class="headerlink" href="#id13" title="Link to this heading"></a></h5>
+<section id="id17">
+<h5>Returns<a class="headerlink" href="#id17" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>camera: libphotonmap_core.Camera</dt><dd><p>An object with all the informations of camera</p>
 </dd>
@@ -357,8 +414,8 @@ To run this function, it has to run these command first:
 <dt class="sig sig-object py" id="photonmap.Simulator.Simulator.readConfiguration">
 <span class="sig-name descname"><span class="pre">readConfiguration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/photonmap/Simulator.html#Simulator.readConfiguration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Simulator.Simulator.readConfiguration" title="Link to this definition"></a></dt>
 <dd><p>Read all the parameters of simulation in the configuration file</p>
-<section id="id14">
-<h5>Parameters<a class="headerlink" href="#id14" title="Link to this heading"></a></h5>
+<section id="id18">
+<h5>Parameters<a class="headerlink" href="#id18" title="Link to this heading"></a></h5>
 <dl class="simple">
 <dt>filename: str</dt><dd><p>Name/directory of the configuration file.</p>
 </dd>

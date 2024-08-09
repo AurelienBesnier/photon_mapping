@@ -42,9 +42,9 @@ def wavelength2Rgb(w: int) -> Vec3:
         green = 0.0
         blue = 0.0
     else:
-        red = 0.0
-        green = 0.0
-        blue = 0.0
+        red = 1.0
+        green = 1.0
+        blue = 1.0
 
     return Vec3(red, green, blue)
 

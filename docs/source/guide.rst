@@ -338,8 +338,8 @@ To obtain the 3D scene, we have to run this program through ```ipython```.
 Test value Tmin
 ========================
 
-| While running the simulation, we risk encountering the problem of auto-intersection if the value of ```Tmin```` is too small.
-| To avoid this problem, we've created a function to run the simulation with different values of ```Tmin```. The result of this function is a graph showing the change in the number of photons after testing different values of ```Tmin```.
+| While running the simulation, we risk encountering the problem of auto-intersection if the value of ``Tmin`` is too small.
+| To avoid this problem, we've created a function to run the simulation with different values of ``Tmin``. The result of this function is a graph showing the change in the number of photons after testing different values of ``Tmin``.
 |
 | Here is the complete code for this program:
 

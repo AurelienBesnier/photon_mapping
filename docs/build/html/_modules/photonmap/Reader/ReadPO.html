@@ -122,59 +122,65 @@
         <span class="n">dir_pathReflect</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">&quot;/ReflectancesMean/&quot;</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-            <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">contentReflect</span><span class="p">,</span> <span class="n">stepReflect</span><span class="p">,</span> <span class="n">startReflect</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-            <span class="p">)</span>
-            
-            <span class="n">refl</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentReflect</span><span class="p">)</span>
-            
-            <span class="n">materialsR</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-                <span class="k">else</span> <span class="mf">0.0</span>
-            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">contentReflect</span><span class="p">,</span> <span class="n">stepReflect</span><span class="p">,</span> <span class="n">startReflect</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathReflect</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="n">refl</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentReflect</span><span class="p">)</span>
+
+                <span class="n">materialsR</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">refl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="k">else</span> <span class="mf">0.0</span>
+                <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;Plant&quot;</span><span class="p">,</span> <span class="s2">&quot;Env&quot;</span><span class="p">):</span>  <span class="c1"># Transmittances</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dir_pathTransmit</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">element</span> <span class="o">+</span> <span class="s2">&quot;/TransmittancesMean/&quot;</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-                    <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-            <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">contentTransmit</span><span class="p">,</span> <span class="n">stepTransmit</span><span class="p">,</span> <span class="n">startTransmit</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
-            <span class="p">)</span>
 
-            <span class="n">trans</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentTransmit</span><span class="p">)</span>
-            
-            <span class="n">materialsT</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-                <span class="k">else</span> <span class="mf">0.0</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">path</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                        <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="n">matName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">contentTransmit</span><span class="p">,</span> <span class="n">stepTransmit</span><span class="p">,</span> <span class="n">startTransmit</span> <span class="o">=</span> <span class="n">read_spectrum_file</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_pathTransmit</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="n">trans</span> <span class="o">=</span> <span class="n">get_average_of_props_optic</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">w_start</span><span class="p">,</span> <span class="n">w_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">contentTransmit</span><span class="p">)</span>
+
+                <span class="n">materialsT</span><span class="p">[</span><span class="n">matName</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="k">else</span> <span class="mf">0.0</span>
+                <span class="p">)</span>
 
     <span class="c1">#Specularities</span>
     <span class="n">dir_pathSpec</span> <span class="o">=</span> <span class="p">(</span><span class="n">po_dir</span> <span class="o">+</span> <span class="s2">&quot;/Specularities.xlsx&quot;</span><span class="p">)</span>
-    <span class="n">contentSpec</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">dir_pathSpec</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">mat_names</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Materiau&quot;</span><span class="p">]</span>
-    <span class="n">mat_spec</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Valeur estimee visuellement&quot;</span><span class="p">]</span>
     
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">)):</span>
-        <span class="n">materialsS</span><span class="p">[</span><span class="n">mat_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="k">else</span> <span class="mf">0.0</span>
-        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_pathSpec</span><span class="p">):</span>
+        <span class="n">contentSpec</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">dir_pathSpec</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">mat_names</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Materiau&quot;</span><span class="p">]</span>
+        <span class="n">mat_spec</span> <span class="o">=</span> <span class="n">contentSpec</span><span class="p">[</span><span class="s2">&quot;Valeur estimee visuellement&quot;</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">)):</span>
+            <span class="n">materialsS</span><span class="p">[</span><span class="n">mat_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">mat_spec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="mf">0.0</span>
+            <span class="p">)</span>
 
 
     <span class="k">return</span> <span class="n">materialsR</span><span class="p">,</span> <span class="n">materialsS</span><span class="p">,</span> <span class="n">materialsT</span></div>

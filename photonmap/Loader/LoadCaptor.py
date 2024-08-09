@@ -167,32 +167,25 @@ class Captor:
 
         return self.vertices, self.triangles, self.normals
 
-def addCaptors(scene, scale_factor, captor_triangle_dict, filename):
+def readCaptorsFile(scale_factor, filename):
     """
-    Adds circular captors to the scene. the captors needs to be in a file
+    Read all the captors in a file
 
     Parameters
     ----------
-    scene : libphotonmap_core.Scene
-        The photon mapping scene used to run the simulation
     scale_factor : int
         The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-    captor_triangle_dict : dict
-        The dictionary of the triangles of captors
     filename : str
         The link to the file which contains the data of captors
 
-    
     Returns
     -------
-        Add all the mesh of captors to the scene and return the list of captors
+        return the list of captors
 
     """
-    lastTriangleId = scene.nFaces()
     captor_list = []
     with open(filename, "r") as f:
         next(f)
-        captorId = 0
         for line in f:
             
             row = line.split(",")
@@ -205,16 +198,40 @@ def addCaptors(scene, scale_factor, captor_triangle_dict, filename):
             znorm = float(row[6])
 
             captor = Captor(x, y, z, xnorm, ynorm, znorm, r)
-            vertices, triangles, normals = captor.getGeometry()
-            scene.addCaptor(vertices, triangles, normals)
-
-            for j in triangles:
-                captor_triangle_dict[lastTriangleId + j] = captorId
-            captorId += 1
-            lastTriangleId = scene.nFaces()
             captor_list.append(captor)
     
     return captor_list
+
+
+def addCaptors(scene, captor_triangle_dict, list_captor):
+    """
+    Adds circular captors to the scene. the captors needs to be in a file
+
+    Parameters
+    ----------
+    scene : libphotonmap_core.Scene
+        The photon mapping scene used to run the simulation
+    captor_triangle_dict : dict
+        The dictionary of the triangles of captors
+    list_captor : array
+        The list of captor
+
+    Returns
+    -------
+        Add all the mesh of captors to the scene 
+
+    """
+    lastTriangleId = scene.nFaces()
+    for i in range(len(list_captor)):
+        captor = list_captor[i]
+        vertices, triangles, normals = captor.getGeometry()
+        scene.addCaptor(vertices, triangles, normals)
+
+        for j in triangles:
+            captor_triangle_dict[lastTriangleId + j] = i
+
+        lastTriangleId = scene.nFaces()
+
 
 def findIndexOfCaptorInList(list_captor, x, y, z):
     """
