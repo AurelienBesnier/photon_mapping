@@ -108,7 +108,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.write_captor_energy" title="photonmap.Energy.CalculateEnergy.write_captor_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_captor_energy</span></code></a>(N_sim, N_calibration, captor_list, ...)</p></td>
 <td><p>Write the received energy of all the captors to a file.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="photonmap.Energy.CalculateEnergy.write_plant_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_plant_energy</span></code></a>(energies, list_plant, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="photonmap.Energy.CalculateEnergy.write_plant_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_plant_energy</span></code></a>(energies, N_calibration, ...)</p></td>
 <td><p>Write the received energy of all the organs of plant to a file.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.captor_add_energy" title="photonmap.Energy.CalculateEnergy.captor_add_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">captor_add_energy</span></code></a>(captor_dict, integrator, energy)</p></td>
@@ -148,12 +148,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="photonmap.Energy.CalculateEnergy.write_plant_energy">
-<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">write_plant_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_plant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands_spectre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_photons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#write_plant_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">write_plant_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_plant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands_spectre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_photons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#write_plant_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="Link to this definition"></a></dt>
 <dd><p>Write the received energy of all the organs of plant to a file.</p>
 <section id="id1">
 <h4>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h4>
 <dl class="simple">
 <dt>energies<span class="classifier">dict</span></dt><dd><p>Number of received photons on each plant’s organs</p>
+</dd>
+<dt>N_calibration<span class="classifier">dict</span></dt><dd><p>The energies after the calibration on each plant’s organs</p>
 </dd>
 <dt>list_plant<span class="classifier">dict</span></dt><dd><p>The dictionary of plant’s organs</p>
 </dd>

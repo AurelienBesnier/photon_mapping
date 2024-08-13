@@ -288,7 +288,8 @@ Create a python file (main.py) which contains the core program
         simulator.readConfiguration("simulation.ini")
         simulator.setupRoom("testChamber.rad", "./PO")
         simulator.setupCaptor("captors_expe1.csv")
-        simulator.run()
+        res = simulator.run()
+        simulator.writeResults() #write results to a file
 
 Run and results
 ---------------
@@ -334,6 +335,12 @@ To obtain the 3D scene, we have to run this program through ```ipython```.
     ipython
     %gui qt5
     run main.py
+
+| Here is the interface of visualize the scene
+
+.. image:: visualizeRoom.png
+  :width: 700
+  :alt: Result of function test tmin
 
 Test value Tmin
 ========================

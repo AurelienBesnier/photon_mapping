@@ -1,4 +1,5 @@
 from photonmap.Simulator import *
+from openalea.plantgl.all import * 
 
 if __name__ == "__main__":
 
@@ -9,31 +10,33 @@ if __name__ == "__main__":
     simulator.max_depth = 5
 
     simulator.resetScene()
+
     #setup environment
-    vert_ground = [(0,0,0), (1,0,0), (0,1,0)]
-    ind_ground = [(0, 2, 1)]
-    mat_ground = {
-        "name": "Ground",
-        "type": "object",
-        "color": (0,0,0),
-        "spec": 0.5,
-        "roughness": 0,
-        "trans": 0
-    }
-    simulator.addEnvToScene(vert_ground, ind_ground, mat_ground)
+    ground_ts = TriangleSet(pointList = [(0,0,0), (1,0,0), (0,1,0)], indexList = [(0, 2, 1)])
+    ground_mat = Material(
+                        name="Ground",
+                        ambient = Color3(0,0,0),
+                        specular = Color3( 127 ), #spec = 0.5 = 127/255
+                        shininess = 1,
+                        transparency = 0
+                    )
+    ground_sh = Shape(ground_ts, ground_mat)
+
+    simulator.addEnvToScene(ground_sh)
 
     #setup light
-    vert_light = [(0,0,5), (1,0,5), (0,1,5)]
-    ind_light = [(0, 1, 2)]
-    mat_light = {
-        "name": "Light",
-        "type": "light",
-        "color": (255, 255, 255)
-    }
-    simulator.addEnvToScene(vert_light, ind_light, mat_light)
+    light_ts = TriangleSet(pointList = [(0,0,5), (1,0,5), (0,1,5)], indexList = [(0, 1, 2)])
+    light_mat = Material(
+                        name="Light",
+                        ambient = Color3(255, 255, 255),
+                        emission = Color3(255, 255, 255)
+                    )
+    light_sh = Shape(light_ts, light_mat)
+    simulator.addEnvToScene(light_sh)
 
     #setup captor
     simulator.addCaptorToScene((0.5, 0.5, 3), (0, 0, 1), 0.2)
 
     #run
-    simulator.run()
+    res = simulator.run()
+    simulator.writeResults()

@@ -43,7 +43,7 @@ Functions
 
 
 
-.. py:function:: write_plant_energy(energies, list_plant, bands_spectre, n_photons)
+.. py:function:: write_plant_energy(energies, N_calibration, list_plant, bands_spectre, n_photons)
 
    Write the received energy of all the organs of plant to a file.
 
@@ -51,6 +51,8 @@ Functions
    ----------
    energies : dict
        Number of received photons on each plant's organs
+   N_calibration : dict
+       The energies after the calibration on each plant's organs
    list_plant : dict
        The dictionary of plant's organs
    bands_spectre: dict

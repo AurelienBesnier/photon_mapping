@@ -235,11 +235,11 @@
     <span class="k">return</span> <span class="n">points_calibration</span></div>
 
 
-<div class="viewcode-block" id="calibration_energy">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.calibration_energy">[docs]</a>
-<span class="k">def</span> <span class="nf">calibration_energy</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">correction_ratios</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">):</span>
+<div class="viewcode-block" id="get_calibaration_coefficient">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.get_calibaration_coefficient">[docs]</a>
+<span class="k">def</span> <span class="nf">get_calibaration_coefficient</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">correction_ratios</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calibrate energy from photons to Mmol / m2 / s</span>
+<span class="sd">    Calculate the coefficients used to calibrate the result of simulation</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -252,11 +252,12 @@
 <span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    N_calibration: array</span>
-<span class="sd">        The list of captor&#39;s energies after the calibration</span>
+<span class="sd">    coeff_calibration: array</span>
+<span class="sd">        The list of coefficients used for the calibration</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">N_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">coeff_calibration</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)):</span>
         <span class="n">energy</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">cur_points_calibration</span> <span class="o">=</span> <span class="n">points_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -275,6 +276,44 @@
             <span class="n">N_mes_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
         <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">std_err</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">linregress</span><span class="p">(</span><span class="n">N_sim_calibration</span><span class="p">,</span> <span class="n">N_mes_calibration</span><span class="p">)</span>
+        <span class="n">coeff_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;slope&quot;</span><span class="p">:</span> <span class="n">slope</span><span class="p">,</span> <span class="s2">&quot;intercept&quot;</span><span class="p">:</span> <span class="n">intercept</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">coeff_calibration</span></div>
+
+
+<div class="viewcode-block" id="calibrate_captor_energy">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.calibrate_captor_energy">[docs]</a>
+<span class="k">def</span> <span class="nf">calibrate_captor_energy</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">correction_ratios</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">,</span> <span class="n">coeffs_calibration</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calibrate the captor energy from photons to Mmol / m2 / s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    energies : array</span>
+<span class="sd">        The list of captor&#39;s energies</span>
+<span class="sd">    correction_ratios: array</span>
+<span class="sd">        The list of the coefficents of energy&#39;s correction </span>
+<span class="sd">    points_calibration: array</span>
+<span class="sd">        The list of the points used for the calibration</span>
+<span class="sd">    coeffs_calibration : array</span>
+<span class="sd">        The list of the coefficients used for the calibration</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    N_calibration: array</span>
+<span class="sd">        The list of captor&#39;s energies after the calibration</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">N_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)):</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cur_coeffs_calibration</span> <span class="o">=</span> <span class="n">coeffs_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cur_points_calibration</span> <span class="o">=</span> <span class="n">points_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1">#calculate N_sim appliqué le coefficient de correction </span>
+        <span class="n">N_sim_cor</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">energy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">N_sim_cor</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">correction_ratios</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="c1">#calculate Nmes</span>
         <span class="n">N_mes_calculate</span> <span class="o">=</span> <span class="p">{}</span>
@@ -282,8 +321,43 @@
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cur_points_calibration</span><span class="p">:</span>
                 <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur_points_calibration</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">slope</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">cur_coeffs_calibration</span><span class="p">[</span><span class="s2">&quot;slope&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">cur_coeffs_calibration</span><span class="p">[</span><span class="s2">&quot;intercept&quot;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
 
+        <span class="n">N_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N_mes_calculate</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">N_calibration</span> </div>
+
+
+<div class="viewcode-block" id="calibrate_plant_energy">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Energy/CorrectEnergy/index.html#photonmap.Energy.CorrectEnergy.calibrate_plant_energy">[docs]</a>
+<span class="k">def</span> <span class="nf">calibrate_plant_energy</span><span class="p">(</span><span class="n">energies</span><span class="p">,</span> <span class="n">coeffs_calibration</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calibrate the plant energy from photons to Mmol / m2 / s</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    energies : array</span>
+<span class="sd">        The list of captor&#39;s energies</span>
+<span class="sd">    coeffs_calibration : array</span>
+<span class="sd">        The list of the coefficients used for the calibration</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    N_calibration: array</span>
+<span class="sd">        The list of plant&#39;s energies after the calibration</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">N_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">energies</span><span class="p">)):</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">energies</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cur_coeffs_calibration</span> <span class="o">=</span> <span class="n">coeffs_calibration</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1">#calculate Nmes</span>
+        <span class="n">N_mes_calculate</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">energy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">N_mes_calculate</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">cur_coeffs_calibration</span><span class="p">[</span><span class="s2">&quot;slope&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">cur_coeffs_calibration</span><span class="p">[</span><span class="s2">&quot;intercept&quot;</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+                
         <span class="n">N_calibration</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N_mes_calculate</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">N_calibration</span> </div>

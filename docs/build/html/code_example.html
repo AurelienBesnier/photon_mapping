@@ -108,27 +108,27 @@
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
 <span class="c1">#setup environment</span>
-<span class="n">vert_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>
-<span class="n">ind_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-<span class="n">mat_ground</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-    <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">&quot;trans&quot;</span><span class="p">:</span> <span class="mi">0</span>
-<span class="p">}</span>
-<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_ground</span><span class="p">,</span> <span class="n">ind_ground</span><span class="p">,</span> <span class="n">mat_ground</span><span class="p">)</span>
+<span class="n">ground_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="n">ground_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">127</span> <span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
+                    <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="p">)</span>
+<span class="n">ground_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">ground_ts</span><span class="p">,</span> <span class="n">ground_mat</span><span class="p">)</span>
+
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">ground_sh</span><span class="p">)</span>
 
 <span class="c1">#setup light</span>
-<span class="n">vert_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)]</span>
-<span class="n">ind_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-<span class="n">mat_light</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Light&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_light</span><span class="p">,</span> <span class="n">ind_light</span><span class="p">,</span> <span class="n">mat_light</span><span class="p">)</span>
+<span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                    <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                <span class="p">)</span>
+<span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">light_sh</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -142,9 +142,18 @@
 </pre></div>
 </div>
 <div class="line-block">
+<div class="line">To write the result to a file, using the function <code class="docutils literal notranslate"><span class="pre">writeResults</span></code> after the function <code class="docutils literal notranslate"><span class="pre">run</span></code></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#write result to file</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
 <div class="line">Here is the completed program</div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">openalea.plantgl.all</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 
@@ -155,34 +164,36 @@
     <span class="n">simulator</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span>
 
     <span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
+
     <span class="c1">#setup environment</span>
-    <span class="n">vert_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>
-    <span class="n">ind_ground</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-    <span class="n">mat_ground</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-        <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-        <span class="s2">&quot;roughness&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s2">&quot;trans&quot;</span><span class="p">:</span> <span class="mi">0</span>
-    <span class="p">}</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_ground</span><span class="p">,</span> <span class="n">ind_ground</span><span class="p">,</span> <span class="n">mat_ground</span><span class="p">)</span>
+    <span class="n">ground_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+    <span class="n">ground_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">127</span> <span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
+                        <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="p">)</span>
+    <span class="n">ground_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">ground_ts</span><span class="p">,</span> <span class="n">ground_mat</span><span class="p">)</span>
+
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">ground_sh</span><span class="p">)</span>
 
     <span class="c1">#setup light</span>
-    <span class="n">vert_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)]</span>
-    <span class="n">ind_light</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-    <span class="n">mat_light</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Light&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">vert_light</span><span class="p">,</span> <span class="n">ind_light</span><span class="p">,</span> <span class="n">mat_light</span><span class="p">)</span>
+    <span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+    <span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                        <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                    <span class="p">)</span>
+    <span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">light_sh</span><span class="p">)</span>
 
     <span class="c1">#setup captor</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
 
     <span class="c1">#run</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

@@ -12,8 +12,13 @@ Classes
 
 .. autoapisummary::
 
+   photonmap.Simulator.Result
    photonmap.Simulator.Simulator
 
+
+
+
+.. py:class:: Result
 
 
 
@@ -71,19 +76,14 @@ Classes
       Clear list of captors and list of object in scene
 
 
-   .. py:method:: addEnvToScene(vertices, indices, mat)
+   .. py:method:: addEnvToScene(sh)
 
-      Add a environment or light object to scene
+      Add a environment's object to scene
 
       Parameters
       ----------
-      vertices : array
-          The list of vertex of object
-      indices: array
-          The list of triangle index
-      mat: dict
-          Material of object. Written in this form: 
-          { "name": str, "type": str, "color": tuple, "spec": float, "roughness": float, "trans": float }
+      sh : plantgl.Shape
+          The mesh of object
 
       Returns
       -------
@@ -118,6 +118,38 @@ Classes
       -------
           The number of received photons on each captor and organs of plant is saved into the files located in folde ./results 
 
+
+
+   .. py:method:: calculateCalibrationCoefficient(spectrum_file='', points_calibration_file='')
+
+      Calculate the coefficients which is used to calibrate the final result of simulation with the captors
+
+      Parameters
+      ----------
+      spectrum_file: str
+          The link to the file which contains the informations of the heterogeneity of the spectrum
+      points_calibration_file: str
+          The link to the file which contains the informations of the captors used to calibrate the final result 
+              
+
+
+   .. py:method:: calibrateResults(spectrum_file='', points_calibration_file='')
+
+      Calibrate the final result of simulation
+
+      Parameters
+      ----------
+      spectrum_file: str
+          The link to the file which contains the informations of the heterogeneity of the spectrum
+      points_calibration_file: str
+          The link to the file which contains the informations of the captors used to calibrate the final result 
+              
+
+
+   .. py:method:: writeResults()
+
+      Write the result of simulation to a file saved in the folder ./results
+              
 
 
    .. py:method:: visualiserSimulationScene(divided_spectral_range_index=-1)
@@ -239,7 +271,7 @@ Classes
               
 
 
-   .. py:method:: setupCaptor(captor_file: str, spectrum_file='', points_calibration_file='')
+   .. py:method:: setupCaptor(captor_file: str)
 
       Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 
@@ -247,10 +279,6 @@ Classes
       ----------
       captor_file: str
           The link to the file which contains the informations of the captors in the simulation
-      spectrum_file: str
-          The link to the file which contains the informations of the heterogeneity of the spectrum
-      points_calibration_file: str
-          The link to the file which contains the informations of the captors used to calibrate the final result 
               
 
 

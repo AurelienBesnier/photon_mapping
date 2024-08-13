@@ -142,9 +142,9 @@ def get_points_calibration(list_captor, points_calibration_file, divided_spectra
 
     return points_calibration
 
-def calibration_energy(energies, correction_ratios, points_calibration):
+def get_calibaration_coefficient(energies, correction_ratios, points_calibration):
     """
-    Calibrate energy from photons to Mmol / m2 / s
+    Calculate the coefficients used to calibrate the result of simulation
 
     Parameters
     ----------
@@ -157,11 +157,12 @@ def calibration_energy(energies, correction_ratios, points_calibration):
     
     Returns
     -------
-    N_calibration: array
-        The list of captor's energies after the calibration
+    coeff_calibration: array
+        The list of coefficients used for the calibration
 
     """
-    N_calibration = []
+
+    coeff_calibration = []
     for i in range(len(energies)):
         energy = energies[i]
         cur_points_calibration = points_calibration[i]
@@ -180,6 +181,41 @@ def calibration_energy(energies, correction_ratios, points_calibration):
             N_mes_calibration.append(v)
 
         slope, intercept, r, p, std_err = stats.linregress(N_sim_calibration, N_mes_calibration)
+        coeff_calibration.append({"slope": slope, "intercept": intercept})
+
+    return coeff_calibration
+
+def calibrate_captor_energy(energies, correction_ratios, points_calibration, coeffs_calibration):
+    """
+    Calibrate the captor energy from photons to Mmol / m2 / s
+
+    Parameters
+    ----------
+    energies : array
+        The list of captor's energies
+    correction_ratios: array
+        The list of the coefficents of energy's correction 
+    points_calibration: array
+        The list of the points used for the calibration
+    coeffs_calibration : array
+        The list of the coefficients used for the calibration
+    
+    Returns
+    -------
+    N_calibration: array
+        The list of captor's energies after the calibration
+
+    """
+    N_calibration = []
+    for i in range(len(energies)):
+        energy = energies[i]
+        cur_coeffs_calibration = coeffs_calibration[i]
+        cur_points_calibration = points_calibration[i]
+
+        #calculate N_sim appliqué le coefficient de correction 
+        N_sim_cor = {}
+        for k, v in energy.items():
+            N_sim_cor[k] = round(v * correction_ratios[i], 3)
 
         #calculate Nmes
         N_mes_calculate = {}
@@ -187,8 +223,40 @@ def calibration_energy(energies, correction_ratios, points_calibration):
             if k in cur_points_calibration:
                 N_mes_calculate[k] = cur_points_calibration[k]
             else:
-                N_mes_calculate[k] = round(slope * v + intercept, 5)
+                N_mes_calculate[k] = round(cur_coeffs_calibration["slope"] * v + cur_coeffs_calibration["intercept"], 5)
 
+        N_calibration.append(N_mes_calculate)
+
+    return N_calibration 
+
+def calibrate_plant_energy(energies, coeffs_calibration):
+    """
+    Calibrate the plant energy from photons to Mmol / m2 / s
+
+    Parameters
+    ----------
+    energies : array
+        The list of captor's energies
+    coeffs_calibration : array
+        The list of the coefficients used for the calibration
+    
+    Returns
+    -------
+    N_calibration: array
+        The list of plant's energies after the calibration
+
+    """
+
+    N_calibration = []
+    for i in range(len(energies)):
+        energy = energies[i]
+        cur_coeffs_calibration = coeffs_calibration[i]
+
+        #calculate Nmes
+        N_mes_calculate = {}
+        for k, v in energy.items():
+            N_mes_calculate[k] = round(cur_coeffs_calibration["slope"] * v + cur_coeffs_calibration["intercept"], 5)
+                
         N_calibration.append(N_mes_calculate)
 
     return N_calibration 

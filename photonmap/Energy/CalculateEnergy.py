@@ -70,7 +70,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
 
     print("Done write captor energy!")
 
-def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
+def write_plant_energy(energies, N_calibration, list_plant, bands_spectre, n_photons):
     """
     Write the received energy of all the organs of plant to a file.
 
@@ -78,6 +78,8 @@ def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
     ----------
     energies : dict
         Number of received photons on each plant's organs
+    N_calibration : dict
+        The energies after the calibration on each plant's organs
     list_plant : dict
         The dictionary of plant's organs
     bands_spectre: dict
@@ -98,19 +100,36 @@ def write_plant_energy(energies, list_plant, bands_spectre, n_photons):
 
     with open(filename, "w") as f:
         w_str = "id"
+
+        if len(N_calibration) == len(bands_spectre):
+            for i in range(len(bands_spectre)):
+                w_str += ",N_sim_calibration_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+
         for i in range(len(bands_spectre)):
             w_str += ",N_sim_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
+
         f.write(w_str + "\n")
 
         for sh_id in list_plant:
             w_str = str(sh_id)
 
+            #write result calibration
+            if len(N_calibration) == len(bands_spectre):
+                for i in range(len(bands_spectre)):
+                    cur_N_calibration = N_calibration[i]
+                    if sh_id in cur_N_calibration:
+                        w_str += ',' + str(cur_N_calibration[sh_id])
+                    else:
+                        w_str += ',' + str(0)
+
+            #write result simulation
             for i in range(len(bands_spectre)):
                 cur_ener = energies[i]
                 if sh_id in cur_ener:
                     w_str += ',' + str(cur_ener[sh_id])
                 else:
                     w_str += ',' + str(0)
+
             f.write(w_str + "\n")
 
     print("Done write plant energy!")

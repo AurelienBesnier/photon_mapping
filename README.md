@@ -1,5 +1,4 @@
-![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
-![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)
+[![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://minhlucky9.github.io/photon_mapping/build/html/index.html)
 # photon_mapping
 
 original git: ![https://github.com/AurelienBesnier/photon_mapping](https://github.com/AurelienBesnier/photon_mapping)

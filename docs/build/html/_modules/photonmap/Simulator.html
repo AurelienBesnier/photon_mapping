@@ -106,6 +106,21 @@
 <span class="kn">from</span> <span class="nn">photonmap.Loader</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LoadCaptor</span><span class="p">,</span> <span class="n">LoadEnvironment</span><span class="p">,</span> <span class="n">LoadPlant</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">photonmap.Common</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Outils</span><span class="p">,</span> <span class="n">Math</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Result">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result">[docs]</a>
+<span class="k">class</span> <span class="nc">Result</span><span class="p">:</span>
+    <span class="c1">#constructor</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N_sim_captor</span><span class="p">,</span> <span class="n">N_sim_plant</span><span class="p">,</span> <span class="n">N_mes_captor</span><span class="p">,</span> <span class="n">N_mes_plant</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="n">N_sim_captor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="n">N_sim_plant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="n">N_mes_captor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="n">N_mes_plant</span></div>
 
 
 <div class="viewcode-block" id="Simulator">
@@ -172,7 +187,14 @@
         <span class="c1">#</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scene_pgl</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1">#</span>
+        
+        <span class="c1">#result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1">#input files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plant_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">po_dir</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -191,55 +213,27 @@
 
 <div class="viewcode-block" id="Simulator.addEnvToScene">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addEnvToScene">[docs]</a>
-    <span class="k">def</span> <span class="nf">addEnvToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">mat</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">addEnvToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sh</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a environment or light object to scene</span>
+<span class="sd">        Add a environment&#39;s object to scene</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        vertices : array</span>
-<span class="sd">            The list of vertex of object</span>
-<span class="sd">        indices: array</span>
-<span class="sd">            The list of triangle index</span>
-<span class="sd">        mat: dict</span>
-<span class="sd">            Material of object. Written in this form: </span>
-<span class="sd">            { &quot;name&quot;: str, &quot;type&quot;: str, &quot;color&quot;: tuple, &quot;spec&quot;: float, &quot;roughness&quot;: float, &quot;trans&quot;: float }</span>
+<span class="sd">        sh : plantgl.Shape</span>
+<span class="sd">            The mesh of object</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            The object is added to the scene</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">()</span>
-
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">sh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span>
         <span class="c1">#apply scale factor</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">)):</span>
             <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-        <span class="c1">#set geometry</span>
-        <span class="n">ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">indexList</span> <span class="o">=</span> <span class="n">Index3Array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
-        <span class="n">sh</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">ts</span>
-
-        <span class="c1">#set material</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;light&quot;</span><span class="p">):</span>
-            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
-                        <span class="n">name</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]),</span>
-                        <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span>
-                    <span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">):</span>
-            
-            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
-                        <span class="n">name</span><span class="o">=</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
-                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]),</span>
-                        <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="n">Math</span><span class="o">.</span><span class="n">denormalize</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mat</span><span class="p">[</span><span class="s2">&quot;spec&quot;</span><span class="p">]))</span> <span class="p">),</span>
-                        <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;roughness&quot;</span><span class="p">],</span>
-                        <span class="n">transparency</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="s2">&quot;trans&quot;</span><span class="p">]</span>
-                    <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span> <span class="o">=</span> <span class="n">Material</span><span class="p">()</span>
+        
+        <span class="n">sh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span> <span class="o">=</span> <span class="n">vertices</span>
+        <span class="n">sh</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
 
         <span class="c1">#add object to scene</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scene_pgl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sh</span><span class="p">)</span></div>
@@ -293,9 +287,6 @@
         <span class="n">n_estimation_global</span> <span class="o">=</span> <span class="mi">100</span>
         <span class="n">final_gathering_depth</span> <span class="o">=</span> <span class="mi">0</span> 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="p">[]</span>
-
         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">)):</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="n">current_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
@@ -345,24 +336,77 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plant_energy</span><span class="p">)</span>
             
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">)</span></div>
+
+    
+<div class="viewcode-block" id="Simulator.calculateCalibrationCoefficient">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.calculateCalibrationCoefficient">[docs]</a>
+    <span class="k">def</span> <span class="nf">calculateCalibrationCoefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">points_calibration_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the coefficients which is used to calibrate the final result of simulation with the captors</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spectrum_file: str</span>
+<span class="sd">            The link to the file which contains the informations of the heterogeneity of the spectrum</span>
+<span class="sd">        points_calibration_file: str</span>
+<span class="sd">            The link to the file which contains the informations of the captors used to calibrate the final result </span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">coeffs_calibration</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span>  <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">spectrum_file</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">points_calibration_file</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_correct_energy_coeff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="n">spectrum_file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_points_calibration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="n">points_calibration_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coeffs_calibration</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_calibaration_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 
+<div class="viewcode-block" id="Simulator.calibrateResults">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.calibrateResults">[docs]</a>
+    <span class="k">def</span> <span class="nf">calibrateResults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spectrum_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">points_calibration_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calibrate the final result of simulation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spectrum_file: str</span>
+<span class="sd">            The link to the file which contains the informations of the heterogeneity of the spectrum</span>
+<span class="sd">        points_calibration_file: str</span>
+<span class="sd">            The link to the file which contains the informations of the captors used to calibrate the final result </span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">can_calibrate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculateCalibrationCoefficient</span><span class="p">(</span><span class="n">spectrum_file</span><span class="p">,</span> <span class="n">points_calibration_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">can_calibrate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">calibrate_captor_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs_calibration</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">calibrate_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs_calibration</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Simulator.writeResults">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.writeResults">[docs]</a>
+    <span class="k">def</span> <span class="nf">writeResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the result of simulation to a file saved in the folder ./results</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">N_mes_captor</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                <span class="c1"># Setting up spectrum bands to correct energy</span>
-                <span class="n">integrals</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_correct_energy_coeff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span><span class="p">)</span>
-                <span class="n">points_calibration</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">get_points_calibration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">)</span>
-                <span class="n">N_mes_captor</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">calibration_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="n">integrals</span><span class="p">,</span> <span class="n">points_calibration</span><span class="p">)</span>
-
-            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_captor_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span>
-
+            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_captor_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span></div>
+            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span></div>
 
-    
-    
+
 <div class="viewcode-block" id="Simulator.visualiserSimulationScene">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.visualiserSimulationScene">[docs]</a>
     <span class="k">def</span> <span class="nf">visualiserSimulationScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">divided_spectral_range_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
@@ -446,17 +490,17 @@
         <span class="n">list_tmin</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">list_res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">list_index</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">scene</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">scene</span><span class="p">,</span> <span class="n">has_captor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">has_plant</span><span class="p">,</span> <span class="n">tr2shmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initSimulationScene</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">current_band</span><span class="p">,</span> <span class="n">moyenne_wavelength</span><span class="p">,</span> <span class="n">is_only_lamp</span><span class="p">)</span>
+        <span class="c1">#create integrator</span>
+        <span class="n">scene</span><span class="o">.</span><span class="n">setupTriangles</span><span class="p">()</span>
+        <span class="n">scene</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_backface_culling</span><span class="p">)</span>
+        
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------------------------&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Tmin =&quot;</span><span class="p">,</span> <span class="n">start_t</span><span class="p">)</span>
-
-            <span class="n">scene</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">scene</span><span class="p">,</span> <span class="n">has_captor</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">has_plant</span><span class="p">,</span> <span class="n">tr2shmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initSimulationScene</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">current_band</span><span class="p">,</span> <span class="n">moyenne_wavelength</span><span class="p">,</span> <span class="n">is_only_lamp</span><span class="p">)</span>
-
-            <span class="c1">#create integrator</span>
             <span class="n">scene</span><span class="o">.</span><span class="n">tnear</span> <span class="o">=</span> <span class="n">start_t</span>
-            <span class="n">scene</span><span class="o">.</span><span class="n">setupTriangles</span><span class="p">()</span>
-            <span class="n">scene</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_backface_culling</span><span class="p">)</span>
 
             <span class="n">integrator</span> <span class="o">=</span> <span class="n">PhotonMapping</span><span class="p">(</span>
                 <span class="n">nb_photons</span><span class="p">,</span>
@@ -480,7 +524,7 @@
             <span class="n">start_t</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">start_t</span> <span class="o">*</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---------------------------------&quot;</span><span class="p">)</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_res</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">list_index</span><span class="p">,</span> <span class="n">list_res</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Number of photons received relative to the change in tmin&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Nb of photon&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">list_index</span><span class="p">,</span> <span class="n">list_res</span><span class="p">,</span> <span class="n">list_tmin</span><span class="p">):</span>
@@ -532,6 +576,7 @@
         <span class="c1">#add plant</span>
         <span class="n">has_plant</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">tr2shmap</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plant_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span> <span class="o">=</span> <span class="n">LoadPlant</span><span class="o">.</span><span class="n">add_lpy_file_to_scene</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plant_file</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">tr2shmap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">plantPos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">)</span>
             <span class="n">has_plant</span> <span class="o">=</span> <span class="kc">True</span>
@@ -652,7 +697,7 @@
 
 <div class="viewcode-block" id="Simulator.setupCaptor">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.setupCaptor">[docs]</a>
-    <span class="k">def</span> <span class="nf">setupCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">captor_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spectrum_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">points_calibration_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setupCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">captor_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors </span>
 
@@ -660,15 +705,9 @@
 <span class="sd">        ----------</span>
 <span class="sd">        captor_file: str</span>
 <span class="sd">            The link to the file which contains the informations of the captors in the simulation</span>
-<span class="sd">        spectrum_file: str</span>
-<span class="sd">            The link to the file which contains the informations of the heterogeneity of the spectrum</span>
-<span class="sd">        points_calibration_file: str</span>
-<span class="sd">            The link to the file which contains the informations of the captors used to calibrate the final result </span>
 <span class="sd">                </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">=</span> <span class="n">captor_file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spectrum_file</span> <span class="o">=</span> <span class="n">spectrum_file</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">points_calibration_file</span> <span class="o">=</span> <span class="n">points_calibration_file</span>
 
         <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">+=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">readCaptorsFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">captor_file</span><span class="p">)</span></div>

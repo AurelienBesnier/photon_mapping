@@ -522,7 +522,8 @@ lum400<span class="w"> </span>cylinder<span class="w"> </span>lamp
     <span class="n">simulator</span><span class="o">.</span><span class="n">readConfiguration</span><span class="p">(</span><span class="s2">&quot;simulation.ini&quot;</span><span class="p">)</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">setupRoom</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">setupCaptor</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span> <span class="c1">#write results to a file</span>
 </pre></div>
 </div>
 </section>
@@ -584,6 +585,10 @@ python<span class="w"> </span>main.py
 run<span class="w"> </span>main.py
 </pre></div>
 </div>
+<div class="line-block">
+<div class="line">Here is the interface of visualize the scene</div>
+</div>
+<a class="reference internal image-reference" href="visualizeRoom.png"><img alt="Result of function test tmin" src="visualizeRoom.png" style="width: 700px;" /></a>
 </section>
 <section id="test-value-tmin">
 <h2>Test value Tmin<a class="headerlink" href="#test-value-tmin" title="Link to this heading"></a></h2>

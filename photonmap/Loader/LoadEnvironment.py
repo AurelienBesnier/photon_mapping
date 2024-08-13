@@ -85,7 +85,7 @@ def add_environment(
     elif emission != Color3(0, 0, 0):
         scene.addLight(vertices, indices, normals, 4000, light_color, sh.name)
 
-    elif is_only_lamp == False or material_name == "ecran":
+    elif is_only_lamp == False:
         scene.addFaceInfos(
             vertices,
             indices,

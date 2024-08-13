@@ -17,7 +17,9 @@ Functions
    photonmap.Energy.CorrectEnergy.get_integral_of_band
    photonmap.Energy.CorrectEnergy.get_correct_energy_coeff
    photonmap.Energy.CorrectEnergy.get_points_calibration
-   photonmap.Energy.CorrectEnergy.calibration_energy
+   photonmap.Energy.CorrectEnergy.get_calibaration_coefficient
+   photonmap.Energy.CorrectEnergy.calibrate_captor_energy
+   photonmap.Energy.CorrectEnergy.calibrate_plant_energy
 
 
 
@@ -97,9 +99,9 @@ Functions
 
 
 
-.. py:function:: calibration_energy(energies, correction_ratios, points_calibration)
+.. py:function:: get_calibaration_coefficient(energies, correction_ratios, points_calibration)
 
-   Calibrate energy from photons to Mmol / m2 / s
+   Calculate the coefficients used to calibrate the result of simulation
 
    Parameters
    ----------
@@ -112,8 +114,48 @@ Functions
 
    Returns
    -------
+   coeff_calibration: array
+       The list of coefficients used for the calibration
+
+
+
+.. py:function:: calibrate_captor_energy(energies, correction_ratios, points_calibration, coeffs_calibration)
+
+   Calibrate the captor energy from photons to Mmol / m2 / s
+
+   Parameters
+   ----------
+   energies : array
+       The list of captor's energies
+   correction_ratios: array
+       The list of the coefficents of energy's correction 
+   points_calibration: array
+       The list of the points used for the calibration
+   coeffs_calibration : array
+       The list of the coefficients used for the calibration
+
+   Returns
+   -------
    N_calibration: array
        The list of captor's energies after the calibration
+
+
+
+.. py:function:: calibrate_plant_energy(energies, coeffs_calibration)
+
+   Calibrate the plant energy from photons to Mmol / m2 / s
+
+   Parameters
+   ----------
+   energies : array
+       The list of captor's energies
+   coeffs_calibration : array
+       The list of the coefficients used for the calibration
+
+   Returns
+   -------
+   N_calibration: array
+       The list of plant's energies after the calibration
 
 
 

@@ -25,7 +25,19 @@ from photonmap.Energy import (CalculateEnergy, CorrectEnergy)
 from photonmap.Loader import (LoadCaptor, LoadEnvironment, LoadPlant)
 from photonmap.Common import (Outils, Math)
 
-
+class Result:
+    #constructor
+    def __init__(self):
+        self.N_sim_captor = []
+        self.N_sim_plant = []
+        self.N_mes_captor = []
+        self.N_mes_plant = []
+    
+    def __init__(self, N_sim_captor, N_sim_plant, N_mes_captor, N_mes_plant):
+        self.N_sim_captor = N_sim_captor
+        self.N_sim_plant = N_sim_plant
+        self.N_mes_captor = N_mes_captor
+        self.N_mes_plant = N_mes_plant
 
 class Simulator:
     """
@@ -89,7 +101,14 @@ class Simulator:
         #
         self.scene_pgl = Scene()
         self.list_captor = []
-        #
+        
+        #result
+        self.N_sim_captor = []
+        self.N_sim_plant = []
+        self.N_mes_captor = []
+        self.N_mes_plant = []
+        
+        #input files
         self.captor_file = ""
         self.plant_file = ""
         self.po_dir = ""
@@ -103,55 +122,27 @@ class Simulator:
         self.scene_pgl.clear()
         self.list_captor.clear()    
 
-    def addEnvToScene(self, vertices, indices, mat):
+    def addEnvToScene(self, sh):
         """
-        Add a environment or light object to scene
+        Add a environment's object to scene
 
         Parameters
         ----------
-        vertices : array
-            The list of vertex of object
-        indices: array
-            The list of triangle index
-        mat: dict
-            Material of object. Written in this form: 
-            { "name": str, "type": str, "color": tuple, "spec": float, "roughness": float, "trans": float }
+        sh : plantgl.Shape
+            The mesh of object
 
         Returns
         -------
             The object is added to the scene
 
         """
-        sh = Shape()
-
+        vertices = sh.geometry.pointList
         #apply scale factor
         for i in range(len(vertices)):
             vertices[i] = tuple(x / self.scale_factor for x in vertices[i])
-
-        #set geometry
-        ts = TriangleSet(vertices)
-        ts.indexList = Index3Array(indices)
-        ts.computeNormalList()
-        sh.geometry = ts
-
-        #set material
-        if (mat["type"] == "light"):
-            sh.appearance = Material(
-                        name=mat["name"],
-                        ambient = Color3(mat["color"]),
-                        emission = Color3(mat["color"])
-                    )
-        elif (mat["type"] == "object"):
-            
-            sh.appearance = Material(
-                        name=mat["name"],
-                        ambient = Color3(mat["color"]),
-                        specular = Color3( Math.denormalize(float(mat["spec"])) ),
-                        shininess = 1 - mat["roughness"],
-                        transparency = mat["trans"]
-                    )
-        else:
-            sh.appearance = Material()
+        
+        sh.geometry.pointList = vertices
+        sh.geometry.computeNormalList()
 
         #add object to scene
         self.scene_pgl.add(sh)
@@ -198,9 +189,6 @@ class Simulator:
         scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0 
-
-        self.N_sim_captor = []
-        self.N_sim_plant = []
 
         for index in range(len(self.divided_spectral_range)):
             start_time = time.time()
@@ -251,23 +239,67 @@ class Simulator:
                 self.N_sim_plant.append(plant_energy)
             
             print("Time taken: " + str(time.time() - start_time))
+            return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+    
+    def calculateCalibrationCoefficient(self, spectrum_file = "", points_calibration_file = ""):
+        """
+        Calculate the coefficients which is used to calibrate the final result of simulation with the captors
 
+        Parameters
+        ----------
+        spectrum_file: str
+            The link to the file which contains the informations of the heterogeneity of the spectrum
+        points_calibration_file: str
+            The link to the file which contains the informations of the captors used to calibrate the final result 
+                
+        """
 
+        self.coeffs_calibration = []
+
+        if  os.path.exists(spectrum_file) and os.path.exists(points_calibration_file):
+            self.integrals = CorrectEnergy.get_correct_energy_coeff(self.base_spectral_range, self.divided_spectral_range, spectrum_file)
+            self.points_calibration = CorrectEnergy.get_points_calibration(self.list_captor, points_calibration_file, self.divided_spectral_range)
+            self.coeffs_calibration = CorrectEnergy.get_calibaration_coefficient(self.N_sim_captor, self.integrals, self.points_calibration)
+            return True
+        
+        return False
+
+    def calibrateResults(self, spectrum_file = "", points_calibration_file = ""):
+        """
+        Calibrate the final result of simulation
+
+        Parameters
+        ----------
+        spectrum_file: str
+            The link to the file which contains the informations of the heterogeneity of the spectrum
+        points_calibration_file: str
+            The link to the file which contains the informations of the captors used to calibrate the final result 
+                
+        """
+
+        can_calibrate = self.calculateCalibrationCoefficient(spectrum_file, points_calibration_file)
+
+        if can_calibrate:
+            if len(self.N_sim_captor) > 0:
+                self.N_mes_captor = CorrectEnergy.calibrate_captor_energy(self.N_sim_captor, self.integrals, self.points_calibration, self.coeffs_calibration)
+
+            if len(self.N_sim_plant) > 0:
+                self.N_mes_plant = CorrectEnergy.calibrate_plant_energy(self.N_sim_plant, self.coeffs_calibration)
+
+        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+
+    def writeResults(self):
+        """
+        Write the result of simulation to a file saved in the folder ./results
+                
+        """
+         
         if len(self.N_sim_captor) > 0:
-            N_mes_captor = []
-            if self.spectrum_file != "" and self.points_calibration_file != "":
-                # Setting up spectrum bands to correct energy
-                integrals = CorrectEnergy.get_correct_energy_coeff(self.base_spectral_range, self.divided_spectral_range, self.spectrum_file)
-                points_calibration = CorrectEnergy.get_points_calibration(self.list_captor, self.points_calibration_file, self.divided_spectral_range)
-                N_mes_captor = CorrectEnergy.calibration_energy(self.N_sim_captor, integrals, points_calibration)
-
-            CalculateEnergy.write_captor_energy(self.N_sim_captor, N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
-
+            CalculateEnergy.write_captor_energy(self.N_sim_captor, self.N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
         
         if len(self.N_sim_plant) > 0:
-            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
-    
-    
+            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
+
     def visualiserSimulationScene(self, divided_spectral_range_index = -1):
         """
         Visualize the scene of simulation with the tools of OpenAlea
@@ -346,17 +378,17 @@ class Simulator:
         list_tmin = []
         list_res = []
         list_index = []
+
+        scene.clear()
+        scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
+        #create integrator
+        scene.setupTriangles()
+        scene.build(self.is_backface_culling)
+        
         for i in range(loop):
             print("---------------------------------")
             print("Test Tmin =", start_t)
-
-            scene.clear()
-            scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
-
-            #create integrator
             scene.tnear = start_t
-            scene.setupTriangles()
-            scene.build(self.is_backface_culling)
 
             integrator = PhotonMapping(
                 nb_photons,
@@ -380,7 +412,7 @@ class Simulator:
             start_t = round(start_t * 10, 6)
             print("---------------------------------")
 
-        plt.plot(list_res, linestyle='--', marker='*')
+        plt.plot(list_index, list_res, linestyle='--', marker='*')
         plt.title("Number of photons received relative to the change in tmin")
         plt.ylabel("Nb of photon")
         for x, y, text in zip(list_index, list_res, list_tmin):
@@ -429,6 +461,7 @@ class Simulator:
         #add plant
         has_plant = False
         tr2shmap = {}
+
         if(self.plant_file != ""):
             self.list_plant = LoadPlant.add_lpy_file_to_scene(scene, self.plant_file, 150, tr2shmap, self.plantPos, self.scale_factor)
             has_plant = True
@@ -537,7 +570,7 @@ class Simulator:
         #using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat)
 
-    def setupCaptor(self, captor_file: str, spectrum_file = "", points_calibration_file = ""):
+    def setupCaptor(self, captor_file: str):
         """
         Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 
@@ -545,15 +578,9 @@ class Simulator:
         ----------
         captor_file: str
             The link to the file which contains the informations of the captors in the simulation
-        spectrum_file: str
-            The link to the file which contains the informations of the heterogeneity of the spectrum
-        points_calibration_file: str
-            The link to the file which contains the informations of the captors used to calibrate the final result 
                 
         """
         self.captor_file = captor_file
-        self.spectrum_file = spectrum_file
-        self.points_calibration_file = points_calibration_file
 
         if(self.captor_file != ""):
             self.list_captor += LoadCaptor.readCaptorsFile(self.scale_factor, self.captor_file)

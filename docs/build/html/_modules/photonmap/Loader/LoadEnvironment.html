@@ -168,7 +168,7 @@
     <span class="k">elif</span> <span class="n">emission</span> <span class="o">!=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
         <span class="n">scene</span><span class="o">.</span><span class="n">addLight</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="n">light_color</span><span class="p">,</span> <span class="n">sh</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">elif</span> <span class="n">is_only_lamp</span> <span class="o">==</span> <span class="kc">False</span> <span class="ow">or</span> <span class="n">material_name</span> <span class="o">==</span> <span class="s2">&quot;ecran&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">is_only_lamp</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">scene</span><span class="o">.</span><span class="n">addFaceInfos</span><span class="p">(</span>
             <span class="n">vertices</span><span class="p">,</span>
             <span class="n">indices</span><span class="p">,</span>
