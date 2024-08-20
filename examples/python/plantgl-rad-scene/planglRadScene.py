@@ -11,7 +11,7 @@ if __name__ == "__main__":
     #simulator.setupPlant("./assets/rose-simple4.lpy", Vec3(1280.0, 860.0, 980.0))
     #res = simulator.run()
 
-    #simulator.calibrateResults("spectrum/chambre1_spectrum", "points_calibration.csv")
+    #calibrated_res = simulator.calibrateResults("spectrum/chambre1_spectrum", "points_calibration.csv")
 
     #simulator.writeResults()
     #simulator.test_t_min(int(1e6), 1e-6, 10, True)

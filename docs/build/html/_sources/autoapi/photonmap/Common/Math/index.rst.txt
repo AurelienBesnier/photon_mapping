@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Common.Math`
-===============================
+photonmap.Common.Math
+=====================
 
 .. py:module:: photonmap.Common.Math
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -21,6 +17,8 @@ Functions
    photonmap.Common.Math.averageVector
 
 
+Module Contents
+---------------
 
 .. py:function:: denormalize(f: float) -> int
 

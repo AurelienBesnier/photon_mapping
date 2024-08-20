@@ -1,5 +1,5 @@
-:py:mod:`photonmap.Common`
-==========================
+photonmap.Common
+================
 
 .. py:module:: photonmap.Common
 
@@ -11,11 +11,11 @@
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   Math/index.rst
-   Outils/index.rst
+   /autoapi/photonmap/Common/Math/index
+   /autoapi/photonmap/Common/Outils/index
 
 

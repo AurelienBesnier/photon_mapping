@@ -311,10 +311,29 @@ Run and results
 | 0   | 110   | 930   | 1000  | 10      | 13635          | 13966          |
 +-----+-------+-------+-------+---------+----------------+----------------+
 
+Calibrate the results
+======================
+
+| After running the simulation, we will obtain a result with the number of photons received on each captors or organes of plant. But in reality, to using this result to do the further researchs, we have to convert the unit of the current result to a unit which is more physical.
+|
+| To do that, after finishing the simulation, we will do the calibration the result by using the function ``calibrateResults``.
+
+.. code-block:: python
+
+    calibrated_res = simulator.calibrateResults("spectrum/chambre1_spectrum", "points_calibration.csv")
+
+| To making this function works properly, we need two input files: the spectral heterogeneity file and the calibration points file. 
+|
+| In our outil, for each simulation of each spectral range, we will always run the same simulation of photon mapping. So the result final isn't include the factor of spectral heterogeneity. That is why we need the spectral heterogeneity file to correct the final results of simulation before doing the calculations before that.
+|
+| After correcting the factor of heterogeneity, we will calibrate the result by using the calibration point file. This file contains the received energies measured in reality on the positions of some captors which is used in the simulation. With these values, we will use the method ``Linear Regression`` to calculate the coefficients to convertir the results of simulation to irradiance (a unit used to measure the power of energy).
+|
+| This function is only working with the simulation of captors. 
+
 Visualize the room
 ========================
 
-To visualize the room, after defining the input files, we use a function named ```visualiserSimulationScene```. Here is the complete code for this program:
+To visualize the room, after defining the input files, we use a function named ``visualiserSimulationScene``. Here is the complete code for this program:
 
 .. code-block:: python
 

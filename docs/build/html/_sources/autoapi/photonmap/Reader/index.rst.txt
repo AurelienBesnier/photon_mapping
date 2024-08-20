@@ -1,5 +1,5 @@
-:py:mod:`photonmap.Reader`
-==========================
+photonmap.Reader
+================
 
 .. py:module:: photonmap.Reader
 
@@ -11,11 +11,11 @@
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   ReadPO/index.rst
-   ReadRADGeo/index.rst
+   /autoapi/photonmap/Reader/ReadPO/index
+   /autoapi/photonmap/Reader/ReadRADGeo/index
 
 

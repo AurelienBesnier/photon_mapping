@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Reader.ReadPO`
-=================================
+photonmap.Reader.ReadPO
+=======================
 
 .. py:module:: photonmap.Reader.ReadPO
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -17,6 +13,8 @@ Functions
    photonmap.Reader.ReadPO.get_average_of_props_optic
 
 
+Module Contents
+---------------
 
 .. py:function:: setup_dataset_materials(w_start: int, w_end: int, po_dir: str)
 

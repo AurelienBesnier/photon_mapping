@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#run-and-results">Run and results</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#calibrate-the-results">Calibrate the results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualize-the-room">Visualize the room</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-value-tmin">Test value Tmin</a></li>
 </ul>
@@ -565,9 +566,29 @@ python<span class="w"> </span>main.py
 </table>
 </section>
 </section>
+<section id="calibrate-the-results">
+<h2>Calibrate the results<a class="headerlink" href="#calibrate-the-results" title="Link to this heading"></a></h2>
+<div class="line-block">
+<div class="line">After running the simulation, we will obtain a result with the number of photons received on each captors or organes of plant. But in reality, to using this result to do the further researchs, we have to convert the unit of the current result to a unit which is more physical.</div>
+<div class="line"><br /></div>
+<div class="line">To do that, after finishing the simulation, we will do the calibration the result by using the function <code class="docutils literal notranslate"><span class="pre">calibrateResults</span></code>.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calibrated_res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">calibrateResults</span><span class="p">(</span><span class="s2">&quot;spectrum/chambre1_spectrum&quot;</span><span class="p">,</span> <span class="s2">&quot;points_calibration.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">To making this function works properly, we need two input files: the spectral heterogeneity file and the calibration points file.</div>
+<div class="line"><br /></div>
+<div class="line">In our outil, for each simulation of each spectral range, we will always run the same simulation of photon mapping. So the result final isn’t include the factor of spectral heterogeneity. That is why we need the spectral heterogeneity file to correct the final results of simulation before doing the calculations before that.</div>
+<div class="line"><br /></div>
+<div class="line">After correcting the factor of heterogeneity, we will calibrate the result by using the calibration point file. This file contains the received energies measured in reality on the positions of some captors which is used in the simulation. With these values, we will use the method <code class="docutils literal notranslate"><span class="pre">Linear</span> <span class="pre">Regression</span></code> to calculate the coefficients to convertir the results of simulation to irradiance (a unit used to measure the power of energy).</div>
+<div class="line"><br /></div>
+<div class="line">This function is only working with the simulation of captors.</div>
+</div>
+</section>
 <section id="visualize-the-room">
 <h2>Visualize the room<a class="headerlink" href="#visualize-the-room" title="Link to this heading"></a></h2>
-<p>To visualize the room, after defining the input files, we use a function named <code class="docutils literal notranslate"><span class="pre">`visualiserSimulationScene`</span></code>. Here is the complete code for this program:</p>
+<p>To visualize the room, after defining the input files, we use a function named <code class="docutils literal notranslate"><span class="pre">visualiserSimulationScene</span></code>. Here is the complete code for this program:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

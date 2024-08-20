@@ -34,8 +34,8 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
     filename = "results/captor_result-" + str(n_photons) + ".csv"
 
     with open(filename, "w") as f:
-        w_str = "id,xSite,ySite,zSite,radius"
-  
+        w_str = "id,geometry_type,xSite,ySite,zSite,radius"
+
         if len(N_calibration) == len(bands_spectre):
             for i in range(len(bands_spectre)):
                 w_str += ",N_sim_calibration_" + str(bands_spectre[i]["start"]) + "_" + str(bands_spectre[i]["end"])
@@ -47,7 +47,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_phot
 
         for k in range(len(captor_list)):
             captor = captor_list[k]
-            w_str = str(k) + ',' + str(captor.xSite) + ',' + str(captor.ySite) + ',' + str(captor.zSite) + ',' + str(captor.radius)
+            w_str = str(k) + ',' + captor.type + ',' + str(captor.xSite) + ',' + str(captor.ySite) + ',' + str(captor.zSite) + ',' + str(captor.radius)  
             
             #write result calibration
             if len(N_calibration) == len(bands_spectre):

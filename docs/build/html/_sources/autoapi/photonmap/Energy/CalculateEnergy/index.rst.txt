@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Energy.CalculateEnergy`
-==========================================
+photonmap.Energy.CalculateEnergy
+================================
 
 .. py:module:: photonmap.Energy.CalculateEnergy
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -19,6 +15,8 @@ Functions
    photonmap.Energy.CalculateEnergy.plant_add_energy
 
 
+Module Contents
+---------------
 
 .. py:function:: write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, n_photons)
 

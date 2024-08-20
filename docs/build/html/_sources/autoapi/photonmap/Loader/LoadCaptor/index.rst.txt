@@ -1,35 +1,32 @@
-:py:mod:`photonmap.Loader.LoadCaptor`
-=====================================
+photonmap.Loader.LoadCaptor
+===========================
 
 .. py:module:: photonmap.Loader.LoadCaptor
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
    photonmap.Loader.LoadCaptor.Captor
 
 
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
    photonmap.Loader.LoadCaptor.readCaptorsFile
    photonmap.Loader.LoadCaptor.addCaptors
-   photonmap.Loader.LoadCaptor.findIndexOfCaptorInList
+   photonmap.Loader.LoadCaptor.findIndexOfDiskCaptorInList
    photonmap.Loader.LoadCaptor.addCapteurPgl
 
 
+Module Contents
+---------------
 
-.. py:class:: Captor(pos_x=0, pos_y=0, pos_z=0, nor_x=0, nor_y=0, nor_z=0, r=0)
-
+.. py:class:: Captor
 
    A class which contains all the data of captor.
 
@@ -58,7 +55,40 @@ Functions
 
 
 
-   .. py:method:: createGeometry()
+
+   .. py:method:: initGeometryCaptor(geometry, position, scale_factor)
+
+      Init a object of captor 
+
+      Returns
+      -------
+      geometry: TriangleSet
+          The geometry of captor
+      position: tuple
+          The position of captor
+      scale_factor: float
+          The scale factor of captor
+
+
+
+
+   .. py:method:: initDiskCaptor(pos_x=0, pos_y=0, pos_z=0, nor_x=0, nor_y=0, nor_z=0, r=0)
+
+      Init a object of disk shape captor 
+
+      Returns
+      -------
+      pos_x, pos_y, pos_z: float
+          The position of captor
+      nor_x, nor_y, nor_z: float
+          The normal vector of captor
+      r: float
+          The radius of captor
+
+
+
+
+   .. py:method:: createDiskGeometry()
 
       Create geometry of circular captor 
 
@@ -70,6 +100,7 @@ Functions
           The normal vectors of each vertices in captor's geometry
       triangles: array
           The triangles of captor's geometry
+
 
 
 
@@ -90,6 +121,7 @@ Functions
       -------
           True if equal
           False if not equal
+
 
 
 
@@ -145,9 +177,9 @@ Functions
 
 
 
-.. py:function:: findIndexOfCaptorInList(list_captor, x, y, z)
+.. py:function:: findIndexOfDiskCaptorInList(list_captor, x, y, z)
 
-   Find the index of a captor while knowing its position
+   Find the index of a disk shape captor while knowing its position
 
    Parameters
    ----------

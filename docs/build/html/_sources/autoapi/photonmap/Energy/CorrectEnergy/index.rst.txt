@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Energy.CorrectEnergy`
-========================================
+photonmap.Energy.CorrectEnergy
+==============================
 
 .. py:module:: photonmap.Energy.CorrectEnergy
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -22,6 +18,8 @@ Functions
    photonmap.Energy.CorrectEnergy.calibrate_plant_energy
 
 
+Module Contents
+---------------
 
 .. py:function:: read_spectrum_file(filename: str) -> (collections.OrderedDict, int, int)
 

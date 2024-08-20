@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Common.Outils`
-=================================
+photonmap.Common.Outils
+=======================
 
 .. py:module:: photonmap.Common.Outils
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -17,6 +13,8 @@ Functions
    photonmap.Common.Outils.flatten
 
 
+Module Contents
+---------------
 
 .. py:function:: wavelength2Rgb(w: int) -> photonmap.Vec3
 

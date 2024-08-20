@@ -5,6 +5,7 @@ import os
 
 from openalea.plantgl.all import * 
 from openalea.lpy import Lsystem
+from pgljupyter import SceneWidget
 import matplotlib.pyplot as plt
 
 from photonmap import libphotonmap_core
@@ -147,9 +148,30 @@ class Simulator:
         #add object to scene
         self.scene_pgl.add(sh)
 
-    def addCaptorToScene(self, pos, normal, r):
+    def addCaptorToScene(self, geometry, position):
         """
-        Add a circular captor object to scene
+        Add a captor object to scene
+
+        Parameters
+        ----------
+        geometry: TriangleSet
+            The geometry of captor
+        position : tuple(int,int,int)
+            The position of captor
+        
+        Returns
+        -------
+            The captor is added to the scene
+
+        """
+        geometry.computeNormalList()
+        captor = LoadCaptor.Captor().initGeometryCaptor(geometry, position, self.scale_factor)
+        
+        self.list_captor.append(captor)
+
+    def addDiskCaptorToScene(self, pos, normal, r):
+        """
+        Add a disk shaped captor object to scene
 
         Parameters
         ----------
@@ -162,16 +184,16 @@ class Simulator:
 
         Returns
         -------
-            The captor is added to the scene
+            The disk shaped captor is added to the scene
 
         """
-        captor = LoadCaptor.Captor(pos[0] / self.scale_factor, 
-                                   pos[1] / self.scale_factor, 
-                                   pos[2] / self.scale_factor, 
-                                   normal[0], 
-                                   normal[1], 
-                                   normal[2], 
-                                   r)
+        captor = LoadCaptor.Captor().initDiskCaptor(pos[0] / self.scale_factor, 
+                                                    pos[1] / self.scale_factor, 
+                                                    pos[2] / self.scale_factor, 
+                                                    normal[0], 
+                                                    normal[1], 
+                                                    normal[2], 
+                                                    r)
         
         self.list_captor.append(captor)
     
@@ -239,7 +261,8 @@ class Simulator:
                 self.N_sim_plant.append(plant_energy)
             
             print("Time taken: " + str(time.time() - start_time))
-            return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+        
+        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
     
     def calculateCalibrationCoefficient(self, spectrum_file = "", points_calibration_file = ""):
         """
@@ -300,7 +323,7 @@ class Simulator:
         if len(self.N_sim_plant) > 0:
             CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
 
-    def visualiserSimulationScene(self, divided_spectral_range_index = -1):
+    def visualiserSimulationScene(self, divided_spectral_range_index = -1, mode = "ipython"):
         """
         Visualize the scene of simulation with the tools of OpenAlea
         To run this function, it has to run these command first:
@@ -311,7 +334,9 @@ class Simulator:
         ----------
         divided_spectral_range_index: int
             This variable allow us to visualize the color of the plant based on its received energies 
-
+        mode: str
+            This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
+        
         Returns
         -------
             A rendered scene in 3D
@@ -343,7 +368,14 @@ class Simulator:
         if self.captor_file != "":
             sc = LoadCaptor.addCapteurPgl(sc, self.scale_factor, self.captor_file)
         
-        Viewer.display(sc)
+        if mode == "ipython":
+            Viewer.display(sc)
+
+        elif mode == "pgljupyter":
+            return SceneWidget(sc, size_display=(800, 600), size_world=255)
+
+        else:
+            Viewer.display(sc)
 
     def test_t_min(self, nb_photons, start_t, loop, is_only_lamp = False):
         """
@@ -651,29 +683,28 @@ class Simulator:
                 if "$" in line:
                     row = line.replace("\n", "").split(" ")
     
-                    match row[0]:
-                        case "$NB_PHOTONS":
-                            self.nb_photons = int(row[1])
-                        case "$MAXIMUM_DEPTH":
-                            self.max_depth = int(row[1])
-                        case "$SCALE_FACTOR":
-                            self.scale_factor = int(row[1])
-                        case "$T_MIN":
-                            self.t_min = float(row[1])
-                        case "$NB_THREAD":
-                            self.nb_thread = int(row[1])
-                        case "$BACKFACE_CULLING":
-                            self.is_backface_culling = True if (row[1].upper() == "YES") else False 
-                        case "$BASE_SPECTRAL_RANGE":
-                            self.base_spectral_range = {"start": int(row[1]), "end": int(row[2])}
-                        case "$DIVIDED_SPECTRAL_RANGE":
-                            nb_bande = int(row[1])
-                            self.divided_spectral_range.clear()
-
-                            for i in range(nb_bande):
-                                start = int(row[(i + 1) * 2])
-                                end = int(row[(i + 1) * 2 + 1])
-                                self.divided_spectral_range.append({"start": start, "end": end})
+                    if row[0] == "$NB_PHOTONS":
+                        self.nb_photons = int(row[1])
+                    elif row[0] == "$MAXIMUM_DEPTH":
+                        self.max_depth = int(row[1])
+                    elif row[0] == "$SCALE_FACTOR":
+                        self.scale_factor = int(row[1])
+                    elif row[0] == "$T_MIN":
+                        self.t_min = float(row[1])
+                    elif row[0] == "$NB_THREAD":
+                        self.nb_thread = int(row[1])
+                    elif row[0] == "$BACKFACE_CULLING":
+                        self.is_backface_culling = True if (row[1].upper() == "YES") else False 
+                    elif row[0] == "$BASE_SPECTRAL_RANGE":
+                        self.base_spectral_range = {"start": int(row[1]), "end": int(row[2])}
+                    elif row[0] == "$DIVIDED_SPECTRAL_RANGE":
+                        nb_bande = int(row[1])
+                        self.divided_spectral_range.clear()
+                        
+                        for i in range(nb_bande):
+                            start = int(row[(i + 1) * 2])
+                            end = int(row[(i + 1) * 2 + 1])
+                            self.divided_spectral_range.append({"start": start, "end": end})
         
     
 

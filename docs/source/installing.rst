@@ -37,3 +37,11 @@ Command to run the example
 .. code-block:: bash
     
     python planglRadScene.py
+
+To run the Jupyter Notebook
+
+.. code-block:: bash
+    
+    conda activate photonmap
+    cd examples/python/plantgl-rad-scene
+    jupyter notebook

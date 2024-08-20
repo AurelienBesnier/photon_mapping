@@ -1,2 +1,2 @@
-id,xSite,ySite,zSite,radius,N_sim_0_0
-0,0.5,0.5,3.0,0.2,2255
+id,geometry_type,xSite,ySite,zSite,radius,N_sim_0_0
+0,geometry,0.0,0.0,3.0,0,14513

@@ -1,15 +1,11 @@
-:py:mod:`photonmap.Reader.ReadRADGeo`
-=====================================
+photonmap.Reader.ReadRADGeo
+===========================
 
 .. py:module:: photonmap.Reader.ReadRADGeo
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -17,6 +13,8 @@ Functions
    photonmap.Reader.ReadRADGeo.read_rad
 
 
+Module Contents
+---------------
 
 .. py:function:: cylinder_vertices(start, end, rayon)
 

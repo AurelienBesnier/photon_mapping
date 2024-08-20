@@ -1,14 +1,11 @@
-:py:mod:`photonmap.Simulator`
-=============================
+photonmap.Simulator
+===================
 
 .. py:module:: photonmap.Simulator
 
 
-Module Contents
----------------
-
 Classes
-~~~~~~~
+-------
 
 .. autoapisummary::
 
@@ -16,14 +13,32 @@ Classes
    photonmap.Simulator.Simulator
 
 
-
+Module Contents
+---------------
 
 .. py:class:: Result
+
+   .. py:attribute:: N_sim_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_plant
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_plant
+      :value: []
 
 
 
 .. py:class:: Simulator
-
 
    A class which include all the tools of simulation.
 
@@ -71,9 +86,105 @@ Classes
        The link to the folder which contains the optical properties of the room
 
 
+
+   .. py:attribute:: nb_photons
+      :value: 0
+
+
+
+   .. py:attribute:: max_depth
+      :value: 0
+
+
+
+   .. py:attribute:: scale_factor
+      :value: 1
+
+
+
+   .. py:attribute:: t_min
+      :value: 0.0001
+
+
+
+   .. py:attribute:: nb_thread
+      :value: 8
+
+
+
+   .. py:attribute:: is_backface_culling
+      :value: False
+
+
+
+   .. py:attribute:: base_spectral_range
+
+
+   .. py:attribute:: divided_spectral_range
+
+
+   .. py:attribute:: rendering
+      :value: False
+
+
+
+   .. py:attribute:: scene_pgl
+
+
+   .. py:attribute:: list_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_plant
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_plant
+      :value: []
+
+
+
+   .. py:attribute:: captor_file
+      :value: ''
+
+
+
+   .. py:attribute:: plant_file
+      :value: ''
+
+
+
+   .. py:attribute:: po_dir
+      :value: ''
+
+
+
+   .. py:attribute:: spectrum_file
+      :value: ''
+
+
+
+   .. py:attribute:: points_calibration_file
+      :value: ''
+
+
+
    .. py:method:: resetScene()
 
       Clear list of captors and list of object in scene
+
 
 
    .. py:method:: addEnvToScene(sh)
@@ -91,9 +202,28 @@ Classes
 
 
 
-   .. py:method:: addCaptorToScene(pos, normal, r)
 
-      Add a circular captor object to scene
+   .. py:method:: addCaptorToScene(geometry, position)
+
+      Add a captor object to scene
+
+      Parameters
+      ----------
+      geometry: TriangleSet
+          The geometry of captor
+      position : tuple(int,int,int)
+          The position of captor
+
+      Returns
+      -------
+          The captor is added to the scene
+
+
+
+
+   .. py:method:: addDiskCaptorToScene(pos, normal, r)
+
+      Add a disk shaped captor object to scene
 
       Parameters
       ----------
@@ -106,7 +236,8 @@ Classes
 
       Returns
       -------
-          The captor is added to the scene
+          The disk shaped captor is added to the scene
+
 
 
 
@@ -117,6 +248,7 @@ Classes
       Returns
       -------
           The number of received photons on each captor and organs of plant is saved into the files located in folde ./results 
+
 
 
 
@@ -133,6 +265,7 @@ Classes
               
 
 
+
    .. py:method:: calibrateResults(spectrum_file='', points_calibration_file='')
 
       Calibrate the final result of simulation
@@ -146,13 +279,15 @@ Classes
               
 
 
+
    .. py:method:: writeResults()
 
       Write the result of simulation to a file saved in the folder ./results
               
 
 
-   .. py:method:: visualiserSimulationScene(divided_spectral_range_index=-1)
+
+   .. py:method:: visualiserSimulationScene(divided_spectral_range_index=-1, mode='ipython')
 
       Visualize the scene of simulation with the tools of OpenAlea
       To run this function, it has to run these command first:
@@ -163,10 +298,13 @@ Classes
       ----------
       divided_spectral_range_index: int
           This variable allow us to visualize the color of the plant based on its received energies 
+      mode: str
+          This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
 
       Returns
       -------
           A rendered scene in 3D
+
 
 
 
@@ -188,6 +326,7 @@ Classes
       Returns
       -------
           A graph is generated to show the connection between the Tmin and the results of simulation
+
 
 
 
@@ -223,6 +362,7 @@ Classes
 
 
 
+
    .. py:method:: render(integrator, scene, w, sampler)
 
       Visualize the photon map of the simulation in the scene
@@ -244,6 +384,7 @@ Classes
 
 
 
+
    .. py:method:: setupRoom(room_file: str, po_dir: str, flip_normal=False)
 
       Setup the room/environment of the simulation.
@@ -256,6 +397,7 @@ Classes
           The link to the folder which contains the optical properties of the room
       flip_normal: bool
           Determine the direction of the vector normal of triangle. 
+
 
 
    .. py:method:: setupRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
@@ -271,6 +413,7 @@ Classes
               
 
 
+
    .. py:method:: setupCaptor(captor_file: str)
 
       Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
@@ -280,6 +423,7 @@ Classes
       captor_file: str
           The link to the file which contains the informations of the captors in the simulation
               
+
 
 
    .. py:method:: setupPlant(plant_file: str, plant_pos=Vec3(0, 0, 0))
@@ -293,6 +437,7 @@ Classes
       plantPos: Vec3
           The position of the plant
               
+
 
 
    .. py:method:: initCameraRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
@@ -310,6 +455,7 @@ Classes
       -------
       camera: libphotonmap_core.Camera
           An object with all the informations of camera
+
 
 
    .. py:method:: readConfiguration(filename: str)

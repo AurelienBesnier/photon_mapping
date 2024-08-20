@@ -1,5 +1,5 @@
-:py:mod:`photonmap.Loader`
-==========================
+photonmap.Loader
+================
 
 .. py:module:: photonmap.Loader
 
@@ -11,12 +11,12 @@
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   LoadCaptor/index.rst
-   LoadEnvironment/index.rst
-   LoadPlant/index.rst
+   /autoapi/photonmap/Loader/LoadCaptor/index
+   /autoapi/photonmap/Loader/LoadEnvironment/index
+   /autoapi/photonmap/Loader/LoadPlant/index
 
 

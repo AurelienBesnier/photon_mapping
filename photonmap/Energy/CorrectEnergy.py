@@ -135,7 +135,7 @@ def get_points_calibration(list_captor, points_calibration_file, divided_spectra
         cur_bande = divided_spectral_range[i]
         points = {}
         for index, r in df.iterrows():
-            captor_index = findIndexOfCaptorInList(list_captor, r["xSite"], r["ySite"], r["zSite"])
+            captor_index = findIndexOfDiskCaptorInList(list_captor, r["xSite"], r["ySite"], r["zSite"])
             points[captor_index] = r["Nmes_" + str(cur_bande["start"]) + "_" + str(cur_bande["end"])]
         
         points_calibration.append(points)

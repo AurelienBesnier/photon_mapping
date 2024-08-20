@@ -1,27 +1,27 @@
-:py:mod:`photonmap`
-===================
+photonmap
+=========
 
 .. py:module:: photonmap
 
 
 Subpackages
 -----------
-.. toctree::
-   :titlesonly:
-   :maxdepth: 3
 
-   Common/index.rst
-   Energy/index.rst
-   Loader/index.rst
-   Reader/index.rst
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/photonmap/Common/index
+   /autoapi/photonmap/Energy/index
+   /autoapi/photonmap/Loader/index
+   /autoapi/photonmap/Reader/index
 
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   Simulator/index.rst
+   /autoapi/photonmap/Simulator/index
 
 

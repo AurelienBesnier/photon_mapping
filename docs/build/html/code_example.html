@@ -104,15 +104,25 @@
 </pre></div>
 </div>
 <div class="line-block">
-<div class="line">Setup light and environment</div>
+<div class="line">Setup light and environment by using the object Shape of openalea</div>
+<div class="line"><br /></div>
+<div class="line">In general, we can setup the environment and light with the same function <code class="docutils literal notranslate"><span class="pre">addEnvToScene</span></code>. However, the ways that we define the material of object will identify the type of object is environment or light.</div>
+<div class="line"><br /></div>
+<div class="line">For the environment, there are 4 optical properties which is need to be declared:</div>
+<div class="line">- ambient: The reflection of object</div>
+<div class="line">- specular: The specular of object</div>
+<div class="line">- shininess: The shininess of object. The roughness of object is equal to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">shininess</span></code></div>
+<div class="line">- transparency: The transparent of object</div>
+<div class="line"><br /></div>
+<div class="line">For the light source, only the <code class="docutils literal notranslate"><span class="pre">emission</span></code> need to be declared. This value is also the different between these two type of object.</div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
 <span class="c1">#setup environment</span>
 <span class="n">ground_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
 <span class="n">ground_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
                     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
-                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
-                    <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">127</span> <span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
+                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">127</span><span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
                     <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                     <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="p">)</span>
@@ -124,7 +134,6 @@
 <span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
 <span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
                     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
-                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
                     <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
                 <span class="p">)</span>
 <span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
@@ -132,20 +141,20 @@
 </pre></div>
 </div>
 <div class="line-block">
-<div class="line">Setup captors and run</div>
+<div class="line">Setup captors and run by defining its geometry and position</div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#setup captor</span>
-<span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">captor_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">(</span><span class="n">captor_ts</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 
 <span class="c1">#run</span>
-<span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <div class="line-block">
 <div class="line">To write the result to a file, using the function <code class="docutils literal notranslate"><span class="pre">writeResults</span></code> after the function <code class="docutils literal notranslate"><span class="pre">run</span></code></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#write result to file</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -182,14 +191,14 @@
     <span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
     <span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
                         <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
-                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
                         <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
                     <span class="p">)</span>
     <span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">light_sh</span><span class="p">)</span>
 
     <span class="c1">#setup captor</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">((</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">captor_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">(</span><span class="n">captor_ts</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
 
     <span class="c1">#run</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>

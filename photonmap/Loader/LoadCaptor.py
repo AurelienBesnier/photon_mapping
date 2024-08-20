@@ -1,4 +1,5 @@
 from math import cos, sin, pi
+from photonmap.Common.Outils import *
 from photonmap import libphotonmap_core
 from openalea.plantgl.all import * 
 from photonmap import (
@@ -40,7 +41,59 @@ class Captor:
    
     
     """
-    def __init__(self, pos_x = 0, pos_y = 0, pos_z = 0, nor_x = 0, nor_y = 0, nor_z = 0, r = 0):
+    def initGeometryCaptor(self, geometry, position, scale_factor):
+        """
+        Init a object of captor 
+
+        Returns
+        -------
+        geometry: TriangleSet
+            The geometry of captor
+        position: tuple
+            The position of captor
+        scale_factor: float
+            The scale factor of captor
+
+        """
+        self.type = "geometry"
+        self.xSite = position[0] / scale_factor
+        self.ySite = position[1] / scale_factor
+        self.zSite = position[2] / scale_factor
+        self.radius = 0
+
+        vertices = geometry.pointList
+        #apply scale factor
+        for i in range(len(vertices)):
+            cur_vertice = vertices[i]
+            vertices[i] = ((cur_vertice[0] + position[0]) / scale_factor,
+                            (cur_vertice[1] + position[1]) / scale_factor,
+                            (cur_vertice[2] + position[2]) / scale_factor)
+        
+        geometry.pointList = vertices
+        geometry.computeNormalList()
+
+        #return vertice list, indexlist
+        self.vertices = VectorFloat(flatten(geometry.pointList))
+        self.normals = VectorFloat(flatten(geometry.normalList))
+        self.triangles = VectorUint(flatten(geometry.indexList))
+
+        return self
+
+    def initDiskCaptor(self, pos_x = 0, pos_y = 0, pos_z = 0, nor_x = 0, nor_y = 0, nor_z = 0, r = 0):
+        """
+        Init a object of disk shape captor 
+
+        Returns
+        -------
+        pos_x, pos_y, pos_z: float
+            The position of captor
+        nor_x, nor_y, nor_z: float
+            The normal vector of captor
+        r: float
+            The radius of captor
+
+        """
+        self.type = "disk"
         self.xSite = pos_x
         self.ySite = pos_y
         self.zSite = pos_z
@@ -49,9 +102,11 @@ class Captor:
         self.zNormal = nor_z
         self.radius = r
 
-        self.createGeometry()
+        self.createDiskGeometry()
+
+        return self
     
-    def createGeometry(self):
+    def createDiskGeometry(self):
         """
         Create geometry of circular captor 
 
@@ -233,9 +288,9 @@ def addCaptors(scene, captor_triangle_dict, list_captor):
         lastTriangleId = scene.nFaces()
 
 
-def findIndexOfCaptorInList(list_captor, x, y, z):
+def findIndexOfDiskCaptorInList(list_captor, x, y, z):
     """
-    Find the index of a captor while knowing its position
+    Find the index of a disk shape captor while knowing its position
 
     Parameters
     ----------

@@ -28,14 +28,14 @@ if __name__ == "__main__":
     light_ts = TriangleSet(pointList = [(0,0,5), (1,0,5), (0,1,5)], indexList = [(0, 1, 2)])
     light_mat = Material(
                         name="Light",
-                        ambient = Color3(255, 255, 255),
                         emission = Color3(255, 255, 255)
                     )
     light_sh = Shape(light_ts, light_mat)
     simulator.addEnvToScene(light_sh)
 
     #setup captor
-    simulator.addCaptorToScene((0.5, 0.5, 3), (0, 0, 1), 0.2)
+    captor_ts = TriangleSet(pointList = [(0,0,1), (1,0,0), (0,1,0)], indexList = [(0, 1, 2)])
+    simulator.addCaptorToScene(captor_ts, (0,0,3))
 
     #run
     res = simulator.run()
