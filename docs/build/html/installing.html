@@ -54,6 +54,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installing Photon Mapping tools</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installing-from-sources">Installing from sources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#to-run-test">To run test</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#to-run-the-jupyter-notebook">To run the Jupyter Notebook</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guide.html">User guide</a></li>
@@ -113,9 +114,16 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>planglRadScene.py
 </pre></div>
 </div>
-<p>To run the Jupyter Notebook</p>
+</section>
+<section id="to-run-the-jupyter-notebook">
+<h2>To run the Jupyter Notebook<a class="headerlink" href="#to-run-the-jupyter-notebook" title="Link to this heading"></a></h2>
+<p>We have to install the dependencies first. Here is <code class="docutils literal notranslate"><span class="pre">pgljupyter</span></code></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>photonmap
-<span class="nb">cd</span><span class="w"> </span>examples/python/plantgl-rad-scene
+pip<span class="w"> </span>install<span class="w"> </span>pgljupyter
+</pre></div>
+</div>
+<p>Here is the command to run the Jupyter notebook</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/python/plantgl-rad-scene
 jupyter<span class="w"> </span>notebook
 </pre></div>
 </div>

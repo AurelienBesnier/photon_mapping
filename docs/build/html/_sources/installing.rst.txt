@@ -39,9 +39,18 @@ Command to run the example
     python planglRadScene.py
 
 To run the Jupyter Notebook
+===========================
+
+We have to install the dependencies first. Here is ``pgljupyter``
 
 .. code-block:: bash
     
     conda activate photonmap
+    pip install pgljupyter
+
+Here is the command to run the Jupyter notebook
+
+.. code-block:: bash
+    
     cd examples/python/plantgl-rad-scene
     jupyter notebook
