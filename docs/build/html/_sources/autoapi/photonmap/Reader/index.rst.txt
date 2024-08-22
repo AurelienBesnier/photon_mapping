@@ -1,0 +1,21 @@
+photonmap.Reader
+================
+
+.. py:module:: photonmap.Reader
+
+.. autoapi-nested-parse::
+
+   This module contains the functions which are used to read the geometries and the optical properties (material) from files
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/photonmap/Reader/ReadPO/index
+   /autoapi/photonmap/Reader/ReadRADGeo/index
+
+

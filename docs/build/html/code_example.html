@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code example &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="autoapi/index.html" />
+    <link rel="prev" title="User guide" href="guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Photon Mapping Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing Photon Mapping tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide.html">User guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Photon Mapping Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Code example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/code_example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="code-example">
+<h1>Code example<a class="headerlink" href="#code-example" title="Link to this heading"></a></h1>
+<div class="line-block">
+<div class="line">Create a simple simulation without using the input files.</div>
+</div>
+<div class="line-block">
+<div class="line">Import the library and create an object Simulator</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup configuration</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#setup configuration</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup light and environment by using the object Shape of openalea</div>
+<div class="line"><br /></div>
+<div class="line">In general, we can setup the environment and light with the same function <code class="docutils literal notranslate"><span class="pre">addEnvToScene</span></code>. However, the ways that we define the material of object will identify the type of object is environment or light.</div>
+<div class="line"><br /></div>
+<div class="line">For the environment, there are 4 optical properties which is need to be declared:</div>
+<div class="line">- ambient: The reflection of object</div>
+<div class="line">- specular: The specular of object</div>
+<div class="line">- shininess: The shininess of object. The roughness of object is equal to <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">shininess</span></code></div>
+<div class="line">- transparency: The transparent of object</div>
+<div class="line"><br /></div>
+<div class="line">For the light source, only the <code class="docutils literal notranslate"><span class="pre">emission</span></code> need to be declared. This value is also the different between these two type of object.</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
+<span class="c1">#setup environment</span>
+<span class="n">ground_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="n">ground_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+                    <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                    <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">127</span><span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
+                    <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="p">)</span>
+<span class="n">ground_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">ground_ts</span><span class="p">,</span> <span class="n">ground_mat</span><span class="p">)</span>
+
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">ground_sh</span><span class="p">)</span>
+
+<span class="c1">#setup light</span>
+<span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+                    <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                <span class="p">)</span>
+<span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">light_sh</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Setup captors and run by defining its geometry and position</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#setup captor</span>
+<span class="n">captor_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">(</span><span class="n">captor_ts</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="c1">#run</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">To write the result to a file, using the function <code class="docutils literal notranslate"><span class="pre">writeResults</span></code> after the function <code class="docutils literal notranslate"><span class="pre">run</span></code></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#write result to file</span>
+<span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">Here is the completed program</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">photonmap.Simulator</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">openalea.plantgl.all</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
+
+    <span class="c1">#setup configuration</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">1000000</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="n">simulator</span><span class="o">.</span><span class="n">resetScene</span><span class="p">()</span>
+
+    <span class="c1">#setup environment</span>
+    <span class="n">ground_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+    <span class="n">ground_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">,</span>
+                        <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">127</span> <span class="p">),</span> <span class="c1">#spec = 0.5 = 127/255</span>
+                        <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="p">)</span>
+    <span class="n">ground_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">ground_ts</span><span class="p">,</span> <span class="n">ground_mat</span><span class="p">)</span>
+
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">ground_sh</span><span class="p">)</span>
+
+    <span class="c1">#setup light</span>
+    <span class="n">light_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+    <span class="n">light_mat</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span>
+                        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Light&quot;</span><span class="p">,</span>
+                        <span class="n">emission</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+                    <span class="p">)</span>
+    <span class="n">light_sh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">light_ts</span><span class="p">,</span> <span class="n">light_mat</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvToScene</span><span class="p">(</span><span class="n">light_sh</span><span class="p">)</span>
+
+    <span class="c1">#setup captor</span>
+    <span class="n">captor_ts</span> <span class="o">=</span> <span class="n">TriangleSet</span><span class="p">(</span><span class="n">pointList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)],</span> <span class="n">indexList</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addCaptorToScene</span><span class="p">(</span><span class="n">captor_ts</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+
+    <span class="c1">#run</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="guide.html" class="btn btn-neutral float-left" title="User guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autoapi/index.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tuan-Minh NGUYEN, Aurélien BESNIER.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

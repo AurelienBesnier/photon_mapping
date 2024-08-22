@@ -1,0 +1,472 @@
+photonmap.Simulator
+===================
+
+.. py:module:: photonmap.Simulator
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   photonmap.Simulator.Result
+   photonmap.Simulator.Simulator
+
+
+Module Contents
+---------------
+
+.. py:class:: Result
+
+   .. py:attribute:: N_sim_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_plant
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_plant
+      :value: []
+
+
+
+.. py:class:: Simulator
+
+   A class which include all the tools of simulation.
+
+   Attributes
+   ----------
+   nb_photons: int
+       The number of photons in simulation
+   maximum_depth: int
+       The maximum number of times that the light bounces in the scene 
+   scale_factor: float
+       The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+   t_min: float
+       The minimum distance between the point of intersection and the origin of the light ray
+   nb_thread: int
+       The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
+   is_backface_culling: bool
+       Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
+   base_spectral_range: dict
+       The base spectral range which includes all the other spectral ranges
+   divided_spectral_range: array
+       The list of spectral ranges divided from the base spectral range.
+   rendering: bool
+       Set to True to render the output images
+   N_sim_captor: dict
+       Number of received photons in each captor
+   N_sim_plant: dict
+       Number of received photons in each organ of plant
+
+   captor_file: str
+       The link to the file which contains the informations of the captors in the simulation
+   spectrum_file: str
+       The link to the file which contains the informations of the heterogeneity of the spectrum
+   points_calibration_file: str
+       The link to the file which contains the informations of the captors used to calibrate the final result 
+
+   list_captor: array
+       The list of captor in simulation
+   pgl_scene: openalea.plantgl.scenegraph.Scene
+       The plantgl scene object used to save the meshs of environment
+   plant_file: str
+       The link to the file of the model of plant. (currently only support .lpy file)
+   plantPos: Vec3
+       The position of the plant
+   po_dir: str
+       The link to the folder which contains the optical properties of the room
+
+
+
+   .. py:attribute:: nb_photons
+      :value: 0
+
+
+
+   .. py:attribute:: max_depth
+      :value: 0
+
+
+
+   .. py:attribute:: scale_factor
+      :value: 1
+
+
+
+   .. py:attribute:: t_min
+      :value: 0.0001
+
+
+
+   .. py:attribute:: nb_thread
+      :value: 8
+
+
+
+   .. py:attribute:: is_backface_culling
+      :value: False
+
+
+
+   .. py:attribute:: base_spectral_range
+
+
+   .. py:attribute:: divided_spectral_range
+
+
+   .. py:attribute:: rendering
+      :value: False
+
+
+
+   .. py:attribute:: scene_pgl
+
+
+   .. py:attribute:: list_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_sim_plant
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_captor
+      :value: []
+
+
+
+   .. py:attribute:: N_mes_plant
+      :value: []
+
+
+
+   .. py:attribute:: captor_file
+      :value: ''
+
+
+
+   .. py:attribute:: plant_file
+      :value: ''
+
+
+
+   .. py:attribute:: po_dir
+      :value: ''
+
+
+
+   .. py:attribute:: spectrum_file
+      :value: ''
+
+
+
+   .. py:attribute:: points_calibration_file
+      :value: ''
+
+
+
+   .. py:method:: resetScene()
+
+      Clear list of captors and list of object in scene
+
+
+
+   .. py:method:: addEnvToScene(sh)
+
+      Add a environment's object to scene
+
+      Parameters
+      ----------
+      sh : plantgl.Shape
+          The mesh of object
+
+      Returns
+      -------
+          The object is added to the scene
+
+
+
+
+   .. py:method:: addCaptorToScene(geometry, position)
+
+      Add a captor object to scene
+
+      Parameters
+      ----------
+      geometry: TriangleSet
+          The geometry of captor
+      position : tuple(int,int,int)
+          The position of captor
+
+      Returns
+      -------
+          The captor is added to the scene
+
+
+
+
+   .. py:method:: addDiskCaptorToScene(pos, normal, r)
+
+      Add a disk shaped captor object to scene
+
+      Parameters
+      ----------
+      pos : tuple(int,int,int)
+          The position of captor
+      normal: tuple(int,int,int)
+          The vector normal of captor
+      r: float
+          The radius of captor
+
+      Returns
+      -------
+          The disk shaped captor is added to the scene
+
+
+
+
+   .. py:method:: run()
+
+      Run the simulation with the configurations which is determined
+
+      Returns
+      -------
+          The number of received photons on each captor and organs of plant is saved into the files located in folde ./results 
+
+
+
+
+   .. py:method:: calculateCalibrationCoefficient(spectrum_file='', points_calibration_file='')
+
+      Calculate the coefficients which is used to calibrate the final result of simulation with the captors
+
+      Parameters
+      ----------
+      spectrum_file: str
+          The link to the file which contains the informations of the heterogeneity of the spectrum
+      points_calibration_file: str
+          The link to the file which contains the informations of the captors used to calibrate the final result 
+              
+
+
+
+   .. py:method:: calibrateResults(spectrum_file='', points_calibration_file='')
+
+      Calibrate the final result of simulation
+
+      Parameters
+      ----------
+      spectrum_file: str
+          The link to the file which contains the informations of the heterogeneity of the spectrum
+      points_calibration_file: str
+          The link to the file which contains the informations of the captors used to calibrate the final result 
+              
+
+
+
+   .. py:method:: writeResults()
+
+      Write the result of simulation to a file saved in the folder ./results
+              
+
+
+
+   .. py:method:: visualiserSimulationScene(divided_spectral_range_index=-1, mode='ipython')
+
+      Visualize the scene of simulation with the tools of OpenAlea
+      To run this function, it has to run these command first:
+      -- ipython
+      -- %gui qt5
+
+      Parameters
+      ----------
+      divided_spectral_range_index: int
+          This variable allow us to visualize the color of the plant based on its received energies 
+      mode: str
+          This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
+
+      Returns
+      -------
+          A rendered scene in 3D
+
+
+
+
+   .. py:method:: test_t_min(nb_photons, start_t, loop, is_only_lamp=False)
+
+      Test the simulation with multiple values of Tmin to avoid the problem of auto-intersection
+
+      Parameters
+      ----------
+      nb_photons: int
+          The total number of photons is shooting from the light in the simulation 
+      start_t: float
+          The first (smallest) value of Tmin used to run the test
+      loop: int
+          The number of iteration. At each iteration, the current value Tmin is multiply with 10, then run the simulation
+      is_only_lamp: bool
+          If True, run the test with only the lamps and captors, If False, run the test with all the objects in scene
+
+      Returns
+      -------
+          A graph is generated to show the connection between the Tmin and the results of simulation
+
+
+
+
+   .. py:method:: initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp=False)
+
+      Setup all the necessary objects (environment, captor, plant) in the simulation
+
+      Parameters
+      ----------
+
+      scene: libphotonmap_core.Scene
+          The object which contains all the object in the scene of simulation
+      current_band: dict
+          Current divided spectral range where the simulation is running
+      moyenne_wavelength: Vec3
+          The average wavelength of spectral range used to determine the color of the light
+      is_only_lamp: bool
+          if True, only the lamps and captors is added to the scene, if False, all the objects is added. 
+
+
+      Returns
+      -------
+          scene: libphotonmap_core.Scene
+              The object which contains all the object in the scene of simulation
+          has_captor: bool
+              Return true if the scene has the captors 
+          captor_triangle_dict: dict
+              Dictionary of the triangles of the captors. Using to counting the number of photons received in each captor
+          has_plant: bool
+              Return true if the scene has the model of plant 
+          tr2shmap: dict
+              Dictionary of the triangles of the plant. Using to counting the number of photons received in each organ of plant
+
+
+
+
+   .. py:method:: render(integrator, scene, w, sampler)
+
+      Visualize the photon map of the simulation in the scene
+
+      Parameters
+      ----------
+      integrator: libphotonmap_core.PhotonMapping
+          The object which handles all the simulation of photon mapping
+      scene: libphotonmap_core.Scene
+          The object which contains all the object in the scene of simulation
+      w: Vec3
+          The average wavelength of spectral range used to determine the color of the light
+      sampler: libphotonmap_core.Sampler
+          The generator of the random number
+
+      Returns
+      -------
+          Rendered images is saved into the folder ./result
+
+
+
+
+   .. py:method:: setupRoom(room_file: str, po_dir: str, flip_normal=False)
+
+      Setup the room/environment of the simulation.
+
+      Parameters
+      ----------
+      room_file: str
+          The link to the file which contains the geometries of the room
+      po_dir: str
+          The link to the folder which contains the optical properties of the room
+      flip_normal: bool
+          Determine the direction of the vector normal of triangle. 
+
+
+
+   .. py:method:: setupRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
+
+      Enable the capacity to render/visulize the photon map in the scene
+
+      Parameters
+      ----------
+      lookfrom: Vec3
+          The position of the camera.
+      lookat: Vec3
+          The point where the camera is looking at
+              
+
+
+
+   .. py:method:: setupCaptor(captor_file: str)
+
+      Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
+
+      Parameters
+      ----------
+      captor_file: str
+          The link to the file which contains the informations of the captors in the simulation
+              
+
+
+
+   .. py:method:: setupPlant(plant_file: str, plant_pos=Vec3(0, 0, 0))
+
+      Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
+
+      Parameters
+      ----------
+      plant_file: str
+          The link to the file of the model of plant. (currently only support .lpy file)
+      plantPos: Vec3
+          The position of the plant
+              
+
+
+
+   .. py:method:: initCameraRender(lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0))
+
+      Init the camera to render image. Calling by the function setupRender
+
+      Parameters
+      ----------
+      lookfrom: Vec3
+          The position of the camera.
+      lookat: Vec3
+          The point where the camera is looking at
+              
+      Returns
+      -------
+      camera: libphotonmap_core.Camera
+          An object with all the informations of camera
+
+
+
+   .. py:method:: readConfiguration(filename: str)
+
+      Read all the parameters of simulation in the configuration file
+
+      Parameters
+      ----------
+      filename: str
+          Name/directory of the configuration file.
+          
+
+
+

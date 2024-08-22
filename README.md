@@ -1,5 +1,4 @@
-![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
-![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)
+[![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://minhlucky9.github.io/photon_mapping/build/html/index.html)
 # photon_mapping
 
 minimal but extensible header only implementation of photon mapping in C++.
@@ -35,8 +34,8 @@ cd examples/python/plantgl-rad-scene
 python planglRadScene.py
 ```
 
-* Le résultat de la simulation se retrouve dans le dossier: [./results/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results)
-* Les outils pour évaluation le résultat: [./Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/Evaluation%20Simulation%20SEC2)
+* The result of the simulation is in the folder: [./results/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results)
+* Tools to evalutate result: [.examples/python/Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/Evaluation%20Simulation%20SEC2)
 
 
 ![](img/cornellbox-water_pm.png)
@@ -61,7 +60,7 @@ python planglRadScene.py
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
 ## Authors
-This project was originaly developed by yumcyawiz. Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
+This project was originaly developed by [YumcyaWiz](https://github.com/yumcyaWiz/)(Kenta Eto). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
 This work was funded by INRAe Metaprogramme DIGIT-BIO (Digital biology to explore and predict living organisms in their environment). 
 
 ## Use case 

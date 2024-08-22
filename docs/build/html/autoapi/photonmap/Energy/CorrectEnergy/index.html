@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>photonmap.Energy.CorrectEnergy &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="photonmap.Loader" href="../../Loader/index.html" />
+    <link rel="prev" title="photonmap.Energy.CalculateEnergy" href="../CalculateEnergy/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Photon Mapping Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing.html">Installing Photon Mapping tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_example.html">Code example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">photonmap</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../Common/index.html">photonmap.Common</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">photonmap.Energy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Loader/index.html">photonmap.Loader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Reader/index.html">photonmap.Reader</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Photon Mapping Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">photonmap</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">photonmap.Energy</a></li>
+      <li class="breadcrumb-item active">photonmap.Energy.CorrectEnergy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/photonmap/Energy/CorrectEnergy/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-photonmap.Energy.CorrectEnergy">
+<span id="photonmap-energy-correctenergy"></span><h1>photonmap.Energy.CorrectEnergy<a class="headerlink" href="#module-photonmap.Energy.CorrectEnergy" title="Link to this heading"></a></h1>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.read_spectrum_file" title="photonmap.Energy.CorrectEnergy.read_spectrum_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_spectrum_file</span></code></a>(filename, int, int)</p></td>
+<td><p>Parse a spectrum file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.get_integral_of_band" title="photonmap.Energy.CorrectEnergy.get_integral_of_band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_integral_of_band</span></code></a>(→ float)</p></td>
+<td><p>Returns the integral of the band as a percentage</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.get_correct_energy_coeff" title="photonmap.Energy.CorrectEnergy.get_correct_energy_coeff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_correct_energy_coeff</span></code></a>(base_spectral_range, ...)</p></td>
+<td><p>Get the coefficients of energy's correction from the spectrum file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.get_points_calibration" title="photonmap.Energy.CorrectEnergy.get_points_calibration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_points_calibration</span></code></a>(list_captor, ...)</p></td>
+<td><p>Read the file which contains the points used for the calibration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.get_calibaration_coefficient" title="photonmap.Energy.CorrectEnergy.get_calibaration_coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_calibaration_coefficient</span></code></a>(energies, ...)</p></td>
+<td><p>Calculate the coefficients used to calibrate the result of simulation</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.calibrate_captor_energy" title="photonmap.Energy.CorrectEnergy.calibrate_captor_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calibrate_captor_energy</span></code></a>(energies, correction_ratios, ...)</p></td>
+<td><p>Calibrate the captor energy from photons to Mmol / m2 / s</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CorrectEnergy.calibrate_plant_energy" title="photonmap.Energy.CorrectEnergy.calibrate_plant_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calibrate_plant_energy</span></code></a>(energies, coeffs_calibration)</p></td>
+<td><p>Calibrate the plant energy from photons to Mmol / m2 / s</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.read_spectrum_file">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">read_spectrum_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#read_spectrum_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.read_spectrum_file" title="Link to this definition"></a></dt>
+<dd><p>Parse a spectrum file.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>filename: str</dt><dd><p>The file to parse.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>content: dict</dt><dd><p>A dictionary with wavelength as key and photon count as value.</p>
+</dd>
+<dt>step: int</dt><dd><p>the step in the dictionary between two entries.</p>
+</dd>
+<dt>start: int</dt><dd><p>the first wavelength in the file.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.get_integral_of_band">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">get_integral_of_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divided_band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectrum</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#get_integral_of_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.get_integral_of_band" title="Link to this definition"></a></dt>
+<dd><p>Returns the integral of the band as a percentage</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>base_band: range</dt><dd><p>The base spectral range which includes all the other spectral ranges</p>
+</dd>
+<dt>divided_band: range</dt><dd><p>The section of the base spectral range used to run the simulation</p>
+</dd>
+<dt>spectrum: dict</dt><dd><p>The whole spectrum of the band.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.get_correct_energy_coeff">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">get_correct_energy_coeff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_spectral_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divided_spectral_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#get_correct_energy_coeff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.get_correct_energy_coeff" title="Link to this definition"></a></dt>
+<dd><p>Get the coefficients of energy’s correction from the spectrum file</p>
+<section id="id2">
+<h3>Parameters<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>base_spectral_range: range</dt><dd><p>The base spectral range which includes all the other spectral ranges</p>
+</dd>
+<dt>divided_spectral_range: range</dt><dd><p>The section of the base spectral range used to run the simulation</p>
+</dd>
+<dt>spec_file: str</dt><dd><p>The link to the file which contains the informations of the heterogeneity of the spectrum</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Returns<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>integrals: array</dt><dd><p>The list of the coefficents of energy’s correction</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.get_points_calibration">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">get_points_calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_captor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_calibration_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divided_spectral_range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#get_points_calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.get_points_calibration" title="Link to this definition"></a></dt>
+<dd><p>Read the file which contains the points used for the calibration.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>captor_list<span class="classifier">array</span></dt><dd><p>The list of captors</p>
+</dd>
+<dt>points_calibration_file: str</dt><dd><p>The link to the file which contains the informations of the captors used to calibrate the final result</p>
+</dd>
+<dt>divided_spectral_range: array</dt><dd><p>The list of spectral ranges divided from the base spectral range.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>points_calibration: array</dt><dd><p>The list of the points used for the calibration</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.get_calibaration_coefficient">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">get_calibaration_coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correction_ratios</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_calibration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#get_calibaration_coefficient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.get_calibaration_coefficient" title="Link to this definition"></a></dt>
+<dd><p>Calculate the coefficients used to calibrate the result of simulation</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>energies<span class="classifier">array</span></dt><dd><p>The list of captor’s energies</p>
+</dd>
+<dt>correction_ratios: array</dt><dd><p>The list of the coefficents of energy’s correction</p>
+</dd>
+<dt>points_calibration: array</dt><dd><p>The list of the points used for the calibration</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>coeff_calibration: array</dt><dd><p>The list of coefficients used for the calibration</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.calibrate_captor_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">calibrate_captor_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correction_ratios</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points_calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs_calibration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#calibrate_captor_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.calibrate_captor_energy" title="Link to this definition"></a></dt>
+<dd><p>Calibrate the captor energy from photons to Mmol / m2 / s</p>
+<section id="id8">
+<h3>Parameters<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>energies<span class="classifier">array</span></dt><dd><p>The list of captor’s energies</p>
+</dd>
+<dt>correction_ratios: array</dt><dd><p>The list of the coefficents of energy’s correction</p>
+</dd>
+<dt>points_calibration: array</dt><dd><p>The list of the points used for the calibration</p>
+</dd>
+<dt>coeffs_calibration<span class="classifier">array</span></dt><dd><p>The list of the coefficients used for the calibration</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h3>Returns<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>N_calibration: array</dt><dd><p>The list of captor’s energies after the calibration</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CorrectEnergy.calibrate_plant_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CorrectEnergy.</span></span><span class="sig-name descname"><span class="pre">calibrate_plant_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs_calibration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CorrectEnergy.html#calibrate_plant_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CorrectEnergy.calibrate_plant_energy" title="Link to this definition"></a></dt>
+<dd><p>Calibrate the plant energy from photons to Mmol / m2 / s</p>
+<section id="id10">
+<h3>Parameters<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>energies<span class="classifier">array</span></dt><dd><p>The list of captor’s energies</p>
+</dd>
+<dt>coeffs_calibration<span class="classifier">array</span></dt><dd><p>The list of the coefficients used for the calibration</p>
+</dd>
+</dl>
+</section>
+<section id="id11">
+<h3>Returns<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>N_calibration: array</dt><dd><p>The list of plant’s energies after the calibration</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../CalculateEnergy/index.html" class="btn btn-neutral float-left" title="photonmap.Energy.CalculateEnergy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../Loader/index.html" class="btn btn-neutral float-right" title="photonmap.Loader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tuan-Minh NGUYEN, Aurélien BESNIER.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -2,8 +2,14 @@ name: photonmap
 channels:
   - conda-forge
   - openalea3
+  - fredboudon
 dependencies:
-  - python=3.12
+  - python
+  - jupyterlab
+  - jupyter-packaging
+  - ipywidgets
+  - openalea.lpy
+  - openalea.plantgl
   - pybind11
   - pytest
   - embree
@@ -18,3 +24,10 @@ dependencies:
   - llvm-openmp
   - openalea.lpy
   - scipy
+  - matplotlib
+  - pip
+# - sphinx
+# - sphinx-autoapi
+# - sphinx-copybutton
+# - nbsphinx
+# - sphinx_rtd_theme

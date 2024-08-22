@@ -11,6 +11,7 @@ int main() {
     const int height = 512;
     const int n_photons = 1000000;
     const int max_depth = 100;
+    const int nb_thread = 8;
 
     Image image(width, height);
 
@@ -28,7 +29,7 @@ int main() {
     scene.build();
 
     // photon tracing and build photon map
-    PhotonMapping integrator(n_photons, 1, 0, 0, 0, max_depth);
+    PhotonMapping integrator(n_photons, 1,0, max_depth, nb_thread);
     UniformSampler sampler;
     integrator.build(scene, sampler);
 

@@ -145,7 +145,11 @@ setup(
     long_description="",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
-    packages=['photonmap'],
+    packages=['photonmap', 
+              'photonmap.Common', 
+              'photonmap.Energy', 
+              'photonmap.Loader', 
+              'photonmap.Reader'],
     # Currently, build_ext only provides an optional "highest supported C++
     # level" feature, but in the future it may provide more features.
     cmdclass={"build_ext": CMakeBuild},

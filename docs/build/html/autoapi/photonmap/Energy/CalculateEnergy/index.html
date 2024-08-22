@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>photonmap.Energy.CalculateEnergy &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=fd3f3429" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="photonmap.Energy.CorrectEnergy" href="../CorrectEnergy/index.html" />
+    <link rel="prev" title="photonmap.Energy" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Photon Mapping Simulation
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing.html">Installing Photon Mapping tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../code_example.html">Code example</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../index.html">photonmap</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../../index.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../../Common/index.html">photonmap.Common</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../index.html">photonmap.Energy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Loader/index.html">photonmap.Loader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../Reader/index.html">photonmap.Reader</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../index.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Photon Mapping Simulation</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">photonmap</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">photonmap.Energy</a></li>
+      <li class="breadcrumb-item active">photonmap.Energy.CalculateEnergy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/autoapi/photonmap/Energy/CalculateEnergy/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-photonmap.Energy.CalculateEnergy">
+<span id="photonmap-energy-calculateenergy"></span><h1>photonmap.Energy.CalculateEnergy<a class="headerlink" href="#module-photonmap.Energy.CalculateEnergy" title="Link to this heading"></a></h1>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.write_captor_energy" title="photonmap.Energy.CalculateEnergy.write_captor_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_captor_energy</span></code></a>(N_sim, N_calibration, captor_list, ...)</p></td>
+<td><p>Write the received energy of all the captors to a file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="photonmap.Energy.CalculateEnergy.write_plant_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_plant_energy</span></code></a>(energies, N_calibration, ...)</p></td>
+<td><p>Write the received energy of all the organs of plant to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.captor_add_energy" title="photonmap.Energy.CalculateEnergy.captor_add_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">captor_add_energy</span></code></a>(captor_dict, integrator, energy)</p></td>
+<td><p>Compute the energy on each captor in the scene.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#photonmap.Energy.CalculateEnergy.plant_add_energy" title="photonmap.Energy.CalculateEnergy.plant_add_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plant_add_energy</span></code></a>(tr2shmap, integrator)</p></td>
+<td><p>Computes the number of photons on each organ of the plant.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CalculateEnergy.write_captor_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">write_captor_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_sim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands_spectre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_photons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#write_captor_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.write_captor_energy" title="Link to this definition"></a></dt>
+<dd><p>Write the received energy of all the captors to a file.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>N_sim<span class="classifier">dict</span></dt><dd><p>Number of received photons on each captor</p>
+</dd>
+<dt>N_calibration<span class="classifier">dict</span></dt><dd><p>The energies after the calibration on each captor</p>
+</dd>
+<dt>captor_list<span class="classifier">array</span></dt><dd><p>The list of captors</p>
+</dd>
+<dt>bands_spectre: dict</dt><dd><p>The divided spectral range used to run the simulation.</p>
+</dd>
+<dt>nb_photons: int</dt><dd><p>The number of photons in simulation</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>A file with all the received energy of captors saved in folder ./results</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CalculateEnergy.write_plant_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">write_plant_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_calibration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_plant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands_spectre</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_photons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#write_plant_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.write_plant_energy" title="Link to this definition"></a></dt>
+<dd><p>Write the received energy of all the organs of plant to a file.</p>
+<section id="id1">
+<h3>Parameters<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>energies<span class="classifier">dict</span></dt><dd><p>Number of received photons on each plant’s organs</p>
+</dd>
+<dt>N_calibration<span class="classifier">dict</span></dt><dd><p>The energies after the calibration on each plant’s organs</p>
+</dd>
+<dt>list_plant<span class="classifier">dict</span></dt><dd><p>The dictionary of plant’s organs</p>
+</dd>
+<dt>bands_spectre: dict</dt><dd><p>The divided spectral range used to run the simulation.</p>
+</dd>
+<dt>nb_photons: int</dt><dd><p>The number of photons in simulation</p>
+</dd>
+</dl>
+</section>
+<section id="id2">
+<h3>Returns<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>A file with all the received energy of plant’s organs saved in folder ./results</p>
+</div></blockquote>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CalculateEnergy.captor_add_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">captor_add_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">captor_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#captor_add_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.captor_add_energy" title="Link to this definition"></a></dt>
+<dd><p>Compute the energy on each captor in the scene.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>captor_dict<span class="classifier">dict</span></dt><dd><p>The dictionary of captor</p>
+</dd>
+<dt>integrator: libphotonmap_core.PhotonMapping</dt><dd><p>The object which handles all the simulation of photon mapping</p>
+</dd>
+<dt>energy: dict</dt><dd><p>The dictionary of captor’s energy</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="photonmap.Energy.CalculateEnergy.plant_add_energy">
+<span class="sig-prename descclassname"><span class="pre">photonmap.Energy.CalculateEnergy.</span></span><span class="sig-name descname"><span class="pre">plant_add_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tr2shmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">integrator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Energy/CalculateEnergy.html#plant_add_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Energy.CalculateEnergy.plant_add_energy" title="Link to this definition"></a></dt>
+<dd><p>Computes the number of photons on each organ of the plant.</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>tr2shmap<span class="classifier">dict</span></dt><dd><p>The dictionary of plant’s organs</p>
+</dd>
+<dt>integrator: libphotonmap_core.PhotonMapping</dt><dd><p>The object which handles all the simulation of photon mapping</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>shenergy: dict</dt><dd><p>The dictionary of plant’s energy</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="photonmap.Energy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../CorrectEnergy/index.html" class="btn btn-neutral float-right" title="photonmap.Energy.CorrectEnergy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Tuan-Minh NGUYEN, Aurélien BESNIER.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

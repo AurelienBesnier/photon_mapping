@@ -62,6 +62,7 @@ int main() {
   const unsigned n_estimation_caustics = 50;
   const unsigned final_gathering_depth = 0;
   const unsigned max_depth = 100;
+  const unsigned nb_thread = 8;
   Image image(width, height);
 
 
@@ -74,12 +75,11 @@ int main() {
     Camera camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
   Scene scene;
   scene.loadModel("./mesh.obj");
-  scene.build();
+  scene.build(true);
 
   // photon tracing and build photon map
   PhotonMapping integrator(n_photons, n_estimation_global,
-                           n_photons_caustics_multiplier, n_estimation_caustics,
-                           final_gathering_depth, max_depth);
+                           final_gathering_depth, max_depth, nb_thread);
   UniformSampler sampler;
 
   std::cout<<"[main] building photon map..."<<std::endl;

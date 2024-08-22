@@ -1,0 +1,21 @@
+photonmap.Energy
+================
+
+.. py:module:: photonmap.Energy
+
+.. autoapi-nested-parse::
+
+   This module contains the functions which is used to calculate the number of photons and received energy on each captor and organs of plant 
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/photonmap/Energy/CalculateEnergy/index
+   /autoapi/photonmap/Energy/CorrectEnergy/index
+
+

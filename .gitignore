@@ -233,3 +233,13 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+# ignore ALL files in egg-info directory
+*.egg-info/
+
+# ignore ALL files in Build directory
+build/
+!docs/build/
+
+# ignore ALL files in pycache
+__pycache__/
+

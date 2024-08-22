@@ -802,7 +802,7 @@ public:
    * @fn void build()
    * @brief Creates the embree scene with all the previous info.
    */
-  void build() {
+  void build(bool back_face_culling = true) {
 #ifdef __OUTPUT__
     std::cout << "[Scene] building scene..." << std::endl;
 #endif
@@ -833,9 +833,13 @@ public:
       ib[i] = indices[i];
     }
 
-
-    rtcSetGeometryIntersectFilterFunction(geom, &intersectionFilter);
-
+    if(back_face_culling) {
+      rtcSetGeometryIntersectFilterFunction(geom, &intersectionFilter);
+      std::cout << "Backface Culling ON" << std::endl;
+    } else {
+      std::cout << "Backface Culling OFF" << std::endl;
+    }
+    
     rtcCommitGeometry(geom);
     rtcAttachGeometry(scene, geom);
     rtcReleaseGeometry(geom);
@@ -880,7 +884,7 @@ public:
     rayhit.ray.flags = 0;
     rayhit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
     rayhit.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
-    rayhit.hit.instPrimID[0] = RTC_INVALID_GEOMETRY_ID;
+
 
     RTCRayQueryContext context;
     rtcInitRayQueryContext(&context);
