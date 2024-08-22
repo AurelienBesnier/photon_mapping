@@ -110,6 +110,32 @@
 <div class="viewcode-block" id="SimulationResult">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult">[docs]</a>
 <span class="k">class</span> <span class="nc">SimulationResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class which contains the result of simulation.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    N_sim_captor: dict</span>
+<span class="sd">        Number of received photons on each captor</span>
+<span class="sd">    N_sim_plant: dict</span>
+<span class="sd">        Number of received photons on each organ of plant</span>
+<span class="sd">    N_mes_captor: dict</span>
+<span class="sd">        The energies after the calibration on each captor</span>
+<span class="sd">    N_mes_plant: dict</span>
+<span class="sd">        The energies after the calibration on each organ of plant</span>
+
+<span class="sd">    nb_photons: int</span>
+<span class="sd">        The number of photons in simulation</span>
+<span class="sd">    divided_spectral_range: array</span>
+<span class="sd">        The list of spectral ranges divided from the base spectral range.</span>
+
+<span class="sd">    list_plant: set</span>
+<span class="sd">        The list of plant&#39;s organes in simulation</span>
+<span class="sd">    list_captor: array</span>
+<span class="sd">        The list of captor in simulation</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">#constructor</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulator</span><span class="p">):</span>
 <div class="viewcode-block" id="SimulationResult.N_sim_captor">
@@ -164,6 +190,10 @@
 <div class="viewcode-block" id="SimulationResult.graph">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.graph">[docs]</a>
     <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw a graph with MathPlotlib</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span></div>
 </div>
 
@@ -195,9 +225,9 @@
 <span class="sd">    rendering: bool</span>
 <span class="sd">        Set to True to render the output images</span>
 <span class="sd">    N_sim_captor: dict</span>
-<span class="sd">        Number of received photons in each captor</span>
+<span class="sd">        Number of received photons on each captor</span>
 <span class="sd">    N_sim_plant: dict</span>
-<span class="sd">        Number of received photons in each organ of plant</span>
+<span class="sd">        Number of received photons on each organ of plant</span>
 
 <span class="sd">    captor_file: str</span>
 <span class="sd">        The link to the file which contains the informations of the captors in the simulation</span>
@@ -222,6 +252,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1">#constructor</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
 <div class="viewcode-block" id="Simulator.nb_photons">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.nb_photons">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="mi">0</span></div>

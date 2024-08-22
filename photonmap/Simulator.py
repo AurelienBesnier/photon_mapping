@@ -27,6 +27,32 @@ from photonmap.Loader import (LoadCaptor, LoadEnvironment, LoadPlant)
 from photonmap.Common import (Outils, Math)
 
 class SimulationResult:
+    """
+    A class which contains the result of simulation.
+
+    Attributes
+    ----------
+
+    N_sim_captor: dict
+        Number of received photons on each captor
+    N_sim_plant: dict
+        Number of received photons on each organ of plant
+    N_mes_captor: dict
+        The energies after the calibration on each captor
+    N_mes_plant: dict
+        The energies after the calibration on each organ of plant
+
+    nb_photons: int
+        The number of photons in simulation
+    divided_spectral_range: array
+        The list of spectral ranges divided from the base spectral range.
+
+    list_plant: set
+        The list of plant's organes in simulation
+    list_captor: array
+        The list of captor in simulation
+    
+    """
     #constructor
     def __init__(self, simulator):
         self.N_sim_captor = simulator.N_sim_captor
@@ -52,6 +78,10 @@ class SimulationResult:
             CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
 
     def graph(self):
+        """
+        Draw a graph with MathPlotlib
+                
+        """
         return
 
 class Simulator:
@@ -79,9 +109,9 @@ class Simulator:
     rendering: bool
         Set to True to render the output images
     N_sim_captor: dict
-        Number of received photons in each captor
+        Number of received photons on each captor
     N_sim_plant: dict
-        Number of received photons in each organ of plant
+        Number of received photons on each organ of plant
 
     captor_file: str
         The link to the file which contains the informations of the captors in the simulation
@@ -106,6 +136,7 @@ class Simulator:
     """
     #constructor
     def __init__(self):
+        
         self.nb_photons = 0
         self.max_depth = 0
         self.scale_factor = 1
