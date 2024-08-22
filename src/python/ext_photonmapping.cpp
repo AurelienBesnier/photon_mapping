@@ -237,11 +237,15 @@ PYBIND11_MODULE(libphotonmap_core, m) {
   // PhotonMapping class
   py::class_<PhotonMapping>(m, "PhotonMapping")
       .def(py::init<unsigned long long, int, int, int, int>())
+      .def(py::init<unsigned long long, int, float, int, int, int>())
       .def("build", &PhotonMapping::build, py::arg("scene"), py::arg("sampler"), py::arg("forRendering") = true)
       .def("integrate", &PhotonMapping::integrate, py::arg("ray_in"),
            py::arg("scene"), py::arg("sampler"))
       .def("getPhotonMap", &PhotonMapping::getPhotonMapGlobal,
            "Returns the photon map", py::return_value_policy::reference)
+      .def("getPhotonMapCaustics", &PhotonMapping::getPhotonMapCaustics,
+           "Returns the caustics photon map",
+           py::return_value_policy::reference)
       .def("getPhotonMapCaptors", &PhotonMapping::getPhotonMapCaptors,
            "Returns the captor photon map", py::return_value_policy::reference);
            
@@ -395,7 +399,7 @@ PYBIND11_MODULE(libphotonmap_core, m) {
       .def("addSpotLight", &Scene::addSpotLight, py::arg("position"),
            py::arg("intensity"), py::arg("color"), py::arg("direction"),
            py::arg("angle"))
-      .def("build", &Scene::build, py::arg("back_face_culling"))
+      .def("build", &Scene::build, py::arg("back_face_culling") = true)
       .def("getTriangles", &Scene::getTriangles,
            "Returns an array with the triangles of the scene")
       .def("intersect", &Scene::intersect, py::arg("ray"), py::arg("info"))

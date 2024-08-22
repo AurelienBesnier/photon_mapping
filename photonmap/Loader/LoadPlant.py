@@ -1,6 +1,5 @@
-
 from photonmap import libphotonmap_core
-from openalea.plantgl.all import * 
+from openalea.plantgl.all import *
 from openalea.lpy import Lsystem
 from photonmap.Common.Outils import *
 from photonmap import (
@@ -11,17 +10,11 @@ from photonmap import (
     UniformSampler,
 )
 
-#Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy 
-#Data is located in this directory: ./assets
+# Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy
+# Data is located in this directory: ./assets
 
-def add_lpy_file_to_scene(
-    scene,
-    filename,
-    t,
-    tr2shmap,
-    anchor,
-    scale_factor
-):
+
+def add_lpy_file_to_scene(scene, filename, t, tr2shmap, anchor, scale_factor):
     """
     Adds the lpy mesh to the photonmapping scene.
 
@@ -39,7 +32,7 @@ def add_lpy_file_to_scene(
         The position of the plant
     scale_factor : int
         The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-    
+
     Returns
     -------
         Add all the mesh of plant to the scene and return the list of index of organs
@@ -51,10 +44,9 @@ def add_lpy_file_to_scene(
     # Adding the model of plant
     return addPlantModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
 
-#add plant model to Scene
-def addPlantModel(
-    lscene, tr, tr2shmap, sc, anchor, scale_factor
-):
+
+# add plant model to Scene
+def addPlantModel(lscene, tr, tr2shmap, sc, anchor, scale_factor):
     """
     Add the PlantGL Shape of plant to the photon mapping scene. This function is calling by the function add_lpy_file_to_scene
 
@@ -128,7 +120,6 @@ def addPlantModel(
 
         refl = (r + g + b) / 3
         spec = (specular_r + specular_g + specular_b) / 3
-        
 
         sc.addFaceInfos(
             vertices,
@@ -152,11 +143,12 @@ def addPlantModel(
         for _ in mesh.indexList:
             tr2shmap[ctr] = sh.id
             ctr += 1
-    
+
     return list_sh_id
 
-#add plant to a scene of PlantGL to visualize
-def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy = {}):
+
+# add plant to a scene of PlantGL to visualize
+def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy={}):
     """
     Add the plant mesh to the PlantGL scene to visualize the scene
 
@@ -179,7 +171,7 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy = {}):
     -------
         A PlantGL Scene with the plant
     """
-        
+
     ctr = 0
     pglScene = Scene()
     for sh in lscene:
@@ -197,17 +189,20 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy = {}):
                     maxi = index[j]
         for k in range(0, maxi + 1):
             mvector = mesh.pointAt(k)
-            vertices.append(Vector3((mvector[0] / (scale_factor / 10) + anchor[0]),
-                            (mvector[1] / (scale_factor / 10) + anchor[1]),
-                            (mvector[2] / (scale_factor / 10) + anchor[2])),
-                            )
+            vertices.append(
+                Vector3(
+                    (mvector[0] / (scale_factor / 10) + anchor[0]),
+                    (mvector[1] / (scale_factor / 10) + anchor[1]),
+                    (mvector[2] / (scale_factor / 10) + anchor[2]),
+                ),
+            )
 
         idx = mesh.indexList
-        
-        tmpSh= Shape(TriangleSet(vertices, idx, mesh.normalList))
+
+        tmpSh = Shape(TriangleSet(vertices, idx, mesh.normalList))
         tmpSh.appearance = sh.appearance
 
-        #change color of plant follow energy
+        # change color of plant follow energy
         if shenergy:
             max_energy = shenergy[max(shenergy, key=shenergy.get)]
 
@@ -216,12 +211,13 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy = {}):
                 cur_sh_energy = shenergy[sh.id]
 
             ratio = cur_sh_energy / max_energy
-            r = (int)(255 * ratio) 
-            g = (int)(255 * ratio) 
-            b = (int)(255 * ratio) 
-            tmpSh.appearance = Material(ambient=Color3(r,g,b), diffuse=sh.appearance.diffuse)
+            r = (int)(255 * ratio)
+            g = (int)(255 * ratio)
+            b = (int)(255 * ratio)
+            tmpSh.appearance = Material(
+                ambient=Color3(r, g, b), diffuse=sh.appearance.diffuse
+            )
 
         pglScene.add(tmpSh)
-
 
     return Scene([pglScene, sc])

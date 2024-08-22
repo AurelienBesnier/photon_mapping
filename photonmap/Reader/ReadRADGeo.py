@@ -1,15 +1,16 @@
 from photonmap.Common.Math import *
-from openalea.plantgl.all import * 
+from openalea.plantgl.all import *
 
 
 import re
 
-#Objectif of this module is read the geometry of each object of fichier RAD
+# Objectif of this module is read the geometry of each object of fichier RAD
+
 
 def cylinder_vertices(start, end, rayon):
     """
     Generate the geometry of a cylinder
-    
+
     Parameters
     ----------
     start: Vec3
@@ -18,7 +19,7 @@ def cylinder_vertices(start, end, rayon):
         The center of the second circle of cylinder
     rayon: float
         The radius of these two circles
-    
+
     Returns
     -------
         A array of vertices of an cylinder
@@ -28,9 +29,8 @@ def cylinder_vertices(start, end, rayon):
     vert = []
     direction = end - start
     direction.normalize()
-    horizontal = crossVector(direction, Vector3(0,0,1))
-    
-    
+    horizontal = crossVector(direction, Vector3(0, 0, 1))
+
     v1 = end + rayon * horizontal
     v2 = start + rayon * horizontal
     v3 = start - rayon * horizontal
@@ -43,10 +43,11 @@ def cylinder_vertices(start, end, rayon):
 
     return vert
 
+
 def read_rad(file: str, scale_factor: int, invert_normals: bool):
     """
     Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a make a plantGL Scene
-    
+
     Parameters
     ----------
     file: str
@@ -55,7 +56,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
         The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
     invert_normals: bool
         whether to invert the normals or not.
-    
+
     Returns
     -------
         A plantGL Scene.
@@ -67,7 +68,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
         materials = {}
         shapes = {}
         sc = Scene()
-       
+
         i = 0
         for _ in range(len(lines)):
             i += 1
@@ -210,14 +211,15 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                                     float(l2[2]) / scale_factor,
                                 )
 
-                                vert = cylinder_vertices(Vector3(x,y,z), Vector3(x2,y2,z2), 0)
+                                vert = cylinder_vertices(
+                                    Vector3(x, y, z), Vector3(x2, y2, z2), 0
+                                )
                                 # vert.append((x + r, y + r, z + r))
                                 # vert.append((x - r, y - r, z - r))
 
                                 # vert.append((x2 + r, y2 + r, z2 + r))
                                 # vert.append((x2 - r, y2 - r, z2 - r))
 
-                                
                                 shapes[name] = {
                                     "vertices": vert,
                                     "type": type,
@@ -292,7 +294,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                                         "size": size,
                                         "material": material,
                                     }
-                          
+
         for sh, val in shapes.items():
             mat_key = val["material"]
             mat = materials[mat_key]
@@ -400,7 +402,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                 s.appearance.name = mat["name"]
                 sc.add(s)
             else:
-                #triangulate quad
+                # triangulate quad
                 ts = TriangleSet(vert)
                 i = 0
                 indList = []
@@ -414,7 +416,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                     indList.append(ind)
                     indList.append(ind2)
                     i += 4
-                
+
                 ts.indexList = Index3Array(indList)
                 ts.computeNormalList()
                 s.geometry = ts

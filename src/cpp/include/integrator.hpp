@@ -58,15 +58,22 @@ private:
 	// number of photons used for radiance estimation by global photon map
 	const unsigned int nEstimationGlobal;
 
+	// number of photons for making caustics photon map
+	const unsigned long long nPhotonsCaustics = 0;
+
+	// number of photons used for radiance estimation by caustics photon map
+	const unsigned int nEstimationCaustics = 15;
+
 	// maximum depth to estimate radiance by final gathering
 	const unsigned int finalGatheringDepth;
 
 	// maximum depth of photon tracing, eye tracing
 	const unsigned int maxDepth;
 
-	const unsigned int nbThreads;
+	const unsigned int nbThreads = 4;
 
 	PhotonMap globalPhotonMap;
+	PhotonMap causticsPhotonMap;
 	PhotonMap captorPhotonMap;
 
 	// compute reflected radiance with global photon map
@@ -88,6 +95,30 @@ private:
 		if (!photon_indices.empty()) {
 			Lo /= (nPhotonsGlobal * PI * max_dist2);
 		}
+		return Lo;
+	}
+
+	// compute reflected radiance with caustics photon map
+	Vec3f computeCausticsWithPhotonMap(const Vec3f &wo,
+			IntersectInfo &info) const {
+		// get nearby photons
+		float max_dist2;
+		const std::vector<int> photon_indices =
+				causticsPhotonMap.queryKNearestPhotons(
+						info.surfaceInfo.position, nEstimationGlobal,
+						max_dist2);
+
+		Vec3f Lo;
+		for (const int photon_idx : photon_indices) {
+			const Photon &photon = causticsPhotonMap.getIthPhoton(photon_idx);
+			const Vec3f f = info.hitPrimitive->evaluateBxDF(wo, photon.wi,
+					info.surfaceInfo, TransportDirection::FROM_CAMERA);
+			Lo += f * photon.throughput;
+		}
+		if (!photon_indices.empty()) {
+			Lo /= (nPhotonsCaustics * PI * max_dist2);
+		}
+
 		return Lo;
 	}
 
@@ -255,11 +286,15 @@ private:
 					const Vec3f Ld = computeDirectIllumination(scene,
 							-ray.direction, info, sampler);
 
+					// compute caustics illumination with caustics photon map
+					const Vec3f Lc = computeCausticsWithPhotonMap(
+							-ray.direction, info);
+
 					// compute indirect illumination with final gathering
 					const Vec3f Li = computeIndirectIllumination(scene,
 							-ray.direction, info, sampler);
 
-					return (Ld + Li);
+					return (Ld + Lc + Li);
 				}
 			}
 			// if hitting specular surface, generate next ray and continue
@@ -327,6 +362,27 @@ public:
 	 * @brief Parameterized Constructor
 	 * @param nPhotonsGlobal
 	 * @param nEstimationGlobal
+	 * @param nPhotonsCausticsMultiplier
+	 * @param nEstimationCaustics
+	 * @param strictCalcDepth
+	 * @param maxDepth
+	 */
+	PhotonMapping(const unsigned long long &nPhotonsGlobal,
+			const int &nEstimationGlobal,
+			const float &nPhotonsCausticsMultiplier,
+			const int &nEstimationCaustics, const int &strictCalcDepth,
+			const int &maxDepth) :
+			nPhotonsGlobal(nPhotonsGlobal), nEstimationGlobal(
+					nEstimationGlobal), nPhotonsCaustics(
+					nPhotonsGlobal * nPhotonsCausticsMultiplier), nEstimationCaustics(
+					nEstimationCaustics), finalGatheringDepth(strictCalcDepth), maxDepth(
+					maxDepth) {
+	}
+
+	/**
+	 * @brief Parameterized Constructor
+	 * @param nPhotonsGlobal
+	 * @param nEstimationGlobal
 	 * @param strictCalcDepth
 	 * @param maxDepth
 	 */
@@ -350,6 +406,24 @@ public:
 	 */
 	const PhotonMap& getPhotonMapCaptors() const {
 		return captorPhotonMap;
+	}
+
+	/**
+	 * @fn bool hasCaustics() const
+	 * @brief Get whether the integrator has a caustic photonmap.
+	 * @return True if the integrator has a cautic photonmap
+	 */
+	bool hasCaustics() const {
+		return finalGatheringDepth > 0;
+	}
+
+	/**
+	 * @fn const PhotonMap &getPhotonMapCaustics() const
+	 * @brief Get the caustic photon map
+	 * @return The reference of the caustic photonmap
+	 */
+	const PhotonMap& getPhotonMapCaustics() const {
+		return causticsPhotonMap;
 	}
 
 	/**

@@ -1,12 +1,23 @@
-from photonmap import Camera, Image, Ray, Vec2, Vec3, Scene, IntersectInfo, Render, UniformSampler, PhotonMapping
-import random, sys, os
+import os
+import random
+import sys
+
+from photonmap import (
+    Camera,
+    Image,
+    PhotonMapping,
+    Render,
+    Scene,
+    UniformSampler,
+    Vec3,
+)
 
 
 def test_intersection():
     scene = Scene()
     scene.loadModel("./tests/cornellbox-water2.obj")
     scene.build()
-    
+
     n_samples = 1
     n_photons = int(1e3)
     n_estimation_global = 100
@@ -27,8 +38,7 @@ def test_intersection():
     dist_to_focus = 3.0
     aperture = 0.01
 
-    camera = Camera(lookfrom, lookat, vup, vfov, aspect_ratio,
-                    aperture, dist_to_focus)
+    camera = Camera(lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus)
 
     image = Image(image_width, image_height)
 
@@ -41,7 +51,7 @@ def test_intersection():
         final_gathering_depth,
         max_depth,
     )
-    
+
     integrator.build(scene, sampler, True)
     Render(
         sampler,
@@ -59,4 +69,3 @@ def test_intersection():
     intersection_worked = True
     assert intersection_worked
     os.remove("output.ppm")
-    

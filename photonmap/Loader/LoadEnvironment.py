@@ -1,6 +1,5 @@
-
 from photonmap import libphotonmap_core
-from openalea.plantgl.all import * 
+from openalea.plantgl.all import *
 from photonmap.Common.Math import *
 from photonmap.Common.Outils import *
 from photonmap import (
@@ -11,7 +10,8 @@ from photonmap import (
     UniformSampler,
 )
 
-#Objectif of this module is adding environment object to the scene of Photon Mapping
+# Objectif of this module is adding environment object to the scene of Photon Mapping
+
 
 def add_environment(
     scene,
@@ -20,7 +20,7 @@ def add_environment(
     materialsR: dict,
     materialsS: dict,
     materialsT: dict,
-    is_only_lamp = False
+    is_only_lamp=False,
 ):
     """
     Adds a PlantGL Shape of the room to the Photon Mapping scene.
@@ -31,13 +31,13 @@ def add_environment(
         The photon mapping scene used to run the simulation
     sh : Shape
         The plantGL Shape to add
-    w : int 
+    w : int
         The wavelength of the light to simulate.
-    materialsR : dict 
+    materialsR : dict
         The materials reflection dictionary
-    materialsS : dict 
+    materialsS : dict
         The materials specularity dictionary
-    materialsT : dict 
+    materialsT : dict
         The materials transmission dictionary
     is_only_lamp : bool
         If True, add only the lamps and captors, If False, add all the objects in room
@@ -53,21 +53,31 @@ def add_environment(
     )
     diffuse = ambient
 
-
     material_name = sh.appearance.name
-    trans = sh.appearance.transparency if materialsT.get(material_name) is None else materialsT[material_name]
-    refl = (sh.appearance.ambient.red / 255.0) if materialsR.get(material_name) is None else materialsR[material_name]
-    specular = (sh.appearance.specular.red / 255.0) if materialsS.get(material_name) is None else materialsS[material_name]
+    trans = (
+        sh.appearance.transparency
+        if materialsT.get(material_name) is None
+        else materialsT[material_name]
+    )
+    refl = (
+        (sh.appearance.ambient.red / 255.0)
+        if materialsR.get(material_name) is None
+        else materialsR[material_name]
+    )
+    specular = (
+        (sh.appearance.specular.red / 255.0)
+        if materialsS.get(material_name) is None
+        else materialsS[material_name]
+    )
 
-    #print(material_name, refl, specular, trans)
+    # print(material_name, refl, specular, trans)
 
-    #using mat Phong
+    # using mat Phong
     illum = 1
 
     if trans > 0.0:
-        #illum = 9
+        # illum = 9
         print("Transparent material: " + material_name)
-
 
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
@@ -100,10 +110,11 @@ def add_environment(
             1,
             refl,
             trans,
-            1.0 - shininess
+            1.0 - shininess,
         )
 
-#add light direction to a scene of PlantGL to visualize
+
+# add light direction to a scene of PlantGL to visualize
 def addLightDirectionPgl(sc, scale_factor):
     """
     Adds a PlantGL Shape of the room to the Photon Mapping scene.
@@ -120,7 +131,7 @@ def addLightDirectionPgl(sc, scale_factor):
         A PlantGL Scene with the hemisphere of each surface
     """
     pglScene = Scene()
-    
+
     for sh in sc:
         vertices = sh.geometry.pointList
         normals = sh.geometry.normalList
@@ -129,10 +140,10 @@ def addLightDirectionPgl(sc, scale_factor):
             normal = averageVector(normals)
             normal.normalize()
             rayon = 50 * scale_factor
-          
+
             sh_dir = geoHemisphere(centre, normal, rayon)
-            sh_dir.appearance.ambient = Color3(1,0,0)
-            
+            sh_dir.appearance.ambient = Color3(1, 0, 0)
+
             pglScene.add(sh_dir)
 
     return Scene([pglScene, sc])

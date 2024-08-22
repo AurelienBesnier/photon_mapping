@@ -1,4 +1,4 @@
-from photonmap import Vec3, Scene, PhotonMapping, UniformSampler
+from photonmap import PhotonMapping, Scene, UniformSampler, Vec3
 
 
 def test_reflection():
@@ -18,14 +18,18 @@ def test_reflection():
     max_depth = 100
 
     print("Building photonMap...")
-    integrator = PhotonMapping(n_photons, n_estimation_global,
-                               n_photons_caustics_multiplier,
-                               n_estimation_caustics,
-                               final_gathering_depth, max_depth)
+    integrator = PhotonMapping(
+        n_photons,
+        n_estimation_global,
+        n_photons_caustics_multiplier,
+        n_estimation_caustics,
+        final_gathering_depth,
+        max_depth,
+    )
 
     sampler = UniformSampler(1)
 
     integrator.build(scene, sampler, True)
     print("Done!")
 
-    assert (integrator.getPhotonMap().nPhotons() >= 50)
+    assert integrator.getPhotonMap().nPhotons() >= 50

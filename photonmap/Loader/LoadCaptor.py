@@ -1,7 +1,7 @@
 from math import cos, sin, pi
 from photonmap.Common.Outils import *
 from photonmap import libphotonmap_core
-from openalea.plantgl.all import * 
+from openalea.plantgl.all import *
 from photonmap import (
     Vec3,
     VectorUint,
@@ -10,7 +10,8 @@ from photonmap import (
     UniformSampler,
 )
 
-#Objectif of this module is adding captors to the scene of photon mapping to the received energy 
+# Objectif of this module is adding captors to the scene of photon mapping to the received energy
+
 
 class Captor:
     """
@@ -38,12 +39,13 @@ class Captor:
         The normal vectors of each vertices in captor's geometry
     triangles: array
         The triangles of captor's geometry
-   
-    
+
+
     """
+
     def initGeometryCaptor(self, geometry, position, scale_factor):
         """
-        Init a object of captor 
+        Init a object of captor
 
         Returns
         -------
@@ -62,26 +64,28 @@ class Captor:
         self.radius = 0
 
         vertices = geometry.pointList
-        #apply scale factor
+        # apply scale factor
         for i in range(len(vertices)):
             cur_vertice = vertices[i]
-            vertices[i] = ((cur_vertice[0] + position[0]) / scale_factor,
-                            (cur_vertice[1] + position[1]) / scale_factor,
-                            (cur_vertice[2] + position[2]) / scale_factor)
-        
+            vertices[i] = (
+                (cur_vertice[0] + position[0]) / scale_factor,
+                (cur_vertice[1] + position[1]) / scale_factor,
+                (cur_vertice[2] + position[2]) / scale_factor,
+            )
+
         geometry.pointList = vertices
         geometry.computeNormalList()
 
-        #return vertice list, indexlist
+        # return vertice list, indexlist
         self.vertices = VectorFloat(flatten(geometry.pointList))
         self.normals = VectorFloat(flatten(geometry.normalList))
         self.triangles = VectorUint(flatten(geometry.indexList))
 
         return self
 
-    def initDiskCaptor(self, pos_x = 0, pos_y = 0, pos_z = 0, nor_x = 0, nor_y = 0, nor_z = 0, r = 0):
+    def initDiskCaptor(self, pos_x=0, pos_y=0, pos_z=0, nor_x=0, nor_y=0, nor_z=0, r=0):
         """
-        Init a object of disk shape captor 
+        Init a object of disk shape captor
 
         Returns
         -------
@@ -105,10 +109,10 @@ class Captor:
         self.createDiskGeometry()
 
         return self
-    
+
     def createDiskGeometry(self):
         """
-        Create geometry of circular captor 
+        Create geometry of circular captor
 
         Returns
         -------
@@ -134,7 +138,7 @@ class Captor:
         normals.append(self.xNormal)
         normals.append(self.yNormal)
         normals.append(self.zNormal)
-        
+
         if self.zNormal == 1:
             x1 = self.radius * cos(0)
             y1 = self.radius * sin(0)
@@ -179,7 +183,7 @@ class Captor:
         self.vertices = vertices
         self.normals = normals
         self.triangles = triangles
-    
+
     def equal(self, xSite, ySite, zSite):
         """
         Check if the coordinate is equal to the position of captor
@@ -202,7 +206,7 @@ class Captor:
 
         if self.xSite == xSite and self.ySite == ySite and self.zSite == zSite:
             return True
-        
+
         return False
 
     def getGeometry(self):
@@ -221,6 +225,7 @@ class Captor:
         """
 
         return self.vertices, self.triangles, self.normals
+
 
 def readCaptorsFile(scale_factor, filename):
     """
@@ -242,7 +247,6 @@ def readCaptorsFile(scale_factor, filename):
     with open(filename, "r") as f:
         next(f)
         for line in f:
-            
             row = line.split(",")
             x = float(row[0]) / scale_factor
             y = float(row[1]) / scale_factor
@@ -254,7 +258,7 @@ def readCaptorsFile(scale_factor, filename):
 
             captor = Captor(x, y, z, xnorm, ynorm, znorm, r)
             captor_list.append(captor)
-    
+
     return captor_list
 
 
@@ -273,7 +277,7 @@ def addCaptors(scene, captor_triangle_dict, list_captor):
 
     Returns
     -------
-        Add all the mesh of captors to the scene 
+        Add all the mesh of captors to the scene
 
     """
     lastTriangleId = scene.nFaces()
@@ -305,17 +309,18 @@ def findIndexOfDiskCaptorInList(list_captor, x, y, z):
 
     Returns
     -------
-        if not found, return -1 
+        if not found, return -1
         if found, return the index of the captor
 
     """
-        
+
     for i in range(len(list_captor)):
-        if(list_captor[i].equal(x, y, z)):
+        if list_captor[i].equal(x, y, z):
             return i
     return -1
 
-#add captor to a scene of PlantGL to visualize
+
+# add captor to a scene of PlantGL to visualize
 def addCapteurPgl(sc, scale_factor: int, filename: str):
     """
     Add the captors to the PlantGL scene to visualize the scene
@@ -334,7 +339,7 @@ def addCapteurPgl(sc, scale_factor: int, filename: str):
         A PlantGL Scene with the captors
 
     """
-        
+
     pglScene = Scene()
 
     with open(filename, "r") as f:
@@ -357,14 +362,20 @@ def addCapteurPgl(sc, scale_factor: int, filename: str):
             pgl_normals = []
 
             for ind in range(0, len(vertices), 3):
-                pgl_vertices.append(Vector3(vertices[ind], vertices[ind + 1], vertices[ind + 2]))
-                pgl_normals.append(Vector3(normals[ind], normals[ind + 1], normals[ind + 2]))
+                pgl_vertices.append(
+                    Vector3(vertices[ind], vertices[ind + 1], vertices[ind + 2])
+                )
+                pgl_normals.append(
+                    Vector3(normals[ind], normals[ind + 1], normals[ind + 2])
+                )
 
             for ind in range(0, len(triangles), 3):
-                pgl_triangles.append(Index3(triangles[ind], triangles[ind + 1], triangles[ind + 2]))
+                pgl_triangles.append(
+                    Index3(triangles[ind], triangles[ind + 1], triangles[ind + 2])
+                )
 
-            tmpSh= Shape(TriangleSet(pgl_vertices, pgl_triangles, pgl_normals))
-            tmpSh.appearance.ambient = Color3(1,0,0)
+            tmpSh = Shape(TriangleSet(pgl_vertices, pgl_triangles, pgl_normals))
+            tmpSh.appearance.ambient = Color3(1, 0, 0)
             pglScene.add(tmpSh)
 
     return Scene([pglScene, sc])

@@ -1,30 +1,27 @@
+import os
 import random
 import sys
 import time
-import os
 
-from openalea.plantgl.all import * 
-from openalea.lpy import Lsystem
-from pgljupyter import SceneWidget
 import matplotlib.pyplot as plt
+from openalea.lpy import Lsystem
+from openalea.plantgl.all import *
+from pgljupyter import SceneWidget
 
-from photonmap import libphotonmap_core
 from photonmap import (
-    Vec3,
     PhotonMapping,
     UniformSampler,
+    Vec3,
+    libphotonmap_core,
 )
-
+from photonmap.Energy import CalculateEnergy, CorrectEnergy
 from photonmap.libphotonmap_core import (
-    Render,
-    visualizePhotonMap,
     visualizeCaptorsPhotonMap,
+    visualizePhotonMap,
 )
+from photonmap.Loader import LoadCaptor, LoadEnvironment, LoadPlant
+from photonmap.Reader import ReadPO, ReadRADGeo
 
-from photonmap.Reader import (ReadRADGeo, ReadPO)
-from photonmap.Energy import (CalculateEnergy, CorrectEnergy)
-from photonmap.Loader import (LoadCaptor, LoadEnvironment, LoadPlant)
-from photonmap.Common import (Outils, Math)
 
 class Result:
     #constructor
@@ -447,7 +444,7 @@ class Simulator:
         plt.plot(list_index, list_res, linestyle='--', marker='*')
         plt.title("Number of photons received relative to the change in tmin")
         plt.ylabel("Nb of photon")
-        for x, y, text in zip(list_index, list_res, list_tmin):
+        for x, y, text in zip(list_index, list_res, list_tmin, strict=False):
             plt.text(x, y, text)
         plt.show()
     
@@ -532,7 +529,7 @@ class Simulator:
         if not os.path.exists("results"):
             os.makedirs("results")
 
-        if self.rendering == False:
+        if self.rendering is False:
             print("Enable rendering first !!!")
             return
         
@@ -677,7 +674,7 @@ class Simulator:
             
         """
         #read file
-        with open(filename, "r") as f:
+        with open(filename) as f:
             next(f)
             for line in f:
                 if "$" in line:
