@@ -289,7 +289,7 @@ Create a python file (main.py) which contains the core program
         simulator.setupRoom("testChamber.rad", "./PO")
         simulator.setupCaptor("captors_expe1.csv")
         res = simulator.run()
-        simulator.writeResults() #write results to a file
+        res.writeResults() #write results to a file
 
 Run and results
 ---------------

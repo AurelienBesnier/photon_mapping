@@ -56,31 +56,33 @@ Module Contents
 
 
 
-   .. py:method:: initGeometryCaptor(geometry, position, scale_factor)
+   .. py:method:: initGeometryCaptor(shape, position, scale_factor, using_mat)
 
       Init a object of captor 
 
       Returns
       -------
-      geometry: TriangleSet
-          The geometry of captor
+      shape: Shape
+          The geometry and material of captor
       position: tuple
           The position of captor
       scale_factor: float
           The scale factor of captor
+      using_mat: bool
+          If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
 
 
 
 
-   .. py:method:: initDiskCaptor(pos_x=0, pos_y=0, pos_z=0, nor_x=0, nor_y=0, nor_z=0, r=0)
+   .. py:method:: initTransDiskCaptor(pos=(0, 0, 0), nor=(0, 0, 0), r=0)
 
       Init a object of disk shape captor 
 
       Returns
       -------
-      pos_x, pos_y, pos_z: float
+      pos: tuple
           The position of captor
-      nor_x, nor_y, nor_z: float
+      nor: tuple
           The normal vector of captor
       r: float
           The radius of captor

@@ -107,33 +107,65 @@
 <span class="kn">from</span> <span class="nn">photonmap.Loader</span> <span class="kn">import</span> <span class="p">(</span><span class="n">LoadCaptor</span><span class="p">,</span> <span class="n">LoadEnvironment</span><span class="p">,</span> <span class="n">LoadPlant</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">photonmap.Common</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Outils</span><span class="p">,</span> <span class="n">Math</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Result">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result">[docs]</a>
-<span class="k">class</span> <span class="nc">Result</span><span class="p">:</span>
+<div class="viewcode-block" id="SimulationResult">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult">[docs]</a>
+<span class="k">class</span> <span class="nc">SimulationResult</span><span class="p">:</span>
     <span class="c1">#constructor</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="Result.N_sim_captor">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result.N_sim_captor">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulator</span><span class="p">):</span>
+<div class="viewcode-block" id="SimulationResult.N_sim_captor">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.N_sim_captor">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">N_sim_captor</span></div>
 
-<div class="viewcode-block" id="Result.N_sim_plant">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result.N_sim_plant">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="p">[]</span></div>
+<div class="viewcode-block" id="SimulationResult.N_sim_plant">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.N_sim_plant">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">N_sim_plant</span></div>
 
-<div class="viewcode-block" id="Result.N_mes_captor">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result.N_mes_captor">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="p">[]</span></div>
+<div class="viewcode-block" id="SimulationResult.N_mes_captor">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.N_mes_captor">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">N_mes_captor</span></div>
 
-<div class="viewcode-block" id="Result.N_mes_plant">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Result.N_mes_plant">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="p">[]</span></div>
+<div class="viewcode-block" id="SimulationResult.N_mes_plant">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.N_mes_plant">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">N_mes_plant</span></div>
+
+
+<div class="viewcode-block" id="SimulationResult.nb_photons">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.nb_photons">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">nb_photons</span></div>
+
+<div class="viewcode-block" id="SimulationResult.divided_spectral_range">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.divided_spectral_range">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">divided_spectral_range</span></div>
+
+<div class="viewcode-block" id="SimulationResult.list_captor">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.list_captor">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">list_captor</span></div>
+
+<div class="viewcode-block" id="SimulationResult.list_plant">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.list_plant">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">list_plant</span></div>
 
     
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N_sim_captor</span><span class="p">,</span> <span class="n">N_sim_plant</span><span class="p">,</span> <span class="n">N_mes_captor</span><span class="p">,</span> <span class="n">N_mes_plant</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span> <span class="o">=</span> <span class="n">N_sim_captor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span> <span class="o">=</span> <span class="n">N_sim_plant</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span> <span class="o">=</span> <span class="n">N_mes_captor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="n">N_mes_plant</span></div>
+<div class="viewcode-block" id="SimulationResult.writeResults">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.writeResults">[docs]</a>
+    <span class="k">def</span> <span class="nf">writeResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write the result of simulation to a file saved in the folder ./results</span>
+<span class="sd">                </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+         
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_captor_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SimulationResult.graph">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.SimulationResult.graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span></div>
+</div>
 
 
 <div class="viewcode-block" id="Simulator">
@@ -174,6 +206,8 @@
 <span class="sd">    points_calibration_file: str</span>
 <span class="sd">        The link to the file which contains the informations of the captors used to calibrate the final result </span>
 
+<span class="sd">    list_plant: set</span>
+<span class="sd">        The list of plant&#39;s organes in simulation</span>
 <span class="sd">    list_captor: array</span>
 <span class="sd">        The list of captor in simulation</span>
 <span class="sd">    pgl_scene: openalea.plantgl.scenegraph.Scene</span>
@@ -232,6 +266,10 @@
 <div class="viewcode-block" id="Simulator.list_captor">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.list_captor">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Simulator.list_plant">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.list_plant">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
 
         
         <span class="c1">#result</span>
@@ -314,39 +352,41 @@
 
 <div class="viewcode-block" id="Simulator.addCaptorToScene">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addCaptorToScene">[docs]</a>
-    <span class="k">def</span> <span class="nf">addCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">addCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">using_mat</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a captor object to scene</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        geometry: TriangleSet</span>
-<span class="sd">            The geometry of captor</span>
+<span class="sd">        shape: Shape</span>
+<span class="sd">            The geometry and material of captor</span>
 <span class="sd">        position : tuple(int,int,int)</span>
 <span class="sd">            The position of captor</span>
+<span class="sd">        using_mat: bool</span>
+<span class="sd">            If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            The captor is added to the scene</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">geometry</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
-        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initGeometryCaptor</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">)</span>
+        <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initGeometryCaptor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">using_mat</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Simulator.addDiskCaptorToScene">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addDiskCaptorToScene">[docs]</a>
-    <span class="k">def</span> <span class="nf">addDiskCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<div class="viewcode-block" id="Simulator.addTransDiskCaptorToScene">
+<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addTransDiskCaptorToScene">[docs]</a>
+    <span class="k">def</span> <span class="nf">addTransDiskCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add a disk shaped captor object to scene</span>
+<span class="sd">        Add a transparent disk shaped captor object to scene</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pos : tuple(int,int,int)</span>
+<span class="sd">        pos : tuple(float,float,float)</span>
 <span class="sd">            The position of captor</span>
-<span class="sd">        normal: tuple(int,int,int)</span>
+<span class="sd">        normal: tuple(float,float,float)</span>
 <span class="sd">            The vector normal of captor</span>
 <span class="sd">        r: float</span>
 <span class="sd">            The radius of captor</span>
@@ -356,13 +396,9 @@
 <span class="sd">            The disk shaped captor is added to the scene</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initDiskCaptor</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
-                                                    <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
-                                                    <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> 
-                                                    <span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> 
-                                                    <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
-                                                    <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> 
-                                                    <span class="n">r</span><span class="p">)</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initTransDiskCaptor</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span><span class="p">),</span> 
+                                                        <span class="p">(</span><span class="n">normal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">normal</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> 
+                                                        <span class="n">r</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span></div>
 
@@ -434,7 +470,7 @@
             
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time taken: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
         
-        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">SimulationResult</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     
 <div class="viewcode-block" id="Simulator.calculateCalibrationCoefficient">
@@ -487,22 +523,7 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span> <span class="o">=</span> <span class="n">CorrectEnergy</span><span class="o">.</span><span class="n">calibrate_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeffs_calibration</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">Result</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Simulator.writeResults">
-<a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.writeResults">[docs]</a>
-    <span class="k">def</span> <span class="nf">writeResults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Write the result of simulation to a file saved in the folder ./results</span>
-<span class="sd">                </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-         
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_captor_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_captor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">CalculateEnergy</span><span class="o">.</span><span class="n">write_plant_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N_sim_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N_mes_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_plant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divided_spectral_range</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_photons</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">SimulationResult</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulator.visualiserSimulationScene">

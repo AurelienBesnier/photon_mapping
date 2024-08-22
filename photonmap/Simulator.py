@@ -26,19 +26,33 @@ from photonmap.Energy import (CalculateEnergy, CorrectEnergy)
 from photonmap.Loader import (LoadCaptor, LoadEnvironment, LoadPlant)
 from photonmap.Common import (Outils, Math)
 
-class Result:
+class SimulationResult:
     #constructor
-    def __init__(self):
-        self.N_sim_captor = []
-        self.N_sim_plant = []
-        self.N_mes_captor = []
-        self.N_mes_plant = []
+    def __init__(self, simulator):
+        self.N_sim_captor = simulator.N_sim_captor
+        self.N_sim_plant = simulator.N_sim_plant
+        self.N_mes_captor = simulator.N_mes_captor
+        self.N_mes_plant = simulator.N_mes_plant
+
+        self.nb_photons = simulator.nb_photons
+        self.divided_spectral_range = simulator.divided_spectral_range
+        self.list_captor = simulator.list_captor
+        self.list_plant = simulator.list_plant
     
-    def __init__(self, N_sim_captor, N_sim_plant, N_mes_captor, N_mes_plant):
-        self.N_sim_captor = N_sim_captor
-        self.N_sim_plant = N_sim_plant
-        self.N_mes_captor = N_mes_captor
-        self.N_mes_plant = N_mes_plant
+    def writeResults(self):
+        """
+        Write the result of simulation to a file saved in the folder ./results
+                
+        """
+         
+        if len(self.N_sim_captor) > 0:
+            CalculateEnergy.write_captor_energy(self.N_sim_captor, self.N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
+        
+        if len(self.N_sim_plant) > 0:
+            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
+
+    def graph(self):
+        return
 
 class Simulator:
     """
@@ -76,6 +90,8 @@ class Simulator:
     points_calibration_file: str
         The link to the file which contains the informations of the captors used to calibrate the final result 
 
+    list_plant: set
+        The list of plant's organes in simulation
     list_captor: array
         The list of captor in simulation
     pgl_scene: openalea.plantgl.scenegraph.Scene
@@ -102,6 +118,7 @@ class Simulator:
         #
         self.scene_pgl = Scene()
         self.list_captor = []
+        self.list_plant = set()
         
         #result
         self.N_sim_captor = []
@@ -148,36 +165,38 @@ class Simulator:
         #add object to scene
         self.scene_pgl.add(sh)
 
-    def addCaptorToScene(self, geometry, position):
+    def addCaptorToScene(self, shape, position, using_mat = True):
         """
         Add a captor object to scene
 
         Parameters
         ----------
-        geometry: TriangleSet
-            The geometry of captor
+        shape: Shape
+            The geometry and material of captor
         position : tuple(int,int,int)
             The position of captor
+        using_mat: bool
+            If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
         
         Returns
         -------
             The captor is added to the scene
 
         """
-        geometry.computeNormalList()
-        captor = LoadCaptor.Captor().initGeometryCaptor(geometry, position, self.scale_factor)
+        shape.geometry.computeNormalList()
+        captor = LoadCaptor.Captor().initGeometryCaptor(shape, position, self.scale_factor, using_mat)
         
         self.list_captor.append(captor)
 
-    def addDiskCaptorToScene(self, pos, normal, r):
+    def addTransDiskCaptorToScene(self, pos, normal, r):
         """
-        Add a disk shaped captor object to scene
+        Add a transparent disk shaped captor object to scene
 
         Parameters
         ----------
-        pos : tuple(int,int,int)
+        pos : tuple(float,float,float)
             The position of captor
-        normal: tuple(int,int,int)
+        normal: tuple(float,float,float)
             The vector normal of captor
         r: float
             The radius of captor
@@ -187,13 +206,9 @@ class Simulator:
             The disk shaped captor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initDiskCaptor(pos[0] / self.scale_factor, 
-                                                    pos[1] / self.scale_factor, 
-                                                    pos[2] / self.scale_factor, 
-                                                    normal[0], 
-                                                    normal[1], 
-                                                    normal[2], 
-                                                    r)
+        captor = LoadCaptor.Captor().initTransDiskCaptor((pos[0] / self.scale_factor, pos[1] / self.scale_factor, pos[2] / self.scale_factor), 
+                                                        (normal[0], normal[1], normal[2]), 
+                                                        r)
         
         self.list_captor.append(captor)
     
@@ -262,7 +277,7 @@ class Simulator:
             
             print("Time taken: " + str(time.time() - start_time))
         
-        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+        return SimulationResult(self)
     
     def calculateCalibrationCoefficient(self, spectrum_file = "", points_calibration_file = ""):
         """
@@ -309,19 +324,7 @@ class Simulator:
             if len(self.N_sim_plant) > 0:
                 self.N_mes_plant = CorrectEnergy.calibrate_plant_energy(self.N_sim_plant, self.coeffs_calibration)
 
-        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
-
-    def writeResults(self):
-        """
-        Write the result of simulation to a file saved in the folder ./results
-                
-        """
-         
-        if len(self.N_sim_captor) > 0:
-            CalculateEnergy.write_captor_energy(self.N_sim_captor, self.N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
-        
-        if len(self.N_sim_plant) > 0:
-            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
+        return SimulationResult(self)
 
     def visualiserSimulationScene(self, divided_spectral_range_index = -1, mode = "ipython"):
         """

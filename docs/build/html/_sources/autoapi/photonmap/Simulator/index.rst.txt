@@ -9,33 +9,47 @@ Classes
 
 .. autoapisummary::
 
-   photonmap.Simulator.Result
+   photonmap.Simulator.SimulationResult
    photonmap.Simulator.Simulator
 
 
 Module Contents
 ---------------
 
-.. py:class:: Result
+.. py:class:: SimulationResult(simulator)
 
    .. py:attribute:: N_sim_captor
-      :value: []
-
 
 
    .. py:attribute:: N_sim_plant
-      :value: []
-
 
 
    .. py:attribute:: N_mes_captor
-      :value: []
-
 
 
    .. py:attribute:: N_mes_plant
-      :value: []
 
+
+   .. py:attribute:: nb_photons
+
+
+   .. py:attribute:: divided_spectral_range
+
+
+   .. py:attribute:: list_captor
+
+
+   .. py:attribute:: list_plant
+
+
+   .. py:method:: writeResults()
+
+      Write the result of simulation to a file saved in the folder ./results
+              
+
+
+
+   .. py:method:: graph()
 
 
 .. py:class:: Simulator
@@ -74,6 +88,8 @@ Module Contents
    points_calibration_file: str
        The link to the file which contains the informations of the captors used to calibrate the final result 
 
+   list_plant: set
+       The list of plant's organes in simulation
    list_captor: array
        The list of captor in simulation
    pgl_scene: openalea.plantgl.scenegraph.Scene
@@ -134,6 +150,9 @@ Module Contents
    .. py:attribute:: list_captor
       :value: []
 
+
+
+   .. py:attribute:: list_plant
 
 
    .. py:attribute:: N_sim_captor
@@ -203,16 +222,18 @@ Module Contents
 
 
 
-   .. py:method:: addCaptorToScene(geometry, position)
+   .. py:method:: addCaptorToScene(shape, position, using_mat=True)
 
       Add a captor object to scene
 
       Parameters
       ----------
-      geometry: TriangleSet
-          The geometry of captor
+      shape: Shape
+          The geometry and material of captor
       position : tuple(int,int,int)
           The position of captor
+      using_mat: bool
+          If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
 
       Returns
       -------
@@ -221,15 +242,15 @@ Module Contents
 
 
 
-   .. py:method:: addDiskCaptorToScene(pos, normal, r)
+   .. py:method:: addTransDiskCaptorToScene(pos, normal, r)
 
-      Add a disk shaped captor object to scene
+      Add a transparent disk shaped captor object to scene
 
       Parameters
       ----------
-      pos : tuple(int,int,int)
+      pos : tuple(float,float,float)
           The position of captor
-      normal: tuple(int,int,int)
+      normal: tuple(float,float,float)
           The vector normal of captor
       r: float
           The radius of captor
@@ -276,13 +297,6 @@ Module Contents
           The link to the file which contains the informations of the heterogeneity of the spectrum
       points_calibration_file: str
           The link to the file which contains the informations of the captors used to calibrate the final result 
-              
-
-
-
-   .. py:method:: writeResults()
-
-      Write the result of simulation to a file saved in the folder ./results
               
 
 

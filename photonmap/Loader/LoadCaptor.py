@@ -41,27 +41,30 @@ class Captor:
    
     
     """
-    def initGeometryCaptor(self, geometry, position, scale_factor):
+    def initGeometryCaptor(self, shape, position, scale_factor, using_mat):
         """
         Init a object of captor 
 
         Returns
         -------
-        geometry: TriangleSet
-            The geometry of captor
+        shape: Shape
+            The geometry and material of captor
         position: tuple
             The position of captor
         scale_factor: float
             The scale factor of captor
+        using_mat: bool
+            If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
 
         """
         self.type = "geometry"
         self.xSite = position[0] / scale_factor
         self.ySite = position[1] / scale_factor
         self.zSite = position[2] / scale_factor
+        self.using_mat = using_mat
         self.radius = 0
 
-        vertices = geometry.pointList
+        vertices = shape.geometry.pointList
         #apply scale factor
         for i in range(len(vertices)):
             cur_vertice = vertices[i]
@@ -69,39 +72,52 @@ class Captor:
                             (cur_vertice[1] + position[1]) / scale_factor,
                             (cur_vertice[2] + position[2]) / scale_factor)
         
-        geometry.pointList = vertices
-        geometry.computeNormalList()
+        shape.geometry.pointList = vertices
+        shape.geometry.computeNormalList()
 
         #return vertice list, indexlist
-        self.vertices = VectorFloat(flatten(geometry.pointList))
-        self.normals = VectorFloat(flatten(geometry.normalList))
-        self.triangles = VectorUint(flatten(geometry.indexList))
+        self.vertices = VectorFloat(flatten(shape.geometry.pointList))
+        self.normals = VectorFloat(flatten(shape.geometry.normalList))
+        self.triangles = VectorUint(flatten(shape.geometry.indexList))
+
+        #return reflection, specular, transmission
+        self.trans = shape.appearance.transparency
+        self.refl = shape.appearance.ambient.red / 255.0
+        self.specular = shape.appearance.specular.red / 255.0
+        self.roughness = 1.0 - shape.appearance.shininess
 
         return self
 
-    def initDiskCaptor(self, pos_x = 0, pos_y = 0, pos_z = 0, nor_x = 0, nor_y = 0, nor_z = 0, r = 0):
+    def initTransDiskCaptor(self, pos = (0,0,0), nor = (0,0,0), r = 0):
         """
         Init a object of disk shape captor 
 
         Returns
         -------
-        pos_x, pos_y, pos_z: float
+        pos: tuple
             The position of captor
-        nor_x, nor_y, nor_z: float
+        nor: tuple
             The normal vector of captor
         r: float
             The radius of captor
 
         """
         self.type = "disk"
-        self.xSite = pos_x
-        self.ySite = pos_y
-        self.zSite = pos_z
-        self.xNormal = nor_x
-        self.yNormal = nor_y
-        self.zNormal = nor_z
+        self.xSite = pos[0]
+        self.ySite = pos[1]
+        self.zSite = pos[2]
+        self.xNormal = nor[0]
+        self.yNormal = nor[1]
+        self.zNormal = nor[2]
         self.radius = r
 
+        #setup optical properties 
+        self.using_mat = False
+        self.trans = 0
+        self.refl = 0
+        self.specular = 0
+        self.roughness = 0
+        
         self.createDiskGeometry()
 
         return self
@@ -252,7 +268,7 @@ def readCaptorsFile(scale_factor, filename):
             ynorm = float(row[5])
             znorm = float(row[6])
 
-            captor = Captor(x, y, z, xnorm, ynorm, znorm, r)
+            captor = Captor().initTransDiskCaptor((x, y, z), (xnorm, ynorm, znorm), r)
             captor_list.append(captor)
     
     return captor_list
@@ -280,8 +296,11 @@ def addCaptors(scene, captor_triangle_dict, list_captor):
     for i in range(len(list_captor)):
         captor = list_captor[i]
         vertices, triangles, normals = captor.getGeometry()
-        scene.addCaptor(vertices, triangles, normals)
-
+        #
+        scene.addCaptor(vertices, triangles, normals, captor.using_mat, 
+                            captor.refl, captor.specular, captor.trans, captor.roughness)
+            
+        #
         for j in triangles:
             captor_triangle_dict[lastTriangleId + j] = i
 

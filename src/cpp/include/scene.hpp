@@ -97,7 +97,7 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
     return boost::make_shared<Transparent>(kd, material.ior);
   case 8:
     //Phong for plant
-    return boost::make_shared<PhongPlant>(kd, ks, roughness, transmittance);
+    return boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance);
 
   case 9:
     return boost::make_shared<Refltr>(kd, reflectance, transmittance,
@@ -543,7 +543,10 @@ public:
    */
   void addCaptor(std::vector<float> newVertices,
                  std::vector<uint32_t> newIndices,
-                 std::vector<float> newNormals) {
+                 std::vector<float> newNormals,
+                 bool using_mat = false,
+                 float reflectance = 0.0f, float specular = 0.0f,
+                 float transmittance = 0.0f, float roughness = 0.0f) {
     
     // SceneGeometry captorGeo(newVertices, newIndices, newNormals);
     // this->geos.emplace_back(captorGeo);
@@ -558,29 +561,40 @@ public:
     this->normals.insert(std::end(this->normals), std::begin(newNormals),
                          std::end(newNormals));
     
-    
+    float diffuse_rate = reflectance * (1 - specular);
+    float specular_rate = reflectance * specular;
+
+    Vec3f kd = Vec3f(diffuse_rate, diffuse_rate, diffuse_rate);
+    Vec3f ks = Vec3f(specular_rate, specular_rate, specular_rate);
+
     for (size_t faceID = nFaces() - (newIndices.size() / 3); faceID < nFaces();
          ++faceID) {
 
       tinyobj::material_t m;
 
-      m.diffuse[0] = 1.0f;
-      m.diffuse[1] = 1.0f;
-      m.diffuse[2] = 0;
+      m.diffuse[0] = diffuse_rate;
+      m.diffuse[1] = diffuse_rate;
+      m.diffuse[2] = diffuse_rate;
       m.ambient[0] = 0;
       m.ambient[1] = 0;
       m.ambient[2] = 0;
       m.emission[0] = 0;
       m.emission[1] = 0;
       m.emission[2] = 0;
-      m.specular[0] = 0.00;
-      m.specular[1] = 0.00;
-      m.specular[2] = 0.00;
+      m.specular[0] = specular_rate;
+      m.specular[1] = specular_rate;
+      m.specular[2] = specular_rate;
       m.dissolve = 1.0;
       m.illum = 1;
 
       this->materials.emplace_back(m);
-      this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
+
+      if (using_mat == true) {
+        this->bxdfs.emplace_back(boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance));
+      } else {
+        this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
+      }
+      
     }
   }
 

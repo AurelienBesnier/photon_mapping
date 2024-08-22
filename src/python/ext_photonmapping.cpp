@@ -389,7 +389,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
            py::arg("indices"), py::arg("normals"), py::arg("intensity"),
            py::arg("color"), py::arg("mat_name"))
       .def("addCaptor", &Scene::addCaptor, py::arg("vertices"),
-           py::arg("indices"), py::arg("normals"))
+           py::arg("indices"), py::arg("normals"), py::arg("using_mat"), 
+           py::arg("reflectance"), py::arg("specular"), py::arg("transmittance"), py::arg("roughness"))
       .def("addPointLight", &Scene::addPointLight, py::arg("position"),
            py::arg("intensity"), py::arg("color"))
       .def("addSpotLight", &Scene::addSpotLight, py::arg("position"),
