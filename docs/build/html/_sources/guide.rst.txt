@@ -286,8 +286,8 @@ Create a python file (main.py) which contains the core program
 
         simulator = Simulator()
         simulator.readConfiguration("simulation.ini")
-        simulator.setupRoom("testChamber.rad", "./PO")
-        simulator.setupCaptor("captors_expe1.csv")
+        simulator.addEnvFromFile("testChamber.rad", "./PO")
+        simulator.addVirtualDiskCaptorsFromFile("captors_expe1.csv")
         res = simulator.run()
         res.writeResults() #write results to a file
 
@@ -305,11 +305,11 @@ Run and results
 
 | The result is a .csv file saved in the folder ./result. This is an example of result.
 
-+-----+-------+-------+-------+---------+----------------+----------------+
-| id  | xSite | ySite | zSite | radius  | N_sim_600_655  | N_sim_655_665  |
-+=====+=======+=======+=======+=========+================+================+
-| 0   | 110   | 930   | 1000  | 10      | 13635          | 13966          |
-+-----+-------+-------+-------+---------+----------------+----------------+
++-----+----------------+----------------+
+| id  | N_sim_600_655  | N_sim_655_665  |
++=====+================+================+
+| 0   | 13635          | 13966          |
++-----+----------------+----------------+
 
 Calibrate the results
 ======================
@@ -321,6 +321,7 @@ Calibrate the results
 .. code-block:: python
 
     calibrated_res = simulator.calibrateResults("spectrum/chambre1_spectrum", "points_calibration.csv")
+    calibrated_res.writeResults() #write results to a file
 
 | To making this function works properly, we need two input files: the spectral heterogeneity file and the calibration points file. 
 |
@@ -343,9 +344,9 @@ To visualize the room, after defining the input files, we use a function named `
 
         simulator = Simulator()
         simulator.readConfiguration("simulation.ini")
-        simulator.setupRoom("testChamber.rad", "./PO")
-        simulator.setupCaptor("captors_expe1.csv")
-        simulator.visualiserSimulationScene()
+        simulator.addEnvFromFile("testChamber.rad", "./PO")
+        simulator.addVirtualDiskCaptorsFromFile("captors_expe1.csv")
+        simulator.visualiserSimulationScene("ipython")
 
 To obtain the 3D scene, we have to run this program through ```ipython```.
 
@@ -377,8 +378,8 @@ Test value Tmin
 
         simulator = Simulator()
         simulator.readConfiguration("simulation.ini")
-        simulator.setupRoom("testChamber.rad", "./PO")
-        simulator.setupCaptor("captors_expe1.csv")        
+        simulator.addEnvFromFile("testChamber.rad", "./PO")
+        simulator.addVirtualDiskCaptorsFromFile("captors_expe1.csv")        
         simulator.test_t_min(int(1e6), 1e-6, 10, True)
 
 | Here is a example of result

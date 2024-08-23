@@ -43,7 +43,9 @@ if __name__ == "__main__":
                         transparency = 0.5
                     )
     captor_sh = Shape(captor_ts, captor_mat)
-    simulator.addCaptorToScene(shape=captor_sh, position=(0,0,3), using_mat=True)
+
+    simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
+    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
 
     #run
     res = simulator.run()

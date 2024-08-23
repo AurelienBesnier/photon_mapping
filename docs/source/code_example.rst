@@ -60,7 +60,9 @@ Code example
 
 | To setup the captors (The objects that we do the calculations of light's energy), we have to define its geometry, material and position
 | The optical properties of captor's material are the same as the optical properties of environment's material
-| We can also define whether the material of captor affect to the interaction of light in the simulation or not by defining the variable ``using_mat``
+| In this tools, we have 2 type of captors:
+| - ``FaceCaptor``: the material of this captor work like the material of the other surfaces 
+| - ``VirtualCaptor``: the material of this captor has no effect to the light in the simulation
 
 .. code-block:: python
     
@@ -74,7 +76,9 @@ Code example
                             transparency = 0.5
                         )
     captor_sh = Shape(captor_ts, captor_mat)
-    simulator.addCaptorToScene(shape=captor_sh, position=(0,0,3), using_mat=True)
+
+    simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
+    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
 
 To run the simulation, we use the function ``run`` of the object ``Simulator``. The result of the simulation is saved in an object of type ``SimulationResult``
 
@@ -88,7 +92,7 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
 .. code-block:: python
     
     #write result to file
-    res.writeResults()
+    res.writeResults("filename")
 
 | Here is the completed program
 
@@ -139,7 +143,8 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
                             transparency = 0.5
                         )
         captor_sh = Shape(captor_ts, captor_mat)
-        simulator.addCaptorToScene(shape=captor_sh, position=(0,0,3), using_mat=True)
+        simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
+        simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
     
         #run
         res = simulator.run()

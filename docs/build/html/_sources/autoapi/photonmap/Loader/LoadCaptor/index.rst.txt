@@ -17,10 +17,10 @@ Functions
 
 .. autoapisummary::
 
-   photonmap.Loader.LoadCaptor.readCaptorsFile
-   photonmap.Loader.LoadCaptor.addCaptors
+   photonmap.Loader.LoadCaptor.addVirtualCaptors
+   photonmap.Loader.LoadCaptor.addFaceCaptors
    photonmap.Loader.LoadCaptor.findIndexOfDiskCaptorInList
-   photonmap.Loader.LoadCaptor.addCapteurPgl
+   photonmap.Loader.LoadCaptor.addCaptorPgl
 
 
 Module Contents
@@ -56,27 +56,28 @@ Module Contents
 
 
 
-   .. py:method:: initGeometryCaptor(shape, position, scale_factor, using_mat)
+   .. py:method:: initCaptor(shape, position, scale_factor, captor_id, captor_type)
 
-      Init a object of captor 
+      Init a object of face captor 
 
       Returns
       -------
       shape: Shape
           The geometry and material of captor
-      position: tuple
+      position : tuple(int,int,int)
           The position of captor
-      scale_factor: float
-          The scale factor of captor
-      using_mat: bool
-          If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
+      scale_factor: int
+          The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+      captor_id: int
+          The id of captor
+      captor_type: str
+          "VirtualCaptor" or "FaceCaptor"
 
 
 
+   .. py:method:: initVirtualDiskCaptor(pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0)
 
-   .. py:method:: initTransDiskCaptor(pos=(0, 0, 0), nor=(0, 0, 0), r=0)
-
-      Init a object of disk shape captor 
+      Init a object of virtual disk shape captor 
 
       Returns
       -------
@@ -86,11 +87,13 @@ Module Contents
           The normal vector of captor
       r: float
           The radius of captor
+      captor_id: int
+          The id of captor
 
 
 
 
-   .. py:method:: createDiskGeometry()
+   .. py:method:: createVirtualDisk()
 
       Create geometry of circular captor 
 
@@ -143,39 +146,57 @@ Module Contents
 
 
 
-.. py:function:: readCaptorsFile(scale_factor, filename)
+   .. py:method:: getOpticalProperties()
 
-   Read all the captors in a file
+      Get optical properties of captor
 
-   Parameters
-   ----------
-   scale_factor : int
-       The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-   filename : str
-       The link to the file which contains the data of captors
-
-   Returns
-   -------
-       return the list of captors
+      Returns
+      -------
+      vertices: array
+          The vertices of captor's geometry
+      normals: array
+          The normal vectors of each vertices in captor's geometry
+      triangles: array
+          The triangles of captor's geometry
 
 
 
-.. py:function:: addCaptors(scene, captor_triangle_dict, list_captor)
 
-   Adds circular captors to the scene. the captors needs to be in a file
+.. py:function:: addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor)
+
+   Adds virtual captors to the scene. 
 
    Parameters
    ----------
    scene : libphotonmap_core.Scene
        The photon mapping scene used to run the simulation
-   captor_triangle_dict : dict
+   virtual_captor_triangle_dict : dict
        The dictionary of the triangles of captors
-   list_captor : array
-       The list of captor
+   list_virtual_captor : array
+       The list of virtual captor
 
    Returns
    -------
-       Add all the mesh of captors to the scene 
+       Add all the mesh of virtual captors to the scene 
+
+
+
+.. py:function:: addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor)
+
+   Adds face captors to the scene. 
+
+   Parameters
+   ----------
+   scene : libphotonmap_core.Scene
+       The photon mapping scene used to run the simulation
+   face_captor_triangle_dict : dict
+       The dictionary of the triangles of captors
+   list_face_captor : array
+       The list of face captor
+
+   Returns
+   -------
+       Add all the mesh of face captors to the scene 
 
 
 
@@ -201,7 +222,7 @@ Module Contents
 
 
 
-.. py:function:: addCapteurPgl(sc, scale_factor: int, filename: str)
+.. py:function:: addCaptorPgl(sc, list_captor)
 
    Add the captors to the PlantGL scene to visualize the scene
 
@@ -209,10 +230,8 @@ Module Contents
    ----------
    sc : Lscene
        The plantgl scene
-   scale_factor : int
-       The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-   filename : float
-       The link to the file which contains the data of captors
+   list_captor : array
+       The list of captors
 
    Returns
    -------

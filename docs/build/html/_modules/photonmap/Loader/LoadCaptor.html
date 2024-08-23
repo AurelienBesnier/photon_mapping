@@ -124,29 +124,32 @@
 <span class="sd">   </span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Captor.initGeometryCaptor">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.initGeometryCaptor">[docs]</a>
-    <span class="k">def</span> <span class="nf">initGeometryCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">using_mat</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Captor.initCaptor">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.initCaptor">[docs]</a>
+    <span class="k">def</span> <span class="nf">initCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">,</span> <span class="n">captor_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Init a object of captor </span>
+<span class="sd">        Init a object of face captor </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        shape: Shape</span>
 <span class="sd">            The geometry and material of captor</span>
-<span class="sd">        position: tuple</span>
+<span class="sd">        position : tuple(int,int,int)</span>
 <span class="sd">            The position of captor</span>
-<span class="sd">        scale_factor: float</span>
-<span class="sd">            The scale factor of captor</span>
-<span class="sd">        using_mat: bool</span>
-<span class="sd">            If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces</span>
-
+<span class="sd">        scale_factor: int</span>
+<span class="sd">            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
+<span class="sd">        captor_id: int</span>
+<span class="sd">            The id of captor</span>
+<span class="sd">        captor_type: str</span>
+<span class="sd">            &quot;VirtualCaptor&quot; or &quot;FaceCaptor&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;geometry&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">captor_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">captor_id</span> <span class="o">=</span> <span class="n">captor_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">using_mat</span> <span class="o">=</span> <span class="n">using_mat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span>
@@ -160,25 +163,16 @@
         <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span> <span class="o">=</span> <span class="n">vertices</span>
         <span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">computeNormalList</span><span class="p">()</span>
 
-        <span class="c1">#return vertice list, indexlist</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">normalList</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">triangles</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">indexList</span><span class="p">))</span>
-
-        <span class="c1">#return reflection, specular, transmission</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">transparency</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refl</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">ambient</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">specular</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">specular</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roughness</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">shininess</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
-<div class="viewcode-block" id="Captor.initTransDiskCaptor">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.initTransDiskCaptor">[docs]</a>
-    <span class="k">def</span> <span class="nf">initTransDiskCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">nor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Captor.initVirtualDiskCaptor">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.initVirtualDiskCaptor">[docs]</a>
+    <span class="k">def</span> <span class="nf">initVirtualDiskCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">nor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">captor_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Init a object of disk shape captor </span>
+<span class="sd">        Init a object of virtual disk shape captor </span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -188,9 +182,11 @@
 <span class="sd">            The normal vector of captor</span>
 <span class="sd">        r: float</span>
 <span class="sd">            The radius of captor</span>
+<span class="sd">        captor_id: int</span>
+<span class="sd">            The id of captor</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;disk&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s2">&quot;VirtualCaptor&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -198,22 +194,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span> <span class="o">=</span> <span class="n">nor</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span> <span class="o">=</span> <span class="n">nor</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">r</span>
-
-        <span class="c1">#setup optical properties </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">using_mat</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refl</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">specular</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">roughness</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">captor_id</span> <span class="o">=</span> <span class="n">captor_id</span>
         
-        <span class="bp">self</span><span class="o">.</span><span class="n">createDiskGeometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createVirtualDisk</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
     
-<div class="viewcode-block" id="Captor.createDiskGeometry">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.createDiskGeometry">[docs]</a>
-    <span class="k">def</span> <span class="nf">createDiskGeometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Captor.createVirtualDisk">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.createVirtualDisk">[docs]</a>
+    <span class="k">def</span> <span class="nf">createVirtualDisk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create geometry of circular captor </span>
 
@@ -227,20 +217,16 @@
 <span class="sd">            The triangles of captor&#39;s geometry</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">vertices</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
-        <span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">()</span>
-        <span class="n">triangles</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">()</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">normals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">triangles</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">val</span> <span class="o">=</span> <span class="mf">3.14285</span> <span class="o">/</span> <span class="mi">180</span>
         <span class="n">deltaAngle</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="n">triangleCount</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">))</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">))</span>
         
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -251,12 +237,8 @@
             <span class="n">y1</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">z1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
-        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
-        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
+        <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">,</span> <span class="n">y1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">,</span> <span class="n">z1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">))</span>
+        <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">))</span>
 
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">360</span><span class="p">:</span>
@@ -269,23 +251,22 @@
                 <span class="n">y2</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="n">z2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">sin</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">deltaAngle</span><span class="p">)</span> <span class="o">*</span> <span class="n">val</span><span class="p">)</span>
 
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">)</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">)</span>
-            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">)</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">)</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">)</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">)</span>
-
-            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">vertices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span><span class="p">,</span> <span class="n">y2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span><span class="p">,</span> <span class="n">z2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span><span class="p">))</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">xNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yNormal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zNormal</span><span class="p">))</span>
+            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">triangleCount</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
             <span class="n">triangleCount</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="n">deltaAngle</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span> <span class="o">=</span> <span class="n">vertices</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">normals</span> <span class="o">=</span> <span class="n">normals</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">triangles</span> <span class="o">=</span> <span class="n">triangles</span></div>
+        <span class="n">captor_shape</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">TriangleSet</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">),</span>
+                             <span class="n">Material</span><span class="p">(</span>
+                                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Captor&quot;</span><span class="p">,</span>
+                                <span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span>
+                                <span class="n">specular</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span> <span class="mi">0</span> <span class="p">),</span>
+                                <span class="n">shininess</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                <span class="n">transparency</span> <span class="o">=</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">captor_shape</span></div>
 
     
 <div class="viewcode-block" id="Captor.equal">
@@ -332,84 +313,116 @@
 <span class="sd">            The triangles of captor&#39;s geometry</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#return vertice list, indexlist</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">pointList</span><span class="p">))</span>
+        <span class="n">normals</span> <span class="o">=</span> <span class="n">VectorFloat</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">normalList</span><span class="p">))</span>
+        <span class="n">triangles</span> <span class="o">=</span> <span class="n">VectorUint</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">indexList</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span></div>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">triangles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normals</span></div>
+    
+<div class="viewcode-block" id="Captor.getOpticalProperties">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.getOpticalProperties">[docs]</a>
+    <span class="k">def</span> <span class="nf">getOpticalProperties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get optical properties of captor</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vertices: array</span>
+<span class="sd">            The vertices of captor&#39;s geometry</span>
+<span class="sd">        normals: array</span>
+<span class="sd">            The normal vectors of each vertices in captor&#39;s geometry</span>
+<span class="sd">        triangles: array</span>
+<span class="sd">            The triangles of captor&#39;s geometry</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1">#return reflection, specular, transmission</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">transparency</span>
+        <span class="n">refl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">ambient</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span>
+        <span class="n">specular</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">specular</span><span class="o">.</span><span class="n">red</span> <span class="o">/</span> <span class="mf">255.0</span>
+        <span class="n">roughness</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">shininess</span>
+
+        <span class="k">return</span> <span class="n">refl</span><span class="p">,</span> <span class="n">specular</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">roughness</span></div>
 </div>
 
-
-<div class="viewcode-block" id="readCaptorsFile">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.readCaptorsFile">[docs]</a>
-<span class="k">def</span> <span class="nf">readCaptorsFile</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Read all the captors in a file</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    scale_factor : int</span>
-<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">    filename : str</span>
-<span class="sd">        The link to the file which contains the data of captors</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        return the list of captors</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">captor_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-            
-            <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">xnorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-            <span class="n">ynorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-            <span class="n">znorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-
-            <span class="n">captor</span> <span class="o">=</span> <span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initTransDiskCaptor</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="p">(</span><span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">),</span> <span class="n">r</span><span class="p">)</span>
-            <span class="n">captor_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">captor_list</span></div>
 
-
-
-<div class="viewcode-block" id="addCaptors">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCaptors">[docs]</a>
-<span class="k">def</span> <span class="nf">addCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">captor_triangle_dict</span><span class="p">,</span> <span class="n">list_captor</span><span class="p">):</span>
+<div class="viewcode-block" id="addVirtualCaptors">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addVirtualCaptors">[docs]</a>
+<span class="k">def</span> <span class="nf">addVirtualCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">virtual_captor_triangle_dict</span><span class="p">,</span> <span class="n">list_virtual_captor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adds circular captors to the scene. the captors needs to be in a file</span>
+<span class="sd">    Adds virtual captors to the scene. </span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    scene : libphotonmap_core.Scene</span>
 <span class="sd">        The photon mapping scene used to run the simulation</span>
-<span class="sd">    captor_triangle_dict : dict</span>
+<span class="sd">    virtual_captor_triangle_dict : dict</span>
 <span class="sd">        The dictionary of the triangles of captors</span>
-<span class="sd">    list_captor : array</span>
-<span class="sd">        The list of captor</span>
+<span class="sd">    list_virtual_captor : array</span>
+<span class="sd">        The list of virtual captor</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Add all the mesh of captors to the scene </span>
+<span class="sd">        Add all the mesh of virtual captors to the scene </span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_captor</span><span class="p">)):</span>
-        <span class="n">captor</span> <span class="o">=</span> <span class="n">list_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_virtual_captor</span><span class="p">)):</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">list_virtual_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">captor</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;VirtualCaptor&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        
         <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
         <span class="c1">#</span>
-        <span class="n">scene</span><span class="o">.</span><span class="n">addCaptor</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">captor</span><span class="o">.</span><span class="n">using_mat</span><span class="p">,</span> 
-                            <span class="n">captor</span><span class="o">.</span><span class="n">refl</span><span class="p">,</span> <span class="n">captor</span><span class="o">.</span><span class="n">specular</span><span class="p">,</span> <span class="n">captor</span><span class="o">.</span><span class="n">trans</span><span class="p">,</span> <span class="n">captor</span><span class="o">.</span><span class="n">roughness</span><span class="p">)</span>
+        <span class="n">scene</span><span class="o">.</span><span class="n">addVirtualCaptorInfos</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">)</span>
             
         <span class="c1">#</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
-            <span class="n">captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">virtual_captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">captor_id</span>
 
         <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span></div>
 
+
+<div class="viewcode-block" id="addFaceCaptors">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addFaceCaptors">[docs]</a>
+<span class="k">def</span> <span class="nf">addFaceCaptors</span><span class="p">(</span><span class="n">scene</span><span class="p">,</span> <span class="n">face_captor_triangle_dict</span><span class="p">,</span> <span class="n">list_face_captor</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds face captors to the scene. </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scene : libphotonmap_core.Scene</span>
+<span class="sd">        The photon mapping scene used to run the simulation</span>
+<span class="sd">    face_captor_triangle_dict : dict</span>
+<span class="sd">        The dictionary of the triangles of captors</span>
+<span class="sd">    list_face_captor : array</span>
+<span class="sd">        The list of face captor</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        Add all the mesh of face captors to the scene </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_face_captor</span><span class="p">)):</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">list_face_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">captor</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;FaceCaptor&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
+        <span class="n">refl</span><span class="p">,</span> <span class="n">specular</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">roughness</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getOpticalProperties</span><span class="p">()</span>
+        <span class="c1">#</span>
+        <span class="n">scene</span><span class="o">.</span><span class="n">addFaceCaptorInfos</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span><span class="p">,</span> <span class="n">refl</span><span class="p">,</span> 
+                                 <span class="n">specular</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">roughness</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">triangles</span><span class="p">:</span>
+            <span class="n">face_captor_triangle_dict</span><span class="p">[</span><span class="n">lastTriangleId</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">captor_id</span>
+
+        <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="findIndexOfDiskCaptorInList">
@@ -443,9 +456,9 @@
 
 
 <span class="c1">#add captor to a scene of PlantGL to visualize</span>
-<div class="viewcode-block" id="addCapteurPgl">
-<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCapteurPgl">[docs]</a>
-<span class="k">def</span> <span class="nf">addCapteurPgl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="addCaptorPgl">
+<a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.addCaptorPgl">[docs]</a>
+<span class="k">def</span> <span class="nf">addCaptorPgl</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">list_captor</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add the captors to the PlantGL scene to visualize the scene</span>
 
@@ -453,10 +466,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    sc : Lscene</span>
 <span class="sd">        The plantgl scene</span>
-<span class="sd">    scale_factor : int</span>
-<span class="sd">        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">    filename : float</span>
-<span class="sd">        The link to the file which contains the data of captors</span>
+<span class="sd">    list_captor : array</span>
+<span class="sd">        The list of captors</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -466,36 +477,10 @@
         
     <span class="n">pglScene</span> <span class="o">=</span> <span class="n">Scene</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">/</span> <span class="n">scale_factor</span>
-            <span class="n">xnorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-            <span class="n">ynorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-            <span class="n">znorm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-
-            <span class="n">captor</span> <span class="o">=</span> <span class="n">Captor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">xnorm</span><span class="p">,</span> <span class="n">ynorm</span><span class="p">,</span> <span class="n">znorm</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-            <span class="n">vertices</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">normals</span> <span class="o">=</span> <span class="n">captor</span><span class="o">.</span><span class="n">getGeometry</span><span class="p">()</span>
-
-            <span class="n">pgl_vertices</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">pgl_triangles</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">pgl_normals</span> <span class="o">=</span> <span class="p">[]</span>
-
-            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="n">pgl_vertices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">vertices</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">vertices</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
-                <span class="n">pgl_normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Vector3</span><span class="p">(</span><span class="n">normals</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">normals</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">normals</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
-
-            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">),</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="n">pgl_triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Index3</span><span class="p">(</span><span class="n">triangles</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">triangles</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">triangles</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]))</span>
-
-            <span class="n">tmpSh</span><span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">TriangleSet</span><span class="p">(</span><span class="n">pgl_vertices</span><span class="p">,</span> <span class="n">pgl_triangles</span><span class="p">,</span> <span class="n">pgl_normals</span><span class="p">))</span>
-            <span class="n">tmpSh</span><span class="o">.</span><span class="n">appearance</span><span class="o">.</span><span class="n">ambient</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">pglScene</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tmpSh</span><span class="p">)</span>
-
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_captor</span><span class="p">)):</span>
+        <span class="n">captor_sh</span> <span class="o">=</span> <span class="n">list_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">pglScene</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">captor_sh</span><span class="p">)</span>
+            
     <span class="k">return</span> <span class="n">Scene</span><span class="p">([</span><span class="n">pglScene</span><span class="p">,</span> <span class="n">sc</span><span class="p">])</span></div>
 
 </pre></div>

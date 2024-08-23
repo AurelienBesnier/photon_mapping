@@ -536,15 +536,63 @@ public:
   }
 
   /**
-   * @brief Adds the specified mesh as a virtual captor.
+   * @brief Adds the specified mesh as a captor.
    * @param newVertices The vertices of the mesh
    * @param newIndices The indices of the triangles of the mesh
    * @param newNormals The normals of the mesh.
    */
-  void addCaptor(std::vector<float> newVertices,
+  void addVirtualCaptorInfos(std::vector<float> newVertices,
+                 std::vector<uint32_t> newIndices,
+                 std::vector<float> newNormals) {
+    
+    // SceneGeometry captorGeo(newVertices, newIndices, newNormals);
+    // this->geos.emplace_back(captorGeo);
+    
+    for (uint32_t &i : newIndices) {
+      i += nVertices();
+    }
+    this->vertices.insert(std::end(this->vertices), std::begin(newVertices),
+                          std::end(newVertices));
+    this->indices.insert(std::end(this->indices), std::begin(newIndices),
+                         std::end(newIndices));
+    this->normals.insert(std::end(this->normals), std::begin(newNormals),
+                         std::end(newNormals));
+  
+
+    for (size_t faceID = nFaces() - (newIndices.size() / 3); faceID < nFaces();
+         ++faceID) {
+
+      tinyobj::material_t m;
+
+      m.diffuse[0] = 0;
+      m.diffuse[1] = 0;
+      m.diffuse[2] = 0;
+      m.ambient[0] = 0;
+      m.ambient[1] = 0;
+      m.ambient[2] = 0;
+      m.emission[0] = 0;
+      m.emission[1] = 0;
+      m.emission[2] = 0;
+      m.specular[0] = 0;
+      m.specular[1] = 0;
+      m.specular[2] = 0;
+      m.dissolve = 1.0;
+      m.illum = 1;
+
+      this->materials.emplace_back(m);
+      this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
+    }
+  }
+
+  /**
+   * @brief Adds the specified mesh as a captor.
+   * @param newVertices The vertices of the mesh
+   * @param newIndices The indices of the triangles of the mesh
+   * @param newNormals The normals of the mesh.
+   */
+  void addFaceCaptorInfos(std::vector<float> newVertices,
                  std::vector<uint32_t> newIndices,
                  std::vector<float> newNormals,
-                 bool using_mat = false,
                  float reflectance = 0.0f, float specular = 0.0f,
                  float transmittance = 0.0f, float roughness = 0.0f) {
     
@@ -588,13 +636,7 @@ public:
       m.illum = 1;
 
       this->materials.emplace_back(m);
-
-      if (using_mat == true) {
-        this->bxdfs.emplace_back(boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance));
-      } else {
-        this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
-      }
-      
+      this->bxdfs.emplace_back(boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance));
     }
   }
 

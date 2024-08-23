@@ -9,14 +9,14 @@ Functions
 
 .. autoapisummary::
 
-   photonmap.Loader.LoadEnvironment.add_environment
+   photonmap.Loader.LoadEnvironment.addEnvironment
    photonmap.Loader.LoadEnvironment.addLightDirectionPgl
 
 
 Module Contents
 ---------------
 
-.. py:function:: add_environment(scene, sh, w, materialsR: dict, materialsS: dict, materialsT: dict, is_only_lamp=False)
+.. py:function:: addEnvironment(scene, sh, w, materialsR: dict, materialsS: dict, materialsT: dict, is_only_lamp=False)
 
    Adds a PlantGL Shape of the room to the Photon Mapping scene.
 

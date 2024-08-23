@@ -23,13 +23,13 @@ Module Contents
    Attributes
    ----------
 
-   N_sim_captor: dict
+   N_sim_virtual_captor: dict
        Number of received photons on each captor
-   N_sim_plant: dict
+   N_sim_face_captor: dict
        Number of received photons on each organ of plant
-   N_mes_captor: dict
+   N_mes_virtual_captor: dict
        The energies after the calibration on each captor
-   N_mes_plant: dict
+   N_mes_face_captor: dict
        The energies after the calibration on each organ of plant
 
    nb_photons: int
@@ -37,41 +37,43 @@ Module Contents
    divided_spectral_range: array
        The list of spectral ranges divided from the base spectral range.
 
-   list_plant: set
-       The list of plant's organes in simulation
-   list_captor: array
-       The list of captor in simulation
+   list_virtual_captor: array
+       The list of virtual captor in simulation
 
 
 
-   .. py:attribute:: N_sim_captor
+   .. py:attribute:: photonmaps
 
 
-   .. py:attribute:: N_sim_plant
+   .. py:attribute:: N_sim_virtual_captor
 
 
-   .. py:attribute:: N_mes_captor
+   .. py:attribute:: N_sim_face_captor
 
 
-   .. py:attribute:: N_mes_plant
+   .. py:attribute:: N_mes_virtual_captor
 
 
-   .. py:attribute:: nb_photons
+   .. py:attribute:: N_mes_face_captor
 
 
    .. py:attribute:: divided_spectral_range
 
 
-   .. py:attribute:: list_captor
+   .. py:attribute:: list_virtual_captor
 
 
-   .. py:attribute:: list_plant
+   .. py:attribute:: list_face_captor
 
 
-   .. py:method:: writeResults()
+   .. py:method:: writeResults(file_prefix='')
 
       Write the result of simulation to a file saved in the folder ./results
               
+      Parameters
+      ----------
+      file_prefix: str
+          The prefix of output file
 
 
 
@@ -106,26 +108,20 @@ Module Contents
        The list of spectral ranges divided from the base spectral range.
    rendering: bool
        Set to True to render the output images
-   N_sim_captor: dict
+   N_sim_virtual_captor: dict
        Number of received photons on each captor
-   N_sim_plant: dict
+   N_sim_face_captor: dict
        Number of received photons on each organ of plant
 
-   captor_file: str
-       The link to the file which contains the informations of the captors in the simulation
    spectrum_file: str
        The link to the file which contains the informations of the heterogeneity of the spectrum
    points_calibration_file: str
        The link to the file which contains the informations of the captors used to calibrate the final result 
 
-   list_plant: set
-       The list of plant's organes in simulation
-   list_captor: array
-       The list of captor in simulation
+   list_virtual_captor: array
+       The list of virtual captor in simulation
    pgl_scene: openalea.plantgl.scenegraph.Scene
        The plantgl scene object used to save the meshs of environment
-   plant_file: str
-       The link to the file of the model of plant. (currently only support .lpy file)
    plantPos: Vec3
        The position of the plant
    po_dir: str
@@ -177,41 +173,38 @@ Module Contents
    .. py:attribute:: scene_pgl
 
 
-   .. py:attribute:: list_captor
+   .. py:attribute:: list_virtual_captor
       :value: []
 
 
 
-   .. py:attribute:: list_plant
-
-
-   .. py:attribute:: N_sim_captor
+   .. py:attribute:: list_face_captor
       :value: []
 
 
 
-   .. py:attribute:: N_sim_plant
+   .. py:attribute:: N_sim_virtual_captor
       :value: []
 
 
 
-   .. py:attribute:: N_mes_captor
+   .. py:attribute:: N_sim_face_captor
       :value: []
 
 
 
-   .. py:attribute:: N_mes_plant
+   .. py:attribute:: N_mes_virtual_captor
       :value: []
 
 
 
-   .. py:attribute:: captor_file
-      :value: ''
+   .. py:attribute:: N_mes_face_captor
+      :value: []
 
 
 
-   .. py:attribute:: plant_file
-      :value: ''
+   .. py:attribute:: photonmaps
+      :value: []
 
 
 
@@ -252,9 +245,9 @@ Module Contents
 
 
 
-   .. py:method:: addCaptorToScene(shape, position, using_mat=True)
+   .. py:method:: addFaceCaptorToScene(shape, position, scale_factor, captor_id)
 
-      Add a captor object to scene
+      Add a face captor object to scene
 
       Parameters
       ----------
@@ -262,19 +255,43 @@ Module Contents
           The geometry and material of captor
       position : tuple(int,int,int)
           The position of captor
-      using_mat: bool
-          If False the material captor has no effect to the light, if True the way that the light interacts when it contacts the captor is same as when it contacts the other surfaces
+      scale_factor: int
+          The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+      captor_id: int
+          The id of captor
 
       Returns
       -------
-          The captor is added to the scene
+          The face captor is added to the scene
 
 
 
 
-   .. py:method:: addTransDiskCaptorToScene(pos, normal, r)
+   .. py:method:: addVirtualCaptorToScene(shape, position, scale_factor, captor_id)
 
-      Add a transparent disk shaped captor object to scene
+      Add a virtual captor object to scene
+
+      Parameters
+      ----------
+      shape: Shape
+          The geometry and material of captor
+      position : tuple(int,int,int)
+          The position of captor
+      scale_factor: int
+          The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+      captor_id: int
+          The id of captor
+
+      Returns
+      -------
+          The virtual captor is added to the scene
+
+
+
+
+   .. py:method:: addVirtualDiskCaptorToScene(pos, normal, r, captor_id)
+
+      Add a virtual disk shaped captor object to scene
 
       Parameters
       ----------
@@ -284,6 +301,8 @@ Module Contents
           The vector normal of captor
       r: float
           The radius of captor
+      captor_id: int
+          The id of captor
 
       Returns
       -------
@@ -331,7 +350,7 @@ Module Contents
 
 
 
-   .. py:method:: visualiserSimulationScene(divided_spectral_range_index=-1, mode='ipython')
+   .. py:method:: visualiserSimulationScene(mode='ipython')
 
       Visualize the scene of simulation with the tools of OpenAlea
       To run this function, it has to run these command first:
@@ -340,8 +359,6 @@ Module Contents
 
       Parameters
       ----------
-      divided_spectral_range_index: int
-          This variable allow us to visualize the color of the plant based on its received energies 
       mode: str
           This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
 
@@ -395,7 +412,7 @@ Module Contents
       -------
           scene: libphotonmap_core.Scene
               The object which contains all the object in the scene of simulation
-          has_captor: bool
+          has_virtual_captor: bool
               Return true if the scene has the captors 
           captor_triangle_dict: dict
               Dictionary of the triangles of the captors. Using to counting the number of photons received in each captor
@@ -429,9 +446,9 @@ Module Contents
 
 
 
-   .. py:method:: setupRoom(room_file: str, po_dir: str, flip_normal=False)
+   .. py:method:: addEnvFromFile(room_file: str, po_dir: str, flip_normal=False)
 
-      Setup the room/environment of the simulation.
+      Setup the room/environment of the simulation from file.
 
       Parameters
       ----------
@@ -458,7 +475,7 @@ Module Contents
 
 
 
-   .. py:method:: setupCaptor(captor_file: str)
+   .. py:method:: addVirtualDiskCaptorsFromFile(captor_file: str)
 
       Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 
@@ -470,7 +487,7 @@ Module Contents
 
 
 
-   .. py:method:: setupPlant(plant_file: str, plant_pos=Vec3(0, 0, 0))
+   .. py:method:: addFaceCaptorsFromLpyFile(plant_file: str, plant_pos=Vec3(0, 0, 0))
 
       Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
 

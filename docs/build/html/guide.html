@@ -521,8 +521,8 @@ lum400<span class="w"> </span>cylinder<span class="w"> </span>lamp
 
     <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">readConfiguration</span><span class="p">(</span><span class="s2">&quot;simulation.ini&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupRoom</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupCaptor</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvFromFile</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addVirtualDiskCaptorsFromFile</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="n">res</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span> <span class="c1">#write results to a file</span>
 </pre></div>
@@ -545,20 +545,12 @@ python<span class="w"> </span>main.py
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>id</p></th>
-<th class="head"><p>xSite</p></th>
-<th class="head"><p>ySite</p></th>
-<th class="head"><p>zSite</p></th>
-<th class="head"><p>radius</p></th>
 <th class="head"><p>N_sim_600_655</p></th>
 <th class="head"><p>N_sim_655_665</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>0</p></td>
-<td><p>110</p></td>
-<td><p>930</p></td>
-<td><p>1000</p></td>
-<td><p>10</p></td>
 <td><p>13635</p></td>
 <td><p>13966</p></td>
 </tr>
@@ -574,6 +566,7 @@ python<span class="w"> </span>main.py
 <div class="line">To do that, after finishing the simulation, we will do the calibration the result by using the function <code class="docutils literal notranslate"><span class="pre">calibrateResults</span></code>.</div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">calibrated_res</span> <span class="o">=</span> <span class="n">simulator</span><span class="o">.</span><span class="n">calibrateResults</span><span class="p">(</span><span class="s2">&quot;spectrum/chambre1_spectrum&quot;</span><span class="p">,</span> <span class="s2">&quot;points_calibration.csv&quot;</span><span class="p">)</span>
+<span class="n">calibrated_res</span><span class="o">.</span><span class="n">writeResults</span><span class="p">()</span> <span class="c1">#write results to a file</span>
 </pre></div>
 </div>
 <div class="line-block">
@@ -595,9 +588,9 @@ python<span class="w"> </span>main.py
 
     <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">readConfiguration</span><span class="p">(</span><span class="s2">&quot;simulation.ini&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupRoom</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupCaptor</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">visualiserSimulationScene</span><span class="p">()</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvFromFile</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addVirtualDiskCaptorsFromFile</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">visualiserSimulationScene</span><span class="p">(</span><span class="s2">&quot;ipython&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To obtain the 3D scene, we have to run this program through <code class="docutils literal notranslate"><span class="pre">`ipython`</span></code>.</p>
@@ -625,8 +618,8 @@ run<span class="w"> </span>main.py
 
     <span class="n">simulator</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">()</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">readConfiguration</span><span class="p">(</span><span class="s2">&quot;simulation.ini&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupRoom</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
-    <span class="n">simulator</span><span class="o">.</span><span class="n">setupCaptor</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addEnvFromFile</span><span class="p">(</span><span class="s2">&quot;testChamber.rad&quot;</span><span class="p">,</span> <span class="s2">&quot;./PO&quot;</span><span class="p">)</span>
+    <span class="n">simulator</span><span class="o">.</span><span class="n">addVirtualDiskCaptorsFromFile</span><span class="p">(</span><span class="s2">&quot;captors_expe1.csv&quot;</span><span class="p">)</span>
     <span class="n">simulator</span><span class="o">.</span><span class="n">test_t_min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">1e6</span><span class="p">),</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>

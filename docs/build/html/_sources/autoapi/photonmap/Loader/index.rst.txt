@@ -17,6 +17,5 @@ Submodules
 
    /autoapi/photonmap/Loader/LoadCaptor/index
    /autoapi/photonmap/Loader/LoadEnvironment/index
-   /autoapi/photonmap/Loader/LoadPlant/index
 
 
