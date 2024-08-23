@@ -59,7 +59,7 @@ Code example
     simulator.addEnvToScene(light_sh)
 
 | To setup the captors (The objects that we do the calculations of light's energy), we have to define its geometry, material and position
-| The optical properties of captor's material and environment's material are the same
+| The optical properties of captor's material are the same as the optical properties of environment's material
 | We can also define whether the material of captor affect to the interaction of light in the simulation or not by defining the variable ``using_mat``
 
 .. code-block:: python

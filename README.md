@@ -33,6 +33,15 @@ python planglRadScene.py
 
 ![](img/cornellbox-water_pm.png)
 
+# How to run the jupyter notebook
+
+```bash
+    conda activate photonmap
+    pip install pgljupyter
+
+    cd examples/python/plantgl-rad-scene
+    jupyter notebook
+```
 ## Features
 
 * Direct illumination with explicit light sampling
