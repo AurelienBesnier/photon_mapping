@@ -70,11 +70,11 @@ void Image::writePPM(const std::string &filename) const {
         for (unsigned int j = 0; j < width; ++j) {
             const Vec3f rgb = getPixel(i, j);
             const unsigned int R =
-                    boost::algorithm::clamp(static_cast<unsigned int>(255.0f * rgb[0]), 0u, 255u);
+                    std::clamp(static_cast<unsigned int>(255.0f * rgb[0]), 0u, 255u);
             const unsigned int G =
-                    boost::algorithm::clamp(static_cast<unsigned int>(255.0f * rgb[1]), 0u, 255u);
+                    std::clamp(static_cast<unsigned int>(255.0f * rgb[1]), 0u, 255u);
             const unsigned int B =
-                    boost::algorithm::clamp(static_cast<unsigned int>(255.0f * rgb[2]), 0u, 255u);
+                    std::clamp(static_cast<unsigned int>(255.0f * rgb[2]), 0u, 255u);
             file << R << " " << G << " " << B << std::endl;
         }
     }

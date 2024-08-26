@@ -3,9 +3,9 @@
 
 #include <embree4/rtcore.h>
 #include <string>
-#include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/optional.hpp>
+#include <filesystem>
+#include <optional>
+		
 #include <memory>
 #include <vector>
 
@@ -52,9 +52,9 @@ void intersectionFilter(const RTCFilterFunctionNArguments* args)
  * @brief Creates a default Lambert BxDF.
  * @return a pointer towards this bxdf.
  */
-boost::shared_ptr<BxDF> createDefaultBxDF() {
+std::shared_ptr<BxDF> createDefaultBxDF() {
   
-  return boost::make_shared<Lambert>(Vec3f(0.9f));
+  return std::make_shared<Lambert>(Vec3f(0.9f));
 }
 
 /**
@@ -65,7 +65,7 @@ boost::shared_ptr<BxDF> createDefaultBxDF() {
  * @param roughness The roughness info for light scattering.
  * @return a pointer towards this bxdf.
  */
-boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
+std::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
                                    float reflectance = 0.0f,
                                    float transmittance = 0.0f,
                                    float roughness = 0.5f) {
@@ -83,30 +83,30 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
 
   switch (material.illum) {
   case 2:
-    return boost::make_shared<Mirror>(ks);
+    return std::make_shared<Mirror>(ks);
   case 5:
     // mirror
-    return boost::make_shared<Mirror>(Vec3f(1.0f));
+    return std::make_shared<Mirror>(Vec3f(1.0f));
   case 6:
     // leaf
     material.ior = 1.425f; // Source:
     // https://opg.optica.org/ao/abstract.cfm?uri=ao-13-1-109
-    return boost::make_shared<Leaf>(kd, material.ior, roughness);
+    return std::make_shared<Leaf>(kd, material.ior, roughness);
   case 7:
     // Transparent
-    return boost::make_shared<Transparent>(kd, material.ior);
+    return std::make_shared<Transparent>(kd, material.ior);
   case 8:
     //Phong for plant
-    return boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance);
+    return std::make_shared<PhongCaptor>(kd, ks, roughness, transmittance);
 
   case 9:
-    return boost::make_shared<Refltr>(kd, reflectance, transmittance,
+    return std::make_shared<Refltr>(kd, reflectance, transmittance,
                                       roughness);
   default:
     // lambert
-    //return boost::make_shared<Lambert>(kd);
+    //return std::make_shared<Lambert>(kd);
     //phong
-    return boost::make_shared<Phong>(kd, ks, roughness, transmittance);
+    return std::make_shared<Phong>(kd, ks, roughness, transmittance);
   }
 }
 
@@ -116,13 +116,13 @@ boost::shared_ptr<BxDF> createBxDF(tinyobj::material_t &material,
  * @param tri The triangles
  * @return A pointer towards the area light.
  */
-boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
+std::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
                                              Triangle *tri) {
   if (material.emission[0] > 0 || material.emission[1] > 0 ||
       material.emission[2] > 0) {
     Vec3f le =
         Vec3f(material.emission[0], material.emission[1], material.emission[2]);
-    return boost::make_shared<AreaLight>(le, tri);
+    return std::make_shared<AreaLight>(le, tri);
   } else {
     return nullptr;
   }
@@ -134,10 +134,10 @@ boost::shared_ptr<AreaLight> createAreaLight(tinyobj::material_t &material,
  * @param position The position of the point light.
  * @return A pointer towards the point light.
  */
-boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
+std::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
   if (emission[0] > 0 || emission[1] > 0 || emission[2] > 0) {
     Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
-    return boost::make_shared<PointLight>(le, position);
+    return std::make_shared<PointLight>(le, position);
   } else {
     return nullptr;
   }
@@ -151,21 +151,21 @@ boost::shared_ptr<PointLight> createPointLight(Vec3f emission, Vec3f position) {
  * @param angle The angle of diffussion of the spot light.
  * @return A pointer towards the spot light.
  */
-boost::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position,
+std::shared_ptr<SpotLight> createSpotLight(Vec3f emission, Vec3f position,
                                              Vec3f direction, float angle) {
   if (emission[0] > 0 || emission[1] > 0 || emission[2] > 0) {
     Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
-    return boost::make_shared<SpotLight>(le, position, direction, angle);
+    return std::make_shared<SpotLight>(le, position, direction, angle);
   } else {
     return nullptr;
   }
 }
 
-boost::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri,
+std::shared_ptr<TubeLight> createTubeLight(Vec3f emission, Triangle *tri,
                                              Vec3f direction, float angle) {
   if (emission[0] > 0 || emission[1] > 0 || emission[2] > 0) {
     Vec3f le = Vec3f(emission[0], emission[1], emission[2]);
-    return boost::make_shared<TubeLight>(le, tri, direction, angle);
+    return std::make_shared<TubeLight>(le, tri, direction, angle);
   } else {
     return nullptr;
   }
@@ -244,15 +244,15 @@ public:
   std::vector<uint32_t> indices; ///< The indices of the scene.
   std::vector<float> normals;    ///< The normals of the scene.
 
-  std::vector<boost::optional<tinyobj::material_t>>
+  std::vector<std::optional<tinyobj::material_t>>
       materials; ///< The materials of the scene.
 
   std::vector<Triangle> triangles; ///< The triangles of the scene per face.
 
-  std::vector<boost::shared_ptr<BxDF>>
+  std::vector<std::shared_ptr<BxDF>>
       bxdfs; ///< The bxdfs of the scene per face.
 
-  std::vector<boost::shared_ptr<Light>>
+  std::vector<std::shared_ptr<Light>>
       lights; ///< The lights of the scene per face.
 
   std::vector<Primitive> primitives; ///< The primitives of the scene per face.
@@ -444,7 +444,7 @@ public:
     // populate lights, primitives
     for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
       // add light
-      boost::shared_ptr<Light> light = nullptr;
+      std::shared_ptr<Light> light = nullptr;
       const auto material = this->materials[faceID];
       // std::cout << "material check" << std::endl;
       std::string sh_name = "";
@@ -580,7 +580,7 @@ public:
       m.illum = 1;
 
       this->materials.emplace_back(m);
-      this->bxdfs.emplace_back(boost::make_shared<Captor>(Vec3f(1, 0, 1)));
+      this->bxdfs.emplace_back(std::make_shared<Captor>(Vec3f(1, 0, 1)));
     }
   }
 
@@ -636,7 +636,7 @@ public:
       m.illum = 1;
 
       this->materials.emplace_back(m);
-      this->bxdfs.emplace_back(boost::make_shared<PhongCaptor>(kd, ks, roughness, transmittance));
+      this->bxdfs.emplace_back(std::make_shared<PhongCaptor>(kd, ks, roughness, transmittance));
     }
   }
 
@@ -647,7 +647,7 @@ public:
    * @param color The color of the light
    */
   void addPointLight(Vec3f position, float intensity, Vec3f color) {
-    boost::shared_ptr<Light> light;
+    std::shared_ptr<Light> light;
     light = createPointLight(color * intensity, position);
     if (light != nullptr) {
       lights.push_back(light);
@@ -664,7 +664,7 @@ public:
    */
   void addSpotLight(Vec3f position, float intensity, Vec3f color,
                     Vec3f direction, float angle) {
-    boost::shared_ptr<Light> light;
+    std::shared_ptr<Light> light;
     light = createSpotLight(color * intensity, position, direction, angle);
     if (light != nullptr) {
       lights.push_back(light);
@@ -673,7 +673,7 @@ public:
 
   void addTubeLight(Triangle *tri, float intensity, Vec3f color,
                     Vec3f direction, float angle) {
-    boost::shared_ptr<Light> light;
+    std::shared_ptr<Light> light;
     light = createTubeLight(color * intensity, tri, direction, angle);
     if (light != nullptr) {
       lights.push_back(light);
@@ -688,7 +688,7 @@ public:
    * @param filename the filename of the .obj scene.
    */
   void loadModel(const std::string &filename) {
-    boost::filesystem::path filepath(filename);
+    std::filesystem::path filepath(filename);
     clear();
     std::string mtl_folder;
 
@@ -781,7 +781,7 @@ public:
 
         // populate materials
         const int materialID = shape.mesh.material_ids[f];
-        boost::optional<tinyobj::material_t> material = boost::none;
+        std::optional<tinyobj::material_t> material = std::nullopt;
         if (materialID != -1) {
           material = materials[materialID];
         }
@@ -820,7 +820,7 @@ public:
     // populate lights, primitives
     for (size_t faceID = 0; faceID < nFaces(); ++faceID) {
       // add light
-      boost::shared_ptr<Light> light = nullptr;
+      std::shared_ptr<Light> light = nullptr;
       const auto material = this->materials[faceID];
       std::string sh_name = "";
       if (material) {
@@ -985,14 +985,14 @@ public:
   size_t nLights() const { return lights.size(); }
 
   /**
-   * @fn boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf)
+   * @fn std::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf)
    * const
    * @brief samples a random light source in the scene.
    * @param sampler
    * @param pdf
    * @return a pointer towards the light source
    */
-  boost::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
+  std::shared_ptr<Light> sampleLight(Sampler &sampler, float &pdf) const {
     uint32_t lightIdx = lights.size() * sampler.getNext1D();
     if (lightIdx == lights.size())
       lightIdx--;
@@ -1001,14 +1001,14 @@ public:
   }
 
   /**
-   * @fn  boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx)
+   * @fn  std::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx)
    * const
    * @brief samples a specific light source in the scene.
    * @param pdf
    * @param idx the index of the light source
    * @return a pointer towards the light source
    */
-  boost::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const {
+  std::shared_ptr<Light> sampleLight(float &pdf, unsigned int idx) const {
     if (idx == lights.size())
       idx--;
     pdf = 1.0f / (lights.size());

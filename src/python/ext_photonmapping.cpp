@@ -3,7 +3,6 @@
 #include "../cpp/include/camera.hpp"
 #include "../cpp/include/image.hpp"
 #include "../cpp/include/integrator.hpp"
-#include <boost/shared_ptr.hpp>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
@@ -267,8 +266,8 @@ PYBIND11_MODULE(libphotonmap_core, m) {
               .def(py::init<float*, uint32_t*, float*, uint32_t>());*/
 
   py::class_<Primitive>(m, "Primitive")
-      .def(py::init<Triangle *, boost::shared_ptr<BxDF> &, std::string &,
-                    const boost::shared_ptr<Light> &>())
+      .def(py::init<Triangle *, std::shared_ptr<BxDF> &, std::string &,
+                    const std::shared_ptr<Light> &>())
       .def("hasAreaLight", &Primitive::hasAreaLight)
       .def("Le", &Primitive::Le, py::arg("surfInfo"), py::arg("dir"))
       .def("getBxDFType", &Primitive::getBxDFType)

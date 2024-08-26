@@ -1,7 +1,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include <boost/algorithm/clamp.hpp>
+#include <algorithm>
 
 #include <fstream>
 #include <iostream>

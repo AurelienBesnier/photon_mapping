@@ -16,25 +16,25 @@ from photonmap import (
 def test_intersection():
     scene = Scene()
     scene.loadModel("./tests/cornellbox-water2.obj")
-    scene.build()
+    scene.build(True)
 
-    n_samples = 1
-    n_photons = int(1e3)
+    n_samples = 2
+    n_photons = 10000
     n_estimation_global = 100
     n_photons_caustics_multiplier = 50
     n_estimation_caustics = 50
-    final_gathering_depth = 0
-    max_depth = 24
+    final_gathering_depth = 1
+    max_depth = 5
 
-    aspect_ratio = 16.0 / 9.0
+    aspect_ratio = 1
 
-    image_width = 1024
+    image_width = 600
     image_height = int(image_width / aspect_ratio)
 
-    lookfrom = Vec3(0, 1, 7)
-    lookat = Vec3(0, 0, -1)
-    vup = Vec3(0, 1, 0)
-    vfov = 50.0
+    lookfrom = Vec3(-0.4, 1, 3)
+    lookat = Vec3(-1, -0.19, -2.5)
+    vup = Vec3(0, -1, 0)
+    vfov = 30.0
     dist_to_focus = 3.0
     aperture = 0.01
 

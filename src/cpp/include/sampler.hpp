@@ -8,8 +8,6 @@
 #include <cmath>
 
 #include "core.hpp"
-#include <boost/algorithm/clamp.hpp>
-#include <boost/make_unique.hpp>
 
 
 
@@ -127,7 +125,7 @@ public:
     explicit UniformSampler(uint64_t seed) : Sampler(seed) {}
 
     std::unique_ptr<Sampler> clone() override {
-        return boost::make_unique<UniformSampler>();
+        return std::make_unique<UniformSampler>();
     }
 
     float getNext1D() override { return rng.getNext(); }
@@ -138,7 +136,7 @@ public:
 // sample direction in the hemisphere
 // its pdf is proportional to cosine
 inline Vec3f sampleCosineHemisphere(Vec2f uv, float &pdf) {
-    float theta = 0.5f * std::acos(boost::algorithm::clamp(1.0f - 2.0f * uv[0],
+    float theta = 0.5f * std::acos(std::clamp(1.0f - 2.0f * uv[0],
                                                            -1.0f, 1.0f));
     float phi = PI_MUL_2 * uv[1];
     float cosTheta = std::cos(theta);

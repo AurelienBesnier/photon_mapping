@@ -2,10 +2,7 @@
 #define INTEGRATOR_H
 
 #include <omp.h>
-
-#include <boost/foreach.hpp>
-#include <boost/optional.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include "core.hpp"
 #include "photon_map.hpp"
@@ -129,7 +126,7 @@ private:
 
 		// sample light
 		float pdf_choose_light;
-		const boost::shared_ptr<Light> light = scene.sampleLight(sampler,
+		const std::shared_ptr<Light> light = scene.sampleLight(sampler,
 				pdf_choose_light);
 
 		// sample point on light
@@ -210,7 +207,7 @@ private:
 			Vec3f &throughput, unsigned int idx) {
 		// sample light
 		float light_choose_pdf;
-		boost::shared_ptr<Light> light = scene.sampleLight(light_choose_pdf,
+		std::shared_ptr<Light> light = scene.sampleLight(light_choose_pdf,
 				idx);
 
 		// sample point on light
@@ -241,7 +238,7 @@ private:
 			Vec3f &throughput) {
 		// sample light
 		float light_choose_pdf;
-		boost::shared_ptr<Light> light = scene.sampleLight(sampler,
+		std::shared_ptr<Light> light = scene.sampleLight(sampler,
 				light_choose_pdf);
 
 		// sample point on light
