@@ -451,6 +451,4 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                         )
                 s.appearance.name = mat["name"]
                 sc.add(s)
-        save_name = file.split(".")[0] + ".obj"
-        sc.save(save_name)
         return sc

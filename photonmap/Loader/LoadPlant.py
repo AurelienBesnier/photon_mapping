@@ -221,3 +221,4 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy={}):
         pglScene.add(tmpSh)
 
     return Scene([pglScene, sc])
+

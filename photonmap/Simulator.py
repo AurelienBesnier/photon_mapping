@@ -22,20 +22,72 @@ from photonmap.libphotonmap_core import (
 from photonmap.Loader import LoadCaptor, LoadEnvironment, LoadPlant
 from photonmap.Reader import ReadPO, ReadRADGeo
 
+from photonmap.Reader import (ReadRADGeo, ReadPO)
+from photonmap.Energy import (CalculateEnergy, CorrectEnergy)
+from photonmap.Loader import (LoadCaptor, LoadEnvironment)
+from photonmap.Common import (Outils, Math)
 
-class Result:
-    #constructor
-    def __init__(self):
-        self.N_sim_captor = []
-        self.N_sim_plant = []
-        self.N_mes_captor = []
-        self.N_mes_plant = []
+class SimulationResult:
+    """
+    A class which contains the result of simulation.
+
+    Attributes
+    ----------
+
+    N_sim_virtual_captor: dict
+        Number of received photons on each captor
+    N_sim_face_captor: dict
+        Number of received photons on each organ of plant
+    N_mes_virtual_captor: dict
+        The energies after the calibration on each captor
+    N_mes_face_captor: dict
+        The energies after the calibration on each organ of plant
+
+    nb_photons: int
+        The number of photons in simulation
+    divided_spectral_range: array
+        The list of spectral ranges divided from the base spectral range.
+
+    list_virtual_captor: array
+        The list of virtual captor in simulation
     
-    def __init__(self, N_sim_captor, N_sim_plant, N_mes_captor, N_mes_plant):
-        self.N_sim_captor = N_sim_captor
-        self.N_sim_plant = N_sim_plant
-        self.N_mes_captor = N_mes_captor
-        self.N_mes_plant = N_mes_plant
+    """
+    #constructor
+    def __init__(self, simulator):
+        self.photonmaps = simulator.photonmaps
+
+        self.N_sim_virtual_captor = simulator.N_sim_virtual_captor
+        self.N_sim_face_captor = simulator.N_sim_face_captor
+        self.N_mes_virtual_captor = simulator.N_mes_virtual_captor
+        self.N_mes_face_captor = simulator.N_mes_face_captor
+
+        self.divided_spectral_range = simulator.divided_spectral_range
+        self.list_virtual_captor = simulator.list_virtual_captor
+        self.list_face_captor = simulator.list_face_captor
+
+
+    def writeResults(self, file_prefix = ""):
+        """
+        Write the result of simulation to a file saved in the folder ./results
+                
+        Parameters
+        ----------
+        file_prefix: str
+            The prefix of output file
+        """
+         
+        if len(self.N_sim_virtual_captor) > 0:
+            CalculateEnergy.write_captor_energy(self.N_sim_virtual_captor, self.N_mes_virtual_captor, self.list_virtual_captor, self.divided_spectral_range, file_prefix + "virtual_captor_res.csv")
+        
+        if len(self.N_sim_face_captor) > 0:
+            CalculateEnergy.write_captor_energy(self.N_sim_face_captor, self.N_mes_face_captor, self.list_face_captor, self.divided_spectral_range, file_prefix + "face_captor_res.csv")
+
+    def graph(self):
+        """
+        Draw a graph with MathPlotlib
+                
+        """
+        return
 
 class Simulator:
     """
@@ -61,24 +113,20 @@ class Simulator:
         The list of spectral ranges divided from the base spectral range.
     rendering: bool
         Set to True to render the output images
-    N_sim_captor: dict
-        Number of received photons in each captor
-    N_sim_plant: dict
-        Number of received photons in each organ of plant
+    N_sim_virtual_captor: dict
+        Number of received photons on each captor
+    N_sim_face_captor: dict
+        Number of received photons on each organ of plant
 
-    captor_file: str
-        The link to the file which contains the informations of the captors in the simulation
     spectrum_file: str
         The link to the file which contains the informations of the heterogeneity of the spectrum
     points_calibration_file: str
         The link to the file which contains the informations of the captors used to calibrate the final result 
 
-    list_captor: array
-        The list of captor in simulation
+    list_virtual_captor: array
+        The list of virtual captor in simulation
     pgl_scene: openalea.plantgl.scenegraph.Scene
         The plantgl scene object used to save the meshs of environment
-    plant_file: str
-        The link to the file of the model of plant. (currently only support .lpy file)
     plantPos: Vec3
         The position of the plant
     po_dir: str
@@ -87,6 +135,7 @@ class Simulator:
     """
     #constructor
     def __init__(self):
+        
         self.nb_photons = 0
         self.max_depth = 0
         self.scale_factor = 1
@@ -98,17 +147,17 @@ class Simulator:
         self.rendering = False
         #
         self.scene_pgl = Scene()
-        self.list_captor = []
+        self.list_virtual_captor = []
+        self.list_face_captor = []
         
         #result
-        self.N_sim_captor = []
-        self.N_sim_plant = []
-        self.N_mes_captor = []
-        self.N_mes_plant = []
+        self.N_sim_virtual_captor = []
+        self.N_sim_face_captor = []
+        self.N_mes_virtual_captor = []
+        self.N_mes_face_captor = []
+        self.photonmaps = []
         
         #input files
-        self.captor_file = ""
-        self.plant_file = ""
         self.po_dir = ""
         self.spectrum_file = ""
         self.points_calibration_file = ""
@@ -118,7 +167,8 @@ class Simulator:
         Clear list of captors and list of object in scene
         """
         self.scene_pgl.clear()
-        self.list_captor.clear()    
+        self.list_virtual_captor.clear()
+        self.list_face_captor.clear()   
 
     def addEnvToScene(self, sh):
         """
@@ -145,54 +195,77 @@ class Simulator:
         #add object to scene
         self.scene_pgl.add(sh)
 
-    def addCaptorToScene(self, geometry, position):
+    def addFaceCaptorToScene(self, shape, position, scale_factor, captor_id):
         """
-        Add a captor object to scene
+        Add a face captor object to scene
 
         Parameters
         ----------
-        geometry: TriangleSet
-            The geometry of captor
+        shape: Shape
+            The geometry and material of captor
         position : tuple(int,int,int)
             The position of captor
+        scale_factor: int
+            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+        captor_id: int
+            The id of captor
+
+        Returns
+        -------
+            The face captor is added to the scene
+
+        """
+        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, captor_id, "FaceCaptor")
+        self.list_face_captor.append(captor)
+
+    def addVirtualCaptorToScene(self, shape, position, scale_factor, captor_id):
+        """
+        Add a virtual captor object to scene
+
+        Parameters
+        ----------
+        shape: Shape
+            The geometry and material of captor
+        position : tuple(int,int,int)
+            The position of captor
+        scale_factor: int
+            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+        captor_id: int
+            The id of captor
         
         Returns
         -------
-            The captor is added to the scene
+            The virtual captor is added to the scene
 
         """
-        geometry.computeNormalList()
-        captor = LoadCaptor.Captor().initGeometryCaptor(geometry, position, self.scale_factor)
-        
-        self.list_captor.append(captor)
+        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, captor_id, "VirtualCaptor")
+        self.list_virtual_captor.append(captor)
 
-    def addDiskCaptorToScene(self, pos, normal, r):
+    def addVirtualDiskCaptorToScene(self, pos, normal, r, captor_id):
         """
-        Add a disk shaped captor object to scene
+        Add a virtual disk shaped captor object to scene
 
         Parameters
         ----------
-        pos : tuple(int,int,int)
+        pos : tuple(float,float,float)
             The position of captor
-        normal: tuple(int,int,int)
+        normal: tuple(float,float,float)
             The vector normal of captor
         r: float
             The radius of captor
+        captor_id: int
+            The id of captor
 
         Returns
         -------
             The disk shaped captor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initDiskCaptor(pos[0] / self.scale_factor, 
-                                                    pos[1] / self.scale_factor, 
-                                                    pos[2] / self.scale_factor, 
-                                                    normal[0], 
-                                                    normal[1], 
-                                                    normal[2], 
-                                                    r)
+        captor = LoadCaptor.Captor().initVirtualDiskCaptor((pos[0] / self.scale_factor, pos[1] / self.scale_factor, pos[2] / self.scale_factor), 
+                                                        (normal[0], normal[1], normal[2]), 
+                                                        r, captor_id)
         
-        self.list_captor.append(captor)
+        self.list_virtual_captor.append(captor)
     
 
     def run(self):
@@ -205,6 +278,12 @@ class Simulator:
 
         """
 
+        self.photonmaps.clear() 
+        self.N_sim_face_captor.clear()
+        self.N_sim_virtual_captor.clear()
+        self.N_mes_virtual_captor.clear()
+        self.N_mes_face_captor.clear()
+
         scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0 
@@ -216,7 +295,7 @@ class Simulator:
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
             scene.clear()
-            scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength)
+            scene, has_virtual_captor, virtual_captor_triangle_dict, has_face_captor, face_captor_triangle_dict = self.initSimulationScene(scene, current_band, moyenne_wavelength)
             
             #create integrator
             scene.tnear = self.t_min
@@ -244,22 +323,23 @@ class Simulator:
                 self.render(integrator, scene, moyenne_wavelength, sampler)
 
 
-            #read energy of captor/plant
-            captor_energy = {}
-            if(has_captor):
-                CalculateEnergy.captor_add_energy(captor_triangle_dict, integrator, captor_energy)
-                self.N_sim_captor.append(captor_energy)
+            #read energy of virtual captor
+            virtual_captor_energy = {}
+            if(has_virtual_captor):
+                CalculateEnergy.captor_add_energy(virtual_captor_triangle_dict, integrator, virtual_captor_energy)
+                self.N_sim_virtual_captor.append(virtual_captor_energy)
                 
 
-            #Plant Energie
-            plant_energy = {}
-            if(has_plant):
-                plant_energy = CalculateEnergy.plant_add_energy(tr2shmap, integrator)
-                self.N_sim_plant.append(plant_energy)
+            #read energy of face captor
+            face_captor_energy = {}
+            if(has_face_captor):
+                CalculateEnergy.captor_add_energy(face_captor_triangle_dict, integrator, face_captor_energy)
+                self.N_sim_face_captor.append(face_captor_energy)
             
+            self.photonmaps.append(integrator.getPhotonMapCaptors())
             print("Time taken: " + str(time.time() - start_time))
         
-        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+        return SimulationResult(self)
     
     def calculateCalibrationCoefficient(self, spectrum_file = "", points_calibration_file = ""):
         """
@@ -278,8 +358,8 @@ class Simulator:
 
         if  os.path.exists(spectrum_file) and os.path.exists(points_calibration_file):
             self.integrals = CorrectEnergy.get_correct_energy_coeff(self.base_spectral_range, self.divided_spectral_range, spectrum_file)
-            self.points_calibration = CorrectEnergy.get_points_calibration(self.list_captor, points_calibration_file, self.divided_spectral_range)
-            self.coeffs_calibration = CorrectEnergy.get_calibaration_coefficient(self.N_sim_captor, self.integrals, self.points_calibration)
+            self.points_calibration = CorrectEnergy.get_points_calibration(self.list_virtual_captor, points_calibration_file, self.divided_spectral_range)
+            self.coeffs_calibration = CorrectEnergy.get_calibaration_coefficient(self.N_sim_virtual_captor, self.integrals, self.points_calibration)
             return True
         
         return False
@@ -300,27 +380,15 @@ class Simulator:
         can_calibrate = self.calculateCalibrationCoefficient(spectrum_file, points_calibration_file)
 
         if can_calibrate:
-            if len(self.N_sim_captor) > 0:
-                self.N_mes_captor = CorrectEnergy.calibrate_captor_energy(self.N_sim_captor, self.integrals, self.points_calibration, self.coeffs_calibration)
+            if len(self.N_sim_virtual_captor) > 0:
+                self.N_mes_virtual_captor = CorrectEnergy.calibrate_captor_energy(self.N_sim_virtual_captor, self.integrals, self.points_calibration, self.coeffs_calibration)
 
-            if len(self.N_sim_plant) > 0:
-                self.N_mes_plant = CorrectEnergy.calibrate_plant_energy(self.N_sim_plant, self.coeffs_calibration)
+            if len(self.coeffs_calibration) > 0 and len(self.N_sim_face_captor) > 0:
+                self.N_mes_face_captor = CorrectEnergy.calibrate_plant_energy(self.N_sim_face_captor, self.coeffs_calibration)
 
-        return Result(self.N_sim_captor, self.N_sim_plant, self.N_mes_captor, self.N_mes_plant)
+        return SimulationResult(self)
 
-    def writeResults(self):
-        """
-        Write the result of simulation to a file saved in the folder ./results
-                
-        """
-         
-        if len(self.N_sim_captor) > 0:
-            CalculateEnergy.write_captor_energy(self.N_sim_captor, self.N_mes_captor, self.list_captor, self.divided_spectral_range, self.nb_photons)
-        
-        if len(self.N_sim_plant) > 0:
-            CalculateEnergy.write_plant_energy(self.N_sim_plant, self.N_mes_plant, self.list_plant, self.divided_spectral_range, self.nb_photons)
-
-    def visualiserSimulationScene(self, divided_spectral_range_index = -1, mode = "ipython"):
+    def visualiserSimulationScene(self, mode = "ipython"):
         """
         Visualize the scene of simulation with the tools of OpenAlea
         To run this function, it has to run these command first:
@@ -329,8 +397,6 @@ class Simulator:
 
         Parameters
         ----------
-        divided_spectral_range_index: int
-            This variable allow us to visualize the color of the plant based on its received energies 
         mode: str
             This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
         
@@ -346,25 +412,14 @@ class Simulator:
         #add light direction to scene
         sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
 
-        #add plant to visualize scene
-        if self.plant_file != "":
-            lsystem = Lsystem(self.plant_file)
-            lstring = lsystem.derive(lsystem.axiom, 150)
-            plant_lscene = lsystem.sceneInterpretation(lstring)
-            
-            if divided_spectral_range_index == -1:
-                sc = LoadPlant.addPlantModelPgl(plant_lscene, Tesselator(), sc, self.plantPos, self.scale_factor)
-
-            elif divided_spectral_range_index >= 0 and divided_spectral_range_index < len(self.divided_spectral_range):
-                #plant with energy
-                sc = LoadPlant.addPlantModelPgl(plant_lscene, Tesselator(), sc, self.plantPos, self.scale_factor, self.N_sim_plant[divided_spectral_range_index])
-            else:
-                print("Index of range spectral is not correct.")
+        #add face captor
+        if len(self.list_face_captor) > 0:
+            sc = LoadCaptor.addCaptorPgl(sc, self.list_face_captor)
 
         #add captor
-        if self.captor_file != "":
-            sc = LoadCaptor.addCapteurPgl(sc, self.scale_factor, self.captor_file)
-        
+        if len(self.list_virtual_captor) > 0:
+            sc = LoadCaptor.addCaptorPgl(sc, self.list_virtual_captor)
+
         if mode == "ipython":
             Viewer.display(sc)
 
@@ -409,7 +464,7 @@ class Simulator:
         list_index = []
 
         scene.clear()
-        scene, has_captor, captor_triangle_dict, has_plant, tr2shmap = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
+        scene, has_virtual_captor, virtual_captor_triangle_dict, has_face_captor, face_captor_triangle_dict = self.initSimulationScene(scene, current_band, moyenne_wavelength, is_only_lamp)
         #create integrator
         scene.setupTriangles()
         scene.build(self.is_backface_culling)
@@ -470,7 +525,7 @@ class Simulator:
         -------
             scene: libphotonmap_core.Scene
                 The object which contains all the object in the scene of simulation
-            has_captor: bool
+            has_virtual_captor: bool
                 Return true if the scene has the captors 
             captor_triangle_dict: dict
                 Dictionary of the triangles of the captors. Using to counting the number of photons received in each captor
@@ -485,25 +540,25 @@ class Simulator:
         scene.clear()
         
         for sh in self.scene_pgl:
-            LoadEnvironment.add_environment(scene, sh, moyenne_wavelength, materialsR, materialsS, materialsT, is_only_lamp)
+            LoadEnvironment.addEnvironment(scene, sh, moyenne_wavelength, materialsR, materialsS, materialsT, is_only_lamp)
 
-        #add plant
-        has_plant = False
-        tr2shmap = {}
+        #add face captor
+        has_face_captor = False
+        face_captor_triangle_dict = {}
 
-        if(self.plant_file != ""):
-            self.list_plant = LoadPlant.add_lpy_file_to_scene(scene, self.plant_file, 150, tr2shmap, self.plantPos, self.scale_factor)
-            has_plant = True
+        if len(self.list_face_captor) > 0:
+            LoadCaptor.addFaceCaptors(scene, face_captor_triangle_dict, self.list_face_captor)
+            has_face_captor = True
 
-        #add captor
-        has_captor = False 
-        captor_triangle_dict = {}
+        #add virtual captor
+        has_virtual_captor = False 
+        virtual_captor_triangle_dict = {}
 
-        if len(self.list_captor) > 0:
-            LoadCaptor.addCaptors(scene, captor_triangle_dict, self.list_captor)
-            has_captor = True
+        if len(self.list_virtual_captor) > 0:
+            LoadCaptor.addVirtualCaptors(scene, virtual_captor_triangle_dict, self.list_virtual_captor)
+            has_virtual_captor = True
         
-        return scene, has_captor, captor_triangle_dict, has_plant, tr2shmap
+        return scene, has_virtual_captor, virtual_captor_triangle_dict, has_face_captor, face_captor_triangle_dict
 
     def render(self, integrator, scene, w, sampler):
         """
@@ -567,9 +622,9 @@ class Simulator:
         print("Done!")
             
 
-    def setupRoom(self, room_file: str, po_dir: str,  flip_normal = False):
+    def addEnvFromFile(self, room_file: str, po_dir: str,  flip_normal = False):
         """
-        Setup the room/environment of the simulation.
+        Setup the room/environment of the simulation from file.
 
         Parameters
         ----------
@@ -580,6 +635,7 @@ class Simulator:
         flip_normal: bool
             Determine the direction of the vector normal of triangle. 
         """
+
         self.po_dir = po_dir
         self.scene_pgl = ReadRADGeo.read_rad(room_file, self.scale_factor, flip_normal)
 
@@ -599,7 +655,7 @@ class Simulator:
         #using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat)
 
-    def setupCaptor(self, captor_file: str):
+    def addVirtualDiskCaptorsFromFile(self, captor_file: str):
         """
         Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors 
 
@@ -609,12 +665,26 @@ class Simulator:
             The link to the file which contains the informations of the captors in the simulation
                 
         """
-        self.captor_file = captor_file
 
-        if(self.captor_file != ""):
-            self.list_captor += LoadCaptor.readCaptorsFile(self.scale_factor, self.captor_file)
+        if(captor_file != ""):
+            captor_id = 0
+            with open(captor_file, "r") as f:
+                next(f)
+                for line in f:
+                    row = line.split(",")
+                    x = float(row[0])
+                    y = float(row[1]) 
+                    z = float(row[2])
+                    r = float(row[3])
+                    xnorm = float(row[4])
+                    ynorm = float(row[5])
+                    znorm = float(row[6])
 
-    def setupPlant(self, plant_file: str, plant_pos = Vec3(0,0,0)):
+                    self.addVirtualDiskCaptorToScene((x, y, z), (xnorm, ynorm, znorm), r, captor_id)
+                    captor_id += 1
+
+
+    def addFaceCaptorsFromLpyFile(self, plant_file: str, plant_pos = Vec3(0,0,0)):
         """
         Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
 
@@ -626,8 +696,20 @@ class Simulator:
             The position of the plant
                 
         """
-        self.plant_file = plant_file
-        self.plantPos = plant_pos
+
+        lsystem = Lsystem(plant_file)
+        lstring = lsystem.derive(lsystem.axiom, 150)
+        lscene = lsystem.sceneInterpretation(lstring)
+
+        scale_factor = self.scale_factor / 10
+        position = (plant_pos[0] / 10, plant_pos[1] / 10, plant_pos[2] / 10)
+        
+        tr = Tesselator()
+        for sh in lscene:
+            sh.apply(tr)
+            mesh = Shape(tr.result, sh.appearance)
+            self.addFaceCaptorToScene(mesh, position, scale_factor, sh.id)
+
         
 
     def initCameraRender(self, lookfrom = Vec3(0,0,0), lookat = Vec3(0,0,0)):

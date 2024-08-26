@@ -238,7 +238,7 @@ public:
     }
 };
 
-class PhongPlant : public BxDF {
+class PhongCaptor : public BxDF {
 private:
     Vec3f rho; //diffuse
     Vec3f specular;
@@ -246,7 +246,7 @@ private:
     float transmittance;
 
 public:
-    explicit PhongPlant(const Vec3f &rho, const Vec3f &specular, float roughness, float transmittance) : BxDF(BxDFType::PHONGCAPTOR),
+    explicit PhongCaptor(const Vec3f &rho, const Vec3f &specular, float roughness, float transmittance) : BxDF(BxDFType::PHONGCAPTOR), 
         rho(rho), specular(specular), roughness(roughness), transmittance(transmittance) {}
 
     Vec3f evaluate(Vec3f &wo, Vec3f &wi,

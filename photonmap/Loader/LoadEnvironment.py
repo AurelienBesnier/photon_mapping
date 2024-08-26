@@ -13,7 +13,7 @@ from photonmap import (
 # Objectif of this module is adding environment object to the scene of Photon Mapping
 
 
-def add_environment(
+def addEnvironment(
     scene,
     sh,
     w,
