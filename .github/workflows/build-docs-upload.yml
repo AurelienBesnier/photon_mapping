@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy-cpp-doc:
+  deploy-doc:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -44,35 +44,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-  deploy-python-doc:
-      environment:
-        name: github-pages
-        url: ${{ steps.deployment.outputs.page_url }}
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-        - uses: conda-incubator/setup-miniconda@v3
-          with:
-            auto-update-conda: true
-            python-version: ${{ matrix.python-version }}
-            environment-file: conda/docs.yml
-            conda-solver: ${{ matrix.solver }}
-            auto-activate-base: false
-        - name: install dependencies and build docs
-          run: |
-            python3 -m pip install sphinx sphinx-autoapi sphinx-copybutton nbsphinx sphinx_rtd_theme
-            cd docs
-            make html
-            mkdir python
-            mv build/html python
-        - name: Setup Pages
-          uses: actions/configure-pages@v5
-        - name: Upload artifact
-          uses: actions/upload-pages-artifact@v3
-          with:
-            # Upload entire repository
-            path: './docs/python/'
-        - name: Deploy to GitHub Pages
-          id: deployment
-          uses: actions/deploy-pages@v4
