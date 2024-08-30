@@ -1,14 +1,12 @@
-from math import cos, sin, pi
-from photonmap.Common.Outils import *
-from photonmap import libphotonmap_core
+from math import cos, sin
+
 from openalea.plantgl.all import *
+
 from photonmap import (
-    Vec3,
-    VectorUint,
     VectorFloat,
-    PhotonMapping,
-    UniformSampler,
+    VectorUint,
 )
+from photonmap.Common.Outils import *
 
 # Objectif of this module is adding captors to the scene of photon mapping to the received energy
 
@@ -45,7 +43,7 @@ class Captor:
 
     def initCaptor(self, shape, position, scale_factor, captor_id, captor_type):
         """
-        Init a object of face captor 
+        Init a object of face captor
 
         Returns
         -------
@@ -69,13 +67,15 @@ class Captor:
         self.radius = 0
 
         vertices = shape.geometry.pointList
-        #apply scale factor
+        # apply scale factor
         for i in range(len(vertices)):
             cur_vertice = vertices[i]
-            vertices[i] = ((cur_vertice[0] + position[0]) / scale_factor,
-                            (cur_vertice[1] + position[1]) / scale_factor,
-                            (cur_vertice[2] + position[2]) / scale_factor)
-        
+            vertices[i] = (
+                (cur_vertice[0] + position[0]) / scale_factor,
+                (cur_vertice[1] + position[1]) / scale_factor,
+                (cur_vertice[2] + position[2]) / scale_factor,
+            )
+
         shape.geometry.pointList = vertices
         shape.geometry.computeNormalList()
 
@@ -83,9 +83,9 @@ class Captor:
 
         return self
 
-    def initVirtualDiskCaptor(self, pos = (0,0,0), nor = (0,0,0), r = 0, captor_id = 0):
+    def initVirtualDiskCaptor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
         """
-        Init a object of virtual disk shape captor 
+        Init a object of virtual disk shape captor
 
         Returns
         -------
@@ -108,11 +108,11 @@ class Captor:
         self.zNormal = nor[2]
         self.radius = r
         self.captor_id = captor_id
-        
+
         self.createVirtualDisk()
 
         return self
-    
+
     def createVirtualDisk(self):
         """
         Create geometry of circular captor
@@ -137,7 +137,7 @@ class Captor:
 
         vertices.append((self.xSite, self.ySite, self.zSite))
         normals.append((self.xNormal, self.yNormal, self.zNormal))
-        
+
         if self.zNormal == 1:
             x1 = self.radius * cos(0)
             y1 = self.radius * sin(0)
@@ -168,16 +168,19 @@ class Captor:
             triangleCount += 1
             i += deltaAngle
 
-        captor_shape = Shape(TriangleSet(vertices, triangles, normals),
-                             Material(
-                                name="Captor",
-                                ambient = Color3( 0 ),
-                                specular = Color3( 0 ),
-                                shininess = 1,
-                                transparency = 0))
+        captor_shape = Shape(
+            TriangleSet(vertices, triangles, normals),
+            Material(
+                name="Captor",
+                ambient=Color3(0),
+                specular=Color3(0),
+                shininess=1,
+                transparency=0,
+            ),
+        )
 
         self.shape = captor_shape
-    
+
     def equal(self, xSite, ySite, zSite):
         """
         Check if the coordinate is equal to the position of captor
@@ -217,13 +220,13 @@ class Captor:
             The triangles of captor's geometry
 
         """
-        
-        #return vertice list, indexlist
+
+        # return vertice list, indexlist
         vertices = VectorFloat(flatten(self.shape.geometry.pointList))
         normals = VectorFloat(flatten(self.shape.geometry.normalList))
         triangles = VectorUint(flatten(self.shape.geometry.indexList))
         return vertices, triangles, normals
-    
+
     def getOpticalProperties(self):
         """
         Get optical properties of captor
@@ -238,19 +241,19 @@ class Captor:
             The triangles of captor's geometry
 
         """
-        
-        #return reflection, specular, transmission
+
+        # return reflection, specular, transmission
         trans = self.shape.appearance.transparency
         refl = self.shape.appearance.ambient.red / 255.0
         specular = self.shape.appearance.specular.red / 255.0
         roughness = 1.0 - self.shape.appearance.shininess
 
         return refl, specular, trans, roughness
-    
+
 
 def addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor):
     """
-    Adds virtual captors to the scene. 
+    Adds virtual captors to the scene.
 
     Parameters
     ----------
@@ -263,7 +266,7 @@ def addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor):
 
     Returns
     -------
-        Add all the mesh of virtual captors to the scene 
+        Add all the mesh of virtual captors to the scene
 
     """
     lastTriangleId = scene.nFaces()
@@ -271,20 +274,21 @@ def addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor):
         captor = list_virtual_captor[i]
         if captor.type != "VirtualCaptor":
             return
-        
+
         vertices, triangles, normals = captor.getGeometry()
         #
         scene.addVirtualCaptorInfos(vertices, triangles, normals)
-            
+
         #
         for j in triangles:
             virtual_captor_triangle_dict[lastTriangleId + j] = captor.captor_id
 
         lastTriangleId = scene.nFaces()
 
+
 def addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor):
     """
-    Adds face captors to the scene. 
+    Adds face captors to the scene.
 
     Parameters
     ----------
@@ -297,10 +301,10 @@ def addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor):
 
     Returns
     -------
-        Add all the mesh of face captors to the scene 
+        Add all the mesh of face captors to the scene
 
     """
-    
+
     lastTriangleId = scene.nFaces()
     for i in range(len(list_face_captor)):
         captor = list_face_captor[i]
@@ -310,13 +314,15 @@ def addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor):
         vertices, triangles, normals = captor.getGeometry()
         refl, specular, trans, roughness = captor.getOpticalProperties()
         #
-        scene.addFaceCaptorInfos(vertices, triangles, normals, refl, 
-                                 specular, trans, roughness)
+        scene.addFaceCaptorInfos(
+            vertices, triangles, normals, refl, specular, trans, roughness
+        )
         #
         for j in triangles:
             face_captor_triangle_dict[lastTriangleId + j] = captor.captor_id
 
         lastTriangleId = scene.nFaces()
+
 
 def findIndexOfDiskCaptorInList(list_captor, x, y, z):
     """
@@ -345,7 +351,8 @@ def findIndexOfDiskCaptorInList(list_captor, x, y, z):
             return i
     return -1
 
-#add captor to a scene of PlantGL to visualize
+
+# add captor to a scene of PlantGL to visualize
 def addCaptorPgl(sc, list_captor):
     """
     Add the captors to the PlantGL scene to visualize the scene
@@ -368,5 +375,5 @@ def addCaptorPgl(sc, list_captor):
     for i in range(len(list_captor)):
         captor_sh = list_captor[i].shape
         pglScene.add(captor_sh)
-            
+
     return Scene([pglScene, sc])

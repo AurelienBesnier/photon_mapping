@@ -1,9 +1,10 @@
-from scipy.integrate import simpson
-from collections import OrderedDict
-from photonmap.Loader.LoadCaptor import *
-from scipy import stats
-import pandas as pd
 import re
+from collections import OrderedDict
+
+import pandas as pd
+from scipy import stats
+
+from photonmap.Loader.LoadCaptor import *
 
 """This is the doc string for the file3 file where we can say things about the python module.add()
 We can write long text if we want.
@@ -35,7 +36,7 @@ def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
     content = OrderedDict()
     cpt_comment = 0
 
-    with open(filename, "r") as f:
+    with open(filename) as f:
         lines = f.readlines()
         for line in lines:
             if line[0] != '"':  # ignore comment
@@ -146,7 +147,7 @@ def get_points_calibration(
     for i in range(len(divided_spectral_range)):
         cur_bande = divided_spectral_range[i]
         points = {}
-        for index, r in df.iterrows():
+        for _, r in df.iterrows():
             captor_index = findIndexOfDiskCaptorInList(
                 list_captor, r["xSite"], r["ySite"], r["zSite"]
             )

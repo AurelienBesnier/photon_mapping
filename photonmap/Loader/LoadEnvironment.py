@@ -1,14 +1,14 @@
-from photonmap import libphotonmap_core
+import re
+
 from openalea.plantgl.all import *
-from photonmap.Common.Math import *
-from photonmap.Common.Outils import *
+
 from photonmap import (
     Vec3,
-    VectorUint,
     VectorFloat,
-    PhotonMapping,
-    UniformSampler,
+    VectorUint,
 )
+from photonmap.Common.Math import *
+from photonmap.Common.Outils import *
 
 # Objectif of this module is adding environment object to the scene of Photon Mapping
 
@@ -95,7 +95,7 @@ def addEnvironment(
     elif emission != Color3(0, 0, 0):
         scene.addLight(vertices, indices, normals, 4000, light_color, sh.name)
 
-    elif is_only_lamp == False:
+    elif is_only_lamp is False:
         scene.addFaceInfos(
             vertices,
             indices,

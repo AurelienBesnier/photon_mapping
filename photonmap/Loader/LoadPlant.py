@@ -1,14 +1,12 @@
-from photonmap import libphotonmap_core
-from openalea.plantgl.all import *
 from openalea.lpy import Lsystem
-from photonmap.Common.Outils import *
+from openalea.plantgl.all import *
+
 from photonmap import (
     Vec3,
-    VectorUint,
     VectorFloat,
-    PhotonMapping,
-    UniformSampler,
+    VectorUint,
 )
+from photonmap.Common.Outils import *
 
 # Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy
 # Data is located in this directory: ./assets
@@ -221,4 +219,3 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy={}):
         pglScene.add(tmpSh)
 
     return Scene([pglScene, sc])
-

@@ -1,8 +1,8 @@
-from photonmap.Common.Math import *
+import re
+
 from openalea.plantgl.all import *
 
-
-import re
+from photonmap.Common.Math import *
 
 # Objectif of this module is read the geometry of each object of fichier RAD
 

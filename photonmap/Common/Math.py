@@ -1,5 +1,6 @@
+from math import cos, pi, sin
+
 from openalea.plantgl.all import *
-from math import cos, sin, pi
 
 # This module consist the mathematical functions using in this project
 

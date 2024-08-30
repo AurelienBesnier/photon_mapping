@@ -1,5 +1,3 @@
-from collections import OrderedDict
-from photonmap.Loader.LoadCaptor import Captor
 import os
 
 # Objectif of this module is counting the number of photon on plant/captor
@@ -61,7 +59,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filena
 
         for k in list_captor_id:
             w_str = str(k)
-            #write result calibration
+            # write result calibration
             if len(N_calibration) == len(bands_spectre):
                 for i in range(len(bands_spectre)):
                     cur_N_calibration = N_calibration[i]
@@ -81,6 +79,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filena
             f.write(w_str + "\n")
 
     print("Done write captor energy!")
+
 
 def captor_add_energy(captor_dict, integrator, energy):
     """
