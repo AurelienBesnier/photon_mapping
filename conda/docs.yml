@@ -2,8 +2,5 @@ name: docs
 channels:
   - conda-forge
 dependencies:
-  - sphinx
-  - sphinx-autoapi
-  - sphinx-copybutton
-  - nbsphinx
-  - sphinx_rtd_theme
+  - python
+  - pip
