@@ -26,8 +26,8 @@ dependencies:
   - scipy
   - matplotlib
   - pip
-# - sphinx
-# - sphinx-autoapi
-# - sphinx-copybutton
-# - nbsphinx
-# - sphinx_rtd_theme
+  - sphinx
+  - sphinx-autoapi
+  - sphinx-copybutton
+  - nbsphinx
+  - sphinx_rtd_theme
