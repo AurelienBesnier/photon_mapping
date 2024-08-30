@@ -26,7 +26,7 @@ jobs:
       with:
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
-        environment-file: environment.yml
+        environment-file: conda/environment.yml
         conda-solver: ${{ matrix.solver }}
         auto-activate-base: false
     - name: build
