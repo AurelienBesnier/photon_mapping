@@ -64,14 +64,14 @@ jobs:
             python3 -m pip install sphinx sphinx-autoapi sphinx-copybutton nbsphinx sphinx_rtd_theme
             cd docs
             make html
-            mv build/html build/python
+            mv build/html build/html/python
         - name: Setup Pages
           uses: actions/configure-pages@v5
         - name: Upload artifact
           uses: actions/upload-pages-artifact@v3
           with:
             # Upload entire repository
-            path: './docs/build/html/'
+            path: './docs/build/html/python/'
         - name: Deploy to GitHub Pages
           id: deployment
           uses: actions/deploy-pages@v4
