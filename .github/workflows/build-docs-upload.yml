@@ -61,7 +61,7 @@ jobs:
             auto-activate-base: false
         - name: install dependencies and build docs
           run: |
-            apt install python3-sphinx
+            sudo apt install python3-sphinx -y
             cd docs
             make hmtl
         - name: Setup Pages
