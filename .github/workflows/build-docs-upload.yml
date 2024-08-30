@@ -63,7 +63,7 @@ jobs:
           run: |
             python3 -m pip install sphinx sphinx-autoapi sphinx-copybutton nbsphinx sphinx_rtd_theme
             cd docs
-            make hmtl
+            make html
         - name: Setup Pages
           uses: actions/configure-pages@v5
         - name: Upload artifact
