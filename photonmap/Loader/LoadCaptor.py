@@ -42,7 +42,7 @@ class Captor:
     
     """
 
-    def initCaptor(self, shape, position, scale_factor, captor_id, captor_type):
+    def initCaptor(self, shape, position, scale_factor, captor_type):
         """
         Init a object of face captor 
 
@@ -54,14 +54,12 @@ class Captor:
             The position of captor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-        captor_id: int
-            The id of captor
         captor_type: str
             "VirtualCaptor" or "FaceCaptor"
         """
 
         self.type = captor_type
-        self.captor_id = captor_id
+        self.captor_id = shape.id
         self.xSite = position[0] / scale_factor
         self.ySite = position[1] / scale_factor
         self.zSite = position[2] / scale_factor
@@ -229,12 +227,14 @@ class Captor:
 
         Returns
         -------
-        vertices: array
-            The vertices of captor's geometry
-        normals: array
-            The normal vectors of each vertices in captor's geometry
-        triangles: array
-            The triangles of captor's geometry
+        refl: float
+            The reflection
+        specular: float
+            The specular
+        trans: float
+            The tranparency
+        roughness: float
+            The roughness
 
         """
         
@@ -266,6 +266,7 @@ def addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor):
 
     """
     lastTriangleId = scene.nFaces()
+
     for i in range(len(list_virtual_captor)):
         captor = list_virtual_captor[i]
         if captor.type != "VirtualCaptor":
@@ -301,6 +302,7 @@ def addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor):
     """
     
     lastTriangleId = scene.nFaces()
+
     for i in range(len(list_face_captor)):
         captor = list_face_captor[i]
         if captor.type != "FaceCaptor":

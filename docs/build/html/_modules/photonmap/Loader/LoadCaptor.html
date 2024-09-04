@@ -127,7 +127,7 @@
 
 <div class="viewcode-block" id="Captor.initCaptor">
 <a class="viewcode-back" href="../../../autoapi/photonmap/Loader/LoadCaptor/index.html#photonmap.Loader.LoadCaptor.Captor.initCaptor">[docs]</a>
-    <span class="k">def</span> <span class="nf">initCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">,</span> <span class="n">captor_type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">initCaptor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Init a object of face captor </span>
 
@@ -139,14 +139,12 @@
 <span class="sd">            The position of captor</span>
 <span class="sd">        scale_factor: int</span>
 <span class="sd">            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">        captor_id: int</span>
-<span class="sd">            The id of captor</span>
 <span class="sd">        captor_type: str</span>
 <span class="sd">            &quot;VirtualCaptor&quot; or &quot;FaceCaptor&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">captor_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">captor_id</span> <span class="o">=</span> <span class="n">captor_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">captor_id</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xSite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ySite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zSite</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">scale_factor</span>
@@ -329,12 +327,14 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        vertices: array</span>
-<span class="sd">            The vertices of captor&#39;s geometry</span>
-<span class="sd">        normals: array</span>
-<span class="sd">            The normal vectors of each vertices in captor&#39;s geometry</span>
-<span class="sd">        triangles: array</span>
-<span class="sd">            The triangles of captor&#39;s geometry</span>
+<span class="sd">        refl: float</span>
+<span class="sd">            The reflection</span>
+<span class="sd">        specular: float</span>
+<span class="sd">            The specular</span>
+<span class="sd">        trans: float</span>
+<span class="sd">            The tranparency</span>
+<span class="sd">        roughness: float</span>
+<span class="sd">            The roughness</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         
@@ -370,6 +370,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_virtual_captor</span><span class="p">)):</span>
         <span class="n">captor</span> <span class="o">=</span> <span class="n">list_virtual_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">captor</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;VirtualCaptor&quot;</span><span class="p">:</span>
@@ -408,6 +409,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">lastTriangleId</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">nFaces</span><span class="p">()</span>
+
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_face_captor</span><span class="p">)):</span>
         <span class="n">captor</span> <span class="o">=</span> <span class="n">list_face_captor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">captor</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;FaceCaptor&quot;</span><span class="p">:</span>

@@ -16,11 +16,18 @@ You have to activate the conda environment before installing
     
     conda activate photonmap
 
+To install the others dependencies
+
+.. code-block:: bash
+    
+    pip install pgljupyter
+    
+
 To install as a Python library:
 
 .. code-block:: bash
     
-    python -m pip install ./
+    pip install ./
 
 To run test
 ========================

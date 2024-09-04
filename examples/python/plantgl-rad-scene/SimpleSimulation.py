@@ -8,11 +8,10 @@ if __name__ == "__main__":
     #setup configuration
     simulator.nb_photons = 1000000
     simulator.max_depth = 5
-
     simulator.resetScene()
 
     #setup environment
-    ground_ts = TriangleSet(pointList = [(0,0,0), (1,0,0), (0,1,0)], indexList = [(0, 2, 1)])
+    ground_ts = TriangleSet(pointList = [(0,0,0), (1,0,0), (0,1,0)], indexList = [(0, 1, 2)])
     ground_mat = Material(
                         name="Ground",
                         ambient = Color3( 0 ),
@@ -34,7 +33,7 @@ if __name__ == "__main__":
     simulator.addEnvToScene(light_sh)
 
     #setup captor
-    captor_ts = TriangleSet(pointList = [(0,0,1), (1,0,0), (0,1,0)], indexList = [(0, 1, 2)])
+    captor_ts = TriangleSet(pointList = [(0,0,0), (1,0,0), (0,1,0)], indexList = [(0, 2, 1)])
     captor_mat = Material(
                         name="Captor",
                         ambient = Color3( 127 ),
@@ -42,10 +41,10 @@ if __name__ == "__main__":
                         shininess = 0.5,
                         transparency = 0.5
                     )
-    captor_sh = Shape(captor_ts, captor_mat)
+    captor_sh = Shape(captor_ts, captor_mat, 0)
 
-    simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
-    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
+    #simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,1), scale_factor=1)
+    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1)
 
     #run
     res = simulator.run()

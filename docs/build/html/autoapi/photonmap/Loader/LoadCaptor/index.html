@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>photonmap.Loader.LoadCaptor &mdash; Photon Mapping Simulation 1.0.0 documentation</title>
@@ -160,7 +160,7 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="photonmap.Loader.LoadCaptor.Captor.initCaptor">
-<span class="sig-name descname"><span class="pre">initCaptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor.initCaptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor.initCaptor" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">initCaptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">captor_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/photonmap/Loader/LoadCaptor.html#Captor.initCaptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#photonmap.Loader.LoadCaptor.Captor.initCaptor" title="Link to this definition"></a></dt>
 <dd><p>Init a object of face captor</p>
 <section id="returns">
 <h4>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h4>
@@ -170,8 +170,6 @@
 <dt>position<span class="classifier">tuple(int,int,int)</span></dt><dd><p>The position of captor</p>
 </dd>
 <dt>scale_factor: int</dt><dd><p>The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</p>
-</dd>
-<dt>captor_id: int</dt><dd><p>The id of captor</p>
 </dd>
 <dt>captor_type: str</dt><dd><p>“VirtualCaptor” or “FaceCaptor”</p>
 </dd>
@@ -263,11 +261,13 @@ False if not equal</p>
 <section id="id5">
 <h4>Returns<a class="headerlink" href="#id5" title="Link to this heading"></a></h4>
 <dl class="simple">
-<dt>vertices: array</dt><dd><p>The vertices of captor’s geometry</p>
+<dt>refl: float</dt><dd><p>The reflection</p>
 </dd>
-<dt>normals: array</dt><dd><p>The normal vectors of each vertices in captor’s geometry</p>
+<dt>specular: float</dt><dd><p>The specular</p>
 </dd>
-<dt>triangles: array</dt><dd><p>The triangles of captor’s geometry</p>
+<dt>trans: float</dt><dd><p>The tranparency</p>
+</dd>
+<dt>roughness: float</dt><dd><p>The roughness</p>
 </dd>
 </dl>
 </section>

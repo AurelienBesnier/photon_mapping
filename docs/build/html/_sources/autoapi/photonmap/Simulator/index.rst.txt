@@ -245,7 +245,7 @@ Module Contents
 
 
 
-   .. py:method:: addFaceCaptorToScene(shape, position, scale_factor, captor_id)
+   .. py:method:: addFaceCaptorToScene(shape, position, scale_factor)
 
       Add a face captor object to scene
 
@@ -257,8 +257,6 @@ Module Contents
           The position of captor
       scale_factor: int
           The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-      captor_id: int
-          The id of captor
 
       Returns
       -------
@@ -267,7 +265,7 @@ Module Contents
 
 
 
-   .. py:method:: addVirtualCaptorToScene(shape, position, scale_factor, captor_id)
+   .. py:method:: addVirtualCaptorToScene(shape, position, scale_factor)
 
       Add a virtual captor object to scene
 
@@ -279,8 +277,6 @@ Module Contents
           The position of captor
       scale_factor: int
           The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-      captor_id: int
-          The id of captor
 
       Returns
       -------
@@ -487,7 +483,7 @@ Module Contents
 
 
 
-   .. py:method:: addFaceCaptorsFromLpyFile(plant_file: str, plant_pos=Vec3(0, 0, 0))
+   .. py:method:: addFaceCaptorsFromLpyFile(plant_file: str, plant_pos=Vec3(0, 0, 0), derivationLength=None)
 
       Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
 
@@ -497,7 +493,8 @@ Module Contents
           The link to the file of the model of plant. (currently only support .lpy file)
       plantPos: Vec3
           The position of the plant
-              
+      derivationLength: int
+          The number of iteration to interpret the plant
 
 
 

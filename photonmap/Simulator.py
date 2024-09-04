@@ -194,7 +194,7 @@ class Simulator:
         #add object to scene
         self.scene_pgl.add(sh)
 
-    def addFaceCaptorToScene(self, shape, position, scale_factor, captor_id):
+    def addFaceCaptorToScene(self, shape, position, scale_factor):
         """
         Add a face captor object to scene
 
@@ -206,18 +206,16 @@ class Simulator:
             The position of captor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-        captor_id: int
-            The id of captor
 
         Returns
         -------
             The face captor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, captor_id, "FaceCaptor")
+        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, "FaceCaptor")
         self.list_face_captor.append(captor)
 
-    def addVirtualCaptorToScene(self, shape, position, scale_factor, captor_id):
+    def addVirtualCaptorToScene(self, shape, position, scale_factor):
         """
         Add a virtual captor object to scene
 
@@ -229,15 +227,13 @@ class Simulator:
             The position of captor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-        captor_id: int
-            The id of captor
         
         Returns
         -------
             The virtual captor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, captor_id, "VirtualCaptor")
+        captor = LoadCaptor.Captor().initCaptor(shape, position, scale_factor, "VirtualCaptor")
         self.list_virtual_captor.append(captor)
 
     def addVirtualDiskCaptorToScene(self, pos, normal, r, captor_id):
@@ -666,7 +662,7 @@ class Simulator:
         """
 
         if(captor_file != ""):
-            captor_id = 0
+            captor_id = len(self.list_virtual_captor)
             with open(captor_file, "r") as f:
                 next(f)
                 for line in f:
@@ -683,7 +679,7 @@ class Simulator:
                     captor_id += 1
 
 
-    def addFaceCaptorsFromLpyFile(self, plant_file: str, plant_pos = Vec3(0,0,0)):
+    def addFaceCaptorsFromLpyFile(self, plant_file: str, plant_pos = Vec3(0,0,0), derivationLength = None):
         """
         Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
 
@@ -693,11 +689,15 @@ class Simulator:
             The link to the file of the model of plant. (currently only support .lpy file)
         plantPos: Vec3
             The position of the plant
-                
+        derivationLength: int
+            The number of iteration to interpret the plant
         """
 
         lsystem = Lsystem(plant_file)
-        lstring = lsystem.derive(lsystem.axiom, 150)
+        if derivationLength is None:
+            derivationLength = lsystem.derivationLength
+
+        lstring = lsystem.derive(lsystem.axiom, derivationLength)
         lscene = lsystem.sceneInterpretation(lstring)
 
         scale_factor = self.scale_factor / 10
@@ -706,8 +706,8 @@ class Simulator:
         tr = Tesselator()
         for sh in lscene:
             sh.apply(tr)
-            mesh = Shape(tr.result, sh.appearance)
-            self.addFaceCaptorToScene(mesh, position, scale_factor, sh.id)
+            mesh = Shape(tr.result, sh.appearance, sh.id)
+            self.addFaceCaptorToScene(mesh, position, scale_factor)
 
         
 

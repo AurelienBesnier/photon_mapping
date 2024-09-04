@@ -378,7 +378,7 @@
 
 <div class="viewcode-block" id="Simulator.addFaceCaptorToScene">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addFaceCaptorToScene">[docs]</a>
-    <span class="k">def</span> <span class="nf">addFaceCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">addFaceCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a face captor object to scene</span>
 
@@ -390,21 +390,19 @@
 <span class="sd">            The position of captor</span>
 <span class="sd">        scale_factor: int</span>
 <span class="sd">            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">        captor_id: int</span>
-<span class="sd">            The id of captor</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            The face captor is added to the scene</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initCaptor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">,</span> <span class="s2">&quot;FaceCaptor&quot;</span><span class="p">)</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initCaptor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="s2">&quot;FaceCaptor&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">list_face_captor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulator.addVirtualCaptorToScene">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addVirtualCaptorToScene">[docs]</a>
-    <span class="k">def</span> <span class="nf">addVirtualCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">addVirtualCaptorToScene</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a virtual captor object to scene</span>
 
@@ -416,15 +414,13 @@
 <span class="sd">            The position of captor</span>
 <span class="sd">        scale_factor: int</span>
 <span class="sd">            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value</span>
-<span class="sd">        captor_id: int</span>
-<span class="sd">            The id of captor</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            The virtual captor is added to the scene</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initCaptor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">captor_id</span><span class="p">,</span> <span class="s2">&quot;VirtualCaptor&quot;</span><span class="p">)</span>
+        <span class="n">captor</span> <span class="o">=</span> <span class="n">LoadCaptor</span><span class="o">.</span><span class="n">Captor</span><span class="p">()</span><span class="o">.</span><span class="n">initCaptor</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="s2">&quot;VirtualCaptor&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">list_virtual_captor</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">captor</span><span class="p">)</span></div>
 
 
@@ -886,7 +882,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span><span class="p">(</span><span class="n">captor_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-            <span class="n">captor_id</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">captor_id</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">list_virtual_captor</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">captor_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
@@ -906,7 +902,7 @@
 
 <div class="viewcode-block" id="Simulator.addFaceCaptorsFromLpyFile">
 <a class="viewcode-back" href="../../autoapi/photonmap/Simulator/index.html#photonmap.Simulator.Simulator.addFaceCaptorsFromLpyFile">[docs]</a>
-    <span class="k">def</span> <span class="nf">addFaceCaptorsFromLpyFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plant_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plant_pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="nf">addFaceCaptorsFromLpyFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plant_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">plant_pos</span> <span class="o">=</span> <span class="n">Vec3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">derivationLength</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant</span>
 
@@ -916,11 +912,15 @@
 <span class="sd">            The link to the file of the model of plant. (currently only support .lpy file)</span>
 <span class="sd">        plantPos: Vec3</span>
 <span class="sd">            The position of the plant</span>
-<span class="sd">                </span>
+<span class="sd">        derivationLength: int</span>
+<span class="sd">            The number of iteration to interpret the plant</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">lsystem</span> <span class="o">=</span> <span class="n">Lsystem</span><span class="p">(</span><span class="n">plant_file</span><span class="p">)</span>
-        <span class="n">lstring</span> <span class="o">=</span> <span class="n">lsystem</span><span class="o">.</span><span class="n">derive</span><span class="p">(</span><span class="n">lsystem</span><span class="o">.</span><span class="n">axiom</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">derivationLength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">derivationLength</span> <span class="o">=</span> <span class="n">lsystem</span><span class="o">.</span><span class="n">derivationLength</span>
+
+        <span class="n">lstring</span> <span class="o">=</span> <span class="n">lsystem</span><span class="o">.</span><span class="n">derive</span><span class="p">(</span><span class="n">lsystem</span><span class="o">.</span><span class="n">axiom</span><span class="p">,</span> <span class="n">derivationLength</span><span class="p">)</span>
         <span class="n">lscene</span> <span class="o">=</span> <span class="n">lsystem</span><span class="o">.</span><span class="n">sceneInterpretation</span><span class="p">(</span><span class="n">lstring</span><span class="p">)</span>
 
         <span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">/</span> <span class="mi">10</span>
@@ -929,8 +929,8 @@
         <span class="n">tr</span> <span class="o">=</span> <span class="n">Tesselator</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">sh</span> <span class="ow">in</span> <span class="n">lscene</span><span class="p">:</span>
             <span class="n">sh</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
-            <span class="n">mesh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addFaceCaptorToScene</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">,</span> <span class="n">sh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">Shape</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">result</span><span class="p">,</span> <span class="n">sh</span><span class="o">.</span><span class="n">appearance</span><span class="p">,</span> <span class="n">sh</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addFaceCaptorToScene</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">scale_factor</span><span class="p">)</span></div>
 
 
         

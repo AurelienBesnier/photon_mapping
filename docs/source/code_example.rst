@@ -75,10 +75,10 @@ Code example
                             shininess = 0.5,
                             transparency = 0.5
                         )
-    captor_sh = Shape(captor_ts, captor_mat)
+    captor_sh = Shape(captor_ts, captor_mat, 0)
 
-    simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
-    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
+    simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1)
+    simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1)
 
 To run the simulation, we use the function ``run`` of the object ``Simulator``. The result of the simulation is saved in an object of type ``SimulationResult``
 
@@ -142,9 +142,9 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
                             shininess = 0.5,
                             transparency = 0.5
                         )
-        captor_sh = Shape(captor_ts, captor_mat)
-        simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1, captor_id=0)
-        simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1, captor_id=0)
+        captor_sh = Shape(captor_ts, captor_mat, 0)
+        simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,3), scale_factor=1)
+        simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1)
     
         #run
         res = simulator.run()
