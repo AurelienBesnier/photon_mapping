@@ -1,8 +1,7 @@
 from photonmap.Simulator import *
 from openalea.plantgl.all import * 
 
-if __name__ == "__main__":
-
+def test_simple_simulation():
     simulator = Simulator()
 
     #setup configuration

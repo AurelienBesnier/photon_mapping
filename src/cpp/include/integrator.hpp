@@ -511,7 +511,7 @@ public:
 						{
 							//check if rayon contact captor from above
 							float test_ouverture = -dot(info.surfaceInfo.shadingNormal, ray.direction);
-							if(test_ouverture > -0.0001) 
+							if(test_ouverture > -1) 
 #pragma omp critical
 							{
 								Photon p(throughput, info.surfaceInfo.position,
