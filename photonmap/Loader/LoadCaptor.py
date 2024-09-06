@@ -1,12 +1,12 @@
 from math import cos, sin
 
-from openalea.plantgl.all import *
+from openalea.plantgl.all import Color3, Material, Scene, Shape, TriangleSet
 
 from photonmap import (
     VectorFloat,
     VectorUint,
 )
-from photonmap.Common.Outils import *
+from photonmap.Common.Outils import flatten
 
 # Objectif of this module is adding captors to the scene of photon mapping to the received energy
 
@@ -81,7 +81,9 @@ class Captor:
 
         return self
 
-    def initVirtualDiskCaptor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
+    def initVirtualDiskCaptor(
+        self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0
+    ):
         """
         Init a object of virtual disk shape captor
 

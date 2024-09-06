@@ -4,7 +4,7 @@ from collections import OrderedDict
 import pandas as pd
 from scipy import stats
 
-from photonmap.Loader.LoadCaptor import *
+from photonmap.Loader.LoadCaptor import findIndexOfDiskCaptorInList
 
 """This is the doc string for the file3 file where we can say things about the python module.add()
 We can write long text if we want.

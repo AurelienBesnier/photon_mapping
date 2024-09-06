@@ -1,8 +1,19 @@
 import re
 
-from openalea.plantgl.all import *
+from openalea.plantgl.all import (
+    Color3,
+    Frustum,
+    Index3,
+    Index3Array,
+    Material,
+    Scene,
+    Shape,
+    Tesselator,
+    TriangleSet,
+    Vector3,
+)
 
-from photonmap.Common.Math import *
+from photonmap.Common.Math import crossVector, denormalize
 
 # Objectif of this module is read the geometry of each object of fichier RAD
 
@@ -63,7 +74,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
 
     """
 
-    with open(file, "r") as f:
+    with open(file) as f:
         lines = f.readlines()
         materials = {}
         shapes = {}

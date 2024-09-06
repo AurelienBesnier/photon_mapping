@@ -34,7 +34,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filena
     if not os.path.exists("results"):
         os.makedirs("results")
 
-    filename = "results/" + filename + ".csv"
+    filename = "results/" + filename
 
     with open(filename, "w") as f:
         w_str = "id"

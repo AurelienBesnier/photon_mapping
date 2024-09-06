@@ -1,14 +1,14 @@
 import re
 
-from openalea.plantgl.all import *
+from openalea.plantgl.all import Color3, Scene
 
 from photonmap import (
     Vec3,
     VectorFloat,
     VectorUint,
 )
-from photonmap.Common.Math import *
-from photonmap.Common.Outils import *
+from photonmap.Common.Math import averageVector, geoHemisphere
+from photonmap.Common.Outils import flatten, wavelength2Rgb
 
 # Objectif of this module is adding environment object to the scene of Photon Mapping
 

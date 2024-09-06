@@ -78,10 +78,6 @@ def orthonormalBasis(n):
         The third axe
 
     """
-
-    t = Vector3(0, 0, 0)
-    b = Vector3(0, 0, 0)
-
     if abs(n[1]) < 0.9:
         t = crossVector(n, Vector3(0, 1, 0))
     else:
@@ -168,10 +164,10 @@ def averageVector(listVectors):
 
     """
 
-    sum = Vector3(0, 0, 0)
+    v_sum = Vector3(0, 0, 0)
     for v in listVectors:
-        sum = sum + v
+        v_sum += v
 
-    sum = sum / len(listVectors)
+    v_sum /= len(listVectors)
 
-    return sum
+    return v_sum

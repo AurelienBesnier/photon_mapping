@@ -1,12 +1,20 @@
 from openalea.lpy import Lsystem
-from openalea.plantgl.all import *
+from openalea.plantgl.all import (
+    Color3,
+    Material,
+    Scene,
+    Shape,
+    Tesselator,
+    TriangleSet,
+    Vector3,
+)
 
 from photonmap import (
     Vec3,
     VectorFloat,
     VectorUint,
 )
-from photonmap.Common.Outils import *
+from photonmap.Common.Outils import flatten
 
 # Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy
 # Data is located in this directory: ./assets
@@ -40,7 +48,9 @@ def add_lpy_file_to_scene(scene, filename, t, tr2shmap, anchor, scale_factor):
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
     # Adding the model of plant
-    return addPlantModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
+    return addPlantModel(
+        lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor
+    )
 
 
 # add plant model to Scene
@@ -146,7 +156,7 @@ def addPlantModel(lscene, tr, tr2shmap, sc, anchor, scale_factor):
 
 
 # add plant to a scene of PlantGL to visualize
-def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy={}):
+def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy: dict):
     """
     Add the plant mesh to the PlantGL scene to visualize the scene
 
@@ -170,7 +180,6 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy={}):
         A PlantGL Scene with the plant
     """
 
-    ctr = 0
     pglScene = Scene()
     for sh in lscene:
         sh.apply(tr)
