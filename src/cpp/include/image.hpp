@@ -15,73 +15,74 @@
  * @class Image
  * @author Aurelien Besnier
  */
-class Image {
-private:
-    unsigned width; ///< The width of the image in pixels.
-    unsigned height; ///< The height of the image in pixels.
-    std::vector<float> pixels; ///< The pixels of the image (RowMajor order).
+class Image
+{
+      private:
+        unsigned width;  ///< The width of the image in pixels.
+        unsigned height; ///< The height of the image in pixels.
+        std::vector<float>
+          pixels; ///< The pixels of the image (RowMajor order).
 
+        unsigned getIndex(unsigned i, unsigned j) const;
 
-    unsigned getIndex(unsigned i, unsigned j) const;
+      public:
+        /**
+         * @brief Constructor
+         * Allocate the memory necessary for the image.
+         * @param width
+         * @param height
+         */
+        Image(unsigned width, unsigned height);
 
-public:
+        /**
+         * @fn Vec3f getPixel(unsigned i, unsigned j) const
+         * @brief Returns the color of the pixel of the given coordinates.
+         * @param i
+         * @param j
+         * @return
+         */
+        Vec3f getPixel(unsigned i, unsigned j) const;
 
-    /**
-     * @brief Constructor
-     * Allocate the memory necessary for the image.
-     * @param width
-     * @param height
-     */
-    Image(unsigned width, unsigned height);
+        /**
+         * @fn void addPixel(unsigned i, unsigned j, const Vec3f &rgb)
+         * @brief Adds the given color to the pixel of the given coordinates.
+         * @param i
+         * @param j
+         * @return
+         */
+        void addPixel(unsigned i, unsigned j, const Vec3f& rgb);
 
-    /**
-     * @fn Vec3f getPixel(unsigned i, unsigned j) const
-     * @brief Returns the color of the pixel of the given coordinates.
-     * @param i
-     * @param j
-     * @return
-     */
-    Vec3f getPixel(unsigned i, unsigned j) const;
+        /**
+         * @fn void setPixel(unsigned i, unsigned j, const Vec3f &rgb)
+         * @brief Sets the pixel pixel of the given coordinates at a certain
+         * color.
+         * @param i
+         * @param j
+         * @return
+         */
+        void setPixel(unsigned i, unsigned j, const Vec3f& rgb);
 
-    /**
-     * @fn void addPixel(unsigned i, unsigned j, const Vec3f &rgb)
-    * @brief Adds the given color to the pixel of the given coordinates.
-    * @param i
-    * @param j
-    * @return
-    */
-    void addPixel(unsigned i, unsigned j, const Vec3f &rgb);
+        /**
+         * @fn void divide(const float &k);
+         * @brief Divide every pixels by a number.
+         * @param k the divider
+         */
+        void divide(const float& k);
 
-    /**
-    * @fn void setPixel(unsigned i, unsigned j, const Vec3f &rgb)
-    * @brief Sets the pixel pixel of the given coordinates at a certain color.
-    * @param i
-    * @param j
-    * @return
-    */
-    void setPixel(unsigned i, unsigned j, const Vec3f &rgb);
+        /**
+         * Sets every pixels to zero.
+         */
+        void clear();
 
-    /**
-     * @fn void divide(const float &k);
-     * @brief Divide every pixels by a number.
-     * @param k the divider
-     */
-    void divide(const float &k);
+        void gammaCorrection(const float& gamma);
 
-    /**
-     * Sets every pixels to zero.
-     */
-    void clear();
-
-    void gammaCorrection(const float &gamma);
-
-    /**
-     * @fn void writePPM(const std::string &filename) const
-     * @brief Write the image to the given filename to the .ppm format.
-     * https://fr.wikipedia.org/wiki/Portable_pixmap
-     * @param filename
-     */
-    void writePPM(const std::string &filename) const;
+        /**
+         * @fn void writePPM(const std::string &filename) const
+         * @brief Write the image to the given filename to the .ppm format.
+         * https://fr.wikipedia.org/wiki/Portable_pixmap
+         * @param filename
+         */
+        void writePPM(const std::string& filename) const;
 };
 
 #endif

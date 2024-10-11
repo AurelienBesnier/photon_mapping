@@ -1,81 +1,101 @@
 #include "photon_map.hpp"
-#include <algorithm>
+
 #include <boost/sort/sort.hpp>
+#include <numeric>
 
 template<typename T>
-void KdTree<T>::buildTree() {
-    // setup indices of points
-    std::vector<int> indices(nPoints);
-    std::iota(indices.begin(), indices.end(), 0);
+void
+KdTree<T>::buildTree()
+{
+        // setup indices of points
+        std::vector<int> indices(nPoints);
+        std::iota(indices.begin(), indices.end(), 0);
 
-    // build tree recursively
-    buildNode(indices.data(), nPoints, 0);
+        // build tree recursively
+        buildNode(indices.data(), nPoints, 0);
 }
 
 template<typename T>
-void KdTree<T>::buildNode(int *indices, int n_points, int depth) {
-    if (n_points <= 0) return;
+void
+KdTree<T>::buildNode(int* indices, int n_points, int depth)
+{
+        if (n_points <= 0)
+                return;
 
-    // choose separation axis
-    const int axis = depth % 3;
+        // choose separation axis
+        const int axis = depth % 3;
 
-    // sort indices by coordination in the separation axis.
-    boost::sort::parallel_stable_sort(indices, indices + n_points, [&](const int idx1, const int idx2) {
-        return points[idx1][axis] < points[idx2][axis];
-    });
+        // sort indices by coordination in the separation axis.
+        boost::sort::parallel_stable_sort(
+          indices, indices + n_points, [&](const int idx1, const int idx2) {
+                  return points[idx1][axis] < points[idx2][axis];
+          });
 
-    // index of middle element of indices
-    const int mid = (n_points - 1) / 2;
+        // index of middle element of indices
+        const int mid = (n_points - 1) / 2;
 
-    // add node to node array, remember index of current node(parent node)
-    const int parentIdx = nodes.size();
-    Node node;
-    node.axis = axis;
-    node.idx = indices[mid];
-    nodes.push_back(node);
+        // add node to node array, remember index of current node(parent node)
+        const int parentIdx = nodes.size();
+        Node node;
+        node.axis = axis;
+        node.idx = indices[mid];
+        nodes.push_back(node);
 
-    // add left children to node array
-    const int leftChildIdx = nodes.size();
-    buildNode(indices, mid, depth + 1);
+        // add left children to node array
+        const int leftChildIdx = nodes.size();
+        buildNode(indices, mid, depth + 1);
 
-    // set index of left child on parent node
-    // if size of nodes doesn't change, it means there is no left children
-    if (leftChildIdx == nodes.size()) {
-        nodes[parentIdx].leftChildIdx = -1;
-    } else {
-        nodes[parentIdx].leftChildIdx = leftChildIdx;
-    }
+        // set index of left child on parent node
+        // if size of nodes doesn't change, it means there is no left children
+        if (leftChildIdx == nodes.size()) {
+                nodes[parentIdx].leftChildIdx = -1;
+        } else {
+                nodes[parentIdx].leftChildIdx = leftChildIdx;
+        }
 
-    // add right children to node array
-    const int rightChildIdx = nodes.size();
-    buildNode(indices + mid + 1, n_points - mid - 1, depth + 1);
+        // add right children to node array
+        const int rightChildIdx = nodes.size();
+        buildNode(indices + mid + 1, n_points - mid - 1, depth + 1);
 
-    // set index of right child on parent node
-    // if size of nodes doesn't change, it means there is no right children
-    if (rightChildIdx == nodes.size()) {
-        nodes[parentIdx].rightChildIdx = -1;
-    } else {
-        nodes[parentIdx].rightChildIdx = rightChildIdx;
-    }
+        // set index of right child on parent node
+        // if size of nodes doesn't change, it means there is no right children
+        if (rightChildIdx == nodes.size()) {
+                nodes[parentIdx].rightChildIdx = -1;
+        } else {
+                nodes[parentIdx].rightChildIdx = rightChildIdx;
+        }
 }
 
-
-const Photon &PhotonMap::getIthPhoton(int i) const { return photons[i]; }
-
-void PhotonMap::setPhotons(const std::vector<Photon> &p) {
-    this->photons = p;
+const Photon&
+PhotonMap::getIthPhoton(int i) const
+{
+        return photons[i];
 }
 
-const size_t PhotonMap::nPhotons() const { return photons.size(); }
+void
+PhotonMap::setPhotons(const std::vector<Photon>& p)
+{
+        this->photons = p;
+}
 
-void PhotonMap::build() {
+const size_t
+PhotonMap::nPhotons() const
+{
+        return photons.size();
+}
+
+void
+PhotonMap::build()
+{
 #ifdef __OUTPUT__
-    std::cout<<"[PhotonMap] photons: "<<photons.size()<<std::endl;
+        std::cout << "[PhotonMap] photons: " << photons.size() << std::endl;
 #endif
-    kdtree.setPoints(photons.data(), photons.size());
-    kdtree.buildTree();
+        kdtree.setPoints(photons.data(), photons.size());
+        kdtree.buildTree();
 }
 
-std::vector<int> PhotonMap::queryKNearestPhotons(Vec3f &p, int k, float &max_dist2) const {
-    return kdtree.searchKNearest(p, k, max_dist2);
+std::vector<int>
+PhotonMap::queryKNearestPhotons(Vec3f& p, int k, float& max_dist2) const
+{
+        return kdtree.searchKNearest(p, k, max_dist2);
 }
