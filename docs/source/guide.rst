@@ -9,7 +9,7 @@ Configuration file
 
 | The file simulation.ini contains all the basic configurations to run a simulation. 
 |
-| There are the configurations which can be defined in the file simulation.ini
+| Here are the different variables that you can configure: 
 
 +------------------------+---------------+----------------------------------------------------------------------+
 | Configuration name     | Data type     | Description                                                          |
@@ -61,9 +61,9 @@ Configuration file
 Room file
 ---------
 
-| At this version, only files of type ``.rad`` is supported by our outil.
+| At this version, only files of type ``.rad`` is supported by our tool.
 |
-| To define an object in file ``.rad``, there are two steps:
+| To define an object in a ``.rad`` file, there are two steps:
 |
 | Firstly, we have to define the material object
 
@@ -127,7 +127,7 @@ The files containing the optical properties are saved in this structure of folde
 
 | The file Specularities.xlsx is used to define the specularities of the materials. These values represent the average specularities for all the wavelength.
 |
-| This is an example of this file
+| Here is an example of this file
 
 
 +---------------------+-----------------------------+
@@ -146,7 +146,7 @@ The files containing the optical properties are saved in this structure of folde
 
 | The folder Env contains the files .csv which define the average reflection and average transmission for each wavelength of the environment's objects. These objects are rarely changing during the process of experiment. Whereas, the files .csv inside the folder Plant is using to define these optical properties of captor/plant. The amount of received energies is calculated on these objects. It is important to notice that the name of the .csv files is the same as the name of material which is defined in the room file (.rad)
 |
-| This is an example of these files
+| For example:
 
 +------------+------------+
 | lambda     | moy        |
@@ -163,8 +163,8 @@ The files containing the optical properties are saved in this structure of folde
 Captor file
 -----------
 
-| In our outil, we have a file .csv is using to define the necessary data of captor. 
-| This is an example of this file
+| In our tool, we have a csv file defining the position and orientation of each captor. 
+| It goes as follows:
 
 +-------+-------+-------+----------------+--------+--------+--------+
 | X     | Y     | Z     | rayon_capteur  | Xnorm  | Ynorm  | Znorm  |
@@ -226,7 +226,7 @@ Calibration points file
 Run a simple simulation
 ========================
 
-There are the basic steps to run a simple light simulation with this tool
+These are the basic steps to run a simple light simulation with this tool:
 
 Setup input files
 -----------------
@@ -269,9 +269,9 @@ Create a captor file (captors_expe1.csv) with only one captor
     X,Y,Z,rayon_capteur,Xnorm,Ynorm,Znorm
     110,930,1000,10,0,0,1
 
-| Create a folder ./PO to save the optical property of all the object. To simplify, we can leave it empty for now
+| Create a folder ``./PO`` to save the optical property of all the object. To simplify, we can leave it empty for now.
 
-The calibration points file and spectral heterogeneity file are optional 
+The calibration points file and spectral heterogeneity file are optional.
 
 Write the core program
 ----------------------
@@ -296,14 +296,14 @@ Run and results
 
 | To run the program, you need to install the tools by following this `guide <installing.html>`_.
 |
-| Activate the conda environment and run the program
+| Activate the conda environment and run the program.
 
 .. code-block:: bash
 
     conda activate env_name
     python main.py
 
-| The result is a .csv file saved in the folder ./result. This is an example of result.
+| The result is a csv file saved in the folder ``./result``. This is an example of result.
 
 +-----+----------------+----------------+
 | id  | N_sim_600_655  | N_sim_655_665  |
@@ -325,7 +325,7 @@ Calibrate the results
 
 | To making this function works properly, we need two input files: the spectral heterogeneity file and the calibration points file. 
 |
-| In our outil, for each simulation of each spectral range, we will always run the same simulation of photon mapping. So the result final isn't include the factor of spectral heterogeneity. That is why we need the spectral heterogeneity file to correct the final results of simulation before doing the calculations before that.
+| In our tool, for each simulation of each spectral range, we will always run the same simulation of photon mapping. So the result final isn't include the factor of spectral heterogeneity. That is why we need the spectral heterogeneity file to correct the final results of simulation before doing the calculations before that.
 |
 | After correcting the factor of heterogeneity, we will calibrate the result by using the calibration point file. This file contains the received energies measured in reality on the positions of some captors which is used in the simulation. With these values, we will use the method ``Linear Regression`` to calculate the coefficients to convertir the results of simulation to irradiance (a unit used to measure the power of energy).
 |
