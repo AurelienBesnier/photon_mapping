@@ -1,12 +1,9 @@
-[![example workflow](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://minhlucky9.github.io/photon_mapping/build/html/index.html)
+[![doc](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://minhlucky9.github.io/photon_mapping/build/html/index.html)
+![package](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
+
 # photon_mapping
 
 minimal but extensible header only implementation of photon mapping in C++.
-
-
-> [!NOTE]  
-> This Project aims at determining the illumination of virtual plants and study
-> the influence of their environment.
 
 # How to compile:
 create and activate the conda environment:
@@ -69,7 +66,7 @@ python planglRadScene.py
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
 ## Authors
-This project was originaly developed by [YumcyaWiz](https://github.com/yumcyaWiz/)(Kenta Eto). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
+This project was originaly developed by [YumcyaWiz](https://github.com/yumcyaWiz/) (Kenta Eto). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
 This work was funded by INRAe Metaprogramme DIGIT-BIO (Digital biology to explore and predict living organisms in their environment). 
 
 ## Use case 
