@@ -31,7 +31,7 @@ jobs:
         auto-activate-base: false
     - name: build
       run: |
-        pip install .
+        pip install . -vv
       env:
        CC:   gcc
        CXX:  g++
