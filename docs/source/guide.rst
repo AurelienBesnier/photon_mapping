@@ -105,7 +105,7 @@ Room file
     2400.0 1840.0 0
     0.0 1840.0 0
 
-| More informations of the files ``.rad`` can be found in this file `refman.pdf <https://github.com/minhlucky9/photon_mapping/tree/main/docs/refman.pdf>`_
+| More informations of the files ``.rad`` can be found in this file `refman.pdf <https://github.com/openalea-incubator/photon_mapping/tree/main/docs/refman.pdf>`_
 
 Optical property files
 ----------------------
@@ -356,7 +356,7 @@ To obtain the 3D scene, we have to run this program through ```ipython```.
     %gui qt5
     run main.py
 
-| Here is the interface of visualize the scene
+| Here is the plantGL interface to visualize the scene
 
 .. image:: visualizeRoom.png
   :width: 700
