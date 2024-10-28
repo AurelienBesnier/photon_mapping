@@ -30,17 +30,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+          environment-file: conda/environment.yml
+          conda-solver: ${{ matrix.solver }}
+          auto-activate-base: false
       - name: install dependencies and build docs
         run: |
-          sudo apt-get install doxygen graphviz -y
-          doxygen Doxyfile
+          pip install .
+          cd docs
+          make html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: './docs/html/.'
+          path: './docs/build/html/.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

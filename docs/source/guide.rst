@@ -144,7 +144,11 @@ The files containing the optical properties are saved in this structure of folde
 | MiroirCaissonLampes | 0.4                         |
 +---------------------+-----------------------------+
 
-| The folder Env contains the files .csv which define the average reflection and average transmission for each wavelength of the environment's objects. These objects are rarely changing during the process of experiment. Whereas, the files .csv inside the folder Plant is using to define these optical properties of captor/plant. The amount of received energies is calculated on these objects. It is important to notice that the name of the .csv files is the same as the name of material which is defined in the room file (.rad)
+| The folder Env contains the files .csv which define the average reflection and average transmission for each wavelength of the environment's objects. 
+| These objects are rarely changing during the process of experiment. 
+| Whereas, the files .csv inside the folder Plant is using to define these optical properties of captor/plant. 
+| The amount of received energies is calculated on these objects. 
+| It is important to notice that the name of the .csv files is the same as the name of material which is defined in the room file (.rad)
 |
 | For example:
 
