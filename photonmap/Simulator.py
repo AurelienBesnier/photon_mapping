@@ -15,6 +15,7 @@ from photonmap import (
 )
 from photonmap.Energy import CalculateEnergy, CorrectEnergy
 from photonmap.libphotonmap_core import (
+    Render,
     visualizeCaptorsPhotonMap,
     visualizePhotonMap,
 )
@@ -571,20 +572,22 @@ class Simulator:
 
         return scene, has_virtual_captor, virtual_captor_triangle_dict, has_face_captor, face_captor_triangle_dict
 
-    def render(self, integrator, scene, w, sampler):
+    def render(self, integrator, scene, w, sampler, n_samples=512):
         """
-        Visualize the photon map of the simulation in the scene
+        Visualize the photon map of the scene and render an image from it.
 
         Parameters
         ----------
         integrator: libphotonmap_core.PhotonMapping
-            The object which handles all the simulation of photon mapping
+            The object which handles all the simulation of photon mapping.
         scene: libphotonmap_core.Scene
-            The object which contains all the object in the scene of simulation
+            The object which contains all the object in the scene of simulation.
         w: Vec3
-            The average wavelength of spectral range used to determine the color of the light
+            The average wavelength of spectral range used to determine the color of the light.
         sampler: libphotonmap_core.Sampler
-            The generator of the random number
+            The generator of the random number.
+        n_samples: int
+            Number of samples for the final render.
 
         Returns
         -------
@@ -628,6 +631,21 @@ class Simulator:
             "results/photonmap-captors-" + str(w) + "nm.ppm",
             sampler,
             integrator,
+        )
+        image.clear()
+        print("Done!")
+
+        print("Rendering image...")
+        Render(
+            sampler,
+            image,
+            self.image_height,
+            self.image_width,
+            n_samples,
+            self.camera,
+            integrator,
+            scene,
+            "results/render-" + str(w) + "nm.ppm",
         )
         image.clear()
         print("Done!")

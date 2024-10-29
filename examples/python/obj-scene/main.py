@@ -6,12 +6,12 @@ from photonmap.libphotonmap_core import *
 
 if __name__ == '__main__':
     n_samples = 2
-    n_photons = 1000000
+    n_photons = 100
     n_estimation_global = 95
-    n_photons_caustics_multiplier = 50
-    n_estimation_caustics = 50
-    final_gathering_depth = 1
-    max_depth = 24
+    n_photons_caustics_multiplier = 20
+    n_estimation_caustics = 10
+    final_gathering_depth = 2
+    max_depth = 2
     
     aspect_ratio = 4/3
     image_width = 512
