@@ -137,6 +137,7 @@ class Simulator:
     def __init__(self):
 
         self.nb_photons = 0
+        self.n_samples = 512
         self.max_depth = 0
         self.scale_factor = 1
         self.t_min = 0.0001
@@ -572,7 +573,7 @@ class Simulator:
 
         return scene, has_virtual_captor, virtual_captor_triangle_dict, has_face_captor, face_captor_triangle_dict
 
-    def render(self, integrator, scene, w, sampler, n_samples=512):
+    def render(self, integrator, scene, w, sampler):
         """
         Visualize the photon map of the scene and render an image from it.
 
@@ -586,8 +587,6 @@ class Simulator:
             The average wavelength of spectral range used to determine the color of the light.
         sampler: libphotonmap_core.Sampler
             The generator of the random number.
-        n_samples: int
-            Number of samples for the final render.
 
         Returns
         -------
@@ -641,7 +640,7 @@ class Simulator:
             image,
             self.image_height,
             self.image_width,
-            n_samples,
+            self.n_samples,
             self.camera,
             integrator,
             scene,
@@ -668,7 +667,7 @@ class Simulator:
         self.scene_pgl = ReadRADGeo.read_rad(
             room_file, self.scale_factor, flip_normal)
 
-    def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0)):
+    def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
         """
         Enable the capacity to render/visulize the photon map in the scene
 
@@ -682,7 +681,7 @@ class Simulator:
         """
         self.rendering = True
         # using for render the results
-        self.camera = self.initCameraRender(lookfrom, lookat)
+        self.camera = self.initCameraRender(lookfrom, lookat, vfov)
 
     def addVirtualDiskCaptorsFromFile(self, captor_file: str):
         """
@@ -743,9 +742,9 @@ class Simulator:
             mesh = Shape(tr.result, sh.appearance, sh.id)
             self.addFaceCaptorToScene(mesh, position, scale_factor)
 
-    def initCameraRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0)):
+    def initCameraRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
         """
-        Init the camera to render image. Calling by the function setupRender
+        Init the camera to render image. Called by the function setupRender
 
         Parameters
         ----------
@@ -765,7 +764,6 @@ class Simulator:
         self.image_height = 512
 
         vup = Vec3(0, 0, -1)
-        vfov = 50.0
         dist_to_focus = 2.0
         aperture = 0.01
 
