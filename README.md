@@ -66,7 +66,7 @@ python planglRadScene.py
 * [tinyobjloader](https://github.com/tinyobjloader/tinyobjloader)
 
 ## Authors
-This project was originaly developed by [YumcyaWiz](https://github.com/yumcyaWiz/) (Kenta Eto). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, E. Faure.
+This project was originaly developed by [YumcyaWiz](https://github.com/yumcyaWiz/) (Kenta Eto). Main extension were developed by Aurélien Besnier and Nguyen Tuan Minh with contribution of J. Bertheloot, F. Boudon, T. Arsouze, E. Faure.
 This work was funded by INRAe Metaprogramme DIGIT-BIO (Digital biology to explore and predict living organisms in their environment). 
 
 ## Use case 
