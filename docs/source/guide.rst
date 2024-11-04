@@ -388,7 +388,7 @@ Test value Tmin
 
 | Here is a example of result
 
-.. image:: test_t_min.png
+.. image:: test_tmin.png
   :width: 500
   :alt: Result of function test tmin
 
