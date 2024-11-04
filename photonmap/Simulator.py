@@ -409,7 +409,7 @@ class Simulator:
             This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
 
         Returns
-        -------
+        ---z----
             A rendered scene in 3D
 
         """
@@ -418,7 +418,7 @@ class Simulator:
         sc = self.scene_pgl
 
         # add light direction to scene
-        sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
+        #sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
 
         # add face captor
         if len(self.list_face_captor) > 0:

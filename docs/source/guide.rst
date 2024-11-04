@@ -23,7 +23,7 @@ Configuration file
 |                        |               | | is recalculated by dividing their coordinates by                   |
 |                        |               | | this value                                                         |
 +------------------------+---------------+----------------------------------------------------------------------+
-| T_MIN                  | int           | | The minimum distance between the point of                          |
+| T_MIN                  | float           | | The minimum distance between the point of                        |
 |                        |               | | intersection and the origin of the light ray                       |
 +------------------------+---------------+----------------------------------------------------------------------+
 | NB_THREAD              | int           | | The number of threads on the CPU used to calculate in              |
