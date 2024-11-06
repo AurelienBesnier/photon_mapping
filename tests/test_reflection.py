@@ -1,4 +1,4 @@
-from photonmap import PhotonMapping, Scene, UniformSampler, Vec3
+from openalea.photonmap import PhotonMapping, Scene, UniformSampler, Vec3
 
 
 def test_reflection():

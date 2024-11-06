@@ -8,8 +8,8 @@ minimal but extensible header only implementation of photon mapping in C++.
 # How to compile:
 create and activate the conda environment:
 ```bash
-conda env create -f environment.yml
-conda activate photonmap
+mamba env create -f environment.yml
+mamba activate photonmap
 ```
 To install as a Python library:
 ```bash
@@ -26,7 +26,7 @@ make -j
 # How to run example:
 
 ```bash
-conda activate photonmap
+mamba activate photonmap
 cd examples/python/plantgl-rad-scene
 python planglRadScene.py
 ```
@@ -40,7 +40,7 @@ python planglRadScene.py
 # How to run the jupyter notebook
 
 ```bash
-    conda activate photonmap
+    mamba activate photonmap
     pip install pgljupyter
 
     cd examples/python/plantgl-rad-scene

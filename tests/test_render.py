@@ -2,7 +2,7 @@ import os
 import random
 import sys
 
-from photonmap import (
+from openalea.photonmap import (
     Camera,
     Image,
     PhotonMapping,

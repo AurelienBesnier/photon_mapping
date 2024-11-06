@@ -1,4 +1,4 @@
-from photonmap import Vec3
+from openalea.photonmap import Vec3
 
 # This module consist the common functions using in this project
 

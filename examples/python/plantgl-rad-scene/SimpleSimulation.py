@@ -1,4 +1,4 @@
-from photonmap.Simulator import *
+from openalea.photonmap.Simulator import *
 from openalea.plantgl.all import * 
 
 if __name__ == "__main__":

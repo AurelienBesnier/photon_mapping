@@ -1,5 +1,5 @@
-from photonmap import libphotonmap_core
-from photonmap.libphotonmap_core import *
+from openalea.photonmap import libphotonmap_core
+from openalea.photonmap.libphotonmap_core import *
 
 from openalea.lpy import *
 from openalea.plantgl.all import Tesselator

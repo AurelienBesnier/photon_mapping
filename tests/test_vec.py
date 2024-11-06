@@ -1,4 +1,4 @@
-from photonmap import Vec3
+from openalea.photonmap import Vec3
 
 
 def test_vec3_create():

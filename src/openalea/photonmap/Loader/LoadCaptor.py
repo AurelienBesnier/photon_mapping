@@ -2,11 +2,11 @@ from math import cos, sin
 
 from openalea.plantgl.all import Color3, Material, Scene, Shape, TriangleSet
 
-from photonmap import (
+from openalea.photonmap import (
     VectorFloat,
     VectorUint,
 )
-from photonmap.Common.Outils import flatten
+from openalea.photonmap.Common.Outils import flatten
 
 # Objectif of this module is adding captors to the scene of photon mapping to the received energy
 

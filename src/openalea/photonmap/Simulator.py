@@ -7,20 +7,20 @@ import matplotlib.pyplot as plt
 from openalea.lpy import Lsystem
 from openalea.plantgl.all import *
 
-from photonmap import (
+from openalea.photonmap import (
     PhotonMapping,
     UniformSampler,
     Vec3,
     libphotonmap_core,
 )
-from photonmap.Energy import CalculateEnergy, CorrectEnergy
-from photonmap.libphotonmap_core import (
+from openalea.photonmap.Energy import CalculateEnergy, CorrectEnergy
+from openalea.photonmap.libphotonmap_core import (
     Render,
     visualizeCaptorsPhotonMap,
     visualizePhotonMap,
 )
-from photonmap.Loader import LoadCaptor, LoadEnvironment
-from photonmap.Reader import ReadPO, ReadRADGeo
+from openalea.photonmap.Loader import LoadCaptor, LoadEnvironment
+from openalea.photonmap.Reader import ReadPO, ReadRADGeo
 
 
 class SimulationResult:

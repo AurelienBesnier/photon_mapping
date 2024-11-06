@@ -2,16 +2,16 @@ from datetime import datetime
 import random
 import sys
 
-from photonmap.libphotonmap_core import *
+from openalea.photonmap.libphotonmap_core import *
 
 if __name__ == '__main__':
-    n_samples = 2
-    n_photons = 100
+    n_samples = 32
+    n_photons = 100000
     n_estimation_global = 95
     n_photons_caustics_multiplier = 20
-    n_estimation_caustics = 10
-    final_gathering_depth = 2
-    max_depth = 2
+    n_estimation_caustics = 100
+    final_gathering_depth = 0
+    max_depth = 50
     
     aspect_ratio = 4/3
     image_width = 512
@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 max_depth,
                 "photonmap.ppm",
                 sampler,
-            )
+                )
     print("Done!")
 
     print("Rendering image...")

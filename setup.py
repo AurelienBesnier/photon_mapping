@@ -4,7 +4,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from setuptools import Extension, setup
+from setuptools import Extension, setup, find_namespace_packages
 from setuptools.command.build_ext import build_ext
 
 __version__ = "0.1.0"
@@ -133,23 +133,22 @@ class CMakeBuild(build_ext):
 
 
 ext_modules = [
-   CMakeExtension("photonmap/libphotonmap_core")
+   CMakeExtension("openalea/photonmap/libphotonmap_core")
 ]
+
+packages = find_namespace_packages(where="src", include=["openalea.*"])
 
 setup(
     name="photonmap",
     version=__version__,
     author="Aurélien Besnier",
-    url="https://github.com/AurelienBesnier/photon_mapping.git",
+    url="https://github.com/openalea-incubator/photon_mapping.git",
     description="A photonmapper python wrapper with pybind11",
     long_description="",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
-    packages=['photonmap', 
-              'photonmap.Common', 
-              'photonmap.Energy', 
-              'photonmap.Loader', 
-              'photonmap.Reader'],
+    package_dir={"": "src"},
+    packages=packages,
     # Currently, build_ext only provides an optional "highest supported C++
     # level" feature, but in the future it may provide more features.
     cmdclass={"build_ext": CMakeBuild},

@@ -1,4 +1,4 @@
-from photonmap.Simulator import *
+from openalea.photonmap.Simulator import *
 
 if __name__ == "__main__":
 
@@ -6,10 +6,10 @@ if __name__ == "__main__":
     simulator.readConfiguration("simulation.ini")
     simulator.addEnvFromFile("./assets/testChamber.rad", "./PO")
     simulator.addVirtualDiskCaptorsFromFile("./captors/captors_expe1.csv")
-    simulator.addFaceCaptorsFromLpyFile("./assets/rose-simple4.lpy", Vec3(1280.0, 860.0, 980.0))
+    # simulator.addFaceCaptorsFromLpyFile("./assets/rose-simple4.lpy", Vec3(1280.0, 860.0, 980.0))
 
-    simulator.setupRender(Vec3(1280.0, 300.0, 1500.0), Vec3(1280.0, 860.0, 980.0), 90.0)
-    simulator.n_samples = 20
+    simulator.setupRender(Vec3(68.0, 1200.0, 1500.0), Vec3(1280.0, 860.0, 980.0), 75.0)
+    simulator.n_samples = 2
     res = simulator.run()
     # calibrated_res = simulator.calibrateResults("spectrum/chambre1_spectrum", "points_calibration.csv")
     # res.writeResults()
