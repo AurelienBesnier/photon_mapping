@@ -13,7 +13,6 @@ dependencies:
   - pytest
   - embree
   - pandas
-  - openpyxl
   - make
   - cxx-compiler
   - cmake

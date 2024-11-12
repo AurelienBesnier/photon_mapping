@@ -1,36 +1,45 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools>=61",
     "wheel",
     "cmake>=3.12",
 ]
 build-backend = "setuptools.build_meta"
 
-[tool.mypy]
-files = "setup.py"
-python_version = "3.12"
-strict = true
-show_error_codes = true
-enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
-warn_unreachable = true
-
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
-xfail_strict = true
-filterwarnings = [
-    "error",
-    "ignore:(ast.Str|Attribute s|ast.NameConstant|ast.Num) is deprecated:DeprecationWarning:_pytest",
+[project]
+name = "openalea.photon_mapping"
+authors = [
+    {name = "Aurélien Besnier"},
+    {name = "Tuan-Minh Nguyen"}
 ]
-testpaths = ["tests"]
+description="Photon mapping with python wrapper"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+]
+dynamic = ["version"]
 
-[tool.cibuildwheel]
-test-command = "pytest {project}/tests"
-test-extras = ["test"]
-test-skip = ["*universal2:arm64"]
-# Setuptools bug causes collision between pypy and cpython artifacts
-before-build = "rm -rf {project}/build"
+[project.urls]
+Homepage = "https://github.com/openalea-incubator/photon_mapping"
+"Bug Tracker" = "https://github.com/openalea-incubator/photon_mapping/issues"
+Discussions = "https://github.com/openalea-incubator/photon_mapping/discussions"
+Changelog = "https://github.com/openalea-incubator/photon_mapping/releases"
+
+[project.optional-dependencies]
+test = [
+  "pytest >=6",
+  "pytest-cov >=3",
+]
 
 [tool.ruff]
 extend-select = [
