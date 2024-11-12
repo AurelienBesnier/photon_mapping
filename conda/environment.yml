@@ -29,3 +29,5 @@ dependencies:
   - sphinx-copybutton
   - nbsphinx
   - pydata-sphinx-theme
+  - myst_parser
+  - sphinx-favicon

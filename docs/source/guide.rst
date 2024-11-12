@@ -1,8 +1,8 @@
 User guide
-##########
+==========
 
 Input files
-===========
+-----------
 
 Configuration file
 ------------------
