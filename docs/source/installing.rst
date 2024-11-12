@@ -1,4 +1,4 @@
-Installing Photon Mapping tools
+Installation
 ###############################
 
 Installing from sources
