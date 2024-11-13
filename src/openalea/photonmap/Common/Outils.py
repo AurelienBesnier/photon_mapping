@@ -3,7 +3,7 @@ from openalea.photonmap import Vec3
 # This module consist the common functions using in this project
 
 
-def wavelength2Rgb(w: int) -> Vec3:
+def wavelength2rgb(w: int) -> Vec3:
     """
     Convert a wavelength between 400 - 800 nm to RGB color
 

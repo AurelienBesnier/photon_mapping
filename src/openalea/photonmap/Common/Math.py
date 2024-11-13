@@ -1,6 +1,6 @@
 from math import cos, pi, sin
 
-from openalea.plantgl.all import *
+from openalea.plantgl.all import Index3, Shape, TriangleSet, Vector3
 
 # This module consist the mathematical functions using in this project
 
@@ -19,7 +19,7 @@ def denormalize(f: float) -> int:
     return int(255 * f)
 
 
-def sphericalToCartesian(theta, phi, x_seg, y_seg):
+def spherical_to_cartesian(theta, phi, x_seg, y_seg):
     """
     Convert the quaternion of object from angle(theta, phi) to Vec3(x,y,z)
 
@@ -41,7 +41,7 @@ def sphericalToCartesian(theta, phi, x_seg, y_seg):
     return Vector3(cos(phi) * sin(theta), cos(theta), sin(phi) * sin(theta))
 
 
-def crossVector(a, b):
+def cross_vector(a, b):
     """
     Calculate the cross product of two vector
 
@@ -61,7 +61,7 @@ def crossVector(a, b):
     return res
 
 
-def orthonormalBasis(n):
+def orthonormal_basis(n):
     """
     Calculate the axis orthogonal from the vector normal
 
@@ -79,18 +79,18 @@ def orthonormalBasis(n):
 
     """
     if abs(n[1]) < 0.9:
-        t = crossVector(n, Vector3(0, 1, 0))
+        t = cross_vector(n, Vector3(0, 1, 0))
     else:
-        t = crossVector(n, Vector3(0, 0, -1))
+        t = cross_vector(n, Vector3(0, 0, -1))
 
     t.normalize()
-    b = crossVector(t, n)
+    b = cross_vector(t, n)
     b.normalize()
 
     return t, b
 
 
-def geoHemisphere(centre, normal, rayon):
+def geo_hemisphere(centre, normal, rayon):
     """
     Generate the geometry of a hemisphere
 
@@ -117,13 +117,11 @@ def geoHemisphere(centre, normal, rayon):
     y_segment = 5
 
     for i in range(y_segment):
-        theta = i * pi / 2 / y_segment
         for j in range(x_segment):
-            phi = j * 2 * pi / x_segment
-            v1 = sphericalToCartesian(i, j, x_segment, y_segment)
-            v2 = sphericalToCartesian(i, j + 1, x_segment, y_segment)
-            v3 = sphericalToCartesian(i + 1, j, x_segment, y_segment)
-            v4 = sphericalToCartesian(i + 1, j + 1, x_segment, y_segment)
+            v1 = spherical_to_cartesian(i, j, x_segment, y_segment)
+            v2 = spherical_to_cartesian(i, j + 1, x_segment, y_segment)
+            v3 = spherical_to_cartesian(i + 1, j, x_segment, y_segment)
+            v4 = spherical_to_cartesian(i + 1, j + 1, x_segment, y_segment)
             # add vert
             v_count = len(vertices)
             vertices.append(v1)
@@ -142,7 +140,7 @@ def geoHemisphere(centre, normal, rayon):
             triangles.append(Index3(v_count + 1, v_count + 2, v_count + 3))
 
     # apply transform
-    t, b = orthonormalBasis(normal)
+    t, b = orthonormal_basis(normal)
     for i, v in enumerate(vertices):
         v_r = Vector3(0, 0, 0)
         v_r[0] = v[0] * t[0] + v[1] * normal[0] + v[2] * b[0]
@@ -153,21 +151,21 @@ def geoHemisphere(centre, normal, rayon):
     return Shape(TriangleSet(vertices, triangles, normals))
 
 
-def averageVector(listVectors):
+def average_vector(list_vectors):
     """
     Calculate the average vector of a list
 
     Parameters
     ----------
-    listVectors: array
+    list_vectors: array
         The list of vector
 
     """
 
     v_sum = Vector3(0, 0, 0)
-    for v in listVectors:
+    for v in list_vectors:
         v_sum += v
 
-    v_sum /= len(listVectors)
+    v_sum /= len(list_vectors)
 
     return v_sum

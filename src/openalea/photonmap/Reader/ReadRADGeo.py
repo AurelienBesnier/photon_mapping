@@ -13,7 +13,7 @@ from openalea.plantgl.all import (
     Vector3,
 )
 
-from openalea.photonmap.Common.Math import crossVector, denormalize
+from openalea.photonmap.Common.Math import cross_vector, denormalize
 
 # Objectif of this module is read the geometry of each object of fichier RAD
 
@@ -40,7 +40,7 @@ def cylinder_vertices(start, end, rayon):
     vert = []
     direction = end - start
     direction.normalize()
-    horizontal = crossVector(direction, Vector3(0, 0, 1))
+    horizontal = cross_vector(direction, Vector3(0, 0, 1))
 
     v1 = end + rayon * horizontal
     v2 = start + rayon * horizontal

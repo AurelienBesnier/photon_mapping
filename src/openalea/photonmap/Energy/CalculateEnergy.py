@@ -4,15 +4,15 @@ import os
 # Resultat is located in this directory: ./results
 
 
-def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filename):
+def write_captor_energy(n_sim, n_calibration, captor_list, bands_spectre, filename):
     """
     Write the received energy of all the captors to a file.
 
     Parameters
     ----------
-    N_sim : dict
+    n_sim : dict
         Number of received photons on each captor
-    N_calibration : dict
+    n_calibration : dict
         The energies after the calibration on each captor
     captor_list : array
         The list of captors
@@ -38,7 +38,7 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filena
 
     with open(filename, "w") as f:
         w_str = "id"
-        if len(N_calibration) == len(bands_spectre):
+        if len(n_calibration) == len(bands_spectre):
             for i in range(len(bands_spectre)):
                 w_str += (
                     ",N_sim_calibration_"
@@ -60,17 +60,17 @@ def write_captor_energy(N_sim, N_calibration, captor_list, bands_spectre, filena
         for k in list_captor_id:
             w_str = str(k)
             # write result calibration
-            if len(N_calibration) == len(bands_spectre):
+            if len(n_calibration) == len(bands_spectre):
                 for i in range(len(bands_spectre)):
-                    cur_N_calibration = N_calibration[i]
-                    if k in cur_N_calibration:
-                        w_str += "," + str(cur_N_calibration[k])
+                    cur_n_calibration = n_calibration[i]
+                    if k in cur_n_calibration:
+                        w_str += "," + str(cur_n_calibration[k])
                     else:
                         w_str += "," + str(0)
 
             # write result simulation
             for i in range(len(bands_spectre)):
-                cur_n_sim = N_sim[i]
+                cur_n_sim = n_sim[i]
                 if k in cur_n_sim:
                     w_str += "," + str(cur_n_sim[k])
                 else:
@@ -100,10 +100,10 @@ def captor_add_energy(captor_dict, integrator, energy):
     print("calculating captor energy...")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
-        captorId = captor_dict.get(intersection.triId)
+        captor_id = captor_dict.get(intersection.triId)
 
-        if captorId is not None:  # check if the element hit is a captor
-            if captorId in energy:
-                energy[captorId] += 1
+        if captor_id is not None:  # check if the element hit is a captor
+            if captor_id in energy:
+                energy[captor_id] += 1
             else:
-                energy[captorId] = 1
+                energy[captor_id] = 1

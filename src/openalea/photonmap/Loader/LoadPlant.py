@@ -1,4 +1,10 @@
 from openalea.lpy import Lsystem
+from openalea.photonmap import (
+    Vec3,
+    VectorFloat,
+    VectorUint,
+)
+from openalea.photonmap.Common.Outils import flatten
 from openalea.plantgl.all import (
     Color3,
     Material,
@@ -8,13 +14,6 @@ from openalea.plantgl.all import (
     TriangleSet,
     Vector3,
 )
-
-from openalea.photonmap import (
-    Vec3,
-    VectorFloat,
-    VectorUint,
-)
-from openalea.photonmap.Common.Outils import flatten
 
 # Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy
 # Data is located in this directory: ./assets
@@ -48,9 +47,7 @@ def add_lpy_file_to_scene(scene, filename, t, tr2shmap, anchor, scale_factor):
     lstring = lsystem.derive(lsystem.axiom, t)
     lscene = lsystem.sceneInterpretation(lstring)
     # Adding the model of plant
-    return addPlantModel(
-        lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor
-    )
+    return addPlantModel(lscene, Tesselator(), tr2shmap, scene, anchor, scale_factor)
 
 
 # add plant model to Scene
@@ -81,15 +78,15 @@ def addPlantModel(lscene, tr, tr2shmap, sc, anchor, scale_factor):
         sh.apply(tr)
         mesh = tr.result
         mesh.computeNormalList()
-        indexListSize = mesh.indexListSize()
+        index_list_size = mesh.indexListSize()
         vertices = VectorFloat([])
         normals = VectorFloat([])
         ind = []
         maxi = 0
-        for i in range(0, indexListSize):
+        for i in range(0, index_list_size):
             index = mesh.indexAt(i)
-            typeF = mesh.faceSize(i)
-            for j in range(0, typeF):
+            type_f = mesh.faceSize(i)
+            for j in range(0, type_f):
                 if index[j] > maxi:
                     maxi = index[j]
         for k in range(0, maxi + 1):
@@ -122,7 +119,6 @@ def addPlantModel(lscene, tr, tr2shmap, sc, anchor, scale_factor):
         specular_r = float(sh.appearance.specular.red) / 255.0
         specular_g = float(sh.appearance.specular.green) / 255.0
         specular_b = float(sh.appearance.specular.blue) / 255.0
-        specular = Vec3(specular_r, specular_g, specular_b)
         transparency = sh.appearance.transparency
         illum = 8  # to use the leaf bxdf
 
@@ -173,25 +169,25 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy: dict):
     scale_factor : int
         The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
     shenergy : dict
-        The dictionary of received energies in each organes of plant
+        The dictionary of received energies in each organs of plant
 
     Returns
     -------
         A PlantGL Scene with the plant
     """
 
-    pglScene = Scene()
+    pgl_scene = Scene()
     for sh in lscene:
         sh.apply(tr)
         mesh = tr.result
         mesh.computeNormalList()
-        indexListSize = mesh.indexListSize()
+        index_list_size = mesh.indexListSize()
         vertices = []
         maxi = 0
-        for i in range(0, indexListSize):
+        for i in range(0, index_list_size):
             index = mesh.indexAt(i)
-            typeF = mesh.faceSize(i)
-            for j in range(0, typeF):
+            type_f = mesh.faceSize(i)
+            for j in range(0, type_f):
                 if index[j] > maxi:
                     maxi = index[j]
         for k in range(0, maxi + 1):
@@ -206,8 +202,8 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy: dict):
 
         idx = mesh.indexList
 
-        tmpSh = Shape(TriangleSet(vertices, idx, mesh.normalList))
-        tmpSh.appearance = sh.appearance
+        tmp_sh = Shape(TriangleSet(vertices, idx, mesh.normalList))
+        tmp_sh.appearance = sh.appearance
 
         # change color of plant follow energy
         if shenergy:
@@ -218,13 +214,13 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy: dict):
                 cur_sh_energy = shenergy[sh.id]
 
             ratio = cur_sh_energy / max_energy
-            r = (int)(255 * ratio)
-            g = (int)(255 * ratio)
-            b = (int)(255 * ratio)
-            tmpSh.appearance = Material(
+            r = int(255 * ratio)
+            g = int(255 * ratio)
+            b = int(255 * ratio)
+            tmp_sh.appearance = Material(
                 ambient=Color3(r, g, b), diffuse=sh.appearance.diffuse
             )
 
-        pglScene.add(tmpSh)
+        pgl_scene.add(tmp_sh)
 
-    return Scene([pglScene, sc])
+    return Scene([pgl_scene, sc])

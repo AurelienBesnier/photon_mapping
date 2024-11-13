@@ -1,14 +1,13 @@
 import re
 
-from openalea.plantgl.all import Color3, Scene
-
 from openalea.photonmap import (
     Vec3,
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.Common.Math import averageVector, geoHemisphere
-from openalea.photonmap.Common.Outils import flatten, wavelength2Rgb
+from openalea.photonmap.Common.Math import average_vector, geo_hemisphere
+from openalea.photonmap.Common.Outils import flatten, wavelength2rgb
+from openalea.plantgl.all import Color3, Scene
 
 # Objectif of this module is adding environment object to the scene of Photon Mapping
 
@@ -17,9 +16,9 @@ def addEnvironment(
     scene,
     sh,
     w,
-    materialsR: dict,
-    materialsS: dict,
-    materialsT: dict,
+    materials_r: dict,
+    materials_s: dict,
+    materials_t: dict,
     is_only_lamp=False,
 ):
     """
@@ -33,11 +32,11 @@ def addEnvironment(
         The plantGL Shape to add
     w : int
         The wavelength of the light to simulate.
-    materialsR : dict
+    materials_r : dict
         The materials reflection dictionary
-    materialsS : dict
+    materials_s : dict
         The materials specularity dictionary
-    materialsT : dict
+    materials_t : dict
         The materials transmission dictionary
     is_only_lamp : bool
         If True, add only the lamps and captors, If False, add all the objects in room
@@ -56,18 +55,18 @@ def addEnvironment(
     material_name = sh.appearance.name
     trans = (
         sh.appearance.transparency
-        if materialsT.get(material_name) is None
-        else materialsT[material_name]
+        if materials_t.get(material_name) is None
+        else materials_t[material_name]
     )
     refl = (
         (sh.appearance.ambient.red / 255.0)
-        if materialsR.get(material_name) is None
-        else materialsR[material_name]
+        if materials_r.get(material_name) is None
+        else materials_r[material_name]
     )
     specular = (
         (sh.appearance.specular.red / 255.0)
-        if materialsS.get(material_name) is None
-        else materialsS[material_name]
+        if materials_s.get(material_name) is None
+        else materials_s[material_name]
     )
 
     # print(material_name, refl, specular, trans)
@@ -82,7 +81,7 @@ def addEnvironment(
     shininess = sh.appearance.shininess
     emission = sh.appearance.emission
 
-    light_color = wavelength2Rgb(w)
+    light_color = wavelength2rgb(w)
     # print(str(light_color[0])+" "+str(light_color[1])+" "+str(light_color[2]))
     if len(indices) == 0:
         # regex to get the coords
@@ -130,20 +129,20 @@ def addLightDirectionPgl(sc, scale_factor):
     -------
         A PlantGL Scene with the hemisphere of each surface
     """
-    pglScene = Scene()
+    pgl_scene = Scene()
 
     for sh in sc:
         vertices = sh.geometry.pointList
         normals = sh.geometry.normalList
         if len(vertices) == 4:
-            centre = averageVector(vertices)
-            normal = averageVector(normals)
+            centre = average_vector(vertices)
+            normal = average_vector(normals)
             normal.normalize()
             rayon = 50 * scale_factor
 
-            sh_dir = geoHemisphere(centre, normal, rayon)
+            sh_dir = geo_hemisphere(centre, normal, rayon)
             sh_dir.appearance.ambient = Color3(1, 0, 0)
 
-            pglScene.add(sh_dir)
+            pgl_scene.add(sh_dir)
 
-    return Scene([pglScene, sc])
+    return Scene([pgl_scene, sc])

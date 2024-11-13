@@ -10,7 +10,7 @@ from openalea.photonmap.Energy.CorrectEnergy import read_spectrum_file
 
 def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     """
-    Fills the materialsR (reflection), materialsS (specular) and materialsT (transmission) dictionaries with information from the provided data for the materials of
+    Fills the materials_r (reflection), materials_s (specular) and materials_t (transmission) dictionaries with information from the provided data for the materials of
     the simulation.
 
     Parameters
@@ -24,75 +24,75 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
 
     Returns
     -------
-    materialsR : dict
+    materials_r : dict
         The reflections of all the materials
-    materialsS : dict
+    materials_s : dict
         The specularities of all the materials
-    materialsT : dict
+    materials_t : dict
         The transmission of all the materials
 
     """
 
-    materialsT = {}
-    materialsS = {}
-    materialsR = {}
+    materials_t = {}
+    materials_s = {}
+    materials_r = {}
 
     for element in ("Plant", "Env"):  # Reflectances
         files = []
-        dir_pathReflect = po_dir + "/" + element + "/ReflectancesMean/"
+        dir_path_reflect = po_dir + "/" + element + "/ReflectancesMean/"
 
-        if os.path.exists(dir_pathReflect):
-            for path in os.listdir(dir_pathReflect):
-                if os.path.isfile(os.path.join(dir_pathReflect, path)):
+        if os.path.exists(dir_path_reflect):
+            for path in os.listdir(dir_path_reflect):
+                if os.path.isfile(os.path.join(dir_path_reflect, path)):
                     if not path.startswith("."):
                         files.append(path)
             for file in files:
-                matName = file.split(".")[0]
-                contentReflect, stepReflect, startReflect = read_spectrum_file(
-                    os.path.join(dir_pathReflect, file)
+                mat_name = file.split(".")[0]
+                content_reflect, step_reflect, start_reflect = read_spectrum_file(
+                    os.path.join(dir_path_reflect, file)
                 )
 
                 refl = get_average_of_props_optic(
-                    range(w_start, w_end, 1), contentReflect
+                    range(w_start, w_end, 1), content_reflect
                 )
 
-                materialsR[matName] = float(refl) if float(refl) > 0 else 0.0
+                materials_r[mat_name] = float(refl) if float(refl) > 0 else 0.0
 
     for element in ("Plant", "Env"):  # Transmittances
         files = []
-        dir_pathTransmit = po_dir + "/" + element + "/TransmittancesMean/"
+        dir_path_transmit = po_dir + "/" + element + "/TransmittancesMean/"
 
-        if os.path.exists(dir_pathTransmit):
-            for path in os.listdir(dir_pathTransmit):
-                if os.path.isfile(os.path.join(dir_pathTransmit, path)):
+        if os.path.exists(dir_path_transmit):
+            for path in os.listdir(dir_path_transmit):
+                if os.path.isfile(os.path.join(dir_path_transmit, path)):
                     if not path.startswith("."):
                         files.append(path)
             for file in files:
-                matName = file.split(".")[0]
-                contentTransmit, stepTransmit, startTransmit = read_spectrum_file(
-                    os.path.join(dir_pathTransmit, file)
+                mat_name = file.split(".")[0]
+                content_transmit, step_transmit, start_transmit = read_spectrum_file(
+                    os.path.join(dir_path_transmit, file)
                 )
 
                 trans = get_average_of_props_optic(
-                    range(w_start, w_end, 1), contentTransmit
+                    range(w_start, w_end, 1), content_transmit
                 )
 
-                materialsT[matName] = float(trans) if float(trans) > 0 else 0.0
+                materials_t[mat_name] = float(trans) if float(trans) > 0 else 0.0
 
     # Specularities
-    dir_pathSpec = po_dir + "/Specularities.xlsx"
+    dir_path_spec = po_dir + "/Specularities.xlsx"
 
-    if os.path.exists(dir_pathSpec):
-        contentSpec = (pd.ExcelFile(dir_pathSpec)).parse(0)
-        mat_names = contentSpec["Materiau"]
-        mat_spec = contentSpec["Valeur estimee visuellement"]
+    if os.path.exists(dir_path_spec):
+        content_spec = (pd.ExcelFile(dir_path_spec)).parse(0)
+        mat_names = content_spec["Materiau"]
+        mat_spec = content_spec["Valeur estimee visuellement"]
 
         for i in range(len(mat_spec)):
-            materialsS[mat_names[i]] = (
+            materials_s[mat_names[i]] = (
                 float(mat_spec[i]) if float(mat_spec[i]) > 0 else 0.0
             )
 
-    return materialsR, materialsS, materialsT
+    return materials_r, materials_s, materials_t
 
 
 def get_average_of_props_optic(band: range, props: dict) -> float:

@@ -81,9 +81,7 @@ class Captor:
 
         return self
 
-    def initVirtualDiskCaptor(
-        self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0
-    ):
+    def initVirtualDiskCaptor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
         """
         Init a object of virtual disk shape captor
 
