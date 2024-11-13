@@ -13,3 +13,4 @@ Photon Mapping Simulation documentation
    installing.rst
    guide.rst
    code_example.rst
+   notebook_examples.rst

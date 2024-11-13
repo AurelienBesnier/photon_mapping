@@ -9,6 +9,7 @@ dependencies:
   - ipywidgets
   - openalea.lpy
   - openalea.plantgl
+  - oawidgets
   - pybind11
   - pytest
   - embree
@@ -20,7 +21,6 @@ dependencies:
   - tbb-devel
   - boost
   - llvm-openmp
-  - openalea.lpy
   - scipy
   - matplotlib
   - pip

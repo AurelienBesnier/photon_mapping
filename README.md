@@ -40,11 +40,9 @@ python planglRadScene.py
 # How to run the jupyter notebook
 
 ```bash
-    mamba activate photonmap
-    pip install pgljupyter
-
-    cd examples/python/plantgl-rad-scene
-    jupyter notebook
+mamba activate photonmap
+cd examples/python/plantgl-rad-scene
+jupyter notebook
 ```
 ## Features
 

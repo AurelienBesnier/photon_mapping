@@ -431,9 +431,9 @@ class Simulator:
         if mode == "ipython":
             Viewer.display(sc)
 
-        elif mode == "pgljupyter":
-            from pgljupyter import SceneWidget
-            return SceneWidget(sc, size_display=(800, 600), size_world=255)
+        elif mode == "oawidgets":
+            from oawidgets.plantgl import PlantGL
+            return PlantGL(sc)
 
         else:
             Viewer.display(sc)

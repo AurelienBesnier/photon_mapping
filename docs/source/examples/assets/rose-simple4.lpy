@@ -1,0 +1,293 @@
+import numpy as np
+
+PLOT = False
+
+import openalea.plantgl.all as pgl
+
+from random import uniform
+
+# MODE
+eHH, eLH, eLL = 0,1,2
+extern(mode = eHH)
+
+# CONSTANTS
+LInMaxHH = [1.059800539, 1.189966785, 1.827049608, 2.71034115, 3.579133552, 4.172718956, 4.230389503, 3.491437335, 1.695154593]
+LInMaxLH = [1.059800539, 1.204508653, 1.953969835, 2.863343811, 3.642338928, 3.965681209, 3.436935508, 1.781689133]
+LInMaxAll = [ LInMaxHH, LInMaxLH]
+LInMax = LInMaxAll[mode]
+
+LLeafMaxHH = [4.95119191, 5.80244474, 6.04279604, 6.89550067, 7.53690877, 8.91246671, 8.78497647, 9.60687317, 7.03919197]
+LLeafMaxLH = [4.95119191, 5.85336564, 6.04279604, 6.7968139, 7.22423025, 8.15082507, 7.32201893, 6.02229011]
+LLeafMaxAll = [ LLeafMaxHH, LLeafMaxLH]
+LLeafMax = LLeafMaxAll[mode]
+
+tipInHH = [-6.785893478, -5.155096728, -3.524299978, -1.893503228, -0.262706478, 1.368090272, 2.998887022, 4.629683772, 6.260480522]
+tipInLH = [-12.15862748, -9.494895078, -6.722438907, -4.004344621, -1.286250335, 1.43184395, 4.204300122, 6.868032522]
+tipInAll = [tipInHH,tipInLH]
+tipIn = tipInAll[mode]
+
+tipLeafHH = [-7.08901225, -5.18481189, -3.34220241, -1.56118379, 0.15824395, 1.81608083, 3.41232683, 4.94698197, 6.42004623]
+tipLeafLH = [-12.3744804, -9.26527588, -6.32716968, -3.56016178, -0.96425218, 1.46055912, 3.71427211, 5.79688681]
+tipLeafAll = [tipLeafHH,tipLeafLH]
+tipLeaf = tipLeafAll[mode]
+
+
+wIn = 0.19
+wLeaf = 0.14610141
+
+internodeRadius = 0.2
+internodeLength = 2
+petioleRadius = 0.05
+petioleLength = 1.2
+
+nbLeafLet = [5,5,7,7,7,5,5,3,3]
+
+flowerRadius = 2.5
+maxpetalLength = 3
+_petalWidth = 2.5
+
+dt = 0.1
+
+
+def A(t):
+  return 0.8
+
+# GRAPHICAL PARAMETERS
+
+PETAL_TAILLE = pgl.NurbsCurve2D(    
+        ctrlPointList = pgl.Point3Array([(0, 0.501073, 1),(0.008267, 0.958827, 1),(0.308307, 0.987036, 1),(0.468023, 0.998576, 1),(1, 0.996814, 1)]) ,
+        stride = 100)
+PETAL_TAILLE = pgl.QuantisedFunction(PETAL_TAILLE)
+
+def sepalLength(t): return 1+2*(t/15)
+
+def sepalWidth(t): return 1+1*(t/15)
+
+def petalLength(t): return 0.02+3*(t/15)
+
+def petalWidth(t): return 0.02+2*(t/15)
+
+
+from math import *
+MAXSEPALANGLE = 3*pi/4
+
+sepal_s = pgl.Polyline2D([(-0.5,-0.1),(0,0.1),(0.5,-0.1)])
+sepal_m = pgl.BezierCurve2D([(0,0,1),(0.1,1,1),(0.2,1,1),(0.4,0.3,1),(1,0,1)])
+sepal_r = pgl.QuantisedFunction(sepal_m)
+
+
+petal_s = pgl.Polyline2D([(0.5,-0.1),(0,0.1),(-0.5,-0.1)])
+petal_p = pgl.BezierCurve2D([(0,0,1),(0.0,0.5,1),(1,0.5,1),(1,1,1)])
+petal_m = pgl.BezierCurve2D([(0,0,1),(0.1,1,1),(0.8,1,1),(1,0,1)])
+petal_r = pgl.QuantisedFunction(petal_m)
+
+
+
+import numpy as np
+s = [(-0.5,0.1,1),(-0.01,0.1,1),(0,-0.1,1),(0.01,0.1,1),(0.5,0.1,1)]
+p = [(0,0,1),(0.5,0.1,1),(1,-0.1,1)]
+m = [(0,0,1),(0.1,1,1),(0.9,1,1),(1,0,1)]
+leaf_s = pgl.NurbsCurve2D(s, stride=5)
+leaf_p = pgl.BezierCurve2D(p)
+leaf_m = pgl.BezierCurve2D(m)
+def decal(p, u, v):
+    if divmod(u*100,v*100)[1] < 0.01:
+        return p*1.1
+    else: return p
+leaf_r = pgl.QuantisedFunction(pgl.Polyline2D([decal(leaf_m.getPointAt(u), u, 0.1) for u in np.arange(0,1.01,0.02)]))
+
+
+
+# FUNCTIONS
+
+def length_in(t, i):
+  return LInMax[i]/(1+exp(4*wIn*(tipIn[i]-t)))
+
+
+def length_lf(t, i):
+  return LLeafMax[i]/(1+exp(4*wLeaf*(tipLeaf[i]-t)))
+
+# MODULES
+
+module Internode(t,i,l,c_m,c_s,ck,d)
+module Leaf(l), LeafLet(t,i,l)
+module Flower(t)
+module Sepal(t), Petal(t)
+module Bud(integrator,bursted)
+
+# RULES
+
+extern(V = 1.5)
+extern(k = 0.5)
+extern(delta = 0.5)
+extern(gamma1 = 1.5)
+extern(gamma2 =  0.2)
+extern(alpha = 0.1)
+extern(k1 = 1)
+extern(k2 = 1)
+extern(BURST_THRESHOLD = 1.)
+extern(t = 0)
+
+MAXCM = 0
+MINCM = 1e5
+CONVSTEP = 100
+
+plot1, plot2 = None, None
+figure = None
+ax = None
+
+def mfluxes(c_m):
+  return np.array([(c_m[i-(1 if i > 0 else 0)]+c_m[i+(1 if i < len(c_m)-1 else 0)])-2*c_mv for i,c_mv in enumerate(c_m)])
+
+def EndEach(lstring):
+  global MAXCM, MINCM
+  internodes = [i for i,m in enumerate(lstring) if m.name == 'Internode']
+  
+  t = np.array([lstring[i].t for i in internodes])
+  c_m = np.array([lstring[i].c_m for i in internodes])
+  c_s = np.array([lstring[i].c_s for i in internodes])
+  ck = np.array([lstring[i].ck for i in internodes])
+  d = np.array([lstring[i].d for i in internodes])
+  
+  #print('S',c_m)
+  #print('S',mfluxes(c_m))
+  
+  for i in range(CONVSTEP):
+	  fluxes = mfluxes(c_m)
+	  
+	  c_s_s = (c_m*V)/(k+c_m)
+	  c_s_d = delta*c_s
+	  c_s += c_s_s-c_s_d
+	  
+	  d_c_m =  - c_s_d - d*gamma1  - ck*gamma2 + fluxes*alpha + A(t)
+	  c_m += d_c_m
+  
+  #print('E',c_m)
+  #print('E',mfluxes(c_m))
+  MINCM = min(c_m)
+  MAXCM = max(c_m)
+  
+  for i,v in zip(internodes,c_m):
+    lstring[i].c_m = v
+  
+  for i,v in zip(internodes,c_s):
+    lstring[i].c_s = v
+  
+  #print([lstring[i].c_m for i,v in zip(internodes,c_m)])
+  if PLOT:
+    global plot1, plot2, figure, ax
+    import matplotlib.pyplot as plt
+    if isAnimationEnabled() or isFrameDisplayed():
+      values = [mod.integrator for mod in lstring if mod.name == 'Bud']
+      values2 = c_s
+      if plot1 is None:
+        figure, ax = plt.subplots(figsize=(4,5))
+        plot1, = ax.plot(list(range(len(values))),values, label='Integrator')
+        plot2, = ax.plot(list(range(len(values2))),values2, label='C_s')
+        ax.set_ylim(0,2)
+        ax.legend()
+        plt.show()
+      else:
+        plot1.set_ydata(values)
+        plot2.set_ydata(values2)
+        figure.canvas.draw()
+        figure.canvas.flush_events()
+
+
+Axiom: 
+  nproduce ,(2) Down(5)
+  for i in range(len(LLeafMax)):
+    nproduce Internode(0,i,length_in(0, i),0.5,0.2,0.5,length_in(dt, i)-length_in(0, i))
+    nproduce /(137+uniform(-20,20)) Down(5) [Down(30) Bud(1, False) ]  [ Down(60),(2)  Leaf(0,i,length_lf(0, i))]
+  nproduce Internode(0,i,length_in(0, i),0.5,0.2,0.5,length_in(dt, i)-length_in(0, i))
+  nproduce Flower(0)
+
+derivation length: 150
+ignore: / Down
+production:
+
+Internode(t,i,l,c_m,c_s,ck, demand):
+    t += dt
+    l_t = length_in(t, int(i))
+    d = l_t - l
+    l = l_t
+    produce Internode(t,i,l,c_m,c_s,ck, demand)
+
+
+Leaf(t,i,l):
+  t += dt
+  l_t = length_lf(t, i)
+  nproduce  Leaf(t,i,l_t)
+
+Flower(t) --> Flower(t+dt)
+
+Internode(t,i,l,c_m,c_s,ck, demand) < Bud(integ, bursted):
+  integ = 1/(k1*ck + k2*c_m)
+  if integ < BURST_THRESHOLD:
+    bursted = True
+  produce Bud(integ, bursted)
+
+interpretation:
+maximum depth:  2
+group 0:
+
+Internode(t,i,l,c_m,c_s,ck, demand):
+  #print(c_m,d)
+  v = (c_m-MINCM)/(MAXCM-MINCM)
+  v = min(1,max(0,v))
+  nproduce _(internodeRadius) InterpolateColors(5,3, v) F(l)
+  pass
+
+LeafLet(l):
+  nproduce ,(2) Elasticity(0.002) @Gc Sweep(leaf_p,leaf_s,l,l/15.,l*0.8, leaf_r)
+    
+
+Leaf(t,i,l):
+  nbst = (nbLeafLet[i]-1)//2
+  nl = min(l/4, l / (nbst+1))
+  nproduce SetWidth(petioleRadius) @Tp(0,0,-1) Elasticity(0.005)
+  for i in range(1,nbst+1):
+    a = 90-15*i
+    nproduce nF(nl,0.1) [ Left(a) LeafLet(l/2) ][ Right(a) LeafLet(l/2) ]
+  nproduce nF(nl,0.1) LeafLet(l/2.)
+
+Flower(t):
+    nproduce ,(2)
+    for i in range(4):
+      nproduce RollR(137) f(0.001) Sepal(t)
+    nproduce ,(3)
+    for i in range(10):
+      nproduce RollR(137) f(0.001) Petal(t)
+
+Petal(t):
+    ut = t/15
+    l = petalLength(t)
+    nproduce [ @Gc Up(-20+30*ut) Sweep(petal_p,petal_s,l,l/10.,petalWidth(t), petal_r) ]
+
+Sepal(t):
+    ut = max(0.8,t/15)
+    l = sepalLength(t)
+    sepal_p = pgl.BezierCurve2D([(0,0,1),(0.0,0.5,1),(cos(MAXSEPALANGLE*ut),sin(MAXSEPALANGLE*ut),1)])
+    nproduce [ @Gc Up(-20+30*ut) Sweep(sepal_p,sepal_s,l,l/10.,sepalWidth(t), sepal_r) ]
+
+Bud(integ, bursted):
+  budratio = 0.9
+  budburstratio = 1.5
+  budwidth = internodeRadius*budratio 
+  #print(integ)
+  
+  if bursted :
+    budwidth *= budburstratio
+    nproduce ,(3)
+  else:
+    nproduce ,(2)
+  nproduce SetWidth(budwidth) SectionResolution(4) F(internodeRadius) Sphere()
+
+endlsystem
+###### INITIALISATION ######
+
+__lpy_code_version__ = 1.1
+
+def __initialiseContext__(context):
+	context.animation_timestep = 0.108
+	context.options.setSelection('Optimization',0)
