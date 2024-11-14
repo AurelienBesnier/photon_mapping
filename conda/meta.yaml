@@ -35,6 +35,8 @@ requirements:
     - tbb-devel
 
   run:
+    - {{ compiler('c') }}
+    - {{ compiler("cxx") }}
     - python x.x
     - numpy x.x
     - python
@@ -50,7 +52,6 @@ requirements:
     - tbb-devel
     - pybind11
     - pandas
-    - scipy
     - matplotlib
     - pywin32 [win]
 
