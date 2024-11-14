@@ -75,10 +75,9 @@ createBxDF(tinyobj::material_t& material,
 {
 
         // calculate diffuse and specular with reflectance
-        const Vec3f kd = Vec3f(1 - material.specular[0],
-                               1 - material.specular[1],
-                               1 - material.specular[2]) *
-                         reflectance;
+        const Vec3f kd = Vec3f(material.diffuse[0],
+                               material.diffuse[1],
+                               material.diffuse[2]);
         const Vec3f ks = Vec3f(material.specular[0],
                                material.specular[1],
                                material.specular[2]) *
