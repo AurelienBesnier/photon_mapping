@@ -1,0 +1,79 @@
+package:
+  name: openalea.photonmap
+  version: "0.1.0"
+
+source:
+  path: ..
+
+build:
+  number: 0
+  preserve_egg_dir: True
+  string: photonmap
+  script:
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - numpy
+    - scipy
+    - cython
+
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler("cxx") }}
+    - python
+    - setuptools
+    - numpy
+    - scipy
+    - cython
+    - make
+    - cxx-compiler
+    - cmake
+    - tbb
+    - tbb-devel
+
+  run:
+    - python x.x
+    - numpy x.x
+    - python
+    - jupyterlab
+    - jupyter-packaging
+    - ipywidgets
+    - openalea.lpy
+    - openalea.plantgl
+    - oawidgets
+    - pybind11
+    - pytest
+    - embree
+    - pandas
+    - make
+    - cxx-compiler
+    - cmake
+    - tbb
+    - tbb-devel
+    - boost
+    - llvm-openmp
+    - scipy
+    - matplotlib
+    - pywin32 [win]
+
+test:
+  imports:
+    - openalea.photonmap
+    - openalea.photonmap.Common
+    - openalea.photonmap.Energy
+    - openalea.photonmap.Loader
+    - openalea.photonmap.Reader
+    - openalea.photonmap.Simulator
+  requires:
+    - pytest
+  source_files:
+    - tests/**
+    -
+  commands:
+    - pytest
+
+about:
+  home: https://github.com/openalea-incubator/photon_mapping
