@@ -30,6 +30,10 @@ requirements:
     - cython
     - make
     - cmake
+    - boost
+    - pybind11
+    - embree
+    - llvm-openmp
     - tbb
     - tbb-devel
 
@@ -44,16 +48,7 @@ requirements:
     - openalea.plantgl
     - oawidgets
     - pybind11
-    - pytest
-    - embree
     - pandas
-    - make
-    - cxx-compiler
-    - cmake
-    - tbb
-    - tbb-devel
-    - boost
-    - llvm-openmp
     - scipy
     - matplotlib
     - pywin32 [win]
