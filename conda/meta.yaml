@@ -28,8 +28,10 @@ requirements:
     - numpy
     - scipy
     - cython
+    - openalea.lpy
+    - openalea.plantgl
     - make
-    - cmake
+    - cmake <= 3.29
     - boost
     - pybind11
     - embree
