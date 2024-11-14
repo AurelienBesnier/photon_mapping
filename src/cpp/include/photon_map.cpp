@@ -27,7 +27,7 @@ KdTree<T>::buildNode(int* indices, int n_points, int depth)
         const int axis = depth % 3;
 
         // sort indices by coordination in the separation axis.
-#ifndef APPLE
+#ifndef __APPLE__
         std::sort(std::execution::par_unseq,
           indices, indices + n_points, [&](const int idx1, const int idx2) {
                   return points[idx1][axis] < points[idx2][axis];
