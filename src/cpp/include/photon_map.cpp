@@ -37,6 +37,7 @@ KdTree<T>::buildNode(int* indices, int n_points, int depth)
           indices, indices + n_points, [&](const int idx1, const int idx2) {
                   return points[idx1][axis] < points[idx2][axis];
           });
+#endif
 
         // index of middle element of indices
         const int mid = (n_points - 1) / 2;
