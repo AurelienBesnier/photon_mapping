@@ -29,8 +29,7 @@ requirements:
     - scipy
     - cython
     - make
-    - cmake 3.29
-    - boost
+    - cmake
     - pybind11
     - embree
     - llvm-openmp

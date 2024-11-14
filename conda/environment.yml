@@ -19,7 +19,6 @@ dependencies:
   - cmake
   - tbb
   - tbb-devel
-  - boost
   - llvm-openmp
   - scipy
   - matplotlib

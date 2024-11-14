@@ -3,8 +3,8 @@ project(photon_mapping LANGUAGES CXX)
 
 include_directories("${CMAKE_SOURCE_DIR}/src/cpp/include/")
 
-option(BUILD_TESTS "build c++ tests" ON)
-option(BUILD_CXX_EXAMPLE "build c++ example" ON)
+option(BUILD_TESTS "build c++ tests" OFF)
+option(BUILD_CXX_EXAMPLE "build c++ example" OFF)
 set(CMAKE_IGNORE_PATH "/usr/local")
 
 
@@ -13,14 +13,6 @@ set(CMAKE_IGNORE_PATH "/usr/local")
 find_package(TBB CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
-set(Boost_USE_STATIC_LIBS OFF)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-set(Boost_USE_RELEASE_LIBS ON)
-find_package(Boost REQUIRED)
-if(NOT Boost_FOUND)
-    message(WARNING "failed to find Boost")
-endif()
 
 # OpenMP
 if(APPLE)
@@ -81,7 +73,6 @@ set_target_properties(pm
 
 
 target_link_libraries(pm INTERFACE OpenMP::OpenMP_CXX tinyobjloader embree)
-target_link_libraries(pm INTERFACE Boost::boost Boost::dynamic_linking)
 target_link_libraries(pm INTERFACE photon_map primitive triangle image)
 
 # examples
