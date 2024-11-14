@@ -46,9 +46,6 @@ requirements:
     - jupyterlab
     - jupyter-packaging
     - ipywidgets
-    - openalea.lpy
-    - openalea.plantgl
-    - oawidgets
     - pybind11
     - pandas
     - scipy
