@@ -18,7 +18,6 @@ requirements:
     - setuptools
     - numpy
     - scipy
-    - cython
 
   build:
     - {{ compiler('c') }}
@@ -27,7 +26,6 @@ requirements:
     - setuptools
     - numpy
     - scipy
-    - cython
     - make
     - cmake
     - pybind11
@@ -43,6 +41,13 @@ requirements:
     - jupyterlab
     - jupyter-packaging
     - ipywidgets
+    - make
+    - cmake
+    - pybind11
+    - embree
+    - llvm-openmp
+    - tbb
+    - tbb-devel
     - pybind11
     - pandas
     - scipy
