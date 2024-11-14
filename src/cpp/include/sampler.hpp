@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <limits>
 #include <memory>
+#include <algorithm>
 #include <stdlib.h>
 
 #include "core.hpp"

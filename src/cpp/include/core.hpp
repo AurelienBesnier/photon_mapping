@@ -6,9 +6,7 @@
 #include <cstdint>
 #include <iostream>
 #include <limits>
-
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_real_distribution.hpp>
+#include <random>
 
 constexpr float PI = 3.14159265359;
 
@@ -399,7 +397,7 @@ sphericalToCartesian(float theta, float phi)
                  std::sin(phi) * std::sin(theta) };
 }
 
-static boost::random::mt19937 gen(
+static std::mt19937 gen(
   std::chrono::system_clock::now().time_since_epoch().count());
 
 inline float
@@ -408,7 +406,7 @@ randomInterval(float min, float max)
         if (min == max) {
                 return max;
         }
-        boost::random::uniform_real_distribution<float> dist(min, max);
+         std::uniform_real_distribution<> dist(min, max);
 
         return dist(gen);
 }
