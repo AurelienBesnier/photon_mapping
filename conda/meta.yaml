@@ -28,8 +28,6 @@ requirements:
     - numpy
     - scipy
     - cython
-    - openalea.lpy
-    - openalea.plantgl
     - make
     - cmake <= 3.29
     - boost
