@@ -29,7 +29,6 @@ requirements:
     - scipy
     - cython
     - make
-    - cxx-compiler
     - cmake
     - tbb
     - tbb-devel
