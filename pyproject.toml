@@ -7,7 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openalea.photon_mapping"
+name = "openalea.photonmap"
 authors = [
     {name = "Aurélien Besnier"},
     {name = "Tuan-Minh Nguyen"}
