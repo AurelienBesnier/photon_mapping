@@ -13,7 +13,7 @@ from openalea.plantgl.all import (
     Vector3,
 )
 
-from openalea.photonmap.Common.Math import cross_vector, denormalize
+from openalea.photonmap.common.math import cross_vector, denormalize
 
 # Objectif of this module is read the geometry of each object of fichier RAD
 

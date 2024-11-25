@@ -1,4 +1,4 @@
-from openalea.photonmap.Simulator import *
+from openalea.photonmap.simulator import *
 
 if __name__ == "__main__":
 

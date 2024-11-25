@@ -19,7 +19,7 @@ def denormalize(f: float) -> int:
     return int(255 * f)
 
 
-def spherical_to_cartesian(theta, phi, x_seg, y_seg):
+def spherical_to_cartesian(theta: float, phi: float, x_seg: int, y_seg: int) -> Vector3:
     """
     Convert the quaternion of object from angle(theta, phi) to Vec3(x,y,z)
 
@@ -129,7 +129,7 @@ def geo_hemisphere(centre, normal, rayon):
             vertices.append(v3)
             vertices.append(v4)
 
-            # add normal:: normals et vertices sont egaux car c'est une sphere unité
+            # add normal:: normals and vertices are equal because it's a unit sphere
             normals.append(v1)
             normals.append(v2)
             normals.append(v3)

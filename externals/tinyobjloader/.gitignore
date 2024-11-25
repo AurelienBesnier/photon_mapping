@@ -1,4 +1,4 @@
-#Common folder for building objects
+#common folder for building objects
 build/
 /python/dist/
 /python/*.egg-info

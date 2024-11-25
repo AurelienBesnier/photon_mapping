@@ -5,24 +5,25 @@ import time
 from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
-
 from openalea.lpy import Lsystem
+from openalea.photonmap.libphotonmap_core import (
+    Render,
+    visualizeSensorsPhotonMap,
+    visualizePhotonMap,
+)
+from openalea.plantgl.all import *
+
 from openalea.photonmap import (
     PhotonMapping,
     UniformSampler,
     Vec3,
     libphotonmap_core,
 )
-from openalea.photonmap.Energy import CalculateEnergy, CorrectEnergy
-from openalea.photonmap.libphotonmap_core import (
-    Render,
-    visualizeSensorsPhotonMap,
-    visualizePhotonMap,
-)
-from openalea.photonmap.Loader import LoadSensor, LoadEnvironment
-from openalea.photonmap.Loader.LoadSensor import Sensor
-from openalea.photonmap.Reader import ReadPO, ReadRADGeo
-from openalea.plantgl.all import *
+from openalea.photonmap.energy import calculate_energy, correct_energy
+from openalea.photonmap.loader import load_sensor, load_environment
+from openalea.photonmap.loader.load_sensor import Sensor
+from openalea.photonmap.reader import read_properties, read_rad_geo
+
 
 @dataclass
 class SimulationResult:
@@ -76,7 +77,7 @@ class SimulationResult:
         """
 
         if len(self.N_sim_virtual_sensor) > 0:
-            CalculateEnergy.write_sensor_energy(
+            calculate_energy.write_sensor_energy(
                 self.N_sim_virtual_sensor,
                 self.N_mes_virtual_sensor,
                 self.list_virtual_sensor,
@@ -85,7 +86,7 @@ class SimulationResult:
             )
 
         if len(self.N_sim_face_sensor) > 0:
-            CalculateEnergy.write_sensor_energy(
+            calculate_energy.write_sensor_energy(
                 self.N_sim_face_sensor,
                 self.N_mes_face_sensor,
                 self.list_face_sensor,
@@ -98,13 +99,13 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        fig, ax = plt.subplots(figsize = (12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         for wavelength_mesured in self.N_sim_face_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
-            plt.bar(str_keys, wavelength_mesured.values(), color='g', width=0.2)
+            plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
         ax.set_xlabel("Shape id")
-        ax.set_ylabel("Number of photons")   
-        plt.setp(ax.get_xticklabels(), rotation = 75)
+        ax.set_ylabel("Number of photons")
+        plt.setp(ax.get_xticklabels(), rotation=75)
         plt.tight_layout()
         plt.show()
 
@@ -113,16 +114,15 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        fig, ax = plt.subplots(figsize = (12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
         for wavelength_mesured in self.N_sim_virtual_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
-            plt.bar(str_keys, wavelength_mesured.values(), color='g', width=0.2)
+            plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
         ax.set_xlabel("Shape id")
-        ax.set_ylabel("Number of photons")   
-        plt.setp(ax.get_xticklabels(), rotation = 75)
+        ax.set_ylabel("Number of photons")
+        plt.setp(ax.get_xticklabels(), rotation=75)
         plt.tight_layout()
         plt.show()
-
 
 
 class Simulator:
@@ -136,13 +136,17 @@ class Simulator:
     maximum_depth: int
         The maximum number of times that the light bounces in the scene
     scale_factor: float
-        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+        The size of geometries. The vertices of geometries is recalculated by
+        dividing their coordinates by this value
     t_min: float
-        The minimum distance between the point of intersection and the origin of the light ray
+        The minimum distance between the point of intersection and the origin
+        of the light ray
     nb_thread: int
-        The number of threads on the CPU used to calculate in parallel. This value is between 0 and the number of cores of your CPU.
+        The number of threads on the CPU used to calculate in parallel. This
+        value is between 0 and the number of cores of your CPU.
     is_backface_culling: bool
-        Define which mode of intersection is chosen: intersect only with the front face or intersect with both faces.
+        Define which mode of intersection is chosen: intersect only with the
+        front face or intersect with both faces.
     base_spectral_range: dict
         The base spectral range which includes all the other spectral ranges
     divided_spectral_range: array
@@ -155,14 +159,16 @@ class Simulator:
         Number of received photons on each organ of plant
 
     spectrum_file: str
-        The link to the file which contains the informations of the heterogeneity of the spectrum
+        The link to the file which contains the information of the
+        heterogeneity of the spectrum
     points_calibration_file: str
-        The link to the file which contains the informations of the sensors used to calibrate the final result
+        The link to the file which contains the information of the sensors
+        used to calibrate the final result
 
     list_virtual_sensor: array
         The list of virtual sensor in simulation
     pgl_scene: openalea.plantgl.scenegraph.Scene
-        The plantgl scene object used to save the meshs of environment
+        The plantgl scene object used to save the meshes of environment
     plantPos: Vec3
         The position of the plant
     po_dir: str
@@ -173,6 +179,9 @@ class Simulator:
     # constructor
 
     def __init__(self):
+        self.coeffs_calibration = None
+        self.integrals = None
+        self.points_calibration = None
         self.nb_photons = 0
         self.n_samples = 512
         self.max_depth = 0
@@ -214,7 +223,7 @@ class Simulator:
 
     def addEnvToScene(self, sh):
         """
-        Add a environment's object to scene
+        Add an environment's object to scene
 
         Parameters
         ----------
@@ -253,7 +262,6 @@ class Simulator:
         sensor = Sensor(shape, "FaceSensor")
         self.list_face_sensor.append(sensor)
 
-
     def addFaceSensorToScene(self, shape, position, scale_factor):
         """
         Add a face sensor object to scene
@@ -265,7 +273,8 @@ class Simulator:
         position : tuple(int,int,int)
             The position of sensor
         scale_factor: int
-            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+            The size of geometries. The vertices of geometries is recalculated
+            by dividing their coordinates by this value
 
         Returns
         -------
@@ -286,14 +295,15 @@ class Simulator:
         position : tuple(int,int,int)
             The position of sensor
         scale_factor: int
-            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+            The size of geometries. The vertices of geometries is recalculated
+            by dividing their coordinates by this value
 
         Returns
         -------
             The virtual sensor is added to the scene
 
         """
-        sensor = Sensor(shape,"VirtualSensor", position, scale_factor)
+        sensor = Sensor(shape, "VirtualSensor", position, scale_factor)
         self.list_virtual_sensor.append(sensor)
 
     def addVirtualDiskSensorToScene(self, pos, normal, r, sensor_id):
@@ -316,7 +326,7 @@ class Simulator:
             The disk shaped sensor is added to the scene
 
         """
-        sensor = LoadSensor.Sensor().initVirtualDiskSensor(
+        sensor = load_sensor.Sensor().initVirtualDiskSensor(
             (
                 pos[0] / self.scale_factor,
                 pos[1] / self.scale_factor,
@@ -335,7 +345,8 @@ class Simulator:
 
         Returns
         -------
-            The number of received photons on each sensor and organs of plant is saved into the files located in folde ./results
+            The number of received photons on each sensor and organs of
+            plant is saved into the files located in folder ./results
 
         """
 
@@ -354,7 +365,7 @@ class Simulator:
             current_band = self.divided_spectral_range[index]
 
             print("Wavelength:", current_band["start"], "-", current_band["end"])
-            moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
+            average_wavelength = (current_band["start"] + current_band["end"]) / 2
             self.scene.clear()
             (
                 self.scene,
@@ -362,7 +373,7 @@ class Simulator:
                 virtual_sensor_triangle_dict,
                 has_face_sensor,
                 face_sensor_triangle_dict,
-            ) = self.initSimulationScene(self.scene, current_band, moyenne_wavelength)
+            ) = self.initSimulationScene(self.scene, current_band, average_wavelength)
 
             # create integrator
             self.scene.tnear = self.t_min
@@ -387,12 +398,12 @@ class Simulator:
 
             # rendering if declared
             if self.rendering:
-                self.render(integrator, self.scene, moyenne_wavelength, sampler)
+                self.render(integrator, self.scene, average_wavelength, sampler)
 
             # read energy of virtual sensor
             virtual_sensor_energy = {}
             if has_virtual_sensor:
-                CalculateEnergy.sensor_add_energy(
+                calculate_energy.sensor_add_energy(
                     virtual_sensor_triangle_dict, integrator, virtual_sensor_energy
                 )
                 self.N_sim_virtual_sensor.append(virtual_sensor_energy)
@@ -400,7 +411,7 @@ class Simulator:
             # read energy of face sensor
             face_sensor_energy = {}
             if has_face_sensor:
-                CalculateEnergy.sensor_add_energy(
+                calculate_energy.sensor_add_energy(
                     face_sensor_triangle_dict, integrator, face_sensor_energy
                 )
                 self.N_sim_face_sensor.append(face_sensor_energy)
@@ -414,29 +425,32 @@ class Simulator:
         self, spectrum_file="", points_calibration_file=""
     ):
         """
-        Calculate the coefficients which is used to calibrate the final result of simulation with the sensors
+        Calculate the coefficients which is used to calibrate the final result
+        of simulation with the sensors
 
         Parameters
         ----------
         spectrum_file: str
-            The link to the file which contains the informations of the heterogeneity of the spectrum
+            The link to the file which contains the information of the
+            heterogeneity of the spectrum
         points_calibration_file: str
-            The link to the file which contains the informations of the sensors used to calibrate the final result
+            The link to the file which contains the information of the
+            sensors used to calibrate the final result
 
         """
 
         self.coeffs_calibration = []
 
         if os.path.exists(spectrum_file) and os.path.exists(points_calibration_file):
-            self.integrals = CorrectEnergy.get_correct_energy_coeff(
+            self.integrals = correct_energy.get_correct_energy_coeff(
                 self.base_spectral_range, self.divided_spectral_range, spectrum_file
             )
-            self.points_calibration = CorrectEnergy.get_points_calibration(
+            self.points_calibration = correct_energy.get_points_calibration(
                 self.list_virtual_sensor,
                 points_calibration_file,
                 self.divided_spectral_range,
             )
-            self.coeffs_calibration = CorrectEnergy.get_calibaration_coefficient(
+            self.coeffs_calibration = correct_energy.get_calibaration_coefficient(
                 self.N_sim_virtual_sensor, self.integrals, self.points_calibration
             )
             return True
@@ -450,9 +464,11 @@ class Simulator:
         Parameters
         ----------
         spectrum_file: str
-            The link to the file which contains the informations of the heterogeneity of the spectrum
+            The link to the file which contains the information of the
+            heterogeneity of the spectrum
         points_calibration_file: str
-            The link to the file which contains the informations of the sensors used to calibrate the final result
+            The link to the file which contains the information of the sensors
+            used to calibrate the final result
 
         """
 
@@ -462,7 +478,7 @@ class Simulator:
 
         if can_calibrate:
             if len(self.N_sim_virtual_sensor) > 0:
-                self.N_mes_virtual_sensor = CorrectEnergy.calibrate_sensor_energy(
+                self.N_mes_virtual_sensor = correct_energy.calibrate_sensor_energy(
                     self.N_sim_virtual_sensor,
                     self.integrals,
                     self.points_calibration,
@@ -470,11 +486,55 @@ class Simulator:
                 )
 
             if len(self.coeffs_calibration) > 0 and len(self.N_sim_face_sensor) > 0:
-                self.N_mes_face_sensor = CorrectEnergy.calibrate_plant_energy(
+                self.N_mes_face_sensor = correct_energy.calibrate_plant_energy(
                     self.N_sim_face_sensor, self.coeffs_calibration
                 )
 
         return SimulationResult(self)
+
+    def visualizeResults(self, mode="ipython", wavelength_index=0):
+        """
+        Visualize the scene of simulation with the tools of OpenAlea
+        To run this function, it has to run these command first:
+        -- ipython
+        -- %gui qt5
+
+        Parameters
+        ----------
+        wavelength_index: int
+            The wavelength index to visualize.
+        mode: str
+            This variable define the mode used to visualize the scene.
+            There are the supported modes: ipython, oawidgets
+
+        Returns
+        -------
+            A rendered scene in 3D
+
+        """
+
+        # add face sensor
+        if len(self.list_face_sensor) > 0:
+            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_face_sensor)
+
+        # add sensor
+        if len(self.list_virtual_sensor) > 0:
+            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_virtual_sensor)
+
+        if mode == "ipython":
+            Viewer.display(self.scene_pgl)
+
+        elif mode == "oawidgets":
+            from oawidgets.plantgl import PlantGL
+            for sh in self.scene_pgl:
+                if sh.id not in self.N_sim_face_sensor[wavelength_index].keys():
+                    self.N_sim_face_sensor[wavelength_index][sh.id] = 0
+            face_results = list(self.N_sim_face_sensor[wavelength_index].values())
+
+            return PlantGL(self.scene_pgl, group_by_color=False, property=face_results)
+
+        else:
+            Viewer.display(self.scene_pgl)
 
     def visualizeScene(self, mode="ipython"):
         """
@@ -486,7 +546,7 @@ class Simulator:
         Parameters
         ----------
         mode: str
-            This variable define the mode used to visualize the scene. 
+            This variable define the mode used to visualize the scene.
             There are the supported modes: ipython, oawidgets
 
         Returns
@@ -503,11 +563,11 @@ class Simulator:
 
         # add face sensor
         if len(self.list_face_sensor) > 0:
-            sc = LoadSensor.addSensorPgl(sc, self.list_face_sensor)
+            sc = load_sensor.addSensorPgl(sc, self.list_face_sensor)
 
         # add sensor
         if len(self.list_virtual_sensor) > 0:
-            sc = LoadSensor.addSensorPgl(sc, self.list_virtual_sensor)
+            sc = load_sensor.addSensorPgl(sc, self.list_virtual_sensor)
 
         if mode == "ipython":
             Viewer.display(sc)
@@ -522,22 +582,27 @@ class Simulator:
 
     def test_t_min(self, nb_photons, start_t, loop, is_only_lamp=False):
         """
-        Test the simulation with multiple values of Tmin to avoid the problem of auto-intersection
+        Test the simulation with multiple values of Tmin to avoid the problem
+        of auto-intersection
 
         Parameters
         ----------
         nb_photons: int
-            The total number of photons is shooting from the light in the simulation
+            The total number of photons is shooting from the light in the
+            simulation
         start_t: float
             The first (smallest) value of Tmin used to run the test
         loop: int
-            The number of iteration. At each iteration, the current value Tmin is multiply with 10, then run the simulation
+            The number of iteration. At each iteration, the current value Tmin
+            is multiply with 10, then run the simulation
         is_only_lamp: bool
-            If True, run the test with only the lamps and sensors, If False, run the test with all the objects in scene
+            If True, run the test with only the lamps and sensors, If False,
+            run the test with all the objects in scene
 
         Returns
         -------
-            A graph is generated to show the connection between the Tmin and the results of simulation
+            A graph is generated to show the connection between the Tmin and
+            the results of simulation
 
         """
 
@@ -548,7 +613,7 @@ class Simulator:
         n_estimation_global = 100
         final_gathering_depth = 0
         current_band = self.divided_spectral_range[0]
-        moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
+        average_wavelength = (current_band["start"] + current_band["end"]) / 2
 
         list_tmin = []
         list_res = []
@@ -562,7 +627,7 @@ class Simulator:
             has_face_sensor,
             face_sensor_triangle_dict,
         ) = self.initSimulationScene(
-            scene, current_band, moyenne_wavelength, is_only_lamp
+            scene, current_band, average_wavelength, is_only_lamp
         )
         # create integrator
         scene.setupTriangles()
@@ -603,10 +668,11 @@ class Simulator:
         plt.show()
 
     def initSimulationScene(
-        self, scene, current_band, moyenne_wavelength, is_only_lamp=False
+        self, scene, current_band, average_wavelength, is_only_lamp=False
     ):
         """
-        Setup all the necessary objects (environment, sensor, plant) in the simulation
+        Setup all the necessary objects (environment, sensor, plant) in the
+        simulation
 
         Parameters
         ----------
@@ -615,37 +681,42 @@ class Simulator:
             The object which contains all the object in the scene of simulation
         current_band: dict
             Current divided spectral range where the simulation is running
-        moyenne_wavelength: Vec3
-            The average wavelength of spectral range used to determine the color of the light
+        average_wavelength: Vec3
+            The average wavelength of spectral range used to determine the color
+            of the light
         is_only_lamp: bool
-            if True, only the lamps and sensors is added to the scene, if False, all the objects is added.
+            if True, only the lamps and sensors is added to the scene, if False,
+             all the objects is added.
 
 
         Returns
         -------
             scene: libphotonmap_core.Scene
-                The object which contains all the object in the scene of simulation
+                The object which contains all the object in the scene of
+                simulation
             has_virtual_sensor: bool
                 Return true if the scene has the sensors
             sensor_triangle_dict: dict
-                Dictionary of the triangles of the sensors. Using to counting the number of photons received in each sensor
+                Dictionary of the triangles of the sensors. Using to counting
+                the number of photons received in each sensor
             has_plant: bool
                 Return true if the scene has the model of plant
             tr2shmap: dict
-                Dictionary of the triangles of the plant. Using to counting the number of photons received in each organ of plant
+                Dictionary of the triangles of the plant. Using to counting the
+                number of photons received in each organ of plant
 
         """
         # add env
-        materials_r, materials_s, materials_t = ReadPO.setup_dataset_materials(
+        materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
             current_band["start"], current_band["end"], self.po_dir
         )
         scene.clear()
 
         for sh in self.scene_pgl:
-            LoadEnvironment.addEnvironment(
+            load_environment.addEnvironment(
                 scene,
                 sh,
-                moyenne_wavelength,
+                average_wavelength,
                 materials_r,
                 materials_s,
                 materials_t,
@@ -657,7 +728,7 @@ class Simulator:
         face_sensor_triangle_dict = {}
 
         if len(self.list_face_sensor) > 0:
-            LoadSensor.addFaceSensors(
+            load_sensor.addFaceSensors(
                 scene, face_sensor_triangle_dict, self.list_face_sensor
             )
             has_face_sensor = True
@@ -667,7 +738,7 @@ class Simulator:
         virtual_sensor_triangle_dict = {}
 
         if len(self.list_virtual_sensor) > 0:
-            LoadSensor.addVirtualSensors(
+            load_sensor.addVirtualSensors(
                 scene, virtual_sensor_triangle_dict, self.list_virtual_sensor
             )
             has_virtual_sensor = True
@@ -691,7 +762,8 @@ class Simulator:
         scene: libphotonmap_core.Scene
             The object which contains all the object in the scene of simulation.
         w: Vec3
-            The average wavelength of spectral range used to determine the color of the light.
+            The average wavelength of spectral range used to determine the color
+             of the light.
         sampler: libphotonmap_core.Sampler
             The generator of the random number.
 
@@ -758,20 +830,21 @@ class Simulator:
 
     def addEnvFromFile(self, room_file: str, po_dir: str, flip_normal=False):
         """
-        Setup the room/environment of the simulation from file.
+        Set up the room/environment of the simulation from file.
 
         Parameters
         ----------
         room_file: str
             The link to the file which contains the geometries of the room
         po_dir: str
-            The link to the folder which contains the optical properties of the room
+            The link to the folder which contains the optical properties of the
+            room
         flip_normal: bool
             Determine the direction of the vector normal of triangle.
         """
 
         self.po_dir = po_dir
-        self.scene_pgl = ReadRADGeo.read_rad(room_file, self.scale_factor, flip_normal)
+        self.scene_pgl = read_rad_geo.read_rad(room_file, self.scale_factor, flip_normal)
 
     def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
         """
@@ -791,12 +864,14 @@ class Simulator:
 
     def addVirtualDiskSensorsFromFile(self, sensor_file: str):
         """
-        Setup the sensors in the simulation. Enable the capacity to run the simulation with the circle sensors
+        Setup the sensors in the simulation. Enable the capacity to run the
+        simulation with the circle sensors
 
         Parameters
         ----------
         sensor_file: str
-            The link to the file which contains the informations of the sensors in the simulation
+            The link to the file which contains the informations of the sensors
+            in the simulation
 
         """
 
@@ -823,12 +898,14 @@ class Simulator:
         self, plant_file: str, plant_pos=Vec3(0, 0, 0), derivation_length=None
     ):
         """
-        Setup a plant in the simulation. Enable the capacity to run the simulation with a model of plant
+        Set up a plant in the simulation. Enable the capacity to run the
+        simulation with a model of plant
 
         Parameters
         ----------
         plant_file: str
-            The link to the file of the model of plant. (currently only support .lpy file)
+            The link to the file of the model of plant. (currently only support
+            .lpy file)
         plantPos: Vec3
             The position of the plant
         derivation_length: int

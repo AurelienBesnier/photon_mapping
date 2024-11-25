@@ -58,10 +58,10 @@ requirements:
 test:
   imports:
     - openalea.photonmap
-    - openalea.photonmap.Common
-    - openalea.photonmap.Energy
-    - openalea.photonmap.Loader
-    - openalea.photonmap.Reader
+    - openalea.photonmap.common
+    - openalea.photonmap.energy
+    - openalea.photonmap.loader
+    - openalea.photonmap.reader
     - openalea.photonmap.Simulator
   requires:
     - pytest

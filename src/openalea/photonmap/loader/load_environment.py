@@ -5,8 +5,8 @@ from openalea.photonmap import (
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.Common.Math import average_vector, geo_hemisphere
-from openalea.photonmap.Common.Outils import flatten, wavelength2rgb
+from openalea.photonmap.common.math import average_vector, geo_hemisphere
+from openalea.photonmap.common.tools import flatten, wavelength2rgb
 from openalea.plantgl.all import Color3, Scene
 
 # Objectif of this module is adding environment object to the scene of Photon Mapping

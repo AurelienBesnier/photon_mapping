@@ -4,7 +4,7 @@ from openalea.photonmap import (
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.Common.Outils import flatten
+from openalea.photonmap.common.tools import flatten
 from openalea.plantgl.all import (
     Color3,
     Material,
@@ -15,7 +15,7 @@ from openalea.plantgl.all import (
     Vector3,
 )
 
-# Objectif of this module is adding plants to the scene of Photon Mapping to calculate the received energy
+# Objective of this module is adding plants to the scene of Photon Mapping to calculate the received energy
 # Data is located in this directory: ./assets
 
 

@@ -4,7 +4,7 @@ from collections import OrderedDict
 import pandas as pd
 from scipy import stats
 
-from openalea.photonmap.Loader.LoadSensor import findIndexOfDiskSensorInList
+from openalea.photonmap.loader.load_sensor import findIndexOfDiskSensorInList
 
 """+ Objective of this module is reading the measured PPFD of each wavelength to correct the output energy
 + Data is located in this directory: ./spectrum/chambre1_spectrum  

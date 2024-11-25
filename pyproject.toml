@@ -42,14 +42,4 @@ test = [
 ]
 
 [tool.ruff]
-extend-select = [
-    "B",   # flake8-bugbear
-    "I",   # isort
-    "PGH", # pygrep-hooks
-    "RUF", # Ruff-specific
-    "UP",  # pyupgrade
-]
-extend-ignore = [
-    "E501",   # Line too long
-]
 target-version = "py312"

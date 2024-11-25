@@ -6,7 +6,7 @@ from openalea.photonmap import (
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.Common.Outils import flatten
+from openalea.photonmap.common.tools import flatten
 
 # Objectif of this module is adding sensors to the scene of photon mapping to the received energy
 

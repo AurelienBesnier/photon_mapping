@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from openalea.photonmap.Energy.CorrectEnergy import read_spectrum_file
+from openalea.photonmap.energy.correct_energy import read_spectrum_file
 
 # Objectif of this module is read the optical properties (material) of each object
 # Calculate the average value of the spectrum range
