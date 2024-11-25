@@ -41,10 +41,32 @@ class Sensor:
 
     """
 
-    def __init__(self, shape, captor_type, position=None, scale_factor=None):
+    def __init__(self, shape, sensor_type, position=None, scale_factor=None):
+        self.type = sensor_type
+        self.sensor_id = shape.id
+        if position is not None:
+            self.xSite = position[0] / scale_factor
+            self.ySite = position[1] / scale_factor
+            self.zSite = position[2] / scale_factor
+        self.radius = 0
+
+        vertices = shape.geometry.pointList
+        # apply scale factor
+        if scale_factor is not None:
+            for i in range(len(vertices)):
+                cur_vertice = vertices[i]
+                vertices[i] = (
+                    (cur_vertice[0] + position[0]) / scale_factor,
+                    (cur_vertice[1] + position[1]) / scale_factor,
+                    (cur_vertice[2] + position[2]) / scale_factor,
+                )
+
+        shape.geometry.pointList = vertices
+        shape.geometry.computeNormalList()
+
         self.shape = shape
 
-    def initSensor(self, shape, position, scale_factor, captor_type):
+    def initSensor(self, shape, position, scale_factor, sensor_type):
         """
         Init a object of face sensor
 
@@ -56,12 +78,12 @@ class Sensor:
             The position of sensor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-        captor_type: str
+        sensor_type: str
             "VirtualSensor" or "FaceSensor"
         """
 
-        self.type = captor_type
-        self.captor_id = shape.id
+        self.type = sensor_type
+        self.sensor_id = shape.id
         self.xSite = position[0] / scale_factor
         self.ySite = position[1] / scale_factor
         self.zSite = position[2] / scale_factor
@@ -84,7 +106,7 @@ class Sensor:
 
         return self
 
-    def initVirtualDiskSensor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
+    def initVirtualDiskSensor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, sensor_id=0):
         """
         Init a object of virtual disk shape sensor
 
@@ -96,7 +118,7 @@ class Sensor:
             The normal vector of sensor
         r: float
             The radius of sensor
-        captor_id: int
+        sensor_id: int
             The id of sensor
 
         """
@@ -108,7 +130,7 @@ class Sensor:
         self.yNormal = nor[1]
         self.zNormal = nor[2]
         self.radius = r
-        self.captor_id = captor_id
+        self.sensor_id = sensor_id
 
         self.createVirtualDisk()
 
@@ -169,7 +191,7 @@ class Sensor:
             triangleCount += 1
             i += deltaAngle
 
-        captor_shape = Shape(
+        sensor_shape = Shape(
             TriangleSet(vertices, triangles, normals),
             Material(
                 name="Sensor",
@@ -180,7 +202,7 @@ class Sensor:
             ),
         )
 
-        self.shape = captor_shape
+        self.shape = sensor_shape
 
     def equal(self, xSite, ySite, zSite):
         """
@@ -254,7 +276,7 @@ class Sensor:
         return refl, specular, trans, roughness
 
 
-def addVirtualSensors(scene, virtual_captor_triangle_dict, list_virtual_captor):
+def addVirtualSensors(scene, virtual_sensor_triangle_dict, list_virtual_sensor):
     """
     Adds virtual sensors to the scene.
 
@@ -262,9 +284,9 @@ def addVirtualSensors(scene, virtual_captor_triangle_dict, list_virtual_captor):
     ----------
     scene : libphotonmap_core.Scene
         The photon mapping scene used to run the simulation
-    virtual_captor_triangle_dict : dict
+    virtual_sensor_triangle_dict : dict
         The dictionary of the triangles of sensors
-    list_virtual_captor : array
+    list_virtual_sensor : array
         The list of virtual sensor
 
     Returns
@@ -274,8 +296,8 @@ def addVirtualSensors(scene, virtual_captor_triangle_dict, list_virtual_captor):
     """
     lastTriangleId = scene.nFaces()
 
-    for i in range(len(list_virtual_captor)):
-        sensor = list_virtual_captor[i]
+    for i in range(len(list_virtual_sensor)):
+        sensor = list_virtual_sensor[i]
         if sensor.type != "VirtualSensor":
             return
 
@@ -285,12 +307,12 @@ def addVirtualSensors(scene, virtual_captor_triangle_dict, list_virtual_captor):
 
         #
         for j in triangles:
-            virtual_captor_triangle_dict[lastTriangleId + j] = sensor.captor_id
+            virtual_sensor_triangle_dict[lastTriangleId + j] = sensor.sensor_id
 
         lastTriangleId = scene.nFaces()
 
 
-def addFaceSensors(scene, face_captor_triangle_dict, list_face_captor):
+def addFaceSensors(scene, face_sensor_triangle_dict, list_face_sensor):
     """
     Adds face sensors to the scene.
 
@@ -298,9 +320,9 @@ def addFaceSensors(scene, face_captor_triangle_dict, list_face_captor):
     ----------
     scene : libphotonmap_core.Scene
         The photon mapping scene used to run the simulation
-    face_captor_triangle_dict : dict
+    face_sensor_triangle_dict : dict
         The dictionary of the triangles of sensors
-    list_face_captor : array
+    list_face_sensor : array
         The list of face sensor
 
     Returns
@@ -311,8 +333,8 @@ def addFaceSensors(scene, face_captor_triangle_dict, list_face_captor):
 
     lastTriangleId = scene.nFaces()
 
-    for i in range(len(list_face_captor)):
-        sensor = list_face_captor[i]
+    for i in range(len(list_face_sensor)):
+        sensor = list_face_sensor[i]
         if sensor.type != "FaceSensor":
             return
 
@@ -324,18 +346,18 @@ def addFaceSensors(scene, face_captor_triangle_dict, list_face_captor):
         )
         #
         for j in triangles:
-            face_captor_triangle_dict[lastTriangleId + j] = sensor.captor_id
+            face_sensor_triangle_dict[lastTriangleId + j] = sensor.sensor_id
 
         lastTriangleId = scene.nFaces()
 
 
-def findIndexOfDiskSensorInList(list_captor, x, y, z):
+def findIndexOfDiskSensorInList(list_sensor, x, y, z):
     """
     Find the index of a disk shape sensor while knowing its position
 
     Parameters
     ----------
-    list_captor : Array
+    list_sensor : Array
         The list of the sensor in the scene
     x : float
         x coordinate
@@ -351,14 +373,14 @@ def findIndexOfDiskSensorInList(list_captor, x, y, z):
 
     """
 
-    for i in range(len(list_captor)):
-        if list_captor[i].equal(x, y, z):
+    for i in range(len(list_sensor)):
+        if list_sensor[i].equal(x, y, z):
             return i
     return -1
 
 
 # add sensor to a scene of PlantGL to visualize
-def addSensorPgl(sc, list_captor):
+def addSensorPgl(sc, list_sensor):
     """
     Add the sensors to the PlantGL scene to visualize the scene
 
@@ -366,7 +388,7 @@ def addSensorPgl(sc, list_captor):
     ----------
     sc : Lscene
         The plantgl scene
-    list_captor : array
+    list_sensor : array
         The list of sensors
 
     Returns
@@ -377,8 +399,8 @@ def addSensorPgl(sc, list_captor):
 
     pglScene = Scene()
 
-    for i in range(len(list_captor)):
-        captor_sh = list_captor[i].shape
-        pglScene.add(captor_sh)
+    for i in range(len(list_sensor)):
+        sensor_sh = list_sensor[i].shape
+        pglScene.add(sensor_sh)
 
     return Scene([pglScene, sc])

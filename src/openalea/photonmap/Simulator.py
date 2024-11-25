@@ -98,9 +98,31 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        print(self.list_face_sensor)
-        print(self.N_sim_face_sensor)
-        return
+        fig, ax = plt.subplots(figsize = (12, 8))
+        for wavelength_mesured in self.N_sim_face_sensor:
+            str_keys = [str(key) for key in wavelength_mesured.keys()]
+            plt.bar(str_keys, wavelength_mesured.values(), color='g', width=0.2)
+        ax.set_xlabel("Shape id")
+        ax.set_ylabel("Number of photons")   
+        plt.setp(ax.get_xticklabels(), rotation = 75)
+        plt.tight_layout()
+        plt.show()
+
+    def display_virtual_sensor(self):
+        """
+        Draw a graph with MathPlotlib
+
+        """
+        fig, ax = plt.subplots(figsize = (12, 8))
+        for wavelength_mesured in self.N_sim_virtual_sensor:
+            str_keys = [str(key) for key in wavelength_mesured.keys()]
+            plt.bar(str_keys, wavelength_mesured.values(), color='g', width=0.2)
+        ax.set_xlabel("Shape id")
+        ax.set_ylabel("Number of photons")   
+        plt.setp(ax.get_xticklabels(), rotation = 75)
+        plt.tight_layout()
+        plt.show()
+
 
 
 class Simulator:
@@ -215,7 +237,7 @@ class Simulator:
         # add object to scene
         self.scene_pgl.add(sh)
 
-    def addFaceSensor(self, shape, scale_factor):
+    def addFaceSensor(self, shape):
         """
         Add a face sensor object to scene
 
@@ -223,9 +245,6 @@ class Simulator:
         ----------
         shape: Shape
             The geometry and material of sensor
-        scale_factor: int
-            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
-
         Returns
         -------
             The face sensor is added to the scene
