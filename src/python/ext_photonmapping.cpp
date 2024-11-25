@@ -81,7 +81,7 @@ visualizePhotonMap(const PhotonMapping& integrator,
 }
 
 void
-visualizeCaptorsPhotonMap(const Scene& scene,
+visualizeSensorsPhotonMap(const Scene& scene,
                           Image& image,
                           const unsigned& height,
                           const unsigned& width,
@@ -94,7 +94,7 @@ visualizeCaptorsPhotonMap(const Scene& scene,
 {
 
         // visualize photon map
-        const PhotonMap& photon_map = integrator.getPhotonMapCaptors();
+        const PhotonMap& photon_map = integrator.getPhotonMapSensors();
         if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
                 for (unsigned int i = 0; i < height; ++i) {
@@ -330,9 +330,9 @@ PYBIND11_MODULE(libphotonmap_core, m)
                &PhotonMapping::getPhotonMapCaustics,
                "Returns the caustics photon map",
                py::return_value_policy::reference)
-          .def("getPhotonMapCaptors",
-               &PhotonMapping::getPhotonMapCaptors,
-               "Returns the captor photon map",
+          .def("getPhotonMapSensors",
+               &PhotonMapping::getPhotonMapSensors,
+               "Returns the sensor photon map",
                py::return_value_policy::reference);
 
         // Lights
@@ -521,8 +521,8 @@ PYBIND11_MODULE(libphotonmap_core, m)
                py::arg("intensity"),
                py::arg("color"),
                py::arg("mat_name"))
-          .def("addFaceCaptorInfos",
-               &Scene::addFaceCaptorInfos,
+          .def("addFaceSensorInfos",
+               &Scene::addFaceSensorInfos,
                py::arg("vertices"),
                py::arg("indices"),
                py::arg("normals"),
@@ -530,8 +530,8 @@ PYBIND11_MODULE(libphotonmap_core, m)
                py::arg("specular"),
                py::arg("transmittance"),
                py::arg("roughness"))
-          .def("addVirtualCaptorInfos",
-               &Scene::addVirtualCaptorInfos,
+          .def("addVirtualSensorInfos",
+               &Scene::addVirtualSensorInfos,
                py::arg("vertices"),
                py::arg("indices"),
                py::arg("normals"))
@@ -607,8 +607,8 @@ PYBIND11_MODULE(libphotonmap_core, m)
               py::arg("filename"),
               py::arg("sampler"));
 
-        m.def("visualizeCaptorsPhotonMap",
-              &visualizeCaptorsPhotonMap,
+        m.def("visualizeSensorsPhotonMap",
+              &visualizeSensorsPhotonMap,
               "Function to visualize the photonmap as a .ppm image",
               py::arg("Scene"),
               py::arg("image"),

@@ -8,53 +8,56 @@ from openalea.photonmap import (
 )
 from openalea.photonmap.Common.Outils import flatten
 
-# Objectif of this module is adding captors to the scene of photon mapping to the received energy
+# Objectif of this module is adding sensors to the scene of photon mapping to the received energy
 
 
-class Captor:
+class Sensor:
     """
-    A class which contains all the data of captor.
+    A class which contains all the data of sensor.
 
     Attributes
     ----------
     xSite: float
-        The X coordinate of captor's position
+        The X coordinate of sensor's position
     ySite: float
-        The Y coordinate of captor's position
+        The Y coordinate of sensor's position
     zSite: float
-        The Z coordinate of captor's position
+        The Z coordinate of sensor's position
     xNormal: float
-        The X coordinate of captor's normal
+        The X coordinate of sensor's normal
     yNormal: float
-        The Y coordinate of captor's normal
+        The Y coordinate of sensor's normal
     zNormal: float
-        The Z coordinate of captor's normal
+        The Z coordinate of sensor's normal
     radius: float
-        The radius of captor
+        The radius of sensor
     vertices: array
-        The vertices of captor's geometry
+        The vertices of sensor's geometry
     normals: array
-        The normal vectors of each vertices in captor's geometry
+        The normal vectors of each vertices in sensor's geometry
     triangles: array
-        The triangles of captor's geometry
+        The triangles of sensor's geometry
 
 
     """
 
-    def initCaptor(self, shape, position, scale_factor, captor_type):
+    def __init__(self, shape, captor_type, position=None, scale_factor=None):
+        self.shape = shape
+
+    def initSensor(self, shape, position, scale_factor, captor_type):
         """
-        Init a object of face captor
+        Init a object of face sensor
 
         Returns
         -------
         shape: Shape
-            The geometry and material of captor
+            The geometry and material of sensor
         position : tuple(int,int,int)
-            The position of captor
+            The position of sensor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
         captor_type: str
-            "VirtualCaptor" or "FaceCaptor"
+            "VirtualSensor" or "FaceSensor"
         """
 
         self.type = captor_type
@@ -81,23 +84,23 @@ class Captor:
 
         return self
 
-    def initVirtualDiskCaptor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
+    def initVirtualDiskSensor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, captor_id=0):
         """
-        Init a object of virtual disk shape captor
+        Init a object of virtual disk shape sensor
 
         Returns
         -------
         pos: tuple
-            The position of captor
+            The position of sensor
         nor: tuple
-            The normal vector of captor
+            The normal vector of sensor
         r: float
-            The radius of captor
+            The radius of sensor
         captor_id: int
-            The id of captor
+            The id of sensor
 
         """
-        self.type = "VirtualCaptor"
+        self.type = "VirtualSensor"
         self.xSite = pos[0]
         self.ySite = pos[1]
         self.zSite = pos[2]
@@ -113,16 +116,16 @@ class Captor:
 
     def createVirtualDisk(self):
         """
-        Create geometry of circular captor
+        Create geometry of circular sensor
 
         Returns
         -------
         vertices: array
-            The vertices of captor's geometry
+            The vertices of sensor's geometry
         normals: array
-            The normal vectors of each vertices in captor's geometry
+            The normal vectors of each vertices in sensor's geometry
         triangles: array
-            The triangles of captor's geometry
+            The triangles of sensor's geometry
 
         """
         vertices = []
@@ -169,7 +172,7 @@ class Captor:
         captor_shape = Shape(
             TriangleSet(vertices, triangles, normals),
             Material(
-                name="Captor",
+                name="Sensor",
                 ambient=Color3(0),
                 specular=Color3(0),
                 shininess=1,
@@ -181,7 +184,7 @@ class Captor:
 
     def equal(self, xSite, ySite, zSite):
         """
-        Check if the coordinate is equal to the position of captor
+        Check if the coordinate is equal to the position of sensor
 
         Parameters
         ----------
@@ -206,16 +209,16 @@ class Captor:
 
     def getGeometry(self):
         """
-        Get geometry of captor
+        Get geometry of sensor
 
         Returns
         -------
         vertices: array
-            The vertices of captor's geometry
+            The vertices of sensor's geometry
         normals: array
-            The normal vectors of each vertices in captor's geometry
+            The normal vectors of each vertices in sensor's geometry
         triangles: array
-            The triangles of captor's geometry
+            The triangles of sensor's geometry
 
         """
 
@@ -227,7 +230,7 @@ class Captor:
 
     def getOpticalProperties(self):
         """
-        Get optical properties of captor
+        Get optical properties of sensor
 
         Returns
         -------
@@ -251,89 +254,89 @@ class Captor:
         return refl, specular, trans, roughness
 
 
-def addVirtualCaptors(scene, virtual_captor_triangle_dict, list_virtual_captor):
+def addVirtualSensors(scene, virtual_captor_triangle_dict, list_virtual_captor):
     """
-    Adds virtual captors to the scene.
+    Adds virtual sensors to the scene.
 
     Parameters
     ----------
     scene : libphotonmap_core.Scene
         The photon mapping scene used to run the simulation
     virtual_captor_triangle_dict : dict
-        The dictionary of the triangles of captors
+        The dictionary of the triangles of sensors
     list_virtual_captor : array
-        The list of virtual captor
+        The list of virtual sensor
 
     Returns
     -------
-        Add all the mesh of virtual captors to the scene
+        Add all the mesh of virtual sensors to the scene
 
     """
     lastTriangleId = scene.nFaces()
 
     for i in range(len(list_virtual_captor)):
-        captor = list_virtual_captor[i]
-        if captor.type != "VirtualCaptor":
+        sensor = list_virtual_captor[i]
+        if sensor.type != "VirtualSensor":
             return
 
-        vertices, triangles, normals = captor.getGeometry()
+        vertices, triangles, normals = sensor.getGeometry()
         #
-        scene.addVirtualCaptorInfos(vertices, triangles, normals)
+        scene.addVirtualSensorInfos(vertices, triangles, normals)
 
         #
         for j in triangles:
-            virtual_captor_triangle_dict[lastTriangleId + j] = captor.captor_id
+            virtual_captor_triangle_dict[lastTriangleId + j] = sensor.captor_id
 
         lastTriangleId = scene.nFaces()
 
 
-def addFaceCaptors(scene, face_captor_triangle_dict, list_face_captor):
+def addFaceSensors(scene, face_captor_triangle_dict, list_face_captor):
     """
-    Adds face captors to the scene.
+    Adds face sensors to the scene.
 
     Parameters
     ----------
     scene : libphotonmap_core.Scene
         The photon mapping scene used to run the simulation
     face_captor_triangle_dict : dict
-        The dictionary of the triangles of captors
+        The dictionary of the triangles of sensors
     list_face_captor : array
-        The list of face captor
+        The list of face sensor
 
     Returns
     -------
-        Add all the mesh of face captors to the scene
+        Add all the mesh of face sensors to the scene
 
     """
 
     lastTriangleId = scene.nFaces()
 
     for i in range(len(list_face_captor)):
-        captor = list_face_captor[i]
-        if captor.type != "FaceCaptor":
+        sensor = list_face_captor[i]
+        if sensor.type != "FaceSensor":
             return
 
-        vertices, triangles, normals = captor.getGeometry()
-        refl, specular, trans, roughness = captor.getOpticalProperties()
+        vertices, triangles, normals = sensor.getGeometry()
+        refl, specular, trans, roughness = sensor.getOpticalProperties()
         #
-        scene.addFaceCaptorInfos(
+        scene.addFaceSensorInfos(
             vertices, triangles, normals, refl, specular, trans, roughness
         )
         #
         for j in triangles:
-            face_captor_triangle_dict[lastTriangleId + j] = captor.captor_id
+            face_captor_triangle_dict[lastTriangleId + j] = sensor.captor_id
 
         lastTriangleId = scene.nFaces()
 
 
-def findIndexOfDiskCaptorInList(list_captor, x, y, z):
+def findIndexOfDiskSensorInList(list_captor, x, y, z):
     """
-    Find the index of a disk shape captor while knowing its position
+    Find the index of a disk shape sensor while knowing its position
 
     Parameters
     ----------
     list_captor : Array
-        The list of the captor in the scene
+        The list of the sensor in the scene
     x : float
         x coordinate
     y : float
@@ -344,7 +347,7 @@ def findIndexOfDiskCaptorInList(list_captor, x, y, z):
     Returns
     -------
         if not found, return -1
-        if found, return the index of the captor
+        if found, return the index of the sensor
 
     """
 
@@ -354,21 +357,21 @@ def findIndexOfDiskCaptorInList(list_captor, x, y, z):
     return -1
 
 
-# add captor to a scene of PlantGL to visualize
-def addCaptorPgl(sc, list_captor):
+# add sensor to a scene of PlantGL to visualize
+def addSensorPgl(sc, list_captor):
     """
-    Add the captors to the PlantGL scene to visualize the scene
+    Add the sensors to the PlantGL scene to visualize the scene
 
     Parameters
     ----------
     sc : Lscene
         The plantgl scene
     list_captor : array
-        The list of captors
+        The list of sensors
 
     Returns
     -------
-        A PlantGL Scene with the captors
+        A PlantGL Scene with the sensors
 
     """
 

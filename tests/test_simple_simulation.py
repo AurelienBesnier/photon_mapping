@@ -34,22 +34,22 @@ def test_simple_simulation():
     light_sh = Shape(light_ts, light_mat)
     simulator.addEnvToScene(light_sh)
 
-    # setup captor
-    captor_ts = TriangleSet(
+    # setup sensor
+    sensor_ts = TriangleSet(
         pointList=[(0, 0, 0), (1, 0, 0), (0, 1, 0)], indexList=[(0, 2, 1)]
     )
-    captor_mat = Material(
-        name="Captor",
+    sensor_mat = Material(
+        name="Sensor",
         ambient=Color3(127),
         specular=Color3(127),  # spec = 0.5 = 127/255
         shininess=0.5,
         transparency=0.5,
     )
-    captor_sh = Shape(captor_ts, captor_mat, 0)
+    sensor_sh = Shape(sensor_ts, sensor_mat, 0)
 
-    # simulator.addFaceCaptorToScene(shape=captor_sh, position=(0,0,1), scale_factor=1)
-    simulator.addVirtualCaptorToScene(
-        shape=captor_sh, position=(0, 0, 3), scale_factor=1
+    # simulator.addFaceSensorToScene(shape=sensor_sh, position=(0,0,1), scale_factor=1)
+    simulator.addVirtualSensorToScene(
+        shape=sensor_sh, position=(0, 0, 3), scale_factor=1
     )
 
     # run

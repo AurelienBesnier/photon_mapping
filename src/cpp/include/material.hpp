@@ -28,8 +28,8 @@ enum class BxDFType
 {
         DIFFUSE,  ///< Diffuse surface
         SPECULAR, ///< Specular surface
-        CAPTOR,   ///< Captor surface
-        PHONGCAPTOR
+        SENSOR,   ///< Sensor surface
+        PHONGSENSOR
 };
 
 /**
@@ -292,7 +292,7 @@ class Phong : public BxDF
         }
 };
 
-class PhongCaptor : public BxDF
+class PhongSensor : public BxDF
 {
       private:
         Vec3f rho; // diffuse
@@ -301,11 +301,11 @@ class PhongCaptor : public BxDF
         float transmittance;
 
       public:
-        explicit PhongCaptor(const Vec3f& rho,
+        explicit PhongSensor(const Vec3f& rho,
                              const Vec3f& specular,
                              float roughness,
                              float transmittance)
-          : BxDF(BxDFType::PHONGCAPTOR)
+          : BxDF(BxDFType::PHONGSENSOR)
           , rho(rho)
           , specular(specular)
           , roughness(roughness)
@@ -556,15 +556,15 @@ class [[maybe_unused]] Glass : public BxDF
         }
 };
 
-class Captor : public BxDF
+class Sensor : public BxDF
 {
       private:
         Vec3f rho;
         float ior;
 
       public:
-        Captor(const Vec3f& rho)
-          : BxDF(BxDFType::CAPTOR)
+        Sensor(const Vec3f& rho)
+          : BxDF(BxDFType::SENSOR)
           , rho(rho)
           , ior(1)
         {

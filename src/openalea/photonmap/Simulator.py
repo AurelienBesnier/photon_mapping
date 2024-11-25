@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import time
+from dataclasses import dataclass
 
 import matplotlib.pyplot as plt
 
@@ -15,14 +16,15 @@ from openalea.photonmap import (
 from openalea.photonmap.Energy import CalculateEnergy, CorrectEnergy
 from openalea.photonmap.libphotonmap_core import (
     Render,
-    visualizeCaptorsPhotonMap,
+    visualizeSensorsPhotonMap,
     visualizePhotonMap,
 )
-from openalea.photonmap.Loader import LoadCaptor, LoadEnvironment
+from openalea.photonmap.Loader import LoadSensor, LoadEnvironment
+from openalea.photonmap.Loader.LoadSensor import Sensor
 from openalea.photonmap.Reader import ReadPO, ReadRADGeo
 from openalea.plantgl.all import *
 
-
+@dataclass
 class SimulationResult:
     """
     A class which contains the result of simulation.
@@ -30,13 +32,13 @@ class SimulationResult:
     Attributes
     ----------
 
-    N_sim_virtual_captor: dict
-        Number of received photons on each captor
-    N_sim_face_captor: dict
+    N_sim_virtual_sensor: dict
+        Number of received photons on each sensor
+    N_sim_face_sensor: dict
         Number of received photons on each organ of plant
-    N_mes_virtual_captor: dict
-        The energies after the calibration on each captor
-    N_mes_face_captor: dict
+    N_mes_virtual_sensor: dict
+        The energies after the calibration on each sensor
+    N_mes_face_sensor: dict
         The energies after the calibration on each organ of plant
 
     nb_photons: int
@@ -44,8 +46,8 @@ class SimulationResult:
     divided_spectral_range: array
         The list of spectral ranges divided from the base spectral range.
 
-    list_virtual_captor: array
-        The list of virtual captor in simulation
+    list_virtual_sensor: array
+        The list of virtual sensor in simulation
 
     """
 
@@ -54,14 +56,14 @@ class SimulationResult:
     def __init__(self, simulator):
         self.photonmaps = simulator.photonmaps
 
-        self.N_sim_virtual_captor = simulator.N_sim_virtual_captor
-        self.N_sim_face_captor = simulator.N_sim_face_captor
-        self.N_mes_virtual_captor = simulator.N_mes_virtual_captor
-        self.N_mes_face_captor = simulator.N_mes_face_captor
+        self.N_sim_virtual_sensor = simulator.N_sim_virtual_sensor
+        self.N_sim_face_sensor = simulator.N_sim_face_sensor
+        self.N_mes_virtual_sensor = simulator.N_mes_virtual_sensor
+        self.N_mes_face_sensor = simulator.N_mes_face_sensor
 
         self.divided_spectral_range = simulator.divided_spectral_range
-        self.list_virtual_captor = simulator.list_virtual_captor
-        self.list_face_captor = simulator.list_face_captor
+        self.list_virtual_sensor = simulator.list_virtual_sensor
+        self.list_face_sensor = simulator.list_face_sensor
 
     def writeResults(self, file_prefix=""):
         """
@@ -73,29 +75,31 @@ class SimulationResult:
             The prefix of output file
         """
 
-        if len(self.N_sim_virtual_captor) > 0:
-            CalculateEnergy.write_captor_energy(
-                self.N_sim_virtual_captor,
-                self.N_mes_virtual_captor,
-                self.list_virtual_captor,
+        if len(self.N_sim_virtual_sensor) > 0:
+            CalculateEnergy.write_sensor_energy(
+                self.N_sim_virtual_sensor,
+                self.N_mes_virtual_sensor,
+                self.list_virtual_sensor,
                 self.divided_spectral_range,
-                file_prefix + "virtual_captor_res.csv",
+                file_prefix + "virtual_sensor_res.csv",
             )
 
-        if len(self.N_sim_face_captor) > 0:
-            CalculateEnergy.write_captor_energy(
-                self.N_sim_face_captor,
-                self.N_mes_face_captor,
-                self.list_face_captor,
+        if len(self.N_sim_face_sensor) > 0:
+            CalculateEnergy.write_sensor_energy(
+                self.N_sim_face_sensor,
+                self.N_mes_face_sensor,
+                self.list_face_sensor,
                 self.divided_spectral_range,
-                file_prefix + "face_captor_res.csv",
+                file_prefix + "face_sensor_res.csv",
             )
 
-    def graph(self):
+    def display_face_sensor(self):
         """
         Draw a graph with MathPlotlib
 
         """
+        print(self.list_face_sensor)
+        print(self.N_sim_face_sensor)
         return
 
 
@@ -123,18 +127,18 @@ class Simulator:
         The list of spectral ranges divided from the base spectral range.
     rendering: bool
         Set to True to render the output images
-    N_sim_virtual_captor: dict
-        Number of received photons on each captor
-    N_sim_face_captor: dict
+    N_sim_virtual_sensor: dict
+        Number of received photons on each sensor
+    N_sim_face_sensor: dict
         Number of received photons on each organ of plant
 
     spectrum_file: str
         The link to the file which contains the informations of the heterogeneity of the spectrum
     points_calibration_file: str
-        The link to the file which contains the informations of the captors used to calibrate the final result
+        The link to the file which contains the informations of the sensors used to calibrate the final result
 
-    list_virtual_captor: array
-        The list of virtual captor in simulation
+    list_virtual_sensor: array
+        The list of virtual sensor in simulation
     pgl_scene: openalea.plantgl.scenegraph.Scene
         The plantgl scene object used to save the meshs of environment
     plantPos: Vec3
@@ -159,14 +163,15 @@ class Simulator:
         self.rendering = False
         #
         self.scene_pgl = Scene()
-        self.list_virtual_captor = []
-        self.list_face_captor = []
+        self.scene = libphotonmap_core.Scene()
+        self.list_virtual_sensor = []
+        self.list_face_sensor = []
 
         # result
-        self.N_sim_virtual_captor = []
-        self.N_sim_face_captor = []
-        self.N_mes_virtual_captor = []
-        self.N_mes_face_captor = []
+        self.N_sim_virtual_sensor = []
+        self.N_sim_face_sensor = []
+        self.N_mes_virtual_sensor = []
+        self.N_mes_face_sensor = []
         self.photonmaps = []
 
         self.image_width = 512
@@ -179,11 +184,11 @@ class Simulator:
 
     def resetScene(self):
         """
-        Clear list of captors and list of object in scene
+        Clear list of sensors and list of object in scene
         """
         self.scene_pgl.clear()
-        self.list_virtual_captor.clear()
-        self.list_face_captor.clear()
+        self.list_virtual_sensor.clear()
+        self.list_face_sensor.clear()
 
     def addEnvToScene(self, sh):
         """
@@ -210,73 +215,89 @@ class Simulator:
         # add object to scene
         self.scene_pgl.add(sh)
 
-    def addFaceCaptorToScene(self, shape, position, scale_factor):
+    def addFaceSensor(self, shape, scale_factor):
         """
-        Add a face captor object to scene
+        Add a face sensor object to scene
 
         Parameters
         ----------
         shape: Shape
-            The geometry and material of captor
-        position : tuple(int,int,int)
-            The position of captor
+            The geometry and material of sensor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
 
         Returns
         -------
-            The face captor is added to the scene
+            The face sensor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initCaptor(
-            shape, position, scale_factor, "FaceCaptor"
-        )
-        self.list_face_captor.append(captor)
+        sensor = Sensor(shape, "FaceSensor")
+        self.list_face_sensor.append(sensor)
 
-    def addVirtualCaptorToScene(self, shape, position, scale_factor):
+
+    def addFaceSensorToScene(self, shape, position, scale_factor):
         """
-        Add a virtual captor object to scene
+        Add a face sensor object to scene
 
         Parameters
         ----------
         shape: Shape
-            The geometry and material of captor
+            The geometry and material of sensor
         position : tuple(int,int,int)
-            The position of captor
+            The position of sensor
         scale_factor: int
             The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
 
         Returns
         -------
-            The virtual captor is added to the scene
+            The face sensor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initCaptor(
-            shape, position, scale_factor, "VirtualCaptor"
-        )
-        self.list_virtual_captor.append(captor)
+        sensor = Sensor(shape, "FaceSensor", position, scale_factor)
+        self.list_face_sensor.append(sensor)
 
-    def addVirtualDiskCaptorToScene(self, pos, normal, r, captor_id):
+    def addVirtualSensorToScene(self, shape, position, scale_factor):
         """
-        Add a virtual disk shaped captor object to scene
+        Add a virtual sensor object to scene
+
+        Parameters
+        ----------
+        shape: Shape
+            The geometry and material of sensor
+        position : tuple(int,int,int)
+            The position of sensor
+        scale_factor: int
+            The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+
+        Returns
+        -------
+            The virtual sensor is added to the scene
+
+        """
+        sensor = Sensor(shape,"VirtualSensor", position, scale_factor)
+        self.list_virtual_sensor.append(sensor)
+
+    def addVirtualDiskSensorToScene(self, pos, normal, r, sensor_id):
+        """
+        Add a virtual disk shaped sensor object to scene
 
         Parameters
         ----------
         pos : tuple(float,float,float)
-            The position of captor
+            The position of sensor
         normal: tuple(float,float,float)
-            The vector normal of captor
+            The vector normal of sensor
         r: float
-            The radius of captor
-        captor_id: int
-            The id of captor
+            The radius of sensor
+        sensor_id: int
+            The id of sensor
 
         Returns
         -------
-            The disk shaped captor is added to the scene
+            The disk shaped sensor is added to the scene
 
         """
-        captor = LoadCaptor.Captor().initVirtualDiskCaptor(
+        sensor = LoadSensor.Sensor().initVirtualDiskSensor(
             (
                 pos[0] / self.scale_factor,
                 pos[1] / self.scale_factor,
@@ -284,10 +305,10 @@ class Simulator:
             ),
             (normal[0], normal[1], normal[2]),
             r,
-            captor_id,
+            sensor_id,
         )
 
-        self.list_virtual_captor.append(captor)
+        self.list_virtual_sensor.append(sensor)
 
     def run(self):
         """
@@ -295,17 +316,17 @@ class Simulator:
 
         Returns
         -------
-            The number of received photons on each captor and organs of plant is saved into the files located in folde ./results
+            The number of received photons on each sensor and organs of plant is saved into the files located in folde ./results
 
         """
 
         self.photonmaps.clear()
-        self.N_sim_face_captor.clear()
-        self.N_sim_virtual_captor.clear()
-        self.N_mes_virtual_captor.clear()
-        self.N_mes_face_captor.clear()
+        self.N_sim_face_sensor.clear()
+        self.N_sim_virtual_sensor.clear()
+        self.N_mes_virtual_sensor.clear()
+        self.N_mes_face_sensor.clear()
 
-        scene = libphotonmap_core.Scene()
+        self.scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0
 
@@ -315,19 +336,19 @@ class Simulator:
 
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             moyenne_wavelength = (current_band["start"] + current_band["end"]) / 2
-            scene.clear()
+            self.scene.clear()
             (
-                scene,
-                has_virtual_captor,
-                virtual_captor_triangle_dict,
-                has_face_captor,
-                face_captor_triangle_dict,
-            ) = self.initSimulationScene(scene, current_band, moyenne_wavelength)
+                self.scene,
+                has_virtual_sensor,
+                virtual_sensor_triangle_dict,
+                has_face_sensor,
+                face_sensor_triangle_dict,
+            ) = self.initSimulationScene(self.scene, current_band, moyenne_wavelength)
 
             # create integrator
-            scene.tnear = self.t_min
-            scene.setupTriangles()
-            scene.build(self.is_backface_culling)
+            self.scene.tnear = self.t_min
+            self.scene.setupTriangles()
+            self.scene.build(self.is_backface_culling)
 
             integrator = PhotonMapping(
                 self.nb_photons,
@@ -342,30 +363,30 @@ class Simulator:
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
             # build no kdtree if not rendering
-            integrator.build(scene, sampler, self.rendering)
+            integrator.build(self.scene, sampler, self.rendering)
             print("Done!")
 
             # rendering if declared
             if self.rendering:
-                self.render(integrator, scene, moyenne_wavelength, sampler)
+                self.render(integrator, self.scene, moyenne_wavelength, sampler)
 
-            # read energy of virtual captor
-            virtual_captor_energy = {}
-            if has_virtual_captor:
-                CalculateEnergy.captor_add_energy(
-                    virtual_captor_triangle_dict, integrator, virtual_captor_energy
+            # read energy of virtual sensor
+            virtual_sensor_energy = {}
+            if has_virtual_sensor:
+                CalculateEnergy.sensor_add_energy(
+                    virtual_sensor_triangle_dict, integrator, virtual_sensor_energy
                 )
-                self.N_sim_virtual_captor.append(virtual_captor_energy)
+                self.N_sim_virtual_sensor.append(virtual_sensor_energy)
 
-            # read energy of face captor
-            face_captor_energy = {}
-            if has_face_captor:
-                CalculateEnergy.captor_add_energy(
-                    face_captor_triangle_dict, integrator, face_captor_energy
+            # read energy of face sensor
+            face_sensor_energy = {}
+            if has_face_sensor:
+                CalculateEnergy.sensor_add_energy(
+                    face_sensor_triangle_dict, integrator, face_sensor_energy
                 )
-                self.N_sim_face_captor.append(face_captor_energy)
+                self.N_sim_face_sensor.append(face_sensor_energy)
 
-            self.photonmaps.append(integrator.getPhotonMapCaptors())
+            self.photonmaps.append(integrator.getPhotonMapSensors())
             print("Time taken: " + str(time.time() - start_time))
 
         return SimulationResult(self)
@@ -374,14 +395,14 @@ class Simulator:
         self, spectrum_file="", points_calibration_file=""
     ):
         """
-        Calculate the coefficients which is used to calibrate the final result of simulation with the captors
+        Calculate the coefficients which is used to calibrate the final result of simulation with the sensors
 
         Parameters
         ----------
         spectrum_file: str
             The link to the file which contains the informations of the heterogeneity of the spectrum
         points_calibration_file: str
-            The link to the file which contains the informations of the captors used to calibrate the final result
+            The link to the file which contains the informations of the sensors used to calibrate the final result
 
         """
 
@@ -392,12 +413,12 @@ class Simulator:
                 self.base_spectral_range, self.divided_spectral_range, spectrum_file
             )
             self.points_calibration = CorrectEnergy.get_points_calibration(
-                self.list_virtual_captor,
+                self.list_virtual_sensor,
                 points_calibration_file,
                 self.divided_spectral_range,
             )
             self.coeffs_calibration = CorrectEnergy.get_calibaration_coefficient(
-                self.N_sim_virtual_captor, self.integrals, self.points_calibration
+                self.N_sim_virtual_sensor, self.integrals, self.points_calibration
             )
             return True
 
@@ -412,7 +433,7 @@ class Simulator:
         spectrum_file: str
             The link to the file which contains the informations of the heterogeneity of the spectrum
         points_calibration_file: str
-            The link to the file which contains the informations of the captors used to calibrate the final result
+            The link to the file which contains the informations of the sensors used to calibrate the final result
 
         """
 
@@ -421,22 +442,22 @@ class Simulator:
         )
 
         if can_calibrate:
-            if len(self.N_sim_virtual_captor) > 0:
-                self.N_mes_virtual_captor = CorrectEnergy.calibrate_captor_energy(
-                    self.N_sim_virtual_captor,
+            if len(self.N_sim_virtual_sensor) > 0:
+                self.N_mes_virtual_sensor = CorrectEnergy.calibrate_sensor_energy(
+                    self.N_sim_virtual_sensor,
                     self.integrals,
                     self.points_calibration,
                     self.coeffs_calibration,
                 )
 
-            if len(self.coeffs_calibration) > 0 and len(self.N_sim_face_captor) > 0:
-                self.N_mes_face_captor = CorrectEnergy.calibrate_plant_energy(
-                    self.N_sim_face_captor, self.coeffs_calibration
+            if len(self.coeffs_calibration) > 0 and len(self.N_sim_face_sensor) > 0:
+                self.N_mes_face_sensor = CorrectEnergy.calibrate_plant_energy(
+                    self.N_sim_face_sensor, self.coeffs_calibration
                 )
 
         return SimulationResult(self)
 
-    def visualiserSimulationScene(self, mode="ipython"):
+    def visualizeScene(self, mode="ipython"):
         """
         Visualize the scene of simulation with the tools of OpenAlea
         To run this function, it has to run these command first:
@@ -446,10 +467,11 @@ class Simulator:
         Parameters
         ----------
         mode: str
-            This variable define the mode used to visualize the scene. There are the supported modes: ipython, pgljupyter
+            This variable define the mode used to visualize the scene. 
+            There are the supported modes: ipython, oawidgets
 
         Returns
-        ---z----
+        -------
             A rendered scene in 3D
 
         """
@@ -460,13 +482,13 @@ class Simulator:
         # add light direction to scene
         # sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
 
-        # add face captor
-        if len(self.list_face_captor) > 0:
-            sc = LoadCaptor.addCaptorPgl(sc, self.list_face_captor)
+        # add face sensor
+        if len(self.list_face_sensor) > 0:
+            sc = LoadSensor.addSensorPgl(sc, self.list_face_sensor)
 
-        # add captor
-        if len(self.list_virtual_captor) > 0:
-            sc = LoadCaptor.addCaptorPgl(sc, self.list_virtual_captor)
+        # add sensor
+        if len(self.list_virtual_sensor) > 0:
+            sc = LoadSensor.addSensorPgl(sc, self.list_virtual_sensor)
 
         if mode == "ipython":
             Viewer.display(sc)
@@ -492,7 +514,7 @@ class Simulator:
         loop: int
             The number of iteration. At each iteration, the current value Tmin is multiply with 10, then run the simulation
         is_only_lamp: bool
-            If True, run the test with only the lamps and captors, If False, run the test with all the objects in scene
+            If True, run the test with only the lamps and sensors, If False, run the test with all the objects in scene
 
         Returns
         -------
@@ -516,10 +538,10 @@ class Simulator:
         scene.clear()
         (
             scene,
-            has_virtual_captor,
-            virtual_captor_triangle_dict,
-            has_face_captor,
-            face_captor_triangle_dict,
+            has_virtual_sensor,
+            virtual_sensor_triangle_dict,
+            has_face_sensor,
+            face_sensor_triangle_dict,
         ) = self.initSimulationScene(
             scene, current_band, moyenne_wavelength, is_only_lamp
         )
@@ -545,7 +567,7 @@ class Simulator:
             # build no kdtree if not rendering
             integrator.build(scene, sampler, False)
 
-            res = integrator.getPhotonMapCaptors().nPhotons()
+            res = integrator.getPhotonMapSensors().nPhotons()
             print("Number of photons received in total is", res)
 
             list_tmin.append(start_t)
@@ -565,7 +587,7 @@ class Simulator:
         self, scene, current_band, moyenne_wavelength, is_only_lamp=False
     ):
         """
-        Setup all the necessary objects (environment, captor, plant) in the simulation
+        Setup all the necessary objects (environment, sensor, plant) in the simulation
 
         Parameters
         ----------
@@ -577,17 +599,17 @@ class Simulator:
         moyenne_wavelength: Vec3
             The average wavelength of spectral range used to determine the color of the light
         is_only_lamp: bool
-            if True, only the lamps and captors is added to the scene, if False, all the objects is added.
+            if True, only the lamps and sensors is added to the scene, if False, all the objects is added.
 
 
         Returns
         -------
             scene: libphotonmap_core.Scene
                 The object which contains all the object in the scene of simulation
-            has_virtual_captor: bool
-                Return true if the scene has the captors
-            captor_triangle_dict: dict
-                Dictionary of the triangles of the captors. Using to counting the number of photons received in each captor
+            has_virtual_sensor: bool
+                Return true if the scene has the sensors
+            sensor_triangle_dict: dict
+                Dictionary of the triangles of the sensors. Using to counting the number of photons received in each sensor
             has_plant: bool
                 Return true if the scene has the model of plant
             tr2shmap: dict
@@ -611,32 +633,32 @@ class Simulator:
                 is_only_lamp,
             )
 
-        # add face captor
-        has_face_captor = False
-        face_captor_triangle_dict = {}
+        # add face sensor
+        has_face_sensor = False
+        face_sensor_triangle_dict = {}
 
-        if len(self.list_face_captor) > 0:
-            LoadCaptor.addFaceCaptors(
-                scene, face_captor_triangle_dict, self.list_face_captor
+        if len(self.list_face_sensor) > 0:
+            LoadSensor.addFaceSensors(
+                scene, face_sensor_triangle_dict, self.list_face_sensor
             )
-            has_face_captor = True
+            has_face_sensor = True
 
-        # add virtual captor
-        has_virtual_captor = False
-        virtual_captor_triangle_dict = {}
+        # add virtual sensor
+        has_virtual_sensor = False
+        virtual_sensor_triangle_dict = {}
 
-        if len(self.list_virtual_captor) > 0:
-            LoadCaptor.addVirtualCaptors(
-                scene, virtual_captor_triangle_dict, self.list_virtual_captor
+        if len(self.list_virtual_sensor) > 0:
+            LoadSensor.addVirtualSensors(
+                scene, virtual_sensor_triangle_dict, self.list_virtual_sensor
             )
-            has_virtual_captor = True
+            has_virtual_sensor = True
 
         return (
             scene,
-            has_virtual_captor,
-            virtual_captor_triangle_dict,
-            has_face_captor,
-            face_captor_triangle_dict,
+            has_virtual_sensor,
+            virtual_sensor_triangle_dict,
+            has_face_sensor,
+            face_sensor_triangle_dict,
         )
 
     def render(self, integrator, scene, w, sampler):
@@ -684,8 +706,8 @@ class Simulator:
         image.clear()
         print("Done!")
 
-        print("Printing captor photonmap image...")
-        visualizeCaptorsPhotonMap(
+        print("Printing sensor photonmap image...")
+        visualizeSensorsPhotonMap(
             scene,
             image,
             self.image_height,
@@ -693,7 +715,7 @@ class Simulator:
             self.camera,
             self.nb_photons,
             self.max_depth,
-            "results/photonmap-captors-" + str(w) + "nm.ppm",
+            "results/photonmap-sensors-" + str(w) + "nm.ppm",
             sampler,
             integrator,
         )
@@ -748,20 +770,20 @@ class Simulator:
         # using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat, vfov)
 
-    def addVirtualDiskCaptorsFromFile(self, captor_file: str):
+    def addVirtualDiskSensorsFromFile(self, sensor_file: str):
         """
-        Setup the captors in the simulation. Enable the capacity to run the simulation with the circle captors
+        Setup the sensors in the simulation. Enable the capacity to run the simulation with the circle sensors
 
         Parameters
         ----------
-        captor_file: str
-            The link to the file which contains the informations of the captors in the simulation
+        sensor_file: str
+            The link to the file which contains the informations of the sensors in the simulation
 
         """
 
-        if captor_file != "":
-            captor_id = len(self.list_virtual_captor)
-            with open(captor_file, encoding="UTF8") as f:
+        if sensor_file != "":
+            sensor_id = len(self.list_virtual_sensor)
+            with open(sensor_file, encoding="UTF8") as f:
                 next(f)
                 for line in f:
                     row = line.split(",")
@@ -773,12 +795,12 @@ class Simulator:
                     ynorm = float(row[5])
                     znorm = float(row[6])
 
-                    self.addVirtualDiskCaptorToScene(
-                        (x, y, z), (xnorm, ynorm, znorm), r, captor_id
+                    self.addVirtualDiskSensorToScene(
+                        (x, y, z), (xnorm, ynorm, znorm), r, sensor_id
                     )
-                    captor_id += 1
+                    sensor_id += 1
 
-    def addFaceCaptorsFromLpyFile(
+    def addFaceSensorsFromLpyFile(
         self, plant_file: str, plant_pos=Vec3(0, 0, 0), derivation_length=None
     ):
         """
@@ -808,7 +830,7 @@ class Simulator:
         for sh in lscene:
             sh.apply(tr)
             mesh = Shape(tr.result, sh.appearance, sh.id)
-            self.addFaceCaptorToScene(mesh, position, scale_factor)
+            self.addFaceSensorToScene(mesh, position, scale_factor)
 
     def initCameraRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
         """

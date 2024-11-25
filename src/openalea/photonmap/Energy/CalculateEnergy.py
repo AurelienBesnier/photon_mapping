@@ -1,21 +1,21 @@
 import os
 
-# Objectif of this module is counting the number of photon on plant/captor
+# Objectif of this module is counting the number of photon on plant/sensor
 # Resultat is located in this directory: ./results
 
 
-def write_captor_energy(n_sim, n_calibration, captor_list, bands_spectre, filename):
+def write_sensor_energy(n_sim, n_calibration, sensor_list, bands_spectre, filename):
     """
-    Write the received energy of all the captors to a file.
+    Write the received energy of all the sensors to a file.
 
     Parameters
     ----------
     n_sim : dict
-        Number of received photons on each captor
+        Number of received photons on each sensor
     n_calibration : dict
-        The energies after the calibration on each captor
-    captor_list : array
-        The list of captors
+        The energies after the calibration on each sensor
+    sensor_list : array
+        The list of sensors
     bands_spectre: dict
         The divided spectral range used to run the simulation.
     filename: str
@@ -23,13 +23,13 @@ def write_captor_energy(n_sim, n_calibration, captor_list, bands_spectre, filena
 
     Returns
     -------
-        A file with all the received energy of captors saved in folder ./results
+        A file with all the received energy of sensors saved in folder ./results
 
     """
-    list_captor_id = set()
-    for k in range(len(captor_list)):
-        c_id = captor_list[k].captor_id
-        list_captor_id.add(c_id)
+    list_sensor_id = set()
+    for k in range(len(sensor_list)):
+        c_id = sensor_list[k].sensor_id
+        list_sensor_id.add(c_id)
 
     if not os.path.exists("results"):
         os.makedirs("results")
@@ -57,7 +57,7 @@ def write_captor_energy(n_sim, n_calibration, captor_list, bands_spectre, filena
 
         f.write(w_str + "\n")
 
-        for k in list_captor_id:
+        for k in list_sensor_id:
             w_str = str(k)
             # write result calibration
             if len(n_calibration) == len(bands_spectre):
@@ -78,32 +78,32 @@ def write_captor_energy(n_sim, n_calibration, captor_list, bands_spectre, filena
 
             f.write(w_str + "\n")
 
-    print("Done write captor energy!")
+    print("Done write sensor energy!")
 
 
-def captor_add_energy(captor_dict, integrator, energy):
+def sensor_add_energy(sensor_dict, integrator, energy):
     """
-    Compute the energy on each captor in the scene.
+    Compute the energy on each sensor in the scene.
 
     Parameters
     ----------
-    captor_dict : dict
-        The dictionary of captor
+    sensor_dict : dict
+        The dictionary of sensor
     integrator: libphotonmap_core.PhotonMapping
         The object which handles all the simulation of photon mapping
     energy: dict
-        The dictionary of captor's energy
+        The dictionary of sensor's energy
 
     """
-    photonmap = integrator.getPhotonMapCaptors()
+    photonmap = integrator.getPhotonMapSensors()
 
-    print("calculating captor energy...")
+    print("calculating sensor energy...")
     for i in range(photonmap.nPhotons()):
         intersection = photonmap.getIthPhoton(i)
-        captor_id = captor_dict.get(intersection.triId)
+        sensor_id = sensor_dict.get(intersection.triId)
 
-        if captor_id is not None:  # check if the element hit is a captor
-            if captor_id in energy:
-                energy[captor_id] += 1
+        if sensor_id is not None:  # check if the element hit is a sensor
+            if sensor_id in energy:
+                energy[sensor_id] += 1
             else:
-                energy[captor_id] = 1
+                energy[sensor_id] = 1

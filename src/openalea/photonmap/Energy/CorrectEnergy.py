@@ -4,7 +4,7 @@ from collections import OrderedDict
 import pandas as pd
 from scipy import stats
 
-from openalea.photonmap.Loader.LoadCaptor import findIndexOfDiskCaptorInList
+from openalea.photonmap.Loader.LoadSensor import findIndexOfDiskSensorInList
 
 """+ Objective of this module is reading the measured PPFD of each wavelength to correct the output energy
 + Data is located in this directory: ./spectrum/chambre1_spectrum  
@@ -145,7 +145,7 @@ def get_points_calibration(
         cur_bande = divided_spectral_range[i]
         points = {}
         for _, r in df.iterrows():
-            captor_index = findIndexOfDiskCaptorInList(
+            captor_index = findIndexOfDiskSensorInList(
                 list_sensors, r["xSite"], r["ySite"], r["zSite"]
             )
             points[captor_index] = r[

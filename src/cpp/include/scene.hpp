@@ -106,7 +106,7 @@ createBxDF(tinyobj::material_t& material,
                         return std::make_shared<Transparent>(kd, material.ior);
                 case 8:
                         // Phong for plant
-                        return std::make_shared<PhongCaptor>(
+                        return std::make_shared<PhongSensor>(
                           kd, ks, roughness, transmittance);
 
                 case 9:
@@ -588,18 +588,18 @@ class Scene
         }
 
         /**
-         * @brief Adds the specified mesh as a captor.
+         * @brief Adds the specified mesh as a sensor.
          * @param newVertices The vertices of the mesh
          * @param newIndices The indices of the triangles of the mesh
          * @param newNormals The normals of the mesh.
          */
-        void addVirtualCaptorInfos(std::vector<float> newVertices,
+        void addVirtualSensorInfos(std::vector<float> newVertices,
                                    std::vector<uint32_t> newIndices,
                                    std::vector<float> newNormals)
         {
 
-                // SceneGeometry captorGeo(newVertices, newIndices, newNormals);
-                // this->geos.emplace_back(captorGeo);
+                // SceneGeometry sensorGeo(newVertices, newIndices, newNormals);
+                // this->geos.emplace_back(sensorGeo);
 
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
@@ -637,17 +637,17 @@ class Scene
 
                         this->materials.emplace_back(m);
                         this->bxdfs.emplace_back(
-                          std::make_shared<Captor>(Vec3f(1, 0, 1)));
+                          std::make_shared<Sensor>(Vec3f(1, 0, 1)));
                 }
         }
 
         /**
-         * @brief Adds the specified mesh as a captor.
+         * @brief Adds the specified mesh as a sensor.
          * @param newVertices The vertices of the mesh
          * @param newIndices The indices of the triangles of the mesh
          * @param newNormals The normals of the mesh.
          */
-        void addFaceCaptorInfos(std::vector<float> newVertices,
+        void addFaceSensorInfos(std::vector<float> newVertices,
                                 std::vector<uint32_t> newIndices,
                                 std::vector<float> newNormals,
                                 float reflectance = 0.0f,
@@ -656,8 +656,8 @@ class Scene
                                 float roughness = 0.0f)
         {
 
-                // SceneGeometry captorGeo(newVertices, newIndices, newNormals);
-                // this->geos.emplace_back(captorGeo);
+                // SceneGeometry sensorGeo(newVertices, newIndices, newNormals);
+                // this->geos.emplace_back(sensorGeo);
 
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
@@ -700,7 +700,7 @@ class Scene
                         m.illum = 1;
 
                         this->materials.emplace_back(m);
-                        this->bxdfs.emplace_back(std::make_shared<PhongCaptor>(
+                        this->bxdfs.emplace_back(std::make_shared<PhongSensor>(
                           kd, ks, roughness, transmittance));
                 }
         }

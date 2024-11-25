@@ -79,7 +79,7 @@ class PhotonMapping : public Integrator
 
         PhotonMap globalPhotonMap;
         PhotonMap causticsPhotonMap;
-        PhotonMap captorPhotonMap;
+        PhotonMap sensorPhotonMap;
 
         // compute reflected radiance with global photon map
         Vec3f computeRadianceWithPhotonMap(const Vec3f& wo,
@@ -501,11 +501,11 @@ class PhotonMapping : public Integrator
         const PhotonMap& getPhotonMapGlobal() const { return globalPhotonMap; }
 
         /**
-         * @fn const PhotonMap &getPhotonMapCaptors() const
-         * @brief Get the captor photon map
-         * @return The reference of the captor photonmap
+         * @fn const PhotonMap &getPhotonMapSensors() const
+         * @brief Get the sensor photon map
+         * @return The reference of the sensor photonmap
          */
-        const PhotonMap& getPhotonMapCaptors() const { return captorPhotonMap; }
+        const PhotonMap& getPhotonMapSensors() const { return sensorPhotonMap; }
 
         /**
          * @fn bool hasCaustics() const
@@ -538,7 +538,7 @@ class PhotonMapping : public Integrator
                 if (scene.nLights() <= 0)
                         return;
                 std::vector<Photon> photons;
-                std::vector<Photon> captorPhotons;
+                std::vector<Photon> sensorPhotons;
                 int maxThreads = omp_get_max_threads();
                 if (nbThreads < maxThreads) {
                         omp_set_num_threads(nbThreads);
@@ -624,17 +624,17 @@ class PhotonMapping : public Integrator
                                                   info.hitPrimitive
                                                     ->getBxDFType();
 
-                                                bool is_captor =
+                                                bool is_sensor =
                                                   (bxdf_type ==
-                                                   BxDFType::CAPTOR);
-                                                bool is_phong_captor =
+                                                   BxDFType::SENSOR);
+                                                bool is_phong_sensor =
                                                   (bxdf_type ==
-                                                   BxDFType::PHONGCAPTOR);
+                                                   BxDFType::PHONGSENSOR);
 
-                                                if (is_captor ||
-                                                    is_phong_captor) {
+                                                if (is_sensor ||
+                                                    is_phong_sensor) {
                                                         // check if rayon
-                                                        // contact captor from
+                                                        // contact sensor from
                                                         // above
                                                         float test_ouverture =
                                                           -dot(info.surfaceInfo
@@ -656,7 +656,7 @@ class PhotonMapping : public Integrator
                                                                       [0]
                                                                     .faceID);
 
-                                                                captorPhotons
+                                                                sensorPhotons
                                                                   .emplace_back(
                                                                     p);
                                                         }
@@ -679,7 +679,7 @@ class PhotonMapping : public Integrator
                                                         photons.emplace_back(p);
                                                 }
 
-                                                if (is_captor) {
+                                                if (is_sensor) {
                                                         k--;
                                                         ray =
                                                           Ray(info.surfaceInfo
@@ -739,18 +739,18 @@ class PhotonMapping : public Integrator
                           << globalPhotonMap.nPhotons() << std::endl;
                 }
 
-                if (!captorPhotons.empty()) {
+                if (!sensorPhotons.empty()) {
 #ifdef __OUTPUT__
-                        std::cout << "building captor photonmap..."
+                        std::cout << "building sensor photonmap..."
                                   << std::endl;
 #endif
-                        captorPhotonMap.setPhotons(captorPhotons);
+                        sensorPhotonMap.setPhotons(sensorPhotons);
                         if (forRendering)
-                                captorPhotonMap.build();
+                                sensorPhotonMap.build();
 
 #ifdef __OUTPUT__
-                        std::cout << "Number of photons on captor elements: "
-                                  << captorPhotonMap.nPhotons() << std::endl;
+                        std::cout << "Number of photons on sensor elements: "
+                                  << sensorPhotonMap.nPhotons() << std::endl;
                         std::cout << "Done!" << std::endl;
 #endif
                 }
