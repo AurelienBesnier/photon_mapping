@@ -1,6 +1,6 @@
 import os
 
-# Objectif of this module is counting the number of photon on plant/sensor
+# Objective of this module is counting the number of photon on plant/sensor
 # Resultat is located in this directory: ./results
 
 
@@ -27,8 +27,8 @@ def write_sensor_energy(n_sim, n_calibration, sensor_list, bands_spectre, filena
 
     """
     list_sensor_id = set()
-    for k in range(len(sensor_list)):
-        c_id = sensor_list[k].sensor_id
+    for k, sensor in enumerate(sensor_list):
+        c_id = sensor.sensor_id
         list_sensor_id.add(c_id)
 
     if not os.path.exists("results"):
@@ -36,23 +36,23 @@ def write_sensor_energy(n_sim, n_calibration, sensor_list, bands_spectre, filena
 
     filename = "results/" + filename
 
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="UTF8") as f:
         w_str = "id"
         if len(n_calibration) == len(bands_spectre):
-            for i in range(len(bands_spectre)):
+            for i, band in enumerate(bands_spectre):
                 w_str += (
                     ",N_sim_calibration_"
-                    + str(bands_spectre[i]["start"])
+                    + str(band["start"])
                     + "_"
-                    + str(bands_spectre[i]["end"])
+                    + str(band["end"])
                 )
 
-        for i in range(len(bands_spectre)):
+        for i, band in enumerate(bands_spectre):
             w_str += (
                 ",N_sim_"
-                + str(bands_spectre[i]["start"])
+                + str(band["start"])
                 + "_"
-                + str(bands_spectre[i]["end"])
+                + str(band["end"])
             )
 
         f.write(w_str + "\n")

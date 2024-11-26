@@ -15,7 +15,7 @@ from openalea.plantgl.all import (
 
 from openalea.photonmap.common.math import cross_vector, denormalize
 
-# Objectif of this module is read the geometry of each object of fichier RAD
+# This module is read the geometry of each object of fichier RAD
 
 
 def cylinder_vertices(start, end, rayon):
@@ -57,14 +57,16 @@ def cylinder_vertices(start, end, rayon):
 
 def read_rad(file: str, scale_factor: int, invert_normals: bool):
     """
-    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a make a plantGL Scene
+    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a 
+    make a plantGL Scene
 
     Parameters
     ----------
     file: str
         the rad filename
     scale_factor: int
-        The size of geometries. The vertices of geometries is recalculated by dividing their coordinates by this value
+        The size of geometries. The vertices of geometries is recalculated by 
+        dividing their coordinates by this value
     invert_normals: bool
         whether to invert the normals or not.
 

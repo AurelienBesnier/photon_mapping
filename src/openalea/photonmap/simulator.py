@@ -515,17 +515,22 @@ class Simulator:
 
         # add face sensor
         if len(self.list_face_sensor) > 0:
-            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_face_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(
+                self.scene_pgl, self.list_face_sensor
+            )
 
         # add sensor
         if len(self.list_virtual_sensor) > 0:
-            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_virtual_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(
+                self.scene_pgl, self.list_virtual_sensor
+            )
 
         if mode == "ipython":
             Viewer.display(self.scene_pgl)
 
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
+
             for sh in self.scene_pgl:
                 if sh.id not in self.N_sim_face_sensor[wavelength_index].keys():
                     self.N_sim_face_sensor[wavelength_index][sh.id] = 0
@@ -555,30 +560,24 @@ class Simulator:
 
         """
 
-        # init visualize scene
-        sc = self.scene_pgl
-
-        # add light direction to scene
-        # sc = LoadEnvironment.addLightDirectionPgl(sc, self.scale_factor)
-
         # add face sensor
         if len(self.list_face_sensor) > 0:
-            sc = load_sensor.addSensorPgl(sc, self.list_face_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_face_sensor)
 
         # add sensor
         if len(self.list_virtual_sensor) > 0:
-            sc = load_sensor.addSensorPgl(sc, self.list_virtual_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_virtual_sensor)
 
         if mode == "ipython":
-            Viewer.display(sc)
+            Viewer.display(self.scene_pgl)
 
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
 
-            return PlantGL(sc)
+            return PlantGL(self.scene_pgl)
 
         else:
-            Viewer.display(sc)
+            Viewer.display(self.scene_pgl)
 
     def test_t_min(self, nb_photons, start_t, loop, is_only_lamp=False):
         """
@@ -609,7 +608,7 @@ class Simulator:
         if loop < 1:
             return
 
-        scene = libphotonmap_core.Scene()
+        self.scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0
         current_band = self.divided_spectral_range[0]
@@ -619,24 +618,24 @@ class Simulator:
         list_res = []
         list_index = []
 
-        scene.clear()
+        self.scene.clear()
         (
-            scene,
+            self.scene,
             has_virtual_sensor,
             virtual_sensor_triangle_dict,
             has_face_sensor,
             face_sensor_triangle_dict,
         ) = self.initSimulationScene(
-            scene, current_band, average_wavelength, is_only_lamp
+            self.scene, current_band, average_wavelength, is_only_lamp
         )
         # create integrator
-        scene.setupTriangles()
-        scene.build(self.is_backface_culling)
+        self.scene.setupTriangles()
+        self.scene.build(self.is_backface_culling)
 
         for i in range(loop):
             print("---------------------------------")
             print("Test Tmin =", start_t)
-            scene.tnear = start_t
+            self.scene.tnear = start_t
 
             integrator = PhotonMapping(
                 nb_photons,
@@ -649,7 +648,7 @@ class Simulator:
             sampler = UniformSampler(1)
 
             # build no kdtree if not rendering
-            integrator.build(scene, sampler, False)
+            integrator.build(self.scene, sampler, False)
 
             res = integrator.getPhotonMapSensors().nPhotons()
             print("Number of photons received in total is", res)
@@ -844,7 +843,9 @@ class Simulator:
         """
 
         self.po_dir = po_dir
-        self.scene_pgl = read_rad_geo.read_rad(room_file, self.scale_factor, flip_normal)
+        self.scene_pgl = read_rad_geo.read_rad(
+            room_file, self.scale_factor, flip_normal
+        )
 
     def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
         """

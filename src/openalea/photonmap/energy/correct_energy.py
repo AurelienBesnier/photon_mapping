@@ -1,3 +1,9 @@
+"""
+Objective of this module is reading the measured PPFD of each wavelength to
+correct the output energy.
+Data is located in this directory: ./spectrum/chambre1_spectrum  
+"""
+
 import re
 from collections import OrderedDict
 
@@ -5,10 +11,6 @@ import pandas as pd
 from scipy import stats
 
 from openalea.photonmap.loader.load_sensor import findIndexOfDiskSensorInList
-
-"""+ Objective of this module is reading the measured PPFD of each wavelength to correct the output energy
-+ Data is located in this directory: ./spectrum/chambre1_spectrum  
-"""
 
 
 def read_spectrum_file(filename: str) -> (OrderedDict, int, int):
@@ -52,7 +54,7 @@ def get_integral_of_band(
     base_band: range, divided_band: range, spectrum: dict
 ) -> float:
     """
-    Returns the integral of the band as a percentage
+    Returns the integral of the band as a percentage.
 
     Parameters
     ----------
@@ -82,7 +84,7 @@ def get_correct_energy_coeff(
     base_spectral_range, divided_spectral_range, spec_file: str
 ):
     """
-    Get the coefficients of energy's correction from the spectrum file
+    Get the coefficients of energy's correction from the spectrum file.
 
     Parameters
     ----------
@@ -91,7 +93,8 @@ def get_correct_energy_coeff(
     divided_spectral_range: range
         The section of the base spectral range used to run the simulation
     spec_file: str
-        The link to the file which contains the informations of the heterogeneity of the spectrum
+        The link to the file which contains the informations of the 
+        heterogeneity of the spectrum
 
     Returns
     -------
@@ -104,10 +107,10 @@ def get_correct_energy_coeff(
     integrals = []
     base_band = range(base_spectral_range["start"], base_spectral_range["end"], 1)
 
-    for index in range(len(divided_spectral_range)):
+    for _, spectral_range in enumerate(divided_spectral_range):
         divided_band = range(
-            divided_spectral_range[index]["start"],
-            divided_spectral_range[index]["end"],
+            spectral_range["start"],
+            spectral_range["end"],
             1,
         )
 
@@ -127,7 +130,8 @@ def get_points_calibration(
     list_sensors : array
         The list of sensors
     points_calibration_file: str
-        The link to the file which contains the information of the captors used to calibrate the final result
+        The link to the file which contains the information of the captors used 
+        to calibrate the final result
     divided_spectral_range: array
         The list of spectral ranges divided from the base spectral range.
 
@@ -141,8 +145,8 @@ def get_points_calibration(
     points_calibration = []
     df = pd.read_csv(points_calibration_file)
 
-    for i in range(len(divided_spectral_range)):
-        cur_bande = divided_spectral_range[i]
+    for _, value in enumerate(divided_spectral_range):
+        cur_bande = value
         points = {}
         for _, r in df.iterrows():
             captor_index = findIndexOfDiskSensorInList(
@@ -178,8 +182,7 @@ def get_calibaration_coefficient(energies, correction_ratios, points_calibration
     """
 
     coeff_calibration = []
-    for i in range(len(energies)):
-        energy = energies[i]
+    for i, energy in enumerate(energies):
         cur_points_calibration = points_calibration[i]
 
         # calculate N_sim appliqué le coefficient de correction
@@ -227,8 +230,7 @@ def calibrate_captor_energy(
 
     """
     n_calibration = []
-    for i in range(len(energies)):
-        energy = energies[i]
+    for i, energy in enumerate(energies):
         cur_coeffs_calibration = coeffs_calibration[i]
         cur_points_calibration = points_calibration[i]
 
@@ -273,8 +275,7 @@ def calibrate_plant_energy(energies, coeffs_calibration):
     """
 
     n_calibration = []
-    for i in range(len(energies)):
-        energy = energies[i]
+    for i, energy in enumerate(energies):
         cur_coeffs_calibration = coeffs_calibration[i]
 
         # calculate Nmes
