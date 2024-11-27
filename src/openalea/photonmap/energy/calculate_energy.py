@@ -41,19 +41,11 @@ def write_sensor_energy(n_sim, n_calibration, sensor_list, bands_spectre, filena
         if len(n_calibration) == len(bands_spectre):
             for i, band in enumerate(bands_spectre):
                 w_str += (
-                    ",N_sim_calibration_"
-                    + str(band["start"])
-                    + "_"
-                    + str(band["end"])
+                    ",N_sim_calibration_" + str(band["start"]) + "_" + str(band["end"])
                 )
 
         for i, band in enumerate(bands_spectre):
-            w_str += (
-                ",N_sim_"
-                + str(band["start"])
-                + "_"
-                + str(band["end"])
-            )
+            w_str += ",N_sim_" + str(band["start"]) + "_" + str(band["end"])
 
         f.write(w_str + "\n")
 

@@ -1,7 +1,7 @@
 """
 Objective of this module is reading the measured PPFD of each wavelength to
 correct the output energy.
-Data is located in this directory: ./spectrum/chambre1_spectrum  
+Data is located in this directory: ./spectrum/chambre1_spectrum
 """
 
 import re
@@ -93,7 +93,7 @@ def get_correct_energy_coeff(
     divided_spectral_range: range
         The section of the base spectral range used to run the simulation
     spec_file: str
-        The link to the file which contains the informations of the 
+        The link to the file which contains the informations of the
         heterogeneity of the spectrum
 
     Returns
@@ -130,7 +130,7 @@ def get_points_calibration(
     list_sensors : array
         The list of sensors
     points_calibration_file: str
-        The link to the file which contains the information of the captors used 
+        The link to the file which contains the information of the captors used
         to calibrate the final result
     divided_spectral_range: array
         The list of spectral ranges divided from the base spectral range.

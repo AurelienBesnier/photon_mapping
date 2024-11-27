@@ -57,7 +57,7 @@ def cylinder_vertices(start, end, rayon):
 
 def read_rad(file: str, scale_factor: int, invert_normals: bool):
     """
-    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a 
+    Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a
     make a plantGL Scene
 
     Parameters
@@ -65,7 +65,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
     file: str
         the rad filename
     scale_factor: int
-        The size of geometries. The vertices of geometries is recalculated by 
+        The size of geometries. The vertices of geometries is recalculated by
         dividing their coordinates by this value
     invert_normals: bool
         whether to invert the normals or not.
@@ -76,7 +76,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
 
     """
 
-    with open(file) as f:
+    with open(file, encoding="UTF8") as f:
         lines = f.readlines()
         materials = {}
         shapes = {}

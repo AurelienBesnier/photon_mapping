@@ -3,7 +3,7 @@ import random
 import sys
 import time
 from dataclasses import dataclass
-
+import matplotlib
 import matplotlib.pyplot as plt
 from openalea.lpy import Lsystem
 from openalea.photonmap.libphotonmap_core import (
@@ -23,6 +23,7 @@ from openalea.photonmap.energy import calculate_energy, correct_energy
 from openalea.photonmap.loader import load_sensor, load_environment
 from openalea.photonmap.loader.load_sensor import Sensor
 from openalea.photonmap.reader import read_properties, read_rad_geo
+from openalea.photonmap.common.math import denormalize
 
 
 @dataclass
@@ -114,7 +115,7 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots()
         for wavelength_mesured in self.N_sim_virtual_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
             plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
@@ -246,6 +247,12 @@ class Simulator:
         # add object to scene
         self.scene_pgl.add(sh)
 
+    def addPointLight(self, position, intensity, color=Vec3(1, 1, 1)):
+        self.scene.addPointLight(position, intensity, color)
+
+    def addSpotLight(self, position, intensity, direction, angle, color=Vec3(1, 1, 1)):
+        self.scene.addSpotLight(position, intensity, color, direction, angle)
+
     def addFaceSensor(self, shape):
         """
         Add a face sensor object to scene
@@ -356,7 +363,6 @@ class Simulator:
         self.N_mes_virtual_sensor.clear()
         self.N_mes_face_sensor.clear()
 
-        self.scene = libphotonmap_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0
 
@@ -366,7 +372,6 @@ class Simulator:
 
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             average_wavelength = (current_band["start"] + current_band["end"]) / 2
-            self.scene.clear()
             (
                 self.scene,
                 has_virtual_sensor,
@@ -418,6 +423,7 @@ class Simulator:
 
             self.photonmaps.append(integrator.getPhotonMapSensors())
             print("Time taken: " + str(time.time() - start_time))
+            self.scene.clear()
 
         return SimulationResult(self)
 
@@ -525,18 +531,30 @@ class Simulator:
                 self.scene_pgl, self.list_virtual_sensor
             )
 
+        cmap = matplotlib.cm.get_cmap("jet")
+        values = self.N_sim_face_sensor[wavelength_index].values()
+
+        minimum = 0
+        maximum = max(values)
+
+        norm = matplotlib.colors.Normalize(vmin=minimum, vmax=maximum)
+        for sh in self.scene_pgl:
+            if sh.id not in self.N_sim_face_sensor[wavelength_index].keys():
+                self.N_sim_face_sensor[wavelength_index][sh.id] = 0
+            color = cmap(norm(self.N_sim_face_sensor[wavelength_index][sh.id]))
+            sh.appearance = Material(
+                Color3(
+                    denormalize(color[0]), denormalize(color[1]), denormalize(color[2])
+                )
+            )
+
         if mode == "ipython":
             Viewer.display(self.scene_pgl)
 
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
 
-            for sh in self.scene_pgl:
-                if sh.id not in self.N_sim_face_sensor[wavelength_index].keys():
-                    self.N_sim_face_sensor[wavelength_index][sh.id] = 0
-            face_results = list(self.N_sim_face_sensor[wavelength_index].values())
-
-            return PlantGL(self.scene_pgl, group_by_color=False, property=face_results)
+            return PlantGL(self.scene_pgl, group_by_color=True, property=values)
 
         else:
             Viewer.display(self.scene_pgl)
@@ -562,11 +580,15 @@ class Simulator:
 
         # add face sensor
         if len(self.list_face_sensor) > 0:
-            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_face_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(
+                self.scene_pgl, self.list_face_sensor
+            )
 
         # add sensor
         if len(self.list_virtual_sensor) > 0:
-            self.scene_pgl = load_sensor.addSensorPgl(self.scene_pgl, self.list_virtual_sensor)
+            self.scene_pgl = load_sensor.addSensorPgl(
+                self.scene_pgl, self.list_virtual_sensor
+            )
 
         if mode == "ipython":
             Viewer.display(self.scene_pgl)
@@ -618,7 +640,6 @@ class Simulator:
         list_res = []
         list_index = []
 
-        self.scene.clear()
         (
             self.scene,
             has_virtual_sensor,
@@ -709,7 +730,6 @@ class Simulator:
         materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
             current_band["start"], current_band["end"], self.po_dir
         )
-        scene.clear()
 
         for sh in self.scene_pgl:
             load_environment.addEnvironment(
@@ -723,24 +743,22 @@ class Simulator:
             )
 
         # add face sensor
-        has_face_sensor = False
+        has_face_sensor = len(self.list_face_sensor) > 0
         face_sensor_triangle_dict = {}
 
-        if len(self.list_face_sensor) > 0:
+        if has_face_sensor:
             load_sensor.addFaceSensors(
                 scene, face_sensor_triangle_dict, self.list_face_sensor
             )
-            has_face_sensor = True
 
         # add virtual sensor
-        has_virtual_sensor = False
+        has_virtual_sensor = len(self.list_virtual_sensor) > 0
         virtual_sensor_triangle_dict = {}
 
-        if len(self.list_virtual_sensor) > 0:
+        if has_virtual_sensor:
             load_sensor.addVirtualSensors(
                 scene, virtual_sensor_triangle_dict, self.list_virtual_sensor
             )
-            has_virtual_sensor = True
 
         return (
             scene,

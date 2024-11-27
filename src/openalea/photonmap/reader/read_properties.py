@@ -4,15 +4,15 @@ import pandas as pd
 
 from openalea.photonmap.energy.correct_energy import read_spectrum_file
 
-# Objectif of this module is read the optical properties (material) of each 
+# Objectif of this module is read the optical properties (material) of each
 # object
 # Calculate the average value of the spectrum range
 
 
 def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     """
-    Fills the materials_r (reflection), materials_s (specular) and materials_t 
-    (transmission) dictionaries with information from the provided data for the 
+    Fills the materials_r (reflection), materials_s (specular) and materials_t
+    (transmission) dictionaries with information from the provided data for the
     materials of the simulation.
 
     Parameters
