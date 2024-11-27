@@ -11,7 +11,7 @@ from openalea.photonmap.libphotonmap_core import (
     visualizeSensorsPhotonMap,
     visualizePhotonMap,
 )
-from openalea.plantgl.all import *
+from openalea.plantgl.all import Scene, Material, Color3, Viewer, Tesselator, Shape
 
 from openalea.photonmap import (
     PhotonMapping,
@@ -42,12 +42,8 @@ class SimulationResult:
         The energies after the calibration on each sensor
     N_mes_face_sensor: dict
         The energies after the calibration on each organ of plant
-
-    nb_photons: int
-        The number of photons in simulation
     divided_spectral_range: array
         The list of spectral ranges divided from the base spectral range.
-
     list_virtual_sensor: array
         The list of virtual sensor in simulation
 
@@ -134,8 +130,8 @@ class Simulator:
     ----------
     nb_photons: int
         The number of photons in simulation
-    maximum_depth: int
-        The maximum number of times that the light bounces in the scene
+    max_depth: int
+        The maximum number of times that a photon bounces in the scene
     scale_factor: float
         The size of geometries. The vertices of geometries is recalculated by
         dividing their coordinates by this value
@@ -168,7 +164,7 @@ class Simulator:
 
     list_virtual_sensor: array
         The list of virtual sensor in simulation
-    pgl_scene: openalea.plantgl.scenegraph.Scene
+    scene_pgl: openalea.plantgl.scenegraph.Scene
         The plantgl scene object used to save the meshes of environment
     plantPos: Vec3
         The position of the plant
@@ -180,6 +176,7 @@ class Simulator:
     # constructor
 
     def __init__(self):
+        self.camera = None
         self.coeffs_calibration = None
         self.integrals = None
         self.points_calibration = None
@@ -333,12 +330,12 @@ class Simulator:
             The disk shaped sensor is added to the scene
 
         """
-        sensor = load_sensor.Sensor().initVirtualDiskSensor(
-            (
+        sensor = Sensor(Shape(),"VirtualSensor", (
                 pos[0] / self.scale_factor,
                 pos[1] / self.scale_factor,
                 pos[2] / self.scale_factor,
-            ),
+            ))
+        sensor.initVirtualDiskSensor(
             (normal[0], normal[1], normal[2]),
             r,
             sensor_id,
@@ -498,7 +495,7 @@ class Simulator:
 
         return SimulationResult(self)
 
-    def visualizeResults(self, mode="ipython", wavelength_index=0):
+    def visualizeResults(self, mode="ipython", wavelength_index=0, colormap="jet"):
         """
         Visualize the scene of simulation with the tools of OpenAlea
         To run this function, it has to run these command first:
@@ -507,6 +504,8 @@ class Simulator:
 
         Parameters
         ----------
+        colormap: str
+            A matplotlib colormap name to display values with.
         wavelength_index: int
             The wavelength index to visualize.
         mode: str
@@ -531,7 +530,7 @@ class Simulator:
                 self.scene_pgl, self.list_virtual_sensor
             )
 
-        cmap = matplotlib.cm.get_cmap("jet")
+        cmap = matplotlib.cm.get_cmap(colormap)
         values = self.N_sim_face_sensor[wavelength_index].values()
 
         minimum = 0
@@ -550,12 +549,10 @@ class Simulator:
 
         if mode == "ipython":
             Viewer.display(self.scene_pgl)
-
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
 
-            return PlantGL(self.scene_pgl, group_by_color=True, property=values)
-
+            return PlantGL(self.scene_pgl, group_by_color=False)
         else:
             Viewer.display(self.scene_pgl)
 
@@ -642,10 +639,10 @@ class Simulator:
 
         (
             self.scene,
-            has_virtual_sensor,
-            virtual_sensor_triangle_dict,
-            has_face_sensor,
-            face_sensor_triangle_dict,
+            _,
+            _,
+            _,
+            _,
         ) = self.initSimulationScene(
             self.scene, current_band, average_wavelength, is_only_lamp
         )
@@ -883,7 +880,7 @@ class Simulator:
 
     def addVirtualDiskSensorsFromFile(self, sensor_file: str):
         """
-        Setup the sensors in the simulation. Enable the capacity to run the
+        Set up the sensors in the simulation. Enable the capacity to run the
         simulation with the circle sensors
 
         Parameters
@@ -922,11 +919,11 @@ class Simulator:
 
         Parameters
         ----------
+        plant_pos: Vec3
+            The position in the scene to put the plant at.
         plant_file: str
             The link to the file of the model of plant. (currently only support
             .lpy file)
-        plantPos: Vec3
-            The position of the plant
         derivation_length: int
             The number of iteration to interpret the plant
         """

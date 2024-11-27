@@ -41,7 +41,10 @@ class Sensor:
 
     """
 
-    def __init__(self, shape, sensor_type, position=None, scale_factor=None):
+    def __init__(self, shape, sensor_type, position=None, scale_factor=1):
+        self.zNormal = None
+        self.yNormal = None
+        self.xNormal = None
         self.type = sensor_type
         self.sensor_id = shape.id
         if position is not None:
@@ -50,25 +53,26 @@ class Sensor:
             self.zSite = position[2] / scale_factor
         self.radius = 0
 
-        vertices = shape.geometry.pointList
-        # apply scale factor
-        if scale_factor is not None:
-            for i in range(len(vertices)):
-                cur_vertice = vertices[i]
-                vertices[i] = (
-                    (cur_vertice[0] + position[0]) / scale_factor,
-                    (cur_vertice[1] + position[1]) / scale_factor,
-                    (cur_vertice[2] + position[2]) / scale_factor,
-                )
+        if  hasattr(shape.geometry, "pointList"):
+            vertices = shape.geometry.pointList
+            # apply scale factor
+            if scale_factor is not None:
+                for i in range(len(vertices)):
+                    cur_vertice = vertices[i]
+                    vertices[i] = (
+                        (cur_vertice[0] + position[0]) / scale_factor,
+                        (cur_vertice[1] + position[1]) / scale_factor,
+                        (cur_vertice[2] + position[2]) / scale_factor,
+                    )
 
-        shape.geometry.pointList = vertices
-        shape.geometry.computeNormalList()
+            shape.geometry.pointList = vertices
+            shape.geometry.computeNormalList()
 
         self.shape = shape
 
     def initSensor(self, shape, position, scale_factor, sensor_type):
         """
-        Init a object of face sensor
+        Init an object of face sensor
 
         Returns
         -------
@@ -98,15 +102,15 @@ class Sensor:
                 (cur_vertice[1] + position[1]) / scale_factor,
                 (cur_vertice[2] + position[2]) / scale_factor,
             )
-
-        shape.geometry.pointList = vertices
-        shape.geometry.computeNormalList()
+        if shape.geometry.pointList is not None:
+            shape.geometry.pointList = vertices
+            shape.geometry.computeNormalList()
 
         self.shape = shape
 
         return self
 
-    def initVirtualDiskSensor(self, pos=(0, 0, 0), nor=(0, 0, 0), r=0, sensor_id=0):
+    def initVirtualDiskSensor(self, nor=(0, 0, 0), r=0, sensor_id=0):
         """
         Init a object of virtual disk shape sensor
 
@@ -122,10 +126,6 @@ class Sensor:
             The id of sensor
 
         """
-        self.type = "VirtualSensor"
-        self.xSite = pos[0]
-        self.ySite = pos[1]
-        self.zSite = pos[2]
         self.xNormal = nor[0]
         self.yNormal = nor[1]
         self.zNormal = nor[2]

@@ -50,7 +50,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
                         files.append(path)
             for file in files:
                 mat_name = file.split(".")[0]
-                content_reflect, step_reflect, start_reflect = read_spectrum_file(
+                content_reflect, _, _ = read_spectrum_file(
                     os.path.join(dir_path_reflect, file)
                 )
 
@@ -71,7 +71,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
                         files.append(path)
             for file in files:
                 mat_name = file.split(".")[0]
-                content_transmit, step_transmit, start_transmit = read_spectrum_file(
+                content_transmit, _, _ = read_spectrum_file(
                     os.path.join(dir_path_transmit, file)
                 )
 
@@ -89,10 +89,8 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
         mat_names = content_spec["Materiau"]
         mat_spec = content_spec["Valeur estimee visuellement"]
 
-        for i in range(len(mat_spec)):
-            materials_s[mat_names[i]] = (
-                float(mat_spec[i]) if float(mat_spec[i]) > 0 else 0.0
-            )
+        for i, mat in enumerate(mat_spec):
+            materials_s[mat_names[i]] = float(mat) if float(mat) > 0 else 0.0
 
     return materials_r, materials_s, materials_t
 

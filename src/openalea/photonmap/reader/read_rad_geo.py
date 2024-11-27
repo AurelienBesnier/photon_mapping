@@ -87,9 +87,9 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
             i += 1
             if i >= len(lines):
                 break
-            elif lines[i].startswith("#"):
+            if lines[i].startswith("#"):
                 continue
-            elif lines[i].startswith("void"):  # material
+            if lines[i].startswith("void"):  # material
                 li = lines[i].split(None)
                 type = li[1]
                 name = li[2].strip("\n")
@@ -184,7 +184,7 @@ def read_rad(file: str, scale_factor: int, invert_normals: bool):
                         type = li[1]
                         name = li[2].strip("\n")
 
-                        if type == "point_light" or type == "point":
+                        if type in ("point_light", "point"):
                             i += 1
                             vert = []
                             l = re.split(r"\s+|;+", lines[i])
