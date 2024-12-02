@@ -14,7 +14,7 @@ build:
 
 requirements:
   host:
-    - {{ PYTHON }}
+    - python x.x
     - pybind11-abi
     - scikit-build-core
     - numpy
@@ -23,7 +23,7 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler("cxx") }}
-    - {{ PYTHON }}
+    - python x.x
     - scikit-build-core
     - numpy x.x
     - scipy
@@ -36,7 +36,7 @@ requirements:
     - tbb-devel
 
   run:
-    - {{ PYTHON }}
+    - python x.x
     - numpy x.x
     - jupyterlab
     - jupyter-packaging
