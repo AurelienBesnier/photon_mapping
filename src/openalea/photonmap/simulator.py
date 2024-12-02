@@ -631,6 +631,7 @@ class Simulator:
 
                 plot += light_point + light_label
                 i += 1
+            plot.camera_reset()
 
             return plot
         else:
@@ -687,7 +688,7 @@ class Simulator:
 
                 plot += light_point + light_label
                 i += 1
-
+            plot.camera_reset()
             return plot
         else:
             Viewer.display(self.scene_pgl)
@@ -728,8 +729,9 @@ class Simulator:
 
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
-
-            return PlantGL(self.scene_pgl)
+            plot = PlantGL(self.scene_pgl)
+            plot.camera_reset()
+            return plot
 
         else:
             Viewer.display(self.scene_pgl)
