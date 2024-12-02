@@ -1,5 +1,5 @@
 [![doc](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://aurelienbesnier.github.io/photon_mapping/build/html/index.html)
-![package](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
+![package](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/conda-build.yml/badge.svg)
 
 # photon_mapping
 
