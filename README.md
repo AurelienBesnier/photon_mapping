@@ -1,4 +1,4 @@
-[![doc](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://minhlucky9.github.io/photon_mapping/build/html/index.html)
+[![doc](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/build-docs-upload.yml/badge.svg)](https://aurelienbesnier.github.io/photon_mapping/build/html/index.html)
 ![package](https://github.com/AurelienBesnier/photon_mapping/actions/workflows/python-package-conda.yml/badge.svg)
 
 # photon_mapping
@@ -8,7 +8,7 @@ minimal but extensible header only implementation of photon mapping in C++.
 # How to compile:
 create and activate the conda environment:
 ```bash
-mamba env create -f environment.yml
+mamba env create -f environment.yml -n photonmap
 mamba activate photonmap
 ```
 To install as a Python library:
@@ -28,14 +28,8 @@ make -j
 ```bash
 mamba activate photonmap
 cd examples/python/plantgl-rad-scene
-python planglRadScene.py
+python plantglRadScene.py
 ```
-
-* The result of the simulation is in the folder: [./results/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/plantgl-rad-scene/results)
-* Tools to evalutate result: [.examples/python/Evaluation Simulation SEC2/](https://github.com/minhlucky9/photon_mapping/tree/main/examples/python/Evaluation%20Simulation%20SEC2)
-
-
-![](img/cornellbox-water_pm.png)
 
 # How to run the jupyter notebook
 
@@ -44,19 +38,13 @@ mamba activate photonmap
 cd examples/python/plantgl-rad-scene
 jupyter notebook
 ```
-## Features
-
-* Direct illumination with explicit light sampling
-* Indirect illumination with final gathering
-* Caustics photon map
-* Load obj model
 
 ## Requirements
 
 * C++ (20>=)
 * CMake (3.20>=)
 * OpenMP
-* [Embree](https://github.com/embree/embree) (>=3)
+* [Embree](https://github.com/embree/embree) (>=4)
 
 ## Externals
 
