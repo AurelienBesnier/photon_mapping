@@ -14,7 +14,7 @@ build:
 
 requirements:
   host:
-    - python
+    - {{ PYTHON }}
     - pybind11-abi
     - scikit-build-core
     - numpy
@@ -23,9 +23,9 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler("cxx") }}
-    - python
+    - {{ PYTHON }}
     - scikit-build-core
-    - numpy
+    - numpy x.x
     - scipy
     - make
     - cmake
@@ -36,22 +36,12 @@ requirements:
     - tbb-devel
 
   run:
-    - {{ compiler('c') }}
-    - {{ compiler("cxx") }}
-    - python x.x
+    - {{ PYTHON }}
     - numpy x.x
-    - python
     - jupyterlab
     - jupyter-packaging
+    - oawidgets
     - ipywidgets
-    - make
-    - cmake
-    - pybind11
-    - embree
-    - llvm-openmp
-    - tbb
-    - tbb-devel
-    - pybind11
     - pandas
     - matplotlib
     - pywin32 [win]
