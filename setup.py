@@ -43,7 +43,7 @@ class CMakeBuild(build_ext):
         else:
             opt = "-DCMAKE_CXX_FLAGS_DEBUG=-g"
 
-        print("Cfg: "+str(cfg))
+        print("Cfg: " + str(cfg))
 
         # CMake lets you override the generator - we need to check this.
         # Can be set with Conda-Build, for example.
@@ -55,8 +55,7 @@ class CMakeBuild(build_ext):
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
-            "-D_LIBCPP_DISABLE_AVAILABILITY",
-            ""+opt,
+            "" + opt,
         ]
         build_args = []
         # Adding CMake arguments set as environment variable
@@ -106,7 +105,10 @@ class CMakeBuild(build_ext):
             # Cross-compile support for macOS - respect ARCHFLAGS if set
             archs = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
             if archs:
-                cmake_args += ["-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs))]
+                cmake_args += [
+                    "-DCMAKE_OSX_ARCHITECTURES={}".format(";".join(archs)),
+                    "-D_LIBCPP_DISABLE_AVAILABILITY",
+                ]
 
         # Set CMAKE_BUILD_PARALLEL_LEVEL to control the parallel build level
         # across all generators.
@@ -129,9 +131,7 @@ class CMakeBuild(build_ext):
         )
 
 
-ext_modules = [
-   CMakeExtension("openalea/photonmap/libphotonmap_core")
-]
+ext_modules = [CMakeExtension("openalea/photonmap/libphotonmap_core")]
 
 packages = find_namespace_packages(where="src", include=["openalea.*"])
 
