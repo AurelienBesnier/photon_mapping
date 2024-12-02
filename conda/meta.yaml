@@ -58,7 +58,6 @@ test:
     - pytest
   source_files:
     - tests/**
-    -
   commands:
     - pytest
 
