@@ -2,10 +2,7 @@ from math import cos, sin
 
 from openalea.plantgl.all import Color3, Material, Scene, Shape, TriangleSet
 
-from openalea.photonmap import (
-    VectorFloat,
-    VectorUint,
-)
+from openalea.photonmap import VectorFloat, VectorUint, Vec3
 from openalea.photonmap.common.tools import flatten
 
 # Objectif of this module is adding sensors to the scene of photon mapping to the received energy
@@ -41,19 +38,18 @@ class Sensor:
 
     """
 
-    def __init__(self, shape, sensor_type, position=None, scale_factor=1):
+    def __init__(self, shape, sensor_type, position=Vec3(0, 0, 0), scale_factor=1):
         self.zNormal = None
         self.yNormal = None
         self.xNormal = None
         self.type = sensor_type
         self.sensor_id = shape.id
-        if position is not None:
-            self.xSite = position[0] / scale_factor
-            self.ySite = position[1] / scale_factor
-            self.zSite = position[2] / scale_factor
         self.radius = 0
+        self.xSite = position[0] / scale_factor
+        self.ySite = position[1] / scale_factor
+        self.zSite = position[2] / scale_factor
 
-        if  hasattr(shape.geometry, "pointList"):
+        if hasattr(shape.geometry, "pointList"):
             vertices = shape.geometry.pointList
             # apply scale factor
             if scale_factor is not None:
@@ -64,8 +60,6 @@ class Sensor:
                         (cur_vertice[1] + position[1]) / scale_factor,
                         (cur_vertice[2] + position[2]) / scale_factor,
                     )
-
-            shape.geometry.pointList = vertices
             shape.geometry.computeNormalList()
 
         self.shape = shape
@@ -224,10 +218,7 @@ class Sensor:
 
         """
 
-        if self.xSite == xSite and self.ySite == ySite and self.zSite == zSite:
-            return True
-
-        return False
+        return self.xSite == xSite and self.ySite == ySite and self.zSite == zSite
 
     def getGeometry(self):
         """
@@ -396,7 +387,6 @@ def addSensorPgl(sc, list_sensor):
         A PlantGL Scene with the sensors
 
     """
-
     pglScene = Scene()
 
     for i in range(len(list_sensor)):

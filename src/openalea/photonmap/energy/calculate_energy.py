@@ -31,8 +31,7 @@ def write_sensor_energy(n_sim, n_calibration, sensor_list, bands_spectre, filena
         c_id = sensor.sensor_id
         list_sensor_id.add(c_id)
 
-    if not os.path.exists("results"):
-        os.makedirs("results")
+    os.makedirs("results", exist_ok=True)
 
     filename = "results/" + filename
 

@@ -4,8 +4,7 @@ import pandas as pd
 
 from openalea.photonmap.energy.correct_energy import read_spectrum_file
 
-# Objectif of this module is read the optical properties (material) of each
-# object
+# This module is read the optical properties (material) of each object
 # Calculate the average value of the spectrum range
 
 
@@ -85,9 +84,13 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
     dir_path_spec = po_dir + "/Specularities.xlsx"
 
     if os.path.exists(dir_path_spec):
-        content_spec = (pd.ExcelFile(dir_path_spec)).parse(0)
-        mat_names = content_spec["Materiau"]
-        mat_spec = content_spec["Valeur estimee visuellement"]
+        content_spec = (
+            pd.ExcelFile(dir_path_spec).parse(0)
+            if dir_path_spec.endswith(".xlsx")
+            else pd.read_csv(dir_path_spec)
+        )
+        mat_names = content_spec["Material"]
+        mat_spec = content_spec["Visually estimated value"]
 
         for i, mat in enumerate(mat_spec):
             materials_s[mat_names[i]] = float(mat) if float(mat) > 0 else 0.0

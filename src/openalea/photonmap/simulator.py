@@ -11,7 +11,16 @@ from openalea.photonmap.libphotonmap_core import (
     visualizeSensorsPhotonMap,
     visualizePhotonMap,
 )
-from openalea.plantgl.all import Scene, Material, Color3, Viewer, Tesselator, Shape
+from openalea.plantgl.all import (
+    Scene,
+    Material,
+    Color3,
+    Viewer,
+    Translated,
+    Tesselator,
+    Shape,
+    Sphere,
+)
 
 from openalea.photonmap import (
     PhotonMapping,
@@ -52,8 +61,6 @@ class SimulationResult:
     # constructor
 
     def __init__(self, simulator):
-        self.photonmaps = simulator.photonmaps
-
         self.N_sim_virtual_sensor = simulator.N_sim_virtual_sensor
         self.N_sim_face_sensor = simulator.N_sim_face_sensor
         self.N_mes_virtual_sensor = simulator.N_mes_virtual_sensor
@@ -96,7 +103,7 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        fig, ax = plt.subplots(figsize=(12, 8))
+        _, ax = plt.subplots(figsize=(12, 8))
         for wavelength_mesured in self.N_sim_face_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
             plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
@@ -111,7 +118,7 @@ class SimulationResult:
         Draw a graph with MathPlotlib
 
         """
-        fig, ax = plt.subplots()
+        _, ax = plt.subplots()
         for wavelength_mesured in self.N_sim_virtual_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
             plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
@@ -195,6 +202,7 @@ class Simulator:
         self.scene = libphotonmap_core.Scene()
         self.list_virtual_sensor = []
         self.list_face_sensor = []
+        self.list_light = []
 
         # result
         self.N_sim_virtual_sensor = []
@@ -202,6 +210,8 @@ class Simulator:
         self.N_mes_virtual_sensor = []
         self.N_mes_face_sensor = []
         self.photonmaps = []
+        self.integrators = []
+        self.results = None
 
         self.image_width = 512
         self.image_height = 512
@@ -246,9 +256,28 @@ class Simulator:
 
     def addPointLight(self, position, intensity, color=Vec3(1, 1, 1)):
         self.scene.addPointLight(position, intensity, color)
+        self.list_light.append(
+            {
+                "type": "point",
+                "position": position,
+                "parameters": {"intensity": intensity, "color": color},
+            }
+        )
 
     def addSpotLight(self, position, intensity, direction, angle, color=Vec3(1, 1, 1)):
         self.scene.addSpotLight(position, intensity, color, direction, angle)
+        self.list_light.append(
+            {
+                "type": "Spot",
+                "position": position,
+                "parameters": {
+                    "intensity": intensity,
+                    "color": color,
+                    "angle": angle,
+                    "direction": direction,
+                },
+            }
+        )
 
     def addFaceSensor(self, shape):
         """
@@ -330,11 +359,15 @@ class Simulator:
             The disk shaped sensor is added to the scene
 
         """
-        sensor = Sensor(Shape(),"VirtualSensor", (
+        sensor = Sensor(
+            Shape(),
+            "VirtualSensor",
+            (
                 pos[0] / self.scale_factor,
                 pos[1] / self.scale_factor,
                 pos[2] / self.scale_factor,
-            ))
+            ),
+        )
         sensor.initVirtualDiskSensor(
             (normal[0], normal[1], normal[2]),
             r,
@@ -355,6 +388,7 @@ class Simulator:
         """
 
         self.photonmaps.clear()
+        self.integrators.clear()
         self.N_sim_face_sensor.clear()
         self.N_sim_virtual_sensor.clear()
         self.N_mes_virtual_sensor.clear()
@@ -381,7 +415,6 @@ class Simulator:
             self.scene.tnear = self.t_min
             self.scene.setupTriangles()
             self.scene.build(self.is_backface_culling)
-
             integrator = PhotonMapping(
                 self.nb_photons,
                 n_estimation_global,
@@ -390,7 +423,8 @@ class Simulator:
                 self.nb_thread,
             )
 
-            print("Build photonMap...")
+            self.integrators.append(integrator)
+            print("Build photonmap...")
 
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
@@ -421,8 +455,7 @@ class Simulator:
             self.photonmaps.append(integrator.getPhotonMapSensors())
             print("Time taken: " + str(time.time() - start_time))
             self.scene.clear()
-
-        return SimulationResult(self)
+        self.results = SimulationResult(self)
 
     def calculateCalibrationCoefficient(
         self, spectrum_file="", points_calibration_file=""
@@ -531,28 +564,131 @@ class Simulator:
             )
 
         cmap = matplotlib.cm.get_cmap(colormap)
-        values = self.N_sim_face_sensor[wavelength_index].values()
 
-        minimum = 0
-        maximum = max(values)
+        # Face sensors results
+        if len(self.N_sim_face_sensor) > 0:
+            faces_values = self.N_sim_face_sensor[wavelength_index].values()
 
-        norm = matplotlib.colors.Normalize(vmin=minimum, vmax=maximum)
-        for sh in self.scene_pgl:
-            if sh.id not in self.N_sim_face_sensor[wavelength_index].keys():
-                self.N_sim_face_sensor[wavelength_index][sh.id] = 0
-            color = cmap(norm(self.N_sim_face_sensor[wavelength_index][sh.id]))
-            sh.appearance = Material(
-                Color3(
-                    denormalize(color[0]), denormalize(color[1]), denormalize(color[2])
-                )
-            )
+            minimum = 0
+            maximum = max(faces_values)
+
+            norm = matplotlib.colors.Normalize(vmin=minimum, vmax=maximum)
+            for sh in self.scene_pgl:
+                if sh.id in self.N_sim_face_sensor[wavelength_index].keys():
+                    color = cmap(norm(self.N_sim_face_sensor[wavelength_index][sh.id]))
+                    sh.appearance = Material(
+                        Color3(
+                            denormalize(color[0]),
+                            denormalize(color[1]),
+                            denormalize(color[2]),
+                        )
+                    )
+        if len(self.N_sim_virtual_sensor) > 0:
+            virt_values = self.N_sim_virtual_sensor[wavelength_index].values()
+
+            minimum = 0
+            maximum = max(virt_values)
+            shape_to_id = {}
+            for sensor in self.list_virtual_sensor:
+                shape_to_id[sensor.shape.id] = sensor.sensor_id
+
+            norm = matplotlib.colors.Normalize(vmin=minimum, vmax=maximum)
+            for sh in self.scene_pgl:
+                if sh.id in shape_to_id.keys():
+                    if (
+                        shape_to_id[sh.id]
+                        in self.N_sim_virtual_sensor[wavelength_index].keys()
+                    ):
+                        color = cmap(
+                            norm(
+                                self.N_sim_virtual_sensor[wavelength_index][
+                                    shape_to_id[sh.id]
+                                ]
+                            )
+                        )
+                        sh.appearance = Material(
+                            Color3(
+                                denormalize(color[0]),
+                                denormalize(color[1]),
+                                denormalize(color[2]),
+                            )
+                        )
 
         if mode == "ipython":
             Viewer.display(self.scene_pgl)
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
+            import k3d
 
-            return PlantGL(self.scene_pgl, group_by_color=False)
+            plot = PlantGL(self.scene_pgl, group_by_color=False)
+            plot.grid_visible = False
+            i = 1
+            for light in self.list_light:
+                pos = light["position"]
+                pos = (pos[0], pos[1], pos[2])
+                light_point = k3d.points([pos], point_size=1, color=0xFFFFFF)
+                light_label = k3d.label(text=f"light n°{i}", position=pos)
+
+                plot += light_point + light_label
+                i += 1
+
+            return plot
+        else:
+            Viewer.display(self.scene_pgl)
+
+    def visualizePhotons(self, mode="ipython"):
+        """
+        Visualize the scene of simulation with the tools of OpenAlea
+        To run this function, it has to run these command first:
+        -- ipython
+        -- %gui qt5
+
+        Parameters
+        ----------
+        mode: str
+            This variable define the mode used to visualize the scene.
+            There are the supported modes: ipython, oawidgets
+
+        Returns
+        -------
+            A rendered scene in 3D
+
+        """
+
+        photons = []
+        for phmap in self.photonmaps:
+            for i in range(phmap.nPhotons()):
+                photon = phmap.getIthPhoton(i).position
+                photons.append((photon[0], photon[1], photon[2]))
+
+        if mode == "ipython":
+            m = Material(Color3(0, 0, 150))
+            ph_sc = Scene()
+            for photon in photons:
+                sp = Sphere(0.05)
+                s2 = Translated(photon[0], photon[1], photon[2], sp)
+                sh = Shape(s2, m)
+                ph_sc.add(sh)
+            Viewer.display(ph_sc)
+
+        elif mode == "oawidgets":
+            import k3d
+
+            points = k3d.points(photons, point_size=0.1, shader="3d")
+            plot = k3d.plot()
+            plot.grid_visible = False
+            plot += points
+            i = 1
+            for light in self.list_light:
+                pos = light["position"]
+                pos = (pos[0], pos[1], pos[2])
+                light_point = k3d.points([pos], point_size=1, color=0xFFFFFF)
+                light_label = k3d.label(text=f"light n°{i}", position=pos)
+
+                plot += light_point + light_label
+                i += 1
+
+            return plot
         else:
             Viewer.display(self.scene_pgl)
 
@@ -787,8 +923,7 @@ class Simulator:
 
         """
 
-        if not os.path.exists("results"):
-            os.makedirs("results")
+        os.makedirs("results", exist_ok=True)
 
         if not self.rendering:
             print("Enable rendering first !!!")
@@ -1002,9 +1137,7 @@ class Simulator:
                     elif row[0] == "$NB_THREAD":
                         self.nb_thread = int(row[1])
                     elif row[0] == "$BACKFACE_CULLING":
-                        self.is_backface_culling = (
-                            True if (row[1].upper() == "YES") else False
-                        )
+                        self.is_backface_culling = row[1].upper() == "YES"
                     elif row[0] == "$BASE_SPECTRAL_RANGE":
                         self.base_spectral_range = {
                             "start": int(row[1]),

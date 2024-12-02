@@ -77,7 +77,7 @@ KdTree<T>::buildNode(int* indices, int n_points, int depth)
 const Photon&
 PhotonMap::getIthPhoton(int i) const
 {
-        return photons[i];
+        return this->photons[i];
 }
 
 void
@@ -89,16 +89,16 @@ PhotonMap::setPhotons(const std::vector<Photon>& p)
 const size_t
 PhotonMap::nPhotons() const
 {
-        return photons.size();
+        return this->photons.size();
 }
 
 void
 PhotonMap::build()
 {
 #ifdef __OUTPUT__
-        std::cout << "[PhotonMap] photons: " << photons.size() << std::endl;
+        std::cout << "[PhotonMap] photons: " << this->photons.size() << std::endl;
 #endif
-        kdtree.setPoints(photons.data(), photons.size());
+        kdtree.setPoints(this->photons.data(), this->photons.size());
         kdtree.buildTree();
 }
 
