@@ -9,8 +9,6 @@ build:
   number: 0
   preserve_egg_dir: True
   string: photonmap
-  script_env:
-    - CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
   script:
     - {{ PYTHON }} -m pip install . -vv
 
