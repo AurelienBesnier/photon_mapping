@@ -53,5 +53,5 @@ def test_simple_simulation():
     )
 
     # run
-    res = simulator.run()
-    res.writeResults()
+    simulator.run()
+    simulator.results.writeResults()
