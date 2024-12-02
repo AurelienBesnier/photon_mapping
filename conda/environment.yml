@@ -30,3 +30,5 @@ dependencies:
   - openpyxl
   - myst-parser
   - sphinx-favicon
+  - scikit-build
+  - scikit-build-core

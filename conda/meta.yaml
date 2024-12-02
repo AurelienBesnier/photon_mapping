@@ -16,7 +16,6 @@ requirements:
   host:
     - python
     - pybind11-abi
-    - setuptools
     - numpy
     - scipy
 
@@ -24,7 +23,7 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler("cxx") }}
     - python
-    - setuptools
+    - scikit-build-core
     - numpy
     - scipy
     - make

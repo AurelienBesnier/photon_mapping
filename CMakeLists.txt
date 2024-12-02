@@ -94,4 +94,4 @@ find_package(pybind11 CONFIG REQUIRED)
 
 install(TARGETS photonmap_core
         COMPONENT python
-        LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/photonmap/")
+        LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/openalea/photonmap/")
