@@ -2,4 +2,4 @@ Notebook examples
 =================
 
 .. nbgallery::
-    examples/PlantRadScene
+    examples/plantgl-rad-scene/PlantRadScene

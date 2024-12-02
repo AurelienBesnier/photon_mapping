@@ -284,7 +284,7 @@ Create a python file (main.py) which contains the core program
 
 .. code-block:: python
 
-    from openalea.photonmap.Simulator import *
+    from openalea.photonmap.simulator import *
 
     if __name__ == "__main__":
 
@@ -292,8 +292,8 @@ Create a python file (main.py) which contains the core program
         simulator.readConfiguration("simulation.ini")
         simulator.addEnvFromFile("testChamber.rad", "./PO")
         simulator.addVirtualDiskCaptorsFromFile("captors_expe1.csv")
-        res = simulator.run()
-        res.writeResults() #write results to a file
+        simulator.run()
+        simulator.results.writeResults() #write results to a file
 
 Run and results
 ---------------
@@ -338,11 +338,11 @@ Calibrate the results
 Visualize the room
 ===================
 
-To visualize the room, after defining the input files, we use a function named ``visualiserSimulationScene``. Here is the complete code for this program:
+To visualize the room, after defining the input files, we use a function named ``visualizeScene``. Here is the complete code for this program:
 
 .. code-block:: python
 
-    from openalea.photonmap.Simulator import *
+    from openalea.photonmap.simulator import *
 
     if __name__ == "__main__":
 
@@ -350,9 +350,9 @@ To visualize the room, after defining the input files, we use a function named `
         simulator.readConfiguration("simulation.ini")
         simulator.addEnvFromFile("testChamber.rad", "./PO")
         simulator.addVirtualDiskCaptorsFromFile("captors_expe1.csv")
-        simulator.visualiserSimulationScene("ipython")
+        simulator.visualizeScene("ipython")
 
-To obtain the 3D scene, we have to run this program through ```ipython```.
+To obtain the 3D scene, we have to run this program through ``ipython`` or if in a notebook we use ``oawidgets``.
 
 .. code-block:: bash
 
@@ -366,6 +366,16 @@ To obtain the 3D scene, we have to run this program through ```ipython```.
   :width: 700
   :alt: Result of function test tmin
 
+
+It is also possible to visualize the simulation's results in different ways with two other functions:
+
+* ``visualizeResults`` which will apply a color map on each sensor object depending on the number of photons on it. By default the colormap used is 'jet'.
+* ``visualizePhotons`` which will display all the photons in the photon map in a 3d scene.
+
+.. warning::
+    The function ``visualizePhotons`` will create each individual photons in the scene. This can be very intensive. 
+    Use with caution.
+
 Test value Tmin
 ================
 
@@ -376,7 +386,7 @@ Test value Tmin
 
 .. code-block:: python
 
-    from openalea.photonmap.Simulator import *
+    from openalea.photonmap.simulator import *
 
     if __name__ == "__main__":
 

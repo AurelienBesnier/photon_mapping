@@ -7,7 +7,7 @@ Code example
 
 .. code-block:: python
 
-    from openalea.photonmap.Simulator import *
+    from openalea.photonmap.simulator import *
 
     if __name__ == "__main__":
         simulator = Simulator()
@@ -98,7 +98,7 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
 
 .. code-block:: python
 
-    from openalea.photonmap.Simulator import *
+    from openalea.photonmap.simulator import *
     from openalea.plantgl.all import * 
 
     if __name__ == "__main__":
@@ -147,5 +147,5 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
         simulator.addVirtualCaptorToScene(shape=captor_sh, position=(0,0,2), scale_factor=1)
     
         #run
-        res = simulator.run()
-        res.writeResults()
+        simulator.run()
+        simulator.results.writeResults()
