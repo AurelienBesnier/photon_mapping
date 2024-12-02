@@ -16,6 +16,7 @@ requirements:
   host:
     - python
     - pybind11-abi
+    - scikit-build-core
     - numpy
     - scipy
 
