@@ -1,5 +1,5 @@
 package:
-  name: openalea.photonmap
+  name: openalea.spice
   version: "0.1.0"
 
 source:
@@ -8,27 +8,27 @@ source:
 build:
   number: 0
   preserve_egg_dir: True
-  string: photonmap
+  string: spice
   script:
     - {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:
     - python x.x
+    - numpy x.x
     - pybind11-abi
     - scikit-build-core
-    - numpy
     - scipy
 
   build:
-    - {{ compiler('c') }}
     - {{ compiler("cxx") }}
     - python x.x
-    - scikit-build-core
     - numpy x.x
+    - scikit-build-core
     - scipy
     - make
     - cmake
+    - ninja # [win]
     - pybind11
     - embree
     - llvm-openmp
@@ -39,10 +39,12 @@ requirements:
     - python x.x
     - numpy x.x
     - jupyterlab
-    - jupyter-packaging
+    - openalea.plantgl
+    - openalea.lpy
     - oawidgets
     - ipywidgets
     - pandas
+    - embree
     - matplotlib
     - pywin32 [win]
 
