@@ -1,5 +1,5 @@
 import pathlib
-from openalea.photonmap.reader.read_properties import setup_dataset_materials
+from openalea.spice.reader.read_properties import setup_dataset_materials
 
 filepath = pathlib.Path(__file__).parent.resolve()
 

@@ -3,7 +3,7 @@ requires = ["scikit-build-core"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "openalea.photonmap"
+name = "openalea.spice"
 authors = [
     {name = "Aurélien Besnier"},
     {name = "Tuan-Minh Nguyen"}
@@ -44,11 +44,14 @@ test = [
 build-dir="./build"
 
 [tool.scikit-build.sdist]
-include = ["libphotonmap_core.so"]
+include = ["libspice_core.so"]
 
 [tool.scikit-build.cmake]
 build-type="Release"
 source-dir="."
+
+[tool.scikit-build.build]
+verbose = true
 
 [tool.scikit-build.wheel]
 packages = ["src/openalea"]

@@ -33,12 +33,6 @@ if(APPLE)
     endif()
 endif()
 
-if(WIN32)
-	message(STATUS "Compiling on windows")
-    set(CMAKE_C_COMPILER gcc)
-    set(CMAKE_CXX_COMPILER g++)
-endif()
-
 find_package(OpenMP)
 if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
@@ -58,13 +52,12 @@ add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++2b -fsigned-char -fexceptions -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -fsigned-char -fexceptions -fopenmp -march=native")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
 target_include_directories(pm INTERFACE "src/cpp/include")
 
-target_compile_features(pm INTERFACE cxx_std_23)
 set_target_properties(pm
         PROPERTIES
         CXX_STANDARD 23
@@ -93,6 +86,6 @@ endif()
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
-install(TARGETS photonmap_core
+install(TARGETS spice_core
         COMPONENT python
-        LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/openalea/photonmap/")
+        LIBRARY DESTINATION "${CMAKE_SOURCE_DIR}/src/openalea/spice/")

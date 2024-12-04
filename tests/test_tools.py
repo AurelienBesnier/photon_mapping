@@ -1,4 +1,4 @@
-from openalea.photonmap.common.tools import wavelength2rgb, flatten
+from openalea.spice.common.tools import wavelength2rgb, flatten
 
 def test_flatten():
     l_test = [[1,2,3],[4]]

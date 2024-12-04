@@ -1,6 +1,6 @@
 import random
 
-from openalea.photonmap import UniformSampler
+from openalea.spice import UniformSampler
 
 
 def test_random_sampler():

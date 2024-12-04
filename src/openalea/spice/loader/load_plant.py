@@ -1,10 +1,10 @@
 from openalea.lpy import Lsystem
-from openalea.photonmap import (
+from openalea.spice import (
     Vec3,
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.common.tools import flatten
+from openalea.spice.common.tools import flatten
 from openalea.plantgl.all import (
     Color3,
     Material,
@@ -25,7 +25,7 @@ def add_lpy_file_to_scene(scene, filename, t, tr2shmap, anchor, scale_factor):
 
     Parameters
     ----------
-    scene : libphotonmap_core.Scene
+    scene : libspice_core.Scene
         The photon mapping scene used to run the simulation
     filename : str
         The link to the lpy file
@@ -61,7 +61,7 @@ def addPlantModel(lscene, tr, tr2shmap, sc, anchor, scale_factor):
         The plantgl scene
     tr : Tesselator
         Tesselator
-    sc : libphotonmap_core.Scene
+    sc : libspice_core.Scene
         The photon mapping scene used to run the simulation
     tr2shmap : dict
         The dictionary of triangles of plant
@@ -162,7 +162,7 @@ def addPlantModelPgl(lscene, tr, sc, anchor, scale_factor, shenergy: dict):
         The plantgl scene
     tr : Tesselator
         Tesselator
-    sc : libphotonmap_core.Scene
+    sc : libspice_core.Scene
         The photon mapping scene used to run the simulation
     anchor : Vec3
         The position of the plant

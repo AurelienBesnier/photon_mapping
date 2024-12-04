@@ -1,5 +1,5 @@
 import pathlib
-from openalea.photonmap.reader.read_rad_geo import read_rad
+from openalea.spice.reader.read_rad_geo import read_rad
 
 filepath = pathlib.Path(__file__).parent.resolve()
 

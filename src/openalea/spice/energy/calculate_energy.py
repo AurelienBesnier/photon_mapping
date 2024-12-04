@@ -80,7 +80,7 @@ def sensor_add_energy(sensor_dict, integrator, energy):
     ----------
     sensor_dict : dict
         The dictionary of sensor
-    integrator: libphotonmap_core.PhotonMapping
+    integrator: libspice_core.PhotonMapping
         The object which handles all the simulation of photon mapping
     energy: dict
         The dictionary of sensor's energy

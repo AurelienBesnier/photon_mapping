@@ -1,4 +1,4 @@
-from openalea.photonmap.common.math import  denormalize, average_vector
+from openalea.spice.common.math import  denormalize, average_vector
 from openalea.plantgl.all import Vector3
 
 def test_denormalize():

@@ -2,8 +2,8 @@ from math import cos, sin
 
 from openalea.plantgl.all import Color3, Material, Scene, Shape, TriangleSet
 
-from openalea.photonmap import VectorFloat, VectorUint, Vec3
-from openalea.photonmap.common.tools import flatten
+from openalea.spice import VectorFloat, VectorUint, Vec3
+from openalea.spice.common.tools import flatten
 
 # Objectif of this module is adding sensors to the scene of photon mapping to the received energy
 
@@ -273,7 +273,7 @@ def addVirtualSensors(scene, virtual_sensor_triangle_dict, list_virtual_sensor):
 
     Parameters
     ----------
-    scene : libphotonmap_core.Scene
+    scene : libspice_core.Scene
         The photon mapping scene used to run the simulation
     virtual_sensor_triangle_dict : dict
         The dictionary of the triangles of sensors
@@ -309,7 +309,7 @@ def addFaceSensors(scene, face_sensor_triangle_dict, list_face_sensor):
 
     Parameters
     ----------
-    scene : libphotonmap_core.Scene
+    scene : libspice_core.Scene
         The photon mapping scene used to run the simulation
     face_sensor_triangle_dict : dict
         The dictionary of the triangles of sensors

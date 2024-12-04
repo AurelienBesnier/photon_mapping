@@ -1,6 +1,6 @@
 from openalea.plantgl.all import Color3, Material, Shape, TriangleSet
 
-from openalea.photonmap.simulator import Simulator
+from openalea.spice.simulator import Simulator
 
 
 def test_simple_simulation():

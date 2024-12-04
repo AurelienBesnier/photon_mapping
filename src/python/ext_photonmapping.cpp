@@ -214,7 +214,7 @@ Render(UniformSampler& sampler,
         image.writePPM(filename.data());
 }
 
-PYBIND11_MODULE(libphotonmap_core, m)
+PYBIND11_MODULE(libspice_core, m)
 {
         m.doc() = "pybind11 module for photon mapping";
 

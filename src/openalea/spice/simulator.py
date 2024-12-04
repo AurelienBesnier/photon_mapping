@@ -6,7 +6,7 @@ from dataclasses import dataclass
 import matplotlib
 import matplotlib.pyplot as plt
 from openalea.lpy import Lsystem
-from openalea.photonmap.libphotonmap_core import (
+from openalea.spice.libspice_core import (
     Render,
     visualizeSensorsPhotonMap,
     visualizePhotonMap,
@@ -22,17 +22,17 @@ from openalea.plantgl.all import (
     Sphere,
 )
 
-from openalea.photonmap import (
+from openalea.spice import (
     PhotonMapping,
     UniformSampler,
     Vec3,
-    libphotonmap_core,
+    libspice_core,
 )
-from openalea.photonmap.energy import calculate_energy, correct_energy
-from openalea.photonmap.loader import load_sensor, load_environment
-from openalea.photonmap.loader.load_sensor import Sensor
-from openalea.photonmap.reader import read_properties, read_rad_geo
-from openalea.photonmap.common.math import denormalize
+from openalea.spice.energy import calculate_energy, correct_energy
+from openalea.spice.loader import load_sensor, load_environment
+from openalea.spice.loader.load_sensor import Sensor
+from openalea.spice.reader import read_properties, read_rad_geo
+from openalea.spice.common.math import denormalize
 
 
 @dataclass
@@ -199,7 +199,7 @@ class Simulator:
         self.rendering = False
         #
         self.scene_pgl = Scene()
-        self.scene = libphotonmap_core.Scene()
+        self.scene = libspice_core.Scene()
         self.list_virtual_sensor = []
         self.list_face_sensor = []
         self.list_light = []
@@ -765,7 +765,7 @@ class Simulator:
         if loop < 1:
             return
 
-        self.scene = libphotonmap_core.Scene()
+        self.scene = libspice_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0
         current_band = self.divided_spectral_range[0]
@@ -832,7 +832,7 @@ class Simulator:
         Parameters
         ----------
 
-        scene: libphotonmap_core.Scene
+        scene: libspice_core.Scene
             The object which contains all the object in the scene of simulation
         current_band: dict
             Current divided spectral range where the simulation is running
@@ -846,7 +846,7 @@ class Simulator:
 
         Returns
         -------
-            scene: libphotonmap_core.Scene
+            scene: libspice_core.Scene
                 The object which contains all the object in the scene of
                 simulation
             has_virtual_sensor: bool
@@ -909,14 +909,14 @@ class Simulator:
 
         Parameters
         ----------
-        integrator: libphotonmap_core.PhotonMapping
+        integrator: libspice_core.PhotonMapping
             The object which handles all the simulation of photon mapping.
-        scene: libphotonmap_core.Scene
+        scene: libspice_core.Scene
             The object which contains all the object in the scene of simulation.
         w: Vec3
             The average wavelength of spectral range used to determine the color
              of the light.
-        sampler: libphotonmap_core.Sampler
+        sampler: libspice_core.Sampler
             The generator of the random number.
 
         Returns
@@ -931,7 +931,7 @@ class Simulator:
             print("Enable rendering first !!!")
             return
 
-        image = libphotonmap_core.Image(self.image_width, self.image_height)
+        image = libspice_core.Image(self.image_width, self.image_height)
         print("Printing photonmap image...")
         visualizePhotonMap(
             integrator,
@@ -1094,7 +1094,7 @@ class Simulator:
 
         Returns
         -------
-        camera: libphotonmap_core.Camera
+        camera: libspice_core.Camera
             An object with all the information of camera
         """
 
@@ -1105,7 +1105,7 @@ class Simulator:
         aperture = 0.01
 
         # coordinates must be in meters
-        camera = libphotonmap_core.Camera(
+        camera = libspice_core.Camera(
             lookfrom, lookat, vup, vfov, aspect_ratio, aperture, dist_to_focus
         )
 

@@ -10,7 +10,7 @@ from collections import OrderedDict
 import pandas as pd
 from scipy import stats
 
-from openalea.photonmap.loader.load_sensor import findIndexOfDiskSensorInList
+from openalea.spice.loader.load_sensor import findIndexOfDiskSensorInList
 
 
 def read_spectrum_file(filename: str) -> (OrderedDict, int, int):

@@ -1,12 +1,12 @@
 import re
 
-from openalea.photonmap import (
+from openalea.spice import (
     Vec3,
     VectorFloat,
     VectorUint,
 )
-from openalea.photonmap.common.math import average_vector, geo_hemisphere
-from openalea.photonmap.common.tools import flatten, wavelength2rgb
+from openalea.spice.common.math import average_vector, geo_hemisphere
+from openalea.spice.common.tools import flatten, wavelength2rgb
 from openalea.plantgl.all import Color3, Scene
 
 # Objectif of this module is adding environment object to the scene of Photon Mapping
@@ -26,7 +26,7 @@ def addEnvironment(
 
     Parameters
     ----------
-    scene : libphotonmap_core.Scene
+    scene : libspice_core.Scene
         The photon mapping scene used to run the simulation
     sh : Shape
         The plantGL Shape to add

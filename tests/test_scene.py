@@ -1,4 +1,4 @@
-from openalea.photonmap import Scene
+from openalea.spice import Scene
 
 
 def test_load_scene_with_lights():
