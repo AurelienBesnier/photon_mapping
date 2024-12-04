@@ -8,13 +8,13 @@ Before starting to install the library, you should first install all dependencie
 
 .. code-block:: bash
     
-    mamba env create -f environment.yml -n photonmap
+    mamba env create -f environment.yml -n spice
 
 You have to activate the conda environment before installing
 
 .. code-block:: bash
     
-    mamba activate photonmap
+    mamba activate spice
 
 To install as a Python library:
 
@@ -29,7 +29,7 @@ The main example is located in the folder ./examples/python/plantgl-rad-scene
 
 .. code-block:: bash
     
-    mamba activate photonmap
+    mamba activate spice
     cd examples/python/plantgl-rad-scene
 
 Command to run the example

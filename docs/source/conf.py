@@ -8,12 +8,10 @@
 
 import os
 import sys
-import pydata_sphinx_theme # Pydata theme: https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html
-
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-project = 'Photon Mapping'
+project = 'Spice'
 copyright = '2024, Tuan-Minh NGUYEN, Aurélien BESNIER'
 author = 'Tuan-Minh NGUYEN, Aurélien BESNIER'
 release = '1.0.0'
@@ -49,7 +47,7 @@ source_suffix = {
 # The master toctree document.
 master_doc = 'index'
 # General information about the project.
-project = u'openalea.photon_mapping'
+project = u'openalea.spice'
 copyright = u'Cecill-C INRAE / INRIA / CIRAD'
 author = u'Aurélien Besnier et al.'
 # The version info for the project you're documenting, acts as replacement for
@@ -117,7 +115,7 @@ html_show_copyright = True
 latex_elements = {
 }
 latex_documents = [
-    (master_doc, 'openalea.photon_mapping.tex', u'openalea.photon_mapping Documentation',
+    (master_doc, 'openalea.spice.tex', u'openalea.spice Documentation',
      u'INRA / INRIA / CIRAD', 'manual'),
 ]
 
@@ -125,7 +123,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'openalea.photon_mapping', u'openalea.photon_mapping Documentation',
+    (master_doc, 'openalea.spice', u'openalea.spice Documentation',
      [author], 1)
 ]
 
@@ -134,7 +132,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'openalea.photon_mapping', u'openalea.photon_mapping Documentation',
-     author, 'openalea.photon_mapping', 'Photon mapping with python wrapper.',
+    (master_doc, 'openalea.spice', u'openalea.spice Documentation',
+     author, 'openalea.spice', 'Photon mapping with python wrapper.',
      'Miscellaneous'),
 ]

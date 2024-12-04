@@ -11,15 +11,8 @@ find_package(Threads REQUIRED)
 
 # OpenMP
 if(APPLE)
-    set(CMAKE_C_COMPILER clang)
     set(CMAKE_CXX_COMPILER clang++)
     set(CMAKE_CXX_FLAGS "${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY")
-
-    if(CMAKE_C_COMPILER_ID MATCHES "Clang\$")
-        set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp")
-        set(OpenMP_C_LIB_NAMES "omp")
-        set(OpenMP_omp_LIBRARY omp)
-    endif()
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang\$")
         set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp")

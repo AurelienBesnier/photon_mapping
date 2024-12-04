@@ -284,7 +284,7 @@ Create a python file (main.py) which contains the core program
 
 .. code-block:: python
 
-    from openalea.photonmap.simulator import *
+    from openalea.spice.simulator import *
 
     if __name__ == "__main__":
 
@@ -342,7 +342,7 @@ To visualize the room, after defining the input files, we use a function named `
 
 .. code-block:: python
 
-    from openalea.photonmap.simulator import *
+    from openalea.spice.simulator import *
 
     if __name__ == "__main__":
 
@@ -386,7 +386,7 @@ Test value Tmin
 
 .. code-block:: python
 
-    from openalea.photonmap.simulator import *
+    from openalea.spice.simulator import *
 
     if __name__ == "__main__":
 
