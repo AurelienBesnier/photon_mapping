@@ -244,9 +244,11 @@ PYBIND11_MODULE(libspice_core, m)
         py::class_<Photon>(m, "Photon")
           .def(py::init<>())
           .def(py::init<Vec3<float>&, Vec3<float>&, Vec3<float>&, unsigned>())
+          .def(py::init<Vec3<float>&, Vec3<float>&, Vec3<float>&, unsigned, unsigned>())
           .def_readwrite("throughput", &Photon::throughput)
           .def_readwrite("position", &Photon::position)
           .def_readonly("triId", &Photon::triId)
+          .def_readonly("lightId", &Photon::lightId)
           .def_readwrite("wi", &Photon::wi);
 
         py::class_<PhotonMap>(m, "PhotonMap")
@@ -347,6 +349,20 @@ PYBIND11_MODULE(libspice_core, m)
           .def("Le", &AreaLight::Le)
           .def("samplePoint", &AreaLight::samplePoint)
           .def("sampleDirection", &AreaLight::sampleDirection);
+
+        // Spot light
+        py::class_<SpotLight>(m, "SpotLight")
+          .def(py::init<Vec3f, Vec3f, Vec3f, float>())
+          .def("Le", &SpotLight::Le)
+          .def("samplePoint", &SpotLight::samplePoint)
+          .def("sampleDirection", &SpotLight::sampleDirection);
+
+        // Spot light
+        py::class_<PointLight>(m, "PointLight")
+          .def(py::init<Vec3f, Vec3f>())
+          .def("Le", &PointLight::Le)
+          .def("samplePoint", &PointLight::samplePoint)
+          .def("sampleDirection", &PointLight::sampleDirection);
 
         // Triangle
         /*    py::class_<Triangle>(m, "Triangle")

@@ -187,9 +187,9 @@ class Simulator:
         self.coeffs_calibration = None
         self.integrals = None
         self.points_calibration = None
-        self.nb_photons = 0
+        self.nb_photons = 1000
         self.n_samples = 512
-        self.max_depth = 0
+        self.max_depth = 1
         self.scale_factor = 1
         self.t_min = 0.0001
         self.nb_thread = 8
@@ -626,7 +626,9 @@ class Simulator:
             for light in self.list_light:
                 pos = light["position"]
                 pos = (pos[0], pos[1], pos[2])
-                light_point = k3d.points([pos], point_size=1, color=0xFFFFFF)
+                light_point = k3d.points(
+                    [pos], point_size=1 * self.scal, color=0xFFFFFF
+                )
                 light_label = k3d.label(text=f"light n°{i}", position=pos)
 
                 plot += light_point + light_label
@@ -655,35 +657,58 @@ class Simulator:
             A rendered scene in 3D
 
         """
-
         photons = []
+
+        r = lambda: random.randint(0, 255)
+
+        # creating color per light source
+        colors = []
+        light_range = range(len(self.list_light))
+        for light in light_range:
+            colors.append((r(), r(), r()))
+
         for phmap in self.photonmaps:
             for i in range(phmap.nPhotons()):
                 photon = phmap.getIthPhoton(i).position
-                photons.append((photon[0], photon[1], photon[2]))
+                light_id = phmap.getIthPhoton(i).lightId
+                photons.append(((photon[0], photon[1], photon[2]), light_id))
 
         if mode == "ipython":
-            m = Material(Color3(0, 0, 150))
             ph_sc = Scene()
             for photon in photons:
-                sp = Sphere(0.05)
-                s2 = Translated(photon[0], photon[1], photon[2], sp)
-                sh = Shape(s2, m)
+                sp = Sphere(0.1 * self.scale_factor)
+                position = photon[0]
+                color = colors[photon[1]]
+                s2 = Translated(position[0], position[1], position[2], sp)
+                sh = Shape(s2, Material(Color3(color[0], color[1], color[2])))
                 ph_sc.add(sh)
             Viewer.display(ph_sc)
 
         elif mode == "oawidgets":
             import k3d
+            from k3d.colormaps import matplotlib_color_maps
 
-            points = k3d.points(photons, point_size=0.1, shader="3d")
+            positions = [photon[0] for photon in photons]
+            lights = [photon[1] for photon in photons]
+
+            points = k3d.points(
+                positions,
+                point_size=0.1 * self.scale_factor,
+                shader="3d",
+                attribute=lights,
+                color_map=matplotlib_color_maps.Rainbow,
+                color_range=[0, max(light_range)],
+            )
             plot = k3d.plot()
             plot.grid_visible = False
             plot += points
-            i = 1
+            i = 0
             for light in self.list_light:
                 pos = light["position"]
                 pos = (pos[0], pos[1], pos[2])
-                light_point = k3d.points([pos], point_size=1, color=0xFFFFFF)
+                light_point = k3d.points(
+                    [pos], point_size=1 * self.scale_factor, color=0xFFFFFF
+                )
                 light_label = k3d.label(text=f"light n°{i}", position=pos)
 
                 plot += light_point + light_label
@@ -729,6 +754,7 @@ class Simulator:
 
         elif mode == "oawidgets":
             from oawidgets.plantgl import PlantGL
+
             plot = PlantGL(self.scene_pgl)
             plot.camera_reset()
             return plot

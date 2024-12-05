@@ -1,5 +1,4 @@
-from openalea.photonmap.simulator import Simulator
-from openalea.photonmap import Vec3
+from openalea.spice.simulator import Simulator
 
 if __name__ == "__main__":
 

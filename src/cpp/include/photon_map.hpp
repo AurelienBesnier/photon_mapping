@@ -13,10 +13,11 @@
 struct Photon
 {
         Vec3f throughput; ///< BxDF * Geometric Term / pdf
-        Vec3f position;   ///< The position of the photon in the scene
-        Vec3f wi;         ///<  incident direction
+        Vec3f position;   ///< The position of the photon in the scene.
+        Vec3f wi;         ///<  incident direction.
         unsigned int triId =
-          0; ///<  id of the triangle on which the photon ended up
+          0; ///<  id of the triangle on which the photon ended up.
+        unsigned int lightId = 0; ///< The id of the light who emitted.
 
         // implementation of Point concept
         static constexpr int dim = 3;
@@ -45,15 +46,27 @@ struct Photon
           , triId(triId)
         {
         }
-};
 
-// Point concept
-/*template <typename T>
-concept Point = requires(T& x, int i) {
-  { T::dim } -> std::convertible_to<int>;  // dimension
-  { x[i] } -> std::convertible_to<float>;  // element access
+        /**
+         * @brief Parameterized constructor.
+         * @param throughput The throughput of the photon.
+         * @param position The 3D position of the photon.
+         * @param wi the incident direction of the photon.
+         * @param triId The id of the triangle on which the photon is on.
+         */
+        Photon(const Vec3f& throughput,
+               const Vec3f& position,
+               const Vec3f& wi,
+               const unsigned int triId,
+               const unsigned int lightId)
+          : throughput(throughput)
+          , position(position)
+          , wi(wi)
+          , triId(triId)
+          , lightId(lightId)
+        {
+        }
 };
-*/
 
 /**
  * @brief Compute the squared distance between given points.

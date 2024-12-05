@@ -2,7 +2,7 @@ from datetime import datetime
 import random
 import sys
 
-from openalea.photonmap.libphotonmap_core import *
+from openalea.spice.libspice_core import *
 
 if __name__ == '__main__':
     n_samples = 32

@@ -25,7 +25,6 @@ class Light
 {
       public:
         virtual ~Light() = default;
-
         /**
          * @fn Vec3f Le() override
          * Get the light emission of the light source.
@@ -52,8 +51,9 @@ class PointLight : public Light
         Vec3f position;
 
       public:
-        PointLight(Vec3f& le, Vec3f position)
-          : le(le)
+        PointLight(Vec3f le, Vec3f position)
+          : Light() 
+          , le(le)
           , position(position)
         {
         }
@@ -102,8 +102,9 @@ class SpotLight : public Light
         float angle;
 
       public:
-        SpotLight(Vec3f& le, Vec3f position, Vec3f direction, float angle)
-          : le(le)
+        SpotLight(Vec3f le, Vec3f position, Vec3f direction, float angle)
+          : Light()  
+          , le(le)
           , position(position)
           , direction(direction)
           , angle(angle)
@@ -168,7 +169,8 @@ class TubeLight : public Light
                   Triangle* triangle,
                   Vec3f direction,
                   float angle)
-          : le(le)
+          : Light() 
+          , le(le)
           , triangle(triangle)
           , direction(direction)
           , angle(angle)
@@ -231,7 +233,8 @@ class AreaLight : public Light
 
       public:
         AreaLight(const Vec3f& le, Triangle* triangle)
-          : le(le)
+          : Light() 
+          , le(le)
           , triangle(triangle)
         {
         }
