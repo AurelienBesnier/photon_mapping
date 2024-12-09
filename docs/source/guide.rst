@@ -1,8 +1,9 @@
+**********
 User guide
-==========
+**********
 
 Input files
------------
+===========
 
 Configuration file
 ------------------
@@ -208,7 +209,7 @@ Spectral heterogeneity file
 +----------------+-----------------------------------+
 
 Calibration points file  
------------------------
+----------------------
 
 | The calibration points file contains the captors which is used to convert the results from a number of photons to irradiance. This function only work for the simulation with captors.
 |
@@ -315,7 +316,7 @@ Run and results
 +-----+----------------+----------------+
 
 Calibrate the results
-=====================
+---------------------
 
 | After running the simulation, we will obtain a result with the number of photons received on each captors or organs of plant. But in reality, to using this result to do the further researches, we have to convert the unit of the current result to a unit which is more physical.
 |
@@ -335,7 +336,7 @@ Calibrate the results
 | This function is only working with the simulation of captors. 
 
 Visualize the room
-===================
+------------------
 
 To visualize the room, after defining the input files, we use a function named ``visualizeScene``. Here is the complete code for this program:
 
@@ -375,7 +376,7 @@ It is also possible to visualize the simulation's results in different ways with
     Use with caution.
 
 Test value Tmin
-================
+---------------
 
 | While running the simulation, we risk encountering the problem of auto-intersection if the value of ``Tmin`` is too small.
 | To avoid this problem, we've created a function to run the simulation with different values of ``Tmin``. The result of this function is a graph showing the change in the number of photons after testing different values of ``Tmin``.

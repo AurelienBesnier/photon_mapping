@@ -73,7 +73,9 @@ html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "header_links_before_dropdown": 6,
     "sidebarwidth": 200,
-    "collapse_navigation": "false",
+    "collapse_navigation": False,
+    "show_toc_level": 2,
+    "navigation_depth": 2,
     "icon_links": [
         {
             "name": "GitHub",
@@ -84,10 +86,8 @@ html_theme_options = {
     "show_version_warning_banner": True,
     "footer_start": ["copyright"],
     "footer_center": ["sphinx-version"],
-    "secondary_sidebar_items": {
-        "**/*": ["page-toc", "edit-this-page", "sourcelink"],
-        "examples/no-sidebar": [],
-    },
+    "sidebar_includehidden" : True,
+    "secondary_sidebar_items": ["page-toc", "edit-this-page", "sourcelink"],
 }
 html_static_path = ["_static"]
 html_logo = "_static/openalea_web.svg"
