@@ -6,6 +6,12 @@
 minimal but extensible header only implementation of photon mapping in C++.
 
 # How to compile:
+*Install Miniforge*: https://github.com/conda-forge/miniforge
+
+Follow installation instructions. Use default installation settings.
+
+Execute next commands in anaconda prompt.
+
 create and activate the conda environment:
 ```bash
 mamba env create -f environment.yml -n photonmap
@@ -23,21 +29,8 @@ cmake -DCMAKE_BUILD_TYPE=Debug ../
 make -j
 ```
 
-# How to run example:
-
-```bash
-mamba activate photonmap
-cd examples/python/plantgl-rad-scene
-python plantglRadScene.py
-```
-
-# How to run the jupyter notebook
-
-```bash
-mamba activate photonmap
-cd examples/python/plantgl-rad-scene
-jupyter notebook
-```
+### Examples
+A set of examples can be found in the [`./examples/python`](./examples/python) directory.
 
 ## Requirements
 
