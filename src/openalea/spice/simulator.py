@@ -192,7 +192,8 @@ class Simulator:
         self.image_height = 512
 
         # input files
-        self.po_dir = ""
+        if self.configuration.ENVIRONMENT_FILE.is_file():
+            self.addEnvFromFile()
         self.spectrum_file = ""
         self.points_calibration_file = ""
 
@@ -875,7 +876,7 @@ class Simulator:
         """
         # add env
         materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
-            current_band["start"], current_band["end"], self.po_dir
+            current_band["start"], current_band["end"], self.configuration.OPTICAL_PROPERTIES_DIR
         )
 
         for sh in self.scene_pgl:
@@ -991,24 +992,19 @@ class Simulator:
         image.clear()
         print("Done!")
 
-    def addEnvFromFile(self, room_file: str, po_dir: str, flip_normal=False):
+    def addEnvFromFile(self, flip_normal=False):
         """
         Set up the room/environment of the simulation from file.
 
         Parameters
         ----------
-        room_file: str
-            The link to the file which contains the geometries of the room
-        po_dir: str
-            The link to the folder which contains the optical properties of the
             room
         flip_normal: bool
             Determine the direction of the vector normal of triangle.
         """
 
-        self.po_dir = po_dir
         self.scene_pgl = read_rad_geo.read_rad(
-            room_file, self.configuration.SCALE_FACTOR, flip_normal
+            self.configuration.ENVIRONMENT_FILE, self.configuration.SCALE_FACTOR, flip_normal
         )
 
     def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):

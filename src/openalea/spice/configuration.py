@@ -2,21 +2,24 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass
+@dataclass()
 class Configuration:
-    NB_PHOTONS: int
-    MAXIMUM_DEPTH: int
-    SCALE_FACTOR: int
-    T_MIN: float
-    NB_THREAD: int
-    BASE_SPECTRAL_RANGE: tuple
-    BACKFACE_CULLING: bool
     DIVIDED_SPECTRAL_RANGE: list[dict]
-    RENDERING: bool
+    OPTICAL_PROPERTIES: list[dict]
+    NB_PHOTONS: int = 100000
+    MAXIMUM_DEPTH: int = 1
+    SCALE_FACTOR: int = 1
+    T_MIN: float = 0.1
+    NB_THREAD: int = 4
+    BASE_SPECTRAL_RANGE: tuple = (400, 800)
+    BACKFACE_CULLING: bool = True
+    RENDERING: bool = False
+    OPTICAL_PROPERTIES_DIR: Path = ""
+    ENVIRONMENT_FILE: Path = ""
 
     def __init__(
         self,
-        nb_photons=1000,
+        nb_photons=100000,
         max_depth=1,
         scale_factor=1,
         t_min=0.1,
@@ -25,6 +28,8 @@ class Configuration:
         base_spectral_range=(400, 800),
         divided_spectral_range=None,
         rendering=False,
+        optical_properties_dir = "",
+        environment_file = ""
     ):
         self.NB_PHOTONS = nb_photons
         self.MAXIMUM_DEPTH = max_depth
@@ -37,6 +42,8 @@ class Configuration:
         if divided_spectral_range is None:
             divided_spectral_range = [{"start": 0, "end": 0}]
         self.DIVIDED_SPECTRAL_RANGE = divided_spectral_range
+        self.OPTICAL_PROPERTIES_DIR = Path(optical_properties_dir)
+        self.ENVIRONMENT_FILE = Path(environment_file)
 
     def read_file(self, filepath: Path):
         """
@@ -55,11 +62,14 @@ class Configuration:
             for line in f:
                 if "$" in line:
                     row = line.replace("\n", "").split(" ")
-
                     if row[0] == "$NB_PHOTONS":
                         self.NB_PHOTONS = int(row[1])
                     elif row[0] == "$MAXIMUM_DEPTH":
                         self.MAXIMUM_DEPTH = int(row[1])
+                    elif row[0] == "$OPTICAL_PROPERTIES_DIR":
+                        self.OPTICAL_PROPERTIES_DIR = Path(row[1])
+                    elif row[0] == "$ENVIRONMENT_FILE":
+                        self.ENVIRONMENT_FILE = Path(row[1])
                     elif row[0] == "$SCALE_FACTOR":
                         self.SCALE_FACTOR = int(row[1])
                     elif row[0] == "$T_MIN":

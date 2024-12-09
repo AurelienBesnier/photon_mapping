@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 
 from openalea.plantgl.all import (
     Color3,
@@ -55,15 +56,15 @@ def cylinder_vertices(start, end, rayon):
     return vert
 
 
-def read_rad(file: str, scale_factor: int, invert_normals: bool):
+def read_rad(file: Path, scale_factor: int, invert_normals: bool):
     """
     Parse a radiance file (https://radsite.lbl.gov/radiance/framed.html) to a
     make a plantGL Scene
 
     Parameters
     ----------
-    file: str
-        the rad filename
+    file: Path
+        the rad file path
     scale_factor: int
         The size of geometries. The vertices of geometries is recalculated by
         dividing their coordinates by this value

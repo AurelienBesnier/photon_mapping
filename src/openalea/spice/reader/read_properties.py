@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import pandas as pd
 
@@ -8,7 +9,7 @@ from openalea.spice.energy.correct_energy import read_spectrum_file
 # Calculate the average value of the spectrum range
 
 
-def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
+def setup_dataset_materials(w_start: int, w_end: int, op_dir: Path):
     """
     Fills the materials_r (reflection), materials_s (specular) and materials_t
     (transmission) dictionaries with information from the provided data for the
@@ -20,7 +21,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
         The first wavelength of band.
     w_end: int
         The last wavelength of band.
-    po_dir: str
+    op_dir: Path
         The folder which contains all the optical properties of the room
 
     Returns
@@ -40,7 +41,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
 
     for element in ("Plant", "Env"):  # Reflectances
         files = []
-        dir_path_reflect = po_dir + "/" + element + "/ReflectancesMean/"
+        dir_path_reflect = op_dir / element / "ReflectancesMean"
 
         if os.path.exists(dir_path_reflect):
             for path in os.listdir(dir_path_reflect):
@@ -61,7 +62,7 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
 
     for element in ("Plant", "Env"):  # Transmittances
         files = []
-        dir_path_transmit = po_dir + "/" + element + "/TransmittancesMean/"
+        dir_path_transmit = op_dir / element / "TransmittancesMean"
 
         if os.path.exists(dir_path_transmit):
             for path in os.listdir(dir_path_transmit):
@@ -81,12 +82,12 @@ def setup_dataset_materials(w_start: int, w_end: int, po_dir: str):
                 materials_t[mat_name] = float(trans) if float(trans) > 0 else 0.0
 
     # Specularities
-    dir_path_spec = po_dir + "/Specularities.xlsx"
+    dir_path_spec = op_dir / "Specularities.xlsx"
 
     if os.path.exists(dir_path_spec):
         content_spec = (
             pd.ExcelFile(dir_path_spec).parse(0)
-            if dir_path_spec.endswith(".xlsx")
+            if dir_path_spec.__str__().endswith(".xlsx")
             else pd.read_csv(dir_path_spec)
         )
         mat_names = content_spec["Material"]
