@@ -4,7 +4,7 @@ from openalea.spice.reader.read_properties import setup_dataset_materials
 filepath = pathlib.Path(__file__).parent.resolve()
 
 def test_setup_materials():
-    path = str(filepath / "PO")
+    path = filepath / "PO"
     materials_r, materials_s, materials_t = setup_dataset_materials(
         400, 500, path)
 

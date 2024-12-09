@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-@dataclass()
+@dataclass
 class Configuration:
     DIVIDED_SPECTRAL_RANGE: list[dict]
     OPTICAL_PROPERTIES: list[dict]

@@ -21,6 +21,7 @@ if(APPLE)
     endif()
 endif()
 
+
 find_package(OpenMP)
 if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
@@ -39,8 +40,6 @@ endif()
 add_subdirectory("externals")
 
 add_subdirectory("src/cpp/include")
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++23 -fsigned-char -fexceptions -fopenmp")
 
 # pm(photon_mapping)
 add_library(pm INTERFACE src/python/ext_photonmapping.cpp)
