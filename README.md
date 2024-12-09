@@ -12,6 +12,7 @@ Follow installation instructions. Use default installation settings.
 
 Execute next commands in anaconda prompt.
 
+### Creating an environment
 create and activate the conda environment:
 ```bash
 mamba env create -f environment.yml -n photonmap
