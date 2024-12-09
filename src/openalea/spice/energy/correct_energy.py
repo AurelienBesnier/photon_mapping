@@ -105,7 +105,7 @@ def get_correct_energy_coeff(
 
     spec_dict, _, _ = read_spectrum_file(spec_file)
     integrals = []
-    base_band = range(base_spectral_range["start"], base_spectral_range["end"], 1)
+    base_band = range(base_spectral_range[0], base_spectral_range[1], 1)
 
     for _, spectral_range in enumerate(divided_spectral_range):
         divided_band = range(

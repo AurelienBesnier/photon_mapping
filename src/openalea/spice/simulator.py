@@ -3,6 +3,8 @@ import random
 import sys
 import time
 from dataclasses import dataclass
+from pathlib import Path
+
 import matplotlib
 import matplotlib.pyplot as plt
 from openalea.lpy import Lsystem
@@ -33,6 +35,7 @@ from openalea.spice.loader import load_sensor, load_environment
 from openalea.spice.loader.load_sensor import Sensor
 from openalea.spice.reader import read_properties, read_rad_geo
 from openalea.spice.common.math import denormalize
+from openalea.spice.configuration import Configuration
 
 
 @dataclass
@@ -66,7 +69,7 @@ class SimulationResult:
         self.N_mes_virtual_sensor = simulator.N_mes_virtual_sensor
         self.N_mes_face_sensor = simulator.N_mes_face_sensor
 
-        self.divided_spectral_range = simulator.divided_spectral_range
+        self.divided_spectral_range = simulator.configuration.DIVIDED_SPECTRAL_RANGE
         self.list_virtual_sensor = simulator.list_virtual_sensor
         self.list_face_sensor = simulator.list_face_sensor
 
@@ -109,7 +112,7 @@ class SimulationResult:
             plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
         ax.set_xlabel("Shape id")
         ax.set_ylabel("Number of photons")
-        plt.setp(ax.get_xticklabels(), rotation=75)
+        plt.setp(ax.get_xticklabels(), rotation=90)
         plt.tight_layout()
         plt.show()
 
@@ -122,9 +125,9 @@ class SimulationResult:
         for wavelength_mesured in self.N_sim_virtual_sensor:
             str_keys = [str(key) for key in wavelength_mesured.keys()]
             plt.bar(str_keys, wavelength_mesured.values(), color="g", width=0.2)
-        ax.set_xlabel("Shape id")
+        ax.set_xlabel("Sensor id")
         ax.set_ylabel("Number of photons")
-        plt.setp(ax.get_xticklabels(), rotation=75)
+        plt.setp(ax.get_xticklabels(), rotation=90)
         plt.tight_layout()
         plt.show()
 
@@ -135,28 +138,8 @@ class Simulator:
 
     Attributes
     ----------
-    nb_photons: int
-        The number of photons in simulation
-    max_depth: int
-        The maximum number of times that a photon bounces in the scene
-    scale_factor: float
-        The size of geometries. The vertices of geometries is recalculated by
-        dividing their coordinates by this value
-    t_min: float
-        The minimum distance between the point of intersection and the origin
-        of the light ray
-    nb_thread: int
-        The number of threads on the CPU used to calculate in parallel. This
-        value is between 0 and the number of cores of your CPU.
-    is_backface_culling: bool
-        Define which mode of intersection is chosen: intersect only with the
-        front face or intersect with both faces.
-    base_spectral_range: dict
-        The base spectral range which includes all the other spectral ranges
-    divided_spectral_range: array
-        The list of spectral ranges divided from the base spectral range.
-    rendering: bool
-        Set to True to render the output images
+    configuration: Configuration
+        The configuration of the engine
     N_sim_virtual_sensor: dict
         Number of received photons on each sensor
     N_sim_face_sensor: dict
@@ -173,8 +156,6 @@ class Simulator:
         The list of virtual sensor in simulation
     scene_pgl: openalea.plantgl.scenegraph.Scene
         The plantgl scene object used to save the meshes of environment
-    plantPos: Vec3
-        The position of the plant
     po_dir: str
         The link to the folder which contains the optical properties of the room
 
@@ -182,21 +163,15 @@ class Simulator:
 
     # constructor
 
-    def __init__(self):
+    def __init__(self, config_file="", configuration=Configuration()):
         self.camera = None
         self.coeffs_calibration = None
         self.integrals = None
         self.points_calibration = None
-        self.nb_photons = 1000
+        self.configuration = configuration
+        if config_file != "":
+            self.configuration.read_file(Path(config_file))
         self.n_samples = 512
-        self.max_depth = 1
-        self.scale_factor = 1
-        self.t_min = 0.0001
-        self.nb_thread = 8
-        self.is_backface_culling = False
-        self.base_spectral_range = {"start": 0, "end": 0}
-        self.divided_spectral_range = [{"start": 0, "end": 0}]
-        self.rendering = False
         #
         self.scene_pgl = Scene()
         self.scene = libspice_core.Scene()
@@ -246,7 +221,9 @@ class Simulator:
         vertices = sh.geometry.pointList
         # apply scale factor
         for i in range(len(vertices)):
-            vertices[i] = tuple(x / self.scale_factor for x in vertices[i])
+            vertices[i] = tuple(
+                x / self.configuration.SCALE_FACTOR for x in vertices[i]
+            )
 
         sh.geometry.pointList = vertices
         sh.geometry.computeNormalList()
@@ -345,9 +322,9 @@ class Simulator:
 
         Parameters
         ----------
-        pos : tuple(float,float,float)
+        pos : tuple
             The position of sensor
-        normal: tuple(float,float,float)
+        normal: tuple
             The vector normal of sensor
         r: float
             The radius of sensor
@@ -363,9 +340,9 @@ class Simulator:
             Shape(),
             "VirtualSensor",
             (
-                pos[0] / self.scale_factor,
-                pos[1] / self.scale_factor,
-                pos[2] / self.scale_factor,
+                pos[0] / self.configuration.SCALE_FACTOR,
+                pos[1] / self.configuration.SCALE_FACTOR,
+                pos[2] / self.configuration.SCALE_FACTOR,
             ),
         )
         sensor.initVirtualDiskSensor(
@@ -397,9 +374,9 @@ class Simulator:
         n_estimation_global = 100
         final_gathering_depth = 0
 
-        for index in range(len(self.divided_spectral_range)):
+        for index in range(len(self.configuration.DIVIDED_SPECTRAL_RANGE)):
             start_time = time.time()
-            current_band = self.divided_spectral_range[index]
+            current_band = self.configuration.DIVIDED_SPECTRAL_RANGE[index]
 
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             average_wavelength = (current_band["start"] + current_band["end"]) / 2
@@ -412,15 +389,15 @@ class Simulator:
             ) = self.initSimulationScene(self.scene, current_band, average_wavelength)
 
             # create integrator
-            self.scene.tnear = self.t_min
+            self.scene.tnear = self.configuration.T_MIN
             self.scene.setupTriangles()
-            self.scene.build(self.is_backface_culling)
+            self.scene.build(self.configuration.BACKFACE_CULLING)
             integrator = PhotonMapping(
-                self.nb_photons,
+                self.configuration.NB_PHOTONS,
                 n_estimation_global,
                 final_gathering_depth,
-                self.max_depth,
-                self.nb_thread,
+                self.configuration.MAXIMUM_DEPTH,
+                self.configuration.NB_THREAD,
             )
 
             self.integrators.append(integrator)
@@ -429,11 +406,11 @@ class Simulator:
             sampler = UniformSampler(random.randint(1, sys.maxsize))
 
             # build no kdtree if not rendering
-            integrator.build(self.scene, sampler, self.rendering)
+            integrator.build(self.scene, sampler, self.configuration.RENDERING)
             print("Done!")
 
             # rendering if declared
-            if self.rendering:
+            if self.configuration.RENDERING:
                 self.render(integrator, self.scene, average_wavelength, sampler)
 
             # read energy of virtual sensor
@@ -479,12 +456,14 @@ class Simulator:
 
         if os.path.exists(spectrum_file) and os.path.exists(points_calibration_file):
             self.integrals = correct_energy.get_correct_energy_coeff(
-                self.base_spectral_range, self.divided_spectral_range, spectrum_file
+                self.configuration.BASE_SPECTRAL_RANGE,
+                self.configuration.DIVIDED_SPECTRAL_RANGE,
+                spectrum_file,
             )
             self.points_calibration = correct_energy.get_points_calibration(
                 self.list_virtual_sensor,
                 points_calibration_file,
-                self.divided_spectral_range,
+                self.configuration.DIVIDED_SPECTRAL_RANGE,
             )
             self.coeffs_calibration = correct_energy.get_calibaration_coefficient(
                 self.N_sim_virtual_sensor, self.integrals, self.points_calibration
@@ -627,7 +606,9 @@ class Simulator:
                 pos = light["position"]
                 pos = (pos[0], pos[1], pos[2])
                 light_point = k3d.points(
-                    [pos], point_size=1 * self.scal, color=0xFFFFFF
+                    [pos],
+                    point_size=1 * self.configuration.SCALE_FACTOR,
+                    color=0xFFFFFF,
                 )
                 light_label = k3d.label(text=f"light n°{i}", position=pos)
 
@@ -664,7 +645,10 @@ class Simulator:
         # creating color per light source
         colors = []
         light_range = range(len(self.list_light))
-        for light in light_range:
+        n_light = self.scene.nLights()
+        for _ in light_range:
+            colors.append((r(), r(), r()))
+        for _ in range(n_light):
             colors.append((r(), r(), r()))
 
         for phmap in self.photonmaps:
@@ -676,7 +660,7 @@ class Simulator:
         if mode == "ipython":
             ph_sc = Scene()
             for photon in photons:
-                sp = Sphere(0.1 * self.scale_factor)
+                sp = Sphere(0.1 * self.configuration.SCALE_FACTOR)
                 position = photon[0]
                 color = colors[photon[1]]
                 s2 = Translated(position[0], position[1], position[2], sp)
@@ -693,11 +677,11 @@ class Simulator:
 
             points = k3d.points(
                 positions,
-                point_size=0.1 * self.scale_factor,
+                point_size=1 * self.configuration.SCALE_FACTOR,
                 shader="3d",
                 attribute=lights,
                 color_map=matplotlib_color_maps.Rainbow,
-                color_range=[0, max(light_range)],
+                color_range=[0, max(light_range, default=0) + n_light],
             )
             plot = k3d.plot()
             plot.grid_visible = False
@@ -707,7 +691,9 @@ class Simulator:
                 pos = light["position"]
                 pos = (pos[0], pos[1], pos[2])
                 light_point = k3d.points(
-                    [pos], point_size=1 * self.scale_factor, color=0xFFFFFF
+                    [pos],
+                    point_size=5 * self.configuration.SCALE_FACTOR,
+                    color=0xFFFFFF,
                 )
                 light_label = k3d.label(text=f"light n°{i}", position=pos)
 
@@ -794,7 +780,7 @@ class Simulator:
         self.scene = libspice_core.Scene()
         n_estimation_global = 100
         final_gathering_depth = 0
-        current_band = self.divided_spectral_range[0]
+        current_band = self.configuration.DIVIDED_SPECTRAL_RANGE[0]
         average_wavelength = (current_band["start"] + current_band["end"]) / 2
 
         list_tmin = []
@@ -812,7 +798,7 @@ class Simulator:
         )
         # create integrator
         self.scene.setupTriangles()
-        self.scene.build(self.is_backface_culling)
+        self.scene.build(self.configuration.BACKFACE_CULLING)
 
         for i in range(loop):
             print("---------------------------------")
@@ -823,8 +809,8 @@ class Simulator:
                 nb_photons,
                 n_estimation_global,
                 final_gathering_depth,
-                self.max_depth,
-                self.nb_thread,
+                self.configuration.MAXIMUM_DEPTH,
+                self.configuration.NB_THREAD,
             )
 
             sampler = UniformSampler(1)
@@ -953,7 +939,7 @@ class Simulator:
 
         os.makedirs("results", exist_ok=True)
 
-        if not self.rendering:
+        if not self.configuration.RENDERING:
             print("Enable rendering first !!!")
             return
 
@@ -966,8 +952,8 @@ class Simulator:
             self.image_height,
             self.image_width,
             self.camera,
-            self.nb_photons,
-            self.max_depth,
+            self.configuration.NB_PHOTONS,
+            self.configuration.MAXIMUM_DEPTH,
             "results/photonmap-" + str(w) + "nm.ppm",
             sampler,
         )
@@ -981,8 +967,8 @@ class Simulator:
             self.image_height,
             self.image_width,
             self.camera,
-            self.nb_photons,
-            self.max_depth,
+            self.configuration.NB_PHOTONS,
+            self.configuration.MAXIMUM_DEPTH,
             "results/photonmap-sensors-" + str(w) + "nm.ppm",
             sampler,
             integrator,
@@ -1022,7 +1008,7 @@ class Simulator:
 
         self.po_dir = po_dir
         self.scene_pgl = read_rad_geo.read_rad(
-            room_file, self.scale_factor, flip_normal
+            room_file, self.configuration.SCALE_FACTOR, flip_normal
         )
 
     def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):
@@ -1037,7 +1023,7 @@ class Simulator:
             The point where the camera is looking at
 
         """
-        self.rendering = True
+        self.configuration.RENDERING = True
         # using for render the results
         self.camera = self.initCameraRender(lookfrom, lookat, vfov)
 
@@ -1098,7 +1084,7 @@ class Simulator:
         lstring = lsystem.derive(lsystem.axiom, derivation_length)
         lscene = lsystem.sceneInterpretation(lstring)
 
-        scale_factor = self.scale_factor / 10
+        scale_factor = self.configuration.SCALE_FACTOR / 10
         position = (plant_pos[0] / 10, plant_pos[1] / 10, plant_pos[2] / 10)
 
         tr = Tesselator()
@@ -1136,48 +1122,3 @@ class Simulator:
         )
 
         return camera
-
-    def readConfiguration(self, filename: str):
-        """
-        Read all the parameters of simulation in the configuration file
-
-        Parameters
-        ----------
-        filename: str
-            Name/directory of the configuration file.
-
-        """
-        # read file
-        with open(filename, encoding="UTF8") as f:
-            next(f)
-            for line in f:
-                if "$" in line:
-                    row = line.replace("\n", "").split(" ")
-
-                    if row[0] == "$NB_PHOTONS":
-                        self.nb_photons = int(row[1])
-                    elif row[0] == "$MAXIMUM_DEPTH":
-                        self.max_depth = int(row[1])
-                    elif row[0] == "$SCALE_FACTOR":
-                        self.scale_factor = int(row[1])
-                    elif row[0] == "$T_MIN":
-                        self.t_min = float(row[1])
-                    elif row[0] == "$NB_THREAD":
-                        self.nb_thread = int(row[1])
-                    elif row[0] == "$BACKFACE_CULLING":
-                        self.is_backface_culling = row[1].upper() == "YES"
-                    elif row[0] == "$BASE_SPECTRAL_RANGE":
-                        self.base_spectral_range = {
-                            "start": int(row[1]),
-                            "end": int(row[2]),
-                        }
-                    elif row[0] == "$DIVIDED_SPECTRAL_RANGE":
-                        nb_bande = int(row[1])
-                        self.divided_spectral_range.clear()
-
-                        for i in range(nb_bande):
-                            start = int(row[(i + 1) * 2])
-                            end = int(row[(i + 1) * 2 + 1])
-                            self.divided_spectral_range.append(
-                                {"start": start, "end": end}
-                            )
