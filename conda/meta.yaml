@@ -8,8 +8,6 @@ source:
 build:
   number: 0
   preserve_egg_dir: True
-  script:
-    - {{ PYTHON }} -m pip install . -vv
 
 requirements:
   host:

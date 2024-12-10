@@ -209,7 +209,7 @@ Spectral heterogeneity file
 +----------------+-----------------------------------+
 
 Calibration points file  
-----------------------
+-----------------------
 
 | The calibration points file contains the captors which is used to convert the results from a number of photons to irradiance. This function only work for the simulation with captors.
 |

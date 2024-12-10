@@ -18,8 +18,8 @@ Code example
 .. code-block:: python
 
     #setup configuration
-    simulator.nb_photons = 1000000
-    simulator.max_depth = 5
+    simulator.configuration.NB_PHOTONS = 1000000
+    simulator.configuration.MAXIMUM_DEPTH = 5
 
 | Setup light and environment by using the object Shape of openalea
 |
@@ -85,14 +85,14 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
 .. code-block:: python
 
     #run
-    res = simulator.run()
+    simulator.run()
 
 | To write the result to a file, using the function ``writeResults`` of the object ``SimulationResult``
 
 .. code-block:: python
     
     #write result to file
-    res.writeResults("filename")
+    simulator.results.writeResults("filename")
 
 | Here is the completed program
 
@@ -106,8 +106,8 @@ To run the simulation, we use the function ``run`` of the object ``Simulator``. 
         simulator = Simulator()
     
         #setup configuration
-        simulator.nb_photons = 1000000
-        simulator.max_depth = 5
+        simulator.configuration.NB_PHOTONS = 1000000
+        simulator.configuration.MAXIMUM_DEPTH = 5
     
         simulator.resetScene()
     
