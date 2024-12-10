@@ -1,2 +1,2 @@
-python --version
-python -m pip install . -vv
+${PYTHON} --version
+${PYTHON} setup.py install --prefix=${PREFIX} 

@@ -21,6 +21,10 @@ if(APPLE)
     endif()
 endif()
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest")
+endif()
+
 
 find_package(OpenMP)
 if(NOT OpenMP_CXX_FOUND)
