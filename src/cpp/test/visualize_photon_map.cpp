@@ -39,8 +39,8 @@ int main() {
     const PhotonMap photon_map = integrator.getPhotonMapGlobal();
 
 #pragma omp parallel for collapse(2)
-    for (size_t i = 0; i < height; ++i) {
-        for (size_t j = 0; j < width; ++j) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             const float u = (2.0f * j - width) / height;
             const float v = (2.0f * i - height) / height;
             Ray ray;

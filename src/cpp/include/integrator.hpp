@@ -577,7 +577,7 @@ class PhotonMapping : public Integrator
                                   << std::endl;
 
 #pragma omp parallel for
-                        for (unsigned int i = 0;
+                        for (int i = 0;
                              i < nPhotonsGlobal / scene.lights.size();
                              ++i) {
                                 Sampler& sampler_per_thread =
