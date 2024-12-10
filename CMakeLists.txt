@@ -9,6 +9,20 @@ option(BUILD_CXX_EXAMPLE "build c++ example" OFF)
 find_package(TBB CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
+find_package(OpenMP)
+if(NOT OpenMP_CXX_FOUND)
+    message(WARNING "failed to find OpenMP")
+endif()
+
+# Embree4
+find_package(embree 4.0 REQUIRED)
+if (${embree_FOUND})
+  message(STATUS "Found Embree")
+  set("EMBREE_MAX_ISA" ON)
+else()
+  message(FATAL_ERROR "Could not find Embree")
+endif()
+
 # OpenMP
 if(APPLE)
     set(CMAKE_CXX_COMPILER clang++)
@@ -22,22 +36,7 @@ if(APPLE)
 endif()
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc")
-endif()
-
-
-find_package(OpenMP)
-if(NOT OpenMP_CXX_FOUND)
-    message(WARNING "failed to find OpenMP")
-endif()
-
-# Embree4
-find_package(embree 4.0 REQUIRED)
-if (${embree_FOUND})
-  message(STATUS "Found Embree")
-  set("EMBREE_MAX_ISA" ON)
-else()
-  message(FATAL_ERROR "Could not find Embree")
+    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc /openmp")
 endif()
 
 # externals

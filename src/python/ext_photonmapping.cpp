@@ -364,10 +364,6 @@ PYBIND11_MODULE(libspice_core, m)
           .def("samplePoint", &PointLight::samplePoint)
           .def("sampleDirection", &PointLight::sampleDirection);
 
-        // Triangle
-        /*    py::class_<Triangle>(m, "Triangle")
-                    .def(py::init<float*, uint32_t*, float*, uint32_t>());*/
-
         py::class_<Primitive>(m, "Primitive")
           .def(py::init<Triangle*,
                         std::shared_ptr<BxDF>&,
