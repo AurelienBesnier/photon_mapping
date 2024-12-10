@@ -693,7 +693,7 @@ class Simulator:
                 pos = (pos[0], pos[1], pos[2])
                 light_point = k3d.points(
                     [pos],
-                    point_size=5 * self.configuration.SCALE_FACTOR,
+                    point_size=1 * self.configuration.SCALE_FACTOR,
                     color=0xFFFFFF,
                 )
                 light_label = k3d.label(text=f"light n°{i}", position=pos)

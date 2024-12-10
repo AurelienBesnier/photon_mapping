@@ -54,4 +54,3 @@ def test_simple_simulation():
 
     # run
     simulator.run()
-    simulator.results.writeResults()

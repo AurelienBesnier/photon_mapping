@@ -88,13 +88,8 @@ class RNG
         {
                 state.state = seed;
                 seedRand = seed;
-# ifndef _MSC_BUILD
-                seed1 = rand_r(&seedRand);
-                seed2 = rand_r(&seedRand);
-#else
-                seed1 = rand(&seedRand);
-                seed2 = rand(&seedRand);
-#endif 
+                seed1 = rand();
+                seed2 = rand();
         }
 
         float getNext()

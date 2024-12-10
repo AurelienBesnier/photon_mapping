@@ -8,7 +8,7 @@ class Configuration:
     OPTICAL_PROPERTIES: list[dict]
     NB_PHOTONS: int = 100000
     MAXIMUM_DEPTH: int = 1
-    SCALE_FACTOR: int = 1
+    SCALE_FACTOR: float = 1.0
     T_MIN: float = 0.1
     NB_THREAD: int = 4
     BASE_SPECTRAL_RANGE: tuple = (400, 800)
@@ -21,7 +21,7 @@ class Configuration:
         self,
         nb_photons=100000,
         max_depth=1,
-        scale_factor=1,
+        scale_factor=1.0,
         t_min=0.1,
         nb_thread=8,
         backface_culling=True,
@@ -71,7 +71,7 @@ class Configuration:
                     elif row[0] == "$ENVIRONMENT_FILE":
                         self.ENVIRONMENT_FILE = Path(row[1])
                     elif row[0] == "$SCALE_FACTOR":
-                        self.SCALE_FACTOR = int(row[1])
+                        self.SCALE_FACTOR = float(row[1])
                     elif row[0] == "$T_MIN":
                         self.T_MIN = float(row[1])
                     elif row[0] == "$NB_THREAD":
