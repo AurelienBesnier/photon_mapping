@@ -36,10 +36,7 @@ if(APPLE)
 endif()
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${OpenMP_SHARED_LINKER_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc /openmp")
+    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc /openmp:llvm")
 endif()
 
 # externals
