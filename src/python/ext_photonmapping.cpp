@@ -31,8 +31,8 @@ visualizePhotonMap(const PhotonMapping& integrator,
 
         if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
-                for (unsigned int i = 0; i < height; ++i) {
-                        for (unsigned int j = 0; j < width; ++j) {
+                for (int i = 0; i < height; ++i) {
+                        for (int j = 0; j < width; ++j) {
                                 const float u = (2.0f * j - width) / height;
                                 const float v = (2.0f * i - height) / height;
                                 Ray ray;
@@ -97,8 +97,8 @@ visualizeSensorsPhotonMap(const Scene& scene,
         const PhotonMap& photon_map = integrator.getPhotonMapSensors();
         if (photon_map.nPhotons() > 0)
 #pragma omp parallel for collapse(2) schedule(dynamic, 1)
-                for (unsigned int i = 0; i < height; ++i) {
-                        for (unsigned int j = 0; j < width; ++j) {
+                for (int i = 0; i < height; ++i) {
+                        for (int j = 0; j < width; ++j) {
                                 const float u = (2.0f * j - width) / height;
                                 const float v = (2.0f * i - height) / height;
                                 Ray ray;
@@ -167,11 +167,11 @@ Render(UniformSampler& sampler,
                 std::cout << "rendering scanline " << i + 1 << "/" << height
                           << "..." << std::endl;
 #pragma omp parallel for
-                for (unsigned int j = 0; j < width; ++j) {
+                for (int j = 0; j < width; ++j) {
                         // init sampler
                         sampler = UniformSampler(j + width * i);
 
-                        for (unsigned int k = 0; k < n_samples; ++k) {
+                        for (int k = 0; k < n_samples; ++k) {
                                 const float u =
                                   (2.0f * (j + sampler.getNext1D()) - width) /
                                   height;
