@@ -6,7 +6,7 @@
 #include <limits>
 #include <memory>
 #include <algorithm>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "core.hpp"
 
@@ -88,8 +88,13 @@ class RNG
         {
                 state.state = seed;
                 seedRand = seed;
+# ifndef _MSC_BUILD
                 seed1 = rand_r(&seedRand);
                 seed2 = rand_r(&seedRand);
+#else
+                seed1 = rand_s(&seedRand);
+                seed2 = rand_s(&seedRand);
+#endif 
         }
 
         float getNext()

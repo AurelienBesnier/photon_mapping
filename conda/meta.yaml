@@ -47,12 +47,12 @@ requirements:
 
 test:
   imports:
-    - openalea.photonmap
-    - openalea.photonmap.common
-    - openalea.photonmap.energy
-    - openalea.photonmap.loader
-    - openalea.photonmap.reader
-    - openalea.photonmap.simulator
+    - openalea.spice
+    - openalea.spice.common
+    - openalea.spice.energy
+    - openalea.spice.loader
+    - openalea.spice.reader
+    - openalea.spice.simulator
   requires:
     - pytest
   source_files:

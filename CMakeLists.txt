@@ -22,7 +22,7 @@ if(APPLE)
 endif()
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest")
+    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc")
 endif()
 
 
