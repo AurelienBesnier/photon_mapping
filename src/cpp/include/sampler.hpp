@@ -92,8 +92,8 @@ class RNG
                 seed1 = rand_r(&seedRand);
                 seed2 = rand_r(&seedRand);
 #else
-                seed1 = rand_s(&seedRand);
-                seed2 = rand_s(&seedRand);
+                seed1 = rand(&seedRand);
+                seed2 = rand(&seedRand);
 #endif 
         }
 
