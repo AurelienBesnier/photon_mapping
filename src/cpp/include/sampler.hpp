@@ -6,7 +6,7 @@
 #include <limits>
 #include <memory>
 #include <algorithm>
-#include <cstdlib>
+#include <stdlib.h>
 
 #include "core.hpp"
 
@@ -92,8 +92,8 @@ class RNG
                 seed1 = rand_r(&seedRand);
                 seed2 = rand_r(&seedRand);
 #else
-                seed1 = std::rand_s(&seedRand);
-                seed2 = std::rand_s(&seedRand);
+                seed1 = rand_s(&seedRand);
+                seed2 = rand_s(&seedRand);
 #endif 
         }
 
