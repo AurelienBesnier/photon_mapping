@@ -494,6 +494,8 @@ PYBIND11_MODULE(libspice_core, m)
           .def(py::init<>())
           .def_readwrite("triangles", &Scene::triangles)
           .def_readwrite("vertices", &Scene::vertices)
+          .def_readwrite("indices", &Scene::indices)
+          .def_readwrite("primitives", &Scene::primitives)
           .def_readwrite("normals", &Scene::normals)
           .def_readwrite("tnear", &Scene::tnear)
           .def(
@@ -502,12 +504,6 @@ PYBIND11_MODULE(libspice_core, m)
             "Function to load a model in the scene, must be an .obj file path",
             py::arg("filepath"))
           .def("setupTriangles", &Scene::setupTriangles)
-          .def("addFaceInfosMat",
-               &Scene::addFaceInfosMat,
-               py::arg("vertices"),
-               py::arg("indices"),
-               py::arg("normals"),
-               py::arg("material"))
           .def("addFaceInfos",
                &Scene::addFaceInfos,
                py::arg("vertices"),
@@ -537,6 +533,7 @@ PYBIND11_MODULE(libspice_core, m)
                py::arg("vertices"),
                py::arg("indices"),
                py::arg("normals"),
+               py::arg("mat_name"),
                py::arg("reflectance"),
                py::arg("specular"),
                py::arg("transmittance"),

@@ -176,7 +176,9 @@ class Simulator:
         self.scene_pgl = Scene()
         self.scene = libspice_core.Scene()
         self.list_virtual_sensor = []
+        self.virtual_sensor_triangle_dict = {}
         self.list_face_sensor = []
+        self.face_sensor_triangle_dict = {}
         self.list_light = []
 
         # result
@@ -281,9 +283,9 @@ class Simulator:
         ----------
         shape: Shape
             The geometry and material of sensor
-        position : tuple(int,int,int)
+        position : tuple
             The position of sensor
-        scale_factor: int
+        scale_factor: float
             The size of geometries. The vertices of geometries is recalculated
             by dividing their coordinates by this value
 
@@ -354,6 +356,31 @@ class Simulator:
 
         self.list_virtual_sensor.append(sensor)
 
+    def applyWavlengthProperties(
+        self, scene, current_band, average_wavelength
+    ):
+        """
+        Setup all the material for a simulation in a waveband.
+
+        Parameters
+        ----------
+
+        scene: libspice_core.Scene
+            The object which contains all the object in the scene of simulation
+        current_band: dict
+            Current divided spectral range where the simulation is running
+        average_wavelength: Vec3
+            The average wavelength of spectral range used to determine the color
+            of the light
+        """
+        materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
+            current_band["start"], current_band["end"], self.configuration.OPTICAL_PROPERTIES_DIR
+        )
+        
+
+        for sh in self.scene_pgl:
+            pass
+
     def run(self):
         """
         Run the simulation with the configurations which is determined
@@ -382,21 +409,19 @@ class Simulator:
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             average_wavelength = (current_band["start"] + current_band["end"]) / 2
 
-            has_face_sensor = len(self.list_face_sensor) > 0
-            has_virtual_sensor = len(self.list_virtual_sensor) > 0
+            self.applyWavlengthProperties(self.scene, current_band, average_wavelength)
 
             # TODO: Fix this awful thing
-            (
-                self.scene,
-                has_virtual_sensor,
-                virtual_sensor_triangle_dict,
-                has_face_sensor,
-                face_sensor_triangle_dict,
-            ) = self.initSimulationScene(self.scene, current_band, average_wavelength)
+            # (
+            #     self.scene,
+            #     has_virtual_sensor,
+            #     virtual_sensor_triangle_dict,
+            #     has_face_sensor,
+            #     face_sensor_triangle_dict,
+            # ) = self.initSimulationScene(self.scene, current_band, average_wavelength)
 
             # create integrator
             self.scene.tnear = self.configuration.T_MIN
-            self.scene.setupTriangles()
             self.scene.build(self.configuration.BACKFACE_CULLING)
             integrator = PhotonMapping(
                 self.configuration.NB_PHOTONS,
@@ -420,8 +445,7 @@ class Simulator:
                 self.render(integrator, self.scene, average_wavelength, sampler)
 
             # read energy of virtual sensor
-            virtual_sensor_energy = {}
-            if has_virtual_sensor:
+            if len(self.list_virtual_sensor) > 0:
                 calculate_energy.sensor_add_energy(
                     virtual_sensor_triangle_dict, integrator, virtual_sensor_energy
                 )
@@ -429,7 +453,7 @@ class Simulator:
 
             # read energy of face sensor
             face_sensor_energy = {}
-            if has_face_sensor:
+            if len(self.list_face_sensor) > 0:
                 calculate_energy.sensor_add_energy(
                     face_sensor_triangle_dict, integrator, face_sensor_energy
                 )
