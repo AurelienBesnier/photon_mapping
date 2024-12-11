@@ -381,6 +381,11 @@ class Simulator:
 
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             average_wavelength = (current_band["start"] + current_band["end"]) / 2
+
+            has_face_sensor = len(self.list_face_sensor) > 0
+            has_virtual_sensor = len(self.list_virtual_sensor) > 0
+
+            # TODO: Fix this awful thing
             (
                 self.scene,
                 has_virtual_sensor,
@@ -667,9 +672,11 @@ class Simulator:
                 s2 = Translated(position[0], position[1], position[2], sp)
                 sh = Shape(s2, Material(Color3(color[0], color[1], color[2])))
                 ph_sc.add(sh)
+            ph_sc.merge(self.scene_pgl)
             Viewer.display(ph_sc)
 
         elif mode == "oawidgets":
+            from oawidgets.plantgl import PlantGL
             import k3d
             from k3d.colormaps import matplotlib_color_maps
 
@@ -684,7 +691,8 @@ class Simulator:
                 color_map=matplotlib_color_maps.Rainbow,
                 color_range=[0, max(light_range, default=0) + n_light],
             )
-            plot = k3d.plot()
+
+            plot = PlantGL(self.scene_pgl, group_by_color=False)
             plot.grid_visible = False
             plot += points
             i = 0

@@ -539,19 +539,10 @@ class PhotonMapping : public Integrator
                         return;
                 std::vector<Photon> photons;
                 std::vector<Photon> sensorPhotons;
-                int maxThreads = omp_get_max_threads();
-                if (nbThreads < maxThreads) {
-                        omp_set_num_threads(nbThreads);
-                        std::cout << "Current number of threads is "
-                                  << nbThreads << std::endl;
-                } else {
-                        std::cout << "Maximum number of threads is "
-                                  << maxThreads << std::endl;
-                }
+                omp_set_num_threads(nbThreads);
 
                 // init sampler for each thread
-                std::vector<std::unique_ptr<Sampler>> samplers(
-                  omp_get_max_threads());
+                std::vector<std::unique_ptr<Sampler>> samplers(nbThreads);
                 for (int i = 0; i < samplers.size(); ++i) {
                         samplers[i] = sampler.clone();
                         samplers[i]->setSeed(sampler.getSeed() * (i + 1));
