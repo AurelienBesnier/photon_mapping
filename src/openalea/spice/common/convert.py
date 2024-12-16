@@ -8,8 +8,7 @@ def pgl_to_spice(scene: pgl.Scene):
     i = 1
     for sh in scene:
         print(f"Adding shape {i}/{nb_shapes}")
-        if sh.geometry.isNormalListToDefault():
-            sh.geometry.computeNormalList()
+        sh.geometry.computeNormalList()
         normals = VectorFloat(flatten(sh.geometry.normalList))
         indices = VectorUint(flatten(sh.geometry.indexList))
         vertices = VectorFloat(flatten(sh.geometry.pointList))
