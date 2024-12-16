@@ -159,7 +159,7 @@ createPointLight(Vec3f emission, Vec3f position)
  * @param emission The emission power of the spot light.
  * @param position The position of the spot light.
  * @param direction The direction of emission of the spot light.
- * @param angle The angle of diffussion of the spot light.
+ * @param angle The angle of diffusion of the spot light.
  * @return A pointer towards the spot light.
  */
 std::shared_ptr<SpotLight>
@@ -186,7 +186,7 @@ createTubeLight(Vec3f emission, Triangle* tri, Vec3f direction, float angle)
 }
 
 /**
- * Class reprensenting a 3D scene.
+ * Class representing a 3D scene.
  * @class Scene
  */
 class Scene
@@ -253,7 +253,6 @@ class Scene
                 vertices.clear();
                 indices.clear();
                 normals.clear();
-                bxdfs.clear();
 
                 triangles.clear();
                 bxdfs.clear();
@@ -351,6 +350,44 @@ class Scene
                                 this->bxdfs.push_back(createDefaultBxDF());
                         }
                 }
+
+                // populate  triangles
+                for (size_t faceID = nFaces() - (indices.size() / 3);
+                     faceID < nFaces();
+                     ++faceID) {
+                        // add triangle
+                        this->triangles.emplace_back(this->vertices.data(),
+                                                     this->indices.data(),
+                                                     this->normals.data(),
+                                                     faceID);
+                }
+
+                // populate lights, primitives
+                for (size_t faceID = nFaces() - (indices.size() / 3);
+                     faceID < nFaces();
+                     ++faceID) {
+                        // add light
+                        std::shared_ptr<Light> light = nullptr;
+                        const auto material = this->materials[faceID];
+                        // std::cout << "material check" << std::endl;
+                        std::string sh_name = "";
+                        if (material) {
+                                tinyobj::material_t m = material.value();
+                                sh_name = m.name;
+                                light =
+                                  createAreaLight(m, &this->triangles[faceID]);
+                                if (light != nullptr) {
+                                        lights.push_back(light);
+                                }
+                        }
+
+                        // add primitive
+                        // std::cout << "Adding primitives" << std::endl;
+                        primitives.emplace_back(&this->triangles[faceID],
+                                                this->bxdfs[faceID],
+                                                sh_name,
+                                                light);
+                }
         }
 
         /**
@@ -402,6 +439,24 @@ class Scene
                 std::cout << "[Scene] faces: " << nFaces() << std::endl;
                 std::cout << "[Scene] lights: " << lights.size() << std::endl;
 #endif
+        }
+
+        /**
+         * 
+         */
+        void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0){
+                for (Primitive& prim: primitives)
+                {
+                        if (prim.name == primName)
+                        {
+                                tinyobj::material_t m ;
+                                m.specular[0] = specularity;
+                                m.specular[1] = specularity;
+                                m.specular[2] = specularity;
+                                m.illum = 1;
+                                prim.bxdf = createBxDF(m, reflectance, transmittance);
+                        }
+                } 
         }
 
         /**
@@ -913,17 +968,6 @@ class Scene
 
                 rtcCommitScene(scene);
         }
-
-        // int getTriangleID(int geoID, int primID) const {
-        //   int triId = 0;
-
-        //   for(size_t i = 0; i < geoID; i++) {
-        //     triId += geos[i].nFaces();
-        //   }
-        //   triId += primID;
-
-        //   return triId;
-        // }
 
         /**
          * @fn bool intersect(const Ray &ray, IntersectInfo &info) const

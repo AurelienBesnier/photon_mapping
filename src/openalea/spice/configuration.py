@@ -28,8 +28,8 @@ class Configuration:
         base_spectral_range=(400, 800),
         divided_spectral_range=None,
         rendering=False,
-        optical_properties_dir = "",
-        environment_file = ""
+        optical_properties_dir="",
+        environment_file="",
     ):
         self.NB_PHOTONS = nb_photons
         self.MAXIMUM_DEPTH = max_depth

@@ -6,6 +6,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
@@ -555,6 +556,12 @@ PYBIND11_MODULE(libspice_core, m)
                py::arg("color"),
                py::arg("direction"),
                py::arg("angle"))
+          .def("setMatPrimitive",
+               &Scene::setMatPrimitive,
+               py::arg("primName"),
+               py::arg("reflectance"),
+               py::arg("transmittance"),
+               py::arg("specularity") = 0.0)
           .def("build", &Scene::build, py::arg("back_face_culling") = true)
           .def("getTriangles",
                &Scene::getTriangles,
