@@ -448,6 +448,7 @@ class Scene
          */
         void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0)
         {
+#pragma omp parallel for
                 for (Primitive& prim: primitives)
                 {
                         if (prim.name == primName)
