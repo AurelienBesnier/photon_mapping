@@ -296,6 +296,8 @@ class Scene
                           float transmittance = 0.0f,
                           float roughness = 0.0f)
         {
+
+#pragma omp parallel for
                 for (uint32_t& i : indices) {
                         i += nVertices();
                 }
@@ -444,7 +446,8 @@ class Scene
         /**
          * 
          */
-        void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0){
+        void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0)
+        {
                 for (Primitive& prim: primitives)
                 {
                         if (prim.name == primName)
@@ -477,6 +480,7 @@ class Scene
                       Vec3f color,
                       std::string mat_name)
         {
+#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -537,6 +541,7 @@ class Scene
                                    std::vector<uint32_t> newIndices,
                                    std::vector<float> newNormals)
         {
+#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -592,6 +597,7 @@ class Scene
                                 float transmittance = 0.0f,
                                 float roughness = 0.0f)
         {
+#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
