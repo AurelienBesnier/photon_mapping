@@ -6,6 +6,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
@@ -494,6 +495,8 @@ PYBIND11_MODULE(libspice_core, m)
           .def(py::init<>())
           .def_readwrite("triangles", &Scene::triangles)
           .def_readwrite("vertices", &Scene::vertices)
+          .def_readwrite("indices", &Scene::indices)
+          .def_readwrite("primitives", &Scene::primitives)
           .def_readwrite("normals", &Scene::normals)
           .def_readwrite("tnear", &Scene::tnear)
           .def(
@@ -502,12 +505,6 @@ PYBIND11_MODULE(libspice_core, m)
             "Function to load a model in the scene, must be an .obj file path",
             py::arg("filepath"))
           .def("setupTriangles", &Scene::setupTriangles)
-          .def("addFaceInfosMat",
-               &Scene::addFaceInfosMat,
-               py::arg("vertices"),
-               py::arg("indices"),
-               py::arg("normals"),
-               py::arg("material"))
           .def("addFaceInfos",
                &Scene::addFaceInfos,
                py::arg("vertices"),
@@ -537,6 +534,7 @@ PYBIND11_MODULE(libspice_core, m)
                py::arg("vertices"),
                py::arg("indices"),
                py::arg("normals"),
+               py::arg("mat_name"),
                py::arg("reflectance"),
                py::arg("specular"),
                py::arg("transmittance"),
@@ -558,6 +556,12 @@ PYBIND11_MODULE(libspice_core, m)
                py::arg("color"),
                py::arg("direction"),
                py::arg("angle"))
+          .def("setMatPrimitive",
+               &Scene::setMatPrimitive,
+               py::arg("primName"),
+               py::arg("reflectance"),
+               py::arg("transmittance"),
+               py::arg("specularity") = 0.0)
           .def("build", &Scene::build, py::arg("back_face_culling") = true)
           .def("getTriangles",
                &Scene::getTriangles,

@@ -333,7 +333,14 @@ def addFaceSensors(scene, face_sensor_triangle_dict, list_face_sensor):
         refl, specular, trans, roughness = sensor.getOpticalProperties()
         #
         scene.addFaceSensorInfos(
-            vertices, triangles, normals, refl, specular, trans, roughness
+            vertices,
+            triangles,
+            normals,
+            "sensor" + str(i),
+            refl,
+            specular,
+            trans,
+            roughness,
         )
         #
         for j in triangles:

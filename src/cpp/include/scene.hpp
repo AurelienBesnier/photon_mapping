@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <omp.h>
 
 #include <memory>
 #include <vector>
@@ -55,7 +56,6 @@ intersectionFilter(const RTCFilterFunctionNArguments* args)
 std::shared_ptr<BxDF>
 createDefaultBxDF()
 {
-
         return std::make_shared<Lambert>(Vec3f(0.9f));
 }
 
@@ -160,7 +160,7 @@ createPointLight(Vec3f emission, Vec3f position)
  * @param emission The emission power of the spot light.
  * @param position The position of the spot light.
  * @param direction The direction of emission of the spot light.
- * @param angle The angle of diffussion of the spot light.
+ * @param angle The angle of diffusion of the spot light.
  * @return A pointer towards the spot light.
  */
 std::shared_ptr<SpotLight>
@@ -186,53 +186,8 @@ createTubeLight(Vec3f emission, Triangle* tri, Vec3f direction, float angle)
         }
 }
 
-// class SceneGeometry {
-//   public:
-//     std::vector<float> vertices;   ///< The vertices of the scene.
-//     std::vector<uint32_t> indices; ///< The indices of the scene.
-//     std::vector<float> normals;    ///< The normals of the scene.
-
-//     SceneGeometry(std::vector<float> _vertices, std::vector<uint32_t>
-//     _indices, std::vector<float> _normals){
-//       vertices = _vertices;
-//       indices = _indices;
-//       normals = _normals;
-//     }
-
-//     uint32_t nVertices() const { return vertices.size() / 3; }
-
-//     uint32_t nFaces() const { return indices.size() / 3; }
-
-//     void populateGeo(RTCScene scene, RTCDevice device) {
-//       RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_TRIANGLE);
-//       int nb_vertex = nVertices();
-//       int nb_faces = nFaces();
-
-//       // set vertices
-//       float *vb = (float *)rtcSetNewGeometryBuffer(
-//           geom, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT3, 3 *
-//           sizeof(float), nb_vertex);
-//       for (size_t i = 0; i < vertices.size(); ++i) {
-//         vb[i] = vertices[i];
-//       }
-
-//       // set indices
-//       uint32_t *ib = (uint32_t *)rtcSetNewGeometryBuffer(
-//           geom, RTC_BUFFER_TYPE_INDEX, 0, RTC_FORMAT_UINT3, 3 *
-//           sizeof(uint32_t), nb_faces);
-//       for (size_t i = 0; i < indices.size(); ++i) {
-//         ib[i] = indices[i];
-//       }
-
-//       //rtcSetGeometryIntersectFilterFunction(geom, &intersectionFilter);
-//       rtcCommitGeometry(geom);
-//       rtcAttachGeometry(scene, geom);
-//       rtcReleaseGeometry(geom);
-//     }
-// };
-
 /**
- * Class reprensenting a 3D scene.
+ * Class representing a 3D scene.
  * @class Scene
  */
 class Scene
@@ -273,7 +228,7 @@ class Scene
 
         std::vector<Primitive>
           primitives; ///< The primitives of the scene per face.
-        // std::vector<SceneGeometry> geos;
+
         float tnear = 0.1;
         /**
          * @brief Constructor
@@ -299,73 +254,11 @@ class Scene
                 vertices.clear();
                 indices.clear();
                 normals.clear();
-                bxdfs.clear();
 
                 triangles.clear();
                 bxdfs.clear();
                 lights.clear();
                 primitives.clear();
-        }
-
-        void addFaceInfosMat(std::vector<float> vertices,
-                             std::vector<uint32_t> indices,
-                             std::vector<float> normals,
-                             Material mat)
-        {
-                for (uint32_t& i : indices) {
-                        i += nVertices();
-                }
-                this->vertices.insert(std::end(this->vertices),
-                                      std::begin(vertices),
-                                      std::end(vertices));
-                this->indices.insert(std::end(this->indices),
-                                     std::begin(indices),
-                                     std::end(indices));
-                this->normals.insert(std::end(this->normals),
-                                     std::begin(normals),
-                                     std::end(normals));
-
-                // populate materials
-                for (size_t faceID = nFaces() - (indices.size() / 3);
-                     faceID < nFaces();
-                     ++faceID) {
-                        tinyobj::material_t m;
-
-                        m.diffuse[0] = mat.diffuse[0];
-                        m.diffuse[1] = mat.diffuse[1];
-                        m.diffuse[2] = mat.diffuse[2];
-                        m.ambient[0] = mat.ambient[0];
-                        m.ambient[1] = mat.ambient[1];
-                        m.ambient[2] = mat.ambient[2];
-                        m.emission[0] = 0.00;
-                        m.emission[1] = 0.00;
-                        m.emission[2] = 0.00;
-                        m.specular[0] = mat.specular[0];
-                        m.specular[1] = mat.specular[1];
-                        m.specular[2] = mat.specular[2];
-                        m.shininess = mat.shininess;
-                        m.dissolve = 1.0f - mat.transparency;
-                        m.ior = mat.ior;
-                        if (mat.transparency > 0)
-                                m.illum = 1;
-                        else
-                                m.illum = mat.illum;
-                        this->materials.emplace_back(m);
-                        // populate BxDF
-                        const auto material = this->materials[faceID];
-                        if (material) {
-                                tinyobj::material_t m = material.value();
-                                this->bxdfs.push_back(
-                                  createBxDF(m,
-                                             mat.reflectance,
-                                             mat.transmittance,
-                                             mat.roughness));
-                        }
-                        // default material
-                        else {
-                                this->bxdfs.push_back(createDefaultBxDF());
-                        }
-                }
         }
 
         /**
@@ -389,9 +282,9 @@ class Scene
          * @param transmittance
          * @param roughness
          */
-        void addFaceInfos(std::vector<float>& vertices,
-                          std::vector<uint32_t>& indices,
-                          std::vector<float>& normals,
+        void addFaceInfos(std::vector<float>& newVertices,
+                          std::vector<uint32_t>& newIndices,
+                          std::vector<float>& newNormals,
                           Vec3f& colors,
                           Vec3f& ambient,
                           float& specular,
@@ -404,26 +297,24 @@ class Scene
                           float transmittance = 0.0f,
                           float roughness = 0.0f)
         {
-
-                // SceneGeometry envGeo(vertices, indices, normals);
-                // this->geos.emplace_back(envGeo);
-
-                for (uint32_t& i : indices) {
+                omp_set_num_threads(omp_get_max_threads() / 2);
+#pragma omp parallel for
+                for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
 
                 this->vertices.insert(std::end(this->vertices),
-                                      std::begin(vertices),
-                                      std::end(vertices));
+                                      std::begin(newVertices),
+                                      std::end(newVertices));
                 this->indices.insert(std::end(this->indices),
-                                     std::begin(indices),
-                                     std::end(indices));
+                                     std::begin(newIndices),
+                                     std::end(newIndices));
                 this->normals.insert(std::end(this->normals),
-                                     std::begin(normals),
-                                     std::end(normals));
+                                     std::begin(newNormals),
+                                     std::end(newNormals));
 
                 // populate materials
-                for (size_t faceID = nFaces() - (indices.size() / 3);
+                for (size_t faceID = nFaces() - (newIndices.size() / 3);
                      faceID < nFaces();
                      ++faceID) {
                         tinyobj::material_t m;
@@ -516,6 +407,25 @@ class Scene
         }
 
         /**
+         * 
+         */
+        void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0)
+        {
+                for (Primitive& prim: primitives)
+                {
+                        if (prim.name == primName)
+                        {
+                                tinyobj::material_t m ;
+                                m.specular[0] = specularity;
+                                m.specular[1] = specularity;
+                                m.specular[2] = specularity;
+                                m.illum = 1;
+                                prim.bxdf = createBxDF(m, reflectance, transmittance);
+                        }
+                } 
+        }
+
+        /**
          * @fn void addLight(std::vector<float> newVertices,
          * std::vector<uint32_t> newIndices, std::vector<float> newNormals,
          * float intensity, Vec3f color)
@@ -533,10 +443,6 @@ class Scene
                       Vec3f color,
                       std::string mat_name)
         {
-
-                // SceneGeometry lightGeo(newVertices, newIndices, newNormals);
-                // this->geos.emplace_back(lightGeo);
-
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -597,10 +503,6 @@ class Scene
                                    std::vector<uint32_t> newIndices,
                                    std::vector<float> newNormals)
         {
-
-                // SceneGeometry sensorGeo(newVertices, newIndices, newNormals);
-                // this->geos.emplace_back(sensorGeo);
-
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -650,15 +552,12 @@ class Scene
         void addFaceSensorInfos(std::vector<float> newVertices,
                                 std::vector<uint32_t> newIndices,
                                 std::vector<float> newNormals,
+                                std::string& mat_name,
                                 float reflectance = 0.0f,
                                 float specular = 0.0f,
                                 float transmittance = 0.0f,
                                 float roughness = 0.0f)
         {
-
-                // SceneGeometry sensorGeo(newVertices, newIndices, newNormals);
-                // this->geos.emplace_back(sensorGeo);
-
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -681,7 +580,6 @@ class Scene
                 for (size_t faceID = nFaces() - (newIndices.size() / 3);
                      faceID < nFaces();
                      ++faceID) {
-
                         tinyobj::material_t m;
 
                         m.diffuse[0] = diffuse_rate;
@@ -1037,17 +935,6 @@ class Scene
                 rtcCommitScene(scene);
         }
 
-        // int getTriangleID(int geoID, int primID) const {
-        //   int triId = 0;
-
-        //   for(size_t i = 0; i < geoID; i++) {
-        //     triId += geos[i].nFaces();
-        //   }
-        //   triId += primID;
-
-        //   return triId;
-        // }
-
         /**
          * @fn bool intersect(const Ray &ray, IntersectInfo &info) const
          * @brief Gets the intersection information of a ray in the scene.
@@ -1094,6 +981,7 @@ class Scene
                           Vec2f(rayhit.hit.u, rayhit.hit.v);
                         info.surfaceInfo.geometricNormal =
                           tri.getGeometricNormal();
+
                         info.surfaceInfo.shadingNormal =
                           tri.computeShadingNormal(
                             info.surfaceInfo.barycentric);

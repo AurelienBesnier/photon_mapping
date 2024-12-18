@@ -176,7 +176,9 @@ class Simulator:
         self.scene_pgl = Scene()
         self.scene = libspice_core.Scene()
         self.list_virtual_sensor = []
+        self.virtual_sensor_triangle_dict = {}
         self.list_face_sensor = []
+        self.face_sensor_triangle_dict = {}
         self.list_light = []
 
         # result
@@ -281,9 +283,9 @@ class Simulator:
         ----------
         shape: Shape
             The geometry and material of sensor
-        position : tuple(int,int,int)
+        position : tuple
             The position of sensor
-        scale_factor: int
+        scale_factor: float
             The size of geometries. The vertices of geometries is recalculated
             by dividing their coordinates by this value
 
@@ -354,6 +356,33 @@ class Simulator:
 
         self.list_virtual_sensor.append(sensor)
 
+    def applyWavelengthProperties(self, scene, current_band, average_wavelength):
+        """
+        Setup all the material for a simulation in a waveband.
+
+        Parameters
+        ----------
+
+        scene: libspice_core.Scene
+            The object which contains all the object in the scene of simulation
+        current_band: dict
+            Current divided spectral range where the simulation is running
+        average_wavelength: Vec3
+            The average wavelength of spectral range used to determine the color
+            of the light
+        """
+        materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
+            current_band["start"],
+            current_band["end"],
+            self.configuration.OPTICAL_PROPERTIES_DIR,
+        )
+
+        for sh in self.scene_pgl:
+            refl = materials_r.get(sh.id, 0.9)
+            trans = materials_t.get(sh.id, 0.0)
+            spec = materials_t.get(sh.id, 0.0)
+            self.scene.setMatPrimitive(str(sh.id), refl, trans, spec)
+
     def run(self):
         """
         Run the simulation with the configurations which is determined
@@ -382,21 +411,10 @@ class Simulator:
             print("Wavelength:", current_band["start"], "-", current_band["end"])
             average_wavelength = (current_band["start"] + current_band["end"]) / 2
 
-            has_face_sensor = len(self.list_face_sensor) > 0
-            has_virtual_sensor = len(self.list_virtual_sensor) > 0
-
-            # TODO: Fix this awful thing
-            (
-                self.scene,
-                has_virtual_sensor,
-                virtual_sensor_triangle_dict,
-                has_face_sensor,
-                face_sensor_triangle_dict,
-            ) = self.initSimulationScene(self.scene, current_band, average_wavelength)
+            self.applyWavelengthProperties(self.scene, current_band, average_wavelength)
 
             # create integrator
             self.scene.tnear = self.configuration.T_MIN
-            self.scene.setupTriangles()
             self.scene.build(self.configuration.BACKFACE_CULLING)
             integrator = PhotonMapping(
                 self.configuration.NB_PHOTONS,
@@ -415,29 +433,28 @@ class Simulator:
             integrator.build(self.scene, sampler, self.configuration.RENDERING)
             print("Done!")
 
-            # rendering if declared
-            if self.configuration.RENDERING:
-                self.render(integrator, self.scene, average_wavelength, sampler)
+            # # rendering if declared
+            # if self.configuration.RENDERING:
+            #     self.render(integrator, self.scene, average_wavelength, sampler)
 
-            # read energy of virtual sensor
-            virtual_sensor_energy = {}
-            if has_virtual_sensor:
-                calculate_energy.sensor_add_energy(
-                    virtual_sensor_triangle_dict, integrator, virtual_sensor_energy
-                )
-                self.N_sim_virtual_sensor.append(virtual_sensor_energy)
+            # # read energy of virtual sensor
+            # if len(self.list_virtual_sensor) > 0:
+            #     calculate_energy.sensor_add_energy(
+            #         virtual_sensor_triangle_dict, integrator, virtual_sensor_energy
+            #     )
+            #     self.N_sim_virtual_sensor.append(virtual_sensor_energy)
 
-            # read energy of face sensor
-            face_sensor_energy = {}
-            if has_face_sensor:
-                calculate_energy.sensor_add_energy(
-                    face_sensor_triangle_dict, integrator, face_sensor_energy
-                )
-                self.N_sim_face_sensor.append(face_sensor_energy)
+            # # read energy of face sensor
+            # face_sensor_energy = {}
+            # if len(self.list_face_sensor) > 0:
+            #     calculate_energy.sensor_add_energy(
+            #         face_sensor_triangle_dict, integrator, face_sensor_energy
+            #     )
+            #     self.N_sim_face_sensor.append(face_sensor_energy)
 
+            self.photonmaps.append(integrator.getPhotonMap())
             self.photonmaps.append(integrator.getPhotonMapSensors())
             print("Time taken: " + str(time.time() - start_time))
-            self.scene.clear()
         self.results = SimulationResult(self)
 
     def calculateCalibrationCoefficient(
@@ -666,7 +683,7 @@ class Simulator:
         if mode == "ipython":
             ph_sc = Scene()
             for photon in photons:
-                sp = Sphere(0.1 * self.configuration.SCALE_FACTOR)
+                sp = Sphere(0.1 * self.configuration.SCALE_FACTOR, 4)
                 position = photon[0]
                 color = colors[photon[1]]
                 s2 = Translated(position[0], position[1], position[2], sp)
@@ -884,7 +901,9 @@ class Simulator:
         """
         # add env
         materials_r, materials_s, materials_t = read_properties.setup_dataset_materials(
-            current_band["start"], current_band["end"], self.configuration.OPTICAL_PROPERTIES_DIR
+            current_band["start"],
+            current_band["end"],
+            self.configuration.OPTICAL_PROPERTIES_DIR,
         )
 
         for sh in self.scene_pgl:
@@ -1012,7 +1031,9 @@ class Simulator:
         """
 
         self.scene_pgl = read_rad_geo.read_rad(
-            self.configuration.ENVIRONMENT_FILE, self.configuration.SCALE_FACTOR, flip_normal
+            self.configuration.ENVIRONMENT_FILE,
+            self.configuration.SCALE_FACTOR,
+            flip_normal,
         )
 
     def setupRender(self, lookfrom=Vec3(0, 0, 0), lookat=Vec3(0, 0, 0), vfov=50.0):

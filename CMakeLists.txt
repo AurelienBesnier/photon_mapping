@@ -9,7 +9,7 @@ option(BUILD_CXX_EXAMPLE "build c++ example" OFF)
 find_package(TBB CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
-find_package(OpenMP)
+find_package(OpenMP REQUIRED)
 if(NOT OpenMP_CXX_FOUND)
     message(WARNING "failed to find OpenMP")
 endif()
@@ -36,7 +36,7 @@ if(APPLE)
 endif()
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc /openmp:llvm")
+    set(CMAKE_CXX_FLAGS "${CXXFLAGS} /std:c++latest /EHsc")
 endif()
 
 # externals

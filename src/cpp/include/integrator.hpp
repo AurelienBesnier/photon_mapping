@@ -567,7 +567,6 @@ class PhotonMapping : public Integrator
                                   << "/" << scene.lights.size() << "..."
                                   << std::endl;
 
-#pragma omp parallel for
                         for (int i = 0;
                              i < nPhotonsGlobal / scene.lights.size();
                              ++i) {
@@ -630,7 +629,6 @@ class PhotonMapping : public Integrator
                                                                  .shadingNormal,
                                                                ray.direction);
                                                         if (test_ouverture > -1)
-#pragma omp critical
                                                         {
                                                                 Photon p(
                                                                   throughput,
@@ -654,7 +652,6 @@ class PhotonMapping : public Integrator
                                                              BxDFType::
                                                                DIFFUSE &&
                                                            forRendering)
-#pragma omp critical
                                                 {
                                                         // TODO: remove lock to
                                                         // get more speed
