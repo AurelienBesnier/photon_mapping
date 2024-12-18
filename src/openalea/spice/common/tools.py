@@ -66,4 +66,4 @@ def flatten(lt: list) -> list:
         the flattened list
 
     """
-    return list(chain(*lt))
+    return [item for sublist in lt for item in sublist]

@@ -378,11 +378,10 @@ class Simulator:
         )
 
         for sh in self.scene_pgl:
-            refl = materials_r.get(sh.id, 0.5)
-            trans = materials_t.get(sh.id, 0.5)
+            refl = materials_r.get(sh.id, 0.9)
+            trans = materials_t.get(sh.id, 0.0)
             spec = materials_t.get(sh.id, 0.0)
             self.scene.setMatPrimitive(str(sh.id), refl, trans, spec)
-
 
     def run(self):
         """
@@ -684,7 +683,7 @@ class Simulator:
         if mode == "ipython":
             ph_sc = Scene()
             for photon in photons:
-                sp = Sphere(0.1 * self.configuration.SCALE_FACTOR)
+                sp = Sphere(0.1 * self.configuration.SCALE_FACTOR, 4)
                 position = photon[0]
                 color = colors[photon[1]]
                 s2 = Translated(position[0], position[1], position[2], sp)

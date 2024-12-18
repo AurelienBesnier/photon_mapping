@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <omp.h>
 
 #include <memory>
 #include <vector>
@@ -281,9 +282,9 @@ class Scene
          * @param transmittance
          * @param roughness
          */
-        void addFaceInfos(std::vector<float>& vertices,
-                          std::vector<uint32_t>& indices,
-                          std::vector<float>& normals,
+        void addFaceInfos(std::vector<float>& newVertices,
+                          std::vector<uint32_t>& newIndices,
+                          std::vector<float>& newNormals,
                           Vec3f& colors,
                           Vec3f& ambient,
                           float& specular,
@@ -296,24 +297,22 @@ class Scene
                           float transmittance = 0.0f,
                           float roughness = 0.0f)
         {
-
-#pragma omp parallel for
-                for (uint32_t& i : indices) {
+                for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
 
                 this->vertices.insert(std::end(this->vertices),
-                                      std::begin(vertices),
-                                      std::end(vertices));
+                                      std::begin(newVertices),
+                                      std::end(newVertices));
                 this->indices.insert(std::end(this->indices),
-                                     std::begin(indices),
-                                     std::end(indices));
+                                     std::begin(newIndices),
+                                     std::end(newIndices));
                 this->normals.insert(std::end(this->normals),
-                                     std::begin(normals),
-                                     std::end(normals));
+                                     std::begin(newNormals),
+                                     std::end(newNormals));
 
                 // populate materials
-                for (size_t faceID = nFaces() - (indices.size() / 3);
+                for (size_t faceID = nFaces() - (newIndices.size() / 3);
                      faceID < nFaces();
                      ++faceID) {
                         tinyobj::material_t m;
@@ -351,44 +350,6 @@ class Scene
                         else {
                                 this->bxdfs.push_back(createDefaultBxDF());
                         }
-                }
-
-                // populate  triangles
-                for (size_t faceID = nFaces() - (indices.size() / 3);
-                     faceID < nFaces();
-                     ++faceID) {
-                        // add triangle
-                        this->triangles.emplace_back(this->vertices.data(),
-                                                     this->indices.data(),
-                                                     this->normals.data(),
-                                                     faceID);
-                }
-
-                // populate lights, primitives
-                for (size_t faceID = nFaces() - (indices.size() / 3);
-                     faceID < nFaces();
-                     ++faceID) {
-                        // add light
-                        std::shared_ptr<Light> light = nullptr;
-                        const auto material = this->materials[faceID];
-                        // std::cout << "material check" << std::endl;
-                        std::string sh_name = "";
-                        if (material) {
-                                tinyobj::material_t m = material.value();
-                                sh_name = m.name;
-                                light =
-                                  createAreaLight(m, &this->triangles[faceID]);
-                                if (light != nullptr) {
-                                        lights.push_back(light);
-                                }
-                        }
-
-                        // add primitive
-                        // std::cout << "Adding primitives" << std::endl;
-                        primitives.emplace_back(&this->triangles[faceID],
-                                                this->bxdfs[faceID],
-                                                sh_name,
-                                                light);
                 }
         }
 
@@ -448,7 +409,6 @@ class Scene
          */
         void setMatPrimitive(std::string& primName, float reflectance, float transmittance, float specularity = 0.0)
         {
-#pragma omp parallel for
                 for (Primitive& prim: primitives)
                 {
                         if (prim.name == primName)
@@ -481,7 +441,6 @@ class Scene
                       Vec3f color,
                       std::string mat_name)
         {
-#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -542,7 +501,6 @@ class Scene
                                    std::vector<uint32_t> newIndices,
                                    std::vector<float> newNormals)
         {
-#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -598,7 +556,6 @@ class Scene
                                 float transmittance = 0.0f,
                                 float roughness = 0.0f)
         {
-#pragma omp parallel for
                 for (uint32_t& i : newIndices) {
                         i += nVertices();
                 }
@@ -1022,6 +979,7 @@ class Scene
                           Vec2f(rayhit.hit.u, rayhit.hit.v);
                         info.surfaceInfo.geometricNormal =
                           tri.getGeometricNormal();
+
                         info.surfaceInfo.shadingNormal =
                           tri.computeShadingNormal(
                             info.surfaceInfo.barycentric);

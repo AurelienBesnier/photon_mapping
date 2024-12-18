@@ -2,12 +2,16 @@ import openalea.plantgl.all as pgl
 from openalea.spice.libspice_core import Scene, Vec3, VectorFloat, VectorUint
 from openalea.spice.common.tools import flatten
 
+
 def pgl_to_spice(scene: pgl.Scene):
     spice_scene = Scene()
     nb_shapes = len(scene)
     i = 1
+    tr = pgl.Tesselator()
     for sh in scene:
-        print(f"Adding shape {i}/{nb_shapes}")
+        print(f"Adding shape {i}/{nb_shapes}", end="\r")
+        sh.apply(tr)
+        sh.geometry = tr.result
         sh.geometry.computeNormalList()
         normals = VectorFloat(flatten(sh.geometry.normalList))
         indices = VectorUint(flatten(sh.geometry.indexList))
@@ -48,6 +52,7 @@ def pgl_to_spice(scene: pgl.Scene):
             trans,
             1.0 - shininess,
         )
-        i+=1
+        i += 1
+    spice_scene.setupTriangles()
 
     return spice_scene
