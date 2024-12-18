@@ -1,4 +1,5 @@
-import itertools
+import functools
+import operator
 from openalea.spice import Vec3
 
 # This module consist the common functions using in this project
@@ -66,4 +67,4 @@ def flatten(lt: list) -> list:
         the flattened list
 
     """
-    return list(itertools.chain.from_iterable(lt))
+    return functools.reduce(operator.iconcat, lt, [])
