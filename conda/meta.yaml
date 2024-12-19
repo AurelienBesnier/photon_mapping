@@ -25,7 +25,8 @@ requirements:
     - scipy
     - make
     - cmake
-    - ninja # [win]
+    - vs2022_win-64 # [win]
+    - ninja
     - pybind11
     - embree
     - llvm-openmp
