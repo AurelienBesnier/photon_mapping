@@ -19,6 +19,7 @@ dependencies:
   - tbb
   - tbb-devel
   - llvm-openmp
+  - vs2022_win-64 # [win]
   - scipy
   - matplotlib
   - pip
